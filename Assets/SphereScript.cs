@@ -11,41 +11,67 @@ public class SphereScript : MonoBehaviour {
 	private Vector3 lastMousePosition;
 	private Vector3 mouseDelta;
 
-	public float epsilon = .997f; //(kJ/mol)
-	public float sigma = 3.4f; //Angstroms = ((1x10)^-10)m
+	private double sigma; //meters
+
+	//private float kB = 1.381 * 10 ^ -23; //(J / K)
+
+	//Argon
+	//public float epsilon = .997f; //(kJ/mol)
+	//public float sigma = 3.4f; //Angstroms = ((1x10)^-10)m
+
+	//gold
+	public double epsilon = (double)(7.1162 * Math.Pow (10, -20)); //J
+	public float sigmaAng = 2.6367f; //Angstroms
+	//mass = 3.27 in units of 10^-25 kg per atom = 197 amu
+
+	//copper
+	//public float epsilon = (6.537 * Math.Pow(10, -20)); //J
+	//public float sigmaAng = 2.3374f; //Angstroms
+
+	//platinum
+	//public float epsilon = (1.0922 * Math.Pow(10, -19)); //J
+	//public float sigmaAng = 2.5394f; //Angstroms
 
 
 
 	// Use this for initialization
 	void Start () {
 
-		Color moleculeColor = new Color(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 1.0f);
-		gameObject.renderer.material.color = moleculeColor;
+		//Color moleculeColor = new Color(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 1.0f);
+		//gameObject.renderer.material.color = moleculeColor;
+
+		sigma = sigmaAng * Math.Pow (10, -10);
+	}
+	
+	void FixedUpdate(){
 
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		molecules = new List<GameObject>();	
 		for(int i = 0; i < allMolecules.Length; i++){
 			double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
-			if(allMolecules[i] != gameObject && distance < (2.5 * sigma)){
+			if(allMolecules[i] != gameObject && distance < (2.5 * sigmaAng)){
 				molecules.Add(allMolecules[i]);
 			}
 		}
-	}
-	
-	void FixedUpdate(){
+
 		Vector3 finalForce = new Vector3 (0.0f, 0.0f, 0.0f);
 		for (int i = 0; i < molecules.Count; i++) {
-			Vector3 direction = new Vector3(transform.position.x - molecules[i].transform.position.x, transform.position.y - molecules[i].transform.position.y, transform.position.z - molecules[i].transform.position.z);
+			//Vector3 vect = molecules[i].transform.position - transform.position;
+			Vector3 direction = new Vector3(molecules[i].transform.position.x - transform.position.x, molecules[i].transform.position.y - transform.position.y, molecules[i].transform.position.z - transform.position.z);
 			direction.Normalize();
 			
 			double distance = Vector3.Distance(transform.position, molecules[i].transform.position);
-			double part1 = ((48 * epsilon) / Math.Pow(distance, 2));
+			distance *= Math.Pow (10, -10);
+			//print ("distance: " + distance);
+			double part1 = ((-48 * epsilon) / Math.Pow(distance, 2));
 			//print ("part1: " + part1);
-			double part2 = (Math.Pow ((epsilon / distance), 12) - (.5f * Math.Pow ((epsilon / distance), 6)));
+			double part2 = (Math.Pow ((sigma / distance), 12) - (.5f * Math.Pow ((sigma / distance), 6)));
 			//print ("part2: " + part2);
 			double magnitude = (part1 * part2 * distance);
 			finalForce += (direction * (float)magnitude);
 		}
+		finalForce = finalForce * (float)Math.Pow (10, -25); //converting mass
+		print ("finalForce: " + finalForce);
 		rigidbody.AddForce (finalForce);
 	}
 

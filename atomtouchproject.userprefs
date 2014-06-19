@@ -1,0 +1,15 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/InstantiateMolecule.cs">
+    <Files>
+      <File FileName="Assets/SphereScript.cs" Line="84" Column="3" />
+      <File FileName="Assets/CameraScript.cs" Line="60" Column="1" />
+      <File FileName="Assets/InstantiateMolecule.cs" Line="63" Column="17" />
+      <File FileName="Assets/PinchZoom.cs" Line="18" Column="7" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
