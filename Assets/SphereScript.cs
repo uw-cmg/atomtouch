@@ -11,17 +11,21 @@ public class SphereScript : MonoBehaviour {
 	private Vector3 lastMousePosition;
 	private Vector3 mouseDelta;
 
-	private double sigma; //meters
+	//private double sigma; //meters
 
 	//private float kB = 1.381 * 10 ^ -23; //(J / K)
+
+	//test
+	public float epsilon = .997f;
+	public float sigma = .997f;
 
 	//Argon
 	//public float epsilon = .997f; //(kJ/mol)
 	//public float sigma = 3.4f; //Angstroms = ((1x10)^-10)m
 
 	//gold
-	public double epsilon = (double)(7.1162 * Math.Pow (10, -20)); //J
-	public float sigmaAng = 2.6367f; //Angstroms
+	//public double epsilon = (double)(7.1162 * Math.Pow (10, -20)); //J
+	//public float sigmaAng = 2.6367f; //Angstroms
 	//mass = 3.27 in units of 10^-25 kg per atom = 197 amu
 
 	//copper
@@ -37,10 +41,10 @@ public class SphereScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		//Color moleculeColor = new Color(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 1.0f);
-		//gameObject.renderer.material.color = moleculeColor;
+		Color moleculeColor = new Color(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 1.0f);
+		gameObject.renderer.material.color = moleculeColor;
 
-		sigma = sigmaAng * Math.Pow (10, -10);
+		//sigma = sigmaAng * Math.Pow (10, -10);
 	}
 	
 	void FixedUpdate(){
@@ -49,7 +53,7 @@ public class SphereScript : MonoBehaviour {
 		molecules = new List<GameObject>();	
 		for(int i = 0; i < allMolecules.Length; i++){
 			double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
-			if(allMolecules[i] != gameObject && distance < (2.5 * sigmaAng)){
+			if(allMolecules[i] != gameObject && distance < (2.5 * sigma)){
 				molecules.Add(allMolecules[i]);
 			}
 		}
@@ -61,8 +65,6 @@ public class SphereScript : MonoBehaviour {
 			direction.Normalize();
 			
 			double distance = Vector3.Distance(transform.position, molecules[i].transform.position);
-			distance *= Math.Pow (10, -10);
-			//print ("distance: " + distance);
 			double part1 = ((-48 * epsilon) / Math.Pow(distance, 2));
 			//print ("part1: " + part1);
 			double part2 = (Math.Pow ((sigma / distance), 12) - (.5f * Math.Pow ((sigma / distance), 6)));
@@ -70,8 +72,6 @@ public class SphereScript : MonoBehaviour {
 			double magnitude = (part1 * part2 * distance);
 			finalForce += (direction * (float)magnitude);
 		}
-		finalForce = finalForce * (float)Math.Pow (10, -25); //converting mass
-		print ("finalForce: " + finalForce);
 		rigidbody.AddForce (finalForce);
 	}
 
