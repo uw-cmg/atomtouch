@@ -26,10 +26,12 @@ public class SphereScript : MonoBehaviour {
 	//Cu: 3401.1, 4733.5, 2.3374,  63.546, 3.177, 3.610, 2.55
 	//Pt: 7184.2, 7908.7, 2.5394, 165.084, 8.254, 3.920, 2.77
 
-	private float epsilon = 5152.9f * 0.00008617f; // eV
-	private float sigma = 2.6367f; // Angstroms
+	//private float epsilon = 5152.9f * 0.00008617f; // eV
+	private float epsilon = 5152.9f * 1.381f*(float)Math.Pow (10,-23); // J
+	//private float sigma = 2.6367f; // Angstroms
+	private float sigma = 2.6367f; // m=Angstroms for Unity
 	public float massamu = 196.967f; //amu
-	
+	private float cutoff = 10; //mutliplier for cutoff
 	//copper
 	//public float epsilon = (6.537 * Math.Pow(10, -20)); //J
 	//public float sigmaAng = 2.3374f; //Angstroms
@@ -54,12 +56,12 @@ public class SphereScript : MonoBehaviour {
 		molecules = new List<GameObject>();	
 		for(int i = 0; i < allMolecules.Length; i++){
 			double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
-			if(allMolecules[i] != gameObject && distance < (2.5 * sigma)){
+			if(allMolecules[i] != gameObject && distance < (cutoff * sigma)){
 				molecules.Add(allMolecules[i]);
 			}
 		}
-
-		Vector3 finalForce = new Vector3 (0.000f, 0.000f, 0.000f); //TTM increase precision
+		double finalMagnitude = 0;
+		Vector3 finalForce = new Vector3 (0.000f, 0.000f, 0.000f);
 		for (int i = 0; i < molecules.Count; i++) {
 			//Vector3 vect = molecules[i].transform.position - transform.position;
 			Vector3 direction = new Vector3(molecules[i].transform.position.x - transform.position.x, molecules[i].transform.position.y - transform.position.y, molecules[i].transform.position.z - transform.position.z);
@@ -73,33 +75,16 @@ public class SphereScript : MonoBehaviour {
 			//print ("part2: " + part2);
 			double magnitude = (part1 * part2 * distance);
 			finalForce += (direction * (float)magnitude);
+			finalMagnitude += magnitude;
 		}
-		//finalForce is in units of eV/Angstroms, or 1.602*10^-9 N
-		//mass is entered into Unity3D in units of 20 amu, so the mass of Au
-		//    should be given as 9.84 (*20 amu)
-		//force = mass * acceleration = eV/A = 1.602*10^-19 J/Angstrom
-		//force = 1.602*10^-19 kg m2/s2/ Angstrom
-		//      = 1.602 * 10^-19 kg * 10^10 Angs * 10^10 Angs / Angs / s2
-		//      = 1.602 * 10^-1 kg * Angstroms/s^2
-		//however, the time should be in something like femtosecond steps (10^-15)
-		//force = 1.602 * 10^-1 kg * Angstroms / 10^15 fs * 10^15 fs
-		//force = 1.602 * 10^-31 kg * Angstroms/ femtoseconds^2
-		//acceleration is in Angstroms/(fs)^2
-		//mass is in 1.602 * 10^-31 kg
-		//one amu = 1.6605 * 10^-27 kg
-		//therefore, mass is in (1.602*10^-31/1.6605*10^-27) amu = 9.6477*10^-5 amu
-		//if we give Unity mass in amu/20
-		//force = unitymass * unityacceleration
-		//force = realmass/20 * 20*realacceleration
-		//force = force*20*9.6477*10^-5
-		//if we give Unity mass in amu/100, then 100*
-		//finalForce = finalForce * 100.0f * 0.000096477f; //converting mass
-		//However, Unity seems to be able to adjust the timestep - so we do not
-		//know what the time unit is, and therefore what the mass and divisors 
-		//should be
-		finalForce = finalForce / 20.0f; 
-		print ("finalForce: " + finalForce);
-		rigidbody.AddForce (finalForce);
+		Vector3 adjustedForce = finalForce / (1.6605f * (float)(Math.Pow (10, -25))); //adjust mass input
+		adjustedForce = adjustedForce * (float)(Math.Pow (10, -10)); //normalize back Angstroms = m from extra r_ij denomintor term
+
+		//print ("neighbors: " + molecules.Count + " finalForce: " + finalForce.ToString ("E3"));
+		print ("neighbors: " + molecules.Count + " final magnitude: " + finalMagnitude + " finalForce: " + finalForce.ToString ("E3") + " adjustedForce: " + adjustedForce.ToString ("E3"));
+		//rigidbody.AddForce (finalForce);
+		//rigidbody.AddForce (adjustedForce);
+		rigidbody.AddRelativeForce (adjustedForce);
 	}
 
 	void OnMouseDown (){
