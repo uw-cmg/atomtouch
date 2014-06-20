@@ -8,6 +8,7 @@ public class CameraScript : MonoBehaviour {
 
 	public Rigidbody moleculePrefab;
 	public int numMolecules = 100;
+	public float hSliderValue = 0.0F;
 
 	// Use this for initialization
 	void Start () {
@@ -73,6 +74,8 @@ public class CameraScript : MonoBehaviour {
 			transform.position = new Vector3(15.6f, 0.0f, 12.8f);
 			transform.rotation = Quaternion.Euler(0.0f, 225.0f, 0.0f);
 		}
+		hSliderValue = GUI.HorizontalSlider(new Rect(25, 25, 100, 30), hSliderValue, 0.0F, 10.0F);
+		print (hSliderValue);
 	}
 
 }
