@@ -68,5 +68,37 @@ public class InstantiateMolecule : MonoBehaviour {
 			Instantiate(moleculePrefab, curPosition, curRotation);
 		}
 
+
+		if(GUI.Button(new Rect((Screen.width / 2) - 40,40,80,20), "Camera 1")) {
+			transform.position = new Vector3(0.0f, 0.0f, -26.0f);
+			transform.rotation = Quaternion.Euler(0, 0, 0);
+		}
+		if(GUI.Button(new Rect((Screen.width / 2) + 50,40,80,20), "Camera 2")) {
+			transform.position = new Vector3(-26.0f, 0.0f, -7.0f);
+			transform.rotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
+		}
+		if(GUI.Button(new Rect((Screen.width / 2) + 140,40,80,20), "Camera 3")) {
+			transform.position = new Vector3(-14.4f, 0.0f, 15.9f);
+			transform.rotation = Quaternion.Euler(0.0f, 148.2f, 0.0f);
+		}
+		if(GUI.Button(new Rect((Screen.width / 2) + 230,40,80,20), "Camera 4")) {
+			transform.position = new Vector3(15.6f, 0.0f, 12.8f);
+			transform.rotation = Quaternion.Euler(0.0f, 225.0f, 0.0f);
+		}
+
+
+		GUI.Label(new Rect(25, 15, 200, 20), "Time Scale: " + SphereScript.timeScale);
+		float timeScale = GUI.HorizontalSlider(new Rect(25, 40, 100, 30), SphereScript.timeScale, 0.0F, 5.0F);
+		if (timeScale != SphereScript.timeScale) {
+			SphereScript.timeScale = timeScale;
+			isClicked = false;
+		}
+
+		GUI.Label (new Rect (25, 55, 250, 20), "Temperature: " + SphereScript.desiredTemperature);
+		float newTemp = GUI.HorizontalSlider (new Rect (25, 75, 100, 30), SphereScript.desiredTemperature, 0.0f, 2000.0f);
+		if (newTemp != SphereScript.desiredTemperature) {
+			SphereScript.desiredTemperature = newTemp;
+			isClicked = false;
+		}
 	}
 }

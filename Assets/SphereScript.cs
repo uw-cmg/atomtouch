@@ -10,9 +10,9 @@ public class SphereScript : MonoBehaviour {
 	private Vector3 screenPoint;
 	private Vector3 lastMousePosition;
 	private Vector3 mouseDelta;
-	public float timeScale = 0.0f;
+	public static float timeScale = 1.0f;
 
-	public float desiredTemperature = 100.0f;
+	public static float desiredTemperature = 100.0f;
 
 	//private double sigma; //meters
 
