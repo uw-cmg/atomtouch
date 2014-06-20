@@ -51,7 +51,7 @@ public class SphereScript : MonoBehaviour {
 	}
 	
 	void FixedUpdate(){
-
+		Time.timeScale = 2.0f
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		molecules = new List<GameObject>();	
 		for(int i = 0; i < allMolecules.Length; i++){
@@ -82,8 +82,8 @@ public class SphereScript : MonoBehaviour {
 		//print ("neighbors: " + molecules.Count + " finalForce: " + finalForce.ToString ("E3"));
 		print ("neighbors: " + molecules.Count + " final magnitude: " + finalMagnitude + " finalForce: " + finalForce.ToString ("E3") + " adjustedForce: " + adjustedForce.ToString ("E3"));
 		//rigidbody.AddForce (finalForce);
-		//rigidbody.AddForce (adjustedForce);
-		rigidbody.AddRelativeForce (adjustedForce);
+		rigidbody.AddForce (adjustedForce);
+
 	}
 
 	void OnMouseDown (){
