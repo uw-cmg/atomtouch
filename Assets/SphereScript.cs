@@ -79,7 +79,6 @@ public class SphereScript : MonoBehaviour {
 		}
 		Vector3 adjustedForce = finalForce / (1.6605f * (float)(Math.Pow (10, -25))); //adjust mass input
 		adjustedForce = adjustedForce * (float)(Math.Pow (10, -10)); //normalize back Angstroms = m from extra r_ij denomintor term
-
 		//print ("neighbors: " + molecules.Count + " finalForce: " + finalForce.ToString ("E3"));
 		print ("neighbors: " + molecules.Count + " final magnitude: " + finalMagnitude + " finalForce: " + finalForce.ToString ("E3") + " adjustedForce: " + adjustedForce.ToString ("E3"));
 		//rigidbody.AddForce (finalForce);
