@@ -95,7 +95,7 @@ public class InstantiateMolecule : MonoBehaviour {
 		}
 
 		GUI.Label (new Rect (25, 55, 250, 20), "Temperature: " + SphereScript.desiredTemperature);
-		float newTemp = GUI.HorizontalSlider (new Rect (25, 75, 100, 30), SphereScript.desiredTemperature, 0.0f, 2000.0f);
+		float newTemp = GUI.HorizontalSlider (new Rect (25, 75, 100, 30), SphereScript.desiredTemperature, 0.0001f, 2000.0f);
 		if (newTemp != SphereScript.desiredTemperature) {
 			SphereScript.desiredTemperature = newTemp;
 			isClicked = false;
