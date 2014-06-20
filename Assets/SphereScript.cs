@@ -5,6 +5,7 @@ using System;
 
 public class SphereScript : MonoBehaviour {
 
+	private List<GameObject> positiveForceMolecules;
 	private List<GameObject> molecules;
 	private Vector3 offset;
 	private Vector3 screenPoint;
@@ -47,11 +48,13 @@ public class SphereScript : MonoBehaviour {
 		Color moleculeColor = new Color(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 1.0f);
 		gameObject.renderer.material.color = moleculeColor;
 
-
+//		LineRenderer lineRenderer = gameObject.AddComponent<LineRenderer> ();
+//		lineRenderer.material = new Material (Shader.Find ("Particles/Additive"));
+//		lineRenderer.SetColors (Color.yellow, Color.red);
+//		lineRenderer.SetWidth (0.2f, 0.2f);
 	}
 	
 	void FixedUpdate(){
-
 		Time.timeScale = timeScale;
 
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
@@ -70,10 +73,9 @@ public class SphereScript : MonoBehaviour {
 				totalEnergy += (float)(.5f * (3.27 * Math.Pow (10, -25)) * velocity);
 				//print ("velocity: " + velocity);
 			}
-
-
 		}
 
+		positiveForceMolecules = new List<GameObject> ();
 		Vector3 finalForce = new Vector3 (0.0f, 0.0f, 0.0f);
 		for (int i = 0; i < molecules.Count; i++) {
 			//Vector3 vect = molecules[i].transform.position - transform.position;
@@ -86,11 +88,21 @@ public class SphereScript : MonoBehaviour {
 			double part2 = (Math.Pow ((sigma / distance), 12) - (.5f * Math.Pow ((sigma / distance), 6)));
 			//print ("part2: " + part2);
 			double magnitude = (part1 * part2 * distance);
+			if(magnitude < 0){
+				positiveForceMolecules.Add(molecules[i]);
+			}
 			finalForce += (direction * (float)magnitude);
 		}
 		rigidbody.AddForce (finalForce);
 
 
+//		LineRenderer lineRenderer = GetComponent<LineRenderer> ();
+//		for (int i = 0; i < positiveForceMolecules.Count; i++) {
+//			lineRenderer.SetPosition (0, new Vector3 (transform.position.x, transform.position.y, transform.position.z));
+//			lineRenderer.SetPosition (1, new Vector3 (positiveForceMolecules[i].transform.position.x, positiveForceMolecules[i].transform.position.y, positiveForceMolecules[i].transform.position.z));
+//		}
+		
+		
 		double instantTemp = totalEnergy / (3.0f / 2.0f) / allMolecules.Length / kB;
 		//print ("Instant Temp: " + instantTemp);
 		
@@ -102,6 +114,9 @@ public class SphereScript : MonoBehaviour {
 		if (!rigidbody.isKinematic && !float.IsInfinity((float)alpha)) {
 			rigidbody.velocity = newVelocity;
 		}
+
+
+
 
 	}
 
@@ -165,30 +180,30 @@ public class SphereScript : MonoBehaviour {
 	}
 
 	void OnCollisionEnter (Collision col){
-//		float magnitude = 100.0f;
-//		if (col.gameObject.name == "BackPlane") {
-//			//print(gameObject.name + " hit the BackPlane");
-//			rigidbody.AddForce(-Vector3.forward * magnitude);
-//		}
-//		if (col.gameObject.name == "FrontPlane") {
-//			//print(gameObject.name + " hit the FrontPlane");
-//			rigidbody.AddForce(Vector3.forward * magnitude);
-//		}
-//		if (col.gameObject.name == "TopPlane") {
-//			//print(gameObject.name + " hit the TopPlane");
-//			rigidbody.AddForce(-Vector3.up * magnitude);
-//		}
-//		if (col.gameObject.name == "BottomPlane") {
-//			//print(gameObject.name + " hit the BottomPlane");
-//			rigidbody.AddForce(Vector3.up * magnitude);
-//		}
-//		if (col.gameObject.name == "RightPlane") {
-//			//print(gameObject.name + " hit the RightPlane");
-//			rigidbody.AddForce(-Vector3.right * magnitude);
-//		}
-//		if (col.gameObject.name == "LeftPlane") {
-//			//print(gameObject.name + " hit the LeftPlane");
-//			rigidbody.AddForce(Vector3.right * magnitude);
-//		}
+		float magnitude = 100.0f;
+		if (col.gameObject.name == "BackPlane") {
+			//print(gameObject.name + " hit the BackPlane");
+			rigidbody.AddForce(-Vector3.forward * magnitude);
+		}
+		if (col.gameObject.name == "FrontPlane") {
+			//print(gameObject.name + " hit the FrontPlane");
+			rigidbody.AddForce(Vector3.forward * magnitude);
+		}
+		if (col.gameObject.name == "TopPlane") {
+			//print(gameObject.name + " hit the TopPlane");
+			rigidbody.AddForce(-Vector3.up * magnitude);
+		}
+		if (col.gameObject.name == "BottomPlane") {
+			//print(gameObject.name + " hit the BottomPlane");
+			rigidbody.AddForce(Vector3.up * magnitude);
+		}
+		if (col.gameObject.name == "RightPlane") {
+			//print(gameObject.name + " hit the RightPlane");
+			rigidbody.AddForce(-Vector3.right * magnitude);
+		}
+		if (col.gameObject.name == "LeftPlane") {
+			//print(gameObject.name + " hit the LeftPlane");
+			rigidbody.AddForce(Vector3.right * magnitude);
+		}
 	}
 }
