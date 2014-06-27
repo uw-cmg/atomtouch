@@ -15,7 +15,16 @@ public class PinchZoom : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (Input.touchCount == 2) {
+		bool beingHeld = false;
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			Atom atomScript = allMolecules[i].GetComponent<Atom>();
+			if(atomScript.held){
+				beingHeld = true;
+			}
+		}
+
+		if (Input.touchCount == 2 && !beingHeld) {
 			Touch touchZero = Input.GetTouch (0);
 			Touch touchOne = Input.GetTouch (1);
 
