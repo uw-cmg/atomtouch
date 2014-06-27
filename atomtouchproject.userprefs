@@ -1,12 +1,12 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/InstantiateMolecule.cs">
     <Files>
-      <File FileName="Assets/SphereScript.cs" Line="99" Column="46" />
-      <File FileName="Assets/CameraScript.cs" Line="87" Column="49" />
-      <File FileName="Assets/InstantiateMolecule.cs" Line="76" Column="22" />
-      <File FileName="Assets/PinchZoom.cs" Line="37" Column="4" />
-      <File FileName="Assets/Atom.cs" Line="203" Column="3" />
+      <File FileName="Assets/SphereScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/CameraScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/InstantiateMolecule.cs" Line="76" Column="5" />
+      <File FileName="Assets/PinchZoom.cs" Line="1" Column="1" />
+      <File FileName="Assets/Atom.cs" Line="87" Column="3" />
       <File FileName="Assets/Gold.cs" Line="1" Column="1" />
       <File FileName="Assets/Copper.cs" Line="1" Column="1" />
       <File FileName="Assets/Platinum.cs" Line="18" Column="3" />

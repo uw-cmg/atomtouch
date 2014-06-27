@@ -70,10 +70,10 @@ public class InstantiateMolecule : MonoBehaviour {
 					clickedPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10.0f);
 				}
 			}
-			if(Input.GetTouch(0).phase == TouchPhase.Ended || Input.GetTouch(0).phase == TouchPhase.Canceled){
-				startTime = 0.0f;
-				isClicked = false;
-			}
+//			if(Input.GetTouch(0).phase == TouchPhase.Ended || Input.GetTouch(0).phase == TouchPhase.Canceled){
+//				startTime = 0.0f;
+//				isClicked = false;
+//			}
 		}
 		else{
 			startTime = 0.0f;
@@ -145,30 +145,32 @@ public class InstantiateMolecule : MonoBehaviour {
 			platinumButtonPosY = -1000.0f;
 			first = true;
 		}
+
+		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
 		
 		
 		if(GUI.Button(new Rect((Screen.width / 2) - 40,40,80,20), "Front")) {
-			transform.position = new Vector3(0.0f, 0.0f, -26.0f);
+			transform.position = new Vector3(cameraScript.centerPos.x, cameraScript.centerPos.y, (cameraScript.centerPos.z - (cameraScript.depth/2) - 20.0f));
 			transform.rotation = Quaternion.Euler(0, 0, 0);
 		}
 		if(GUI.Button(new Rect((Screen.width / 2) + 50,40,80,20), "Left")) {
-			transform.position = new Vector3(-30.7f, 0.0f, -1.5f);
+			transform.position = new Vector3((cameraScript.centerPos.x - (cameraScript.width/2) - 20.0f), cameraScript.centerPos.y, cameraScript.centerPos.z);
 			transform.rotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
 		}
 		if(GUI.Button(new Rect((Screen.width / 2) + 140,40,80,20), "Back")) {
-			transform.position = new Vector3(0.0f, 0.0f, 36.7f);
+			transform.position = new Vector3(cameraScript.centerPos.x, cameraScript.centerPos.y, (cameraScript.centerPos.z + (cameraScript.depth/2) + 20.0f));
 			transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
 		}
 		if(GUI.Button(new Rect((Screen.width / 2) + 230,40,80,20), "Right")) {
-			transform.position = new Vector3(33.5f, 0.0f, -1.3f);
+			transform.position = new Vector3((cameraScript.centerPos.x + (cameraScript.width/2) + 20.0f), cameraScript.centerPos.y, cameraScript.centerPos.z);
 			transform.rotation = Quaternion.Euler(0.0f, 270.0f, 0.0f);
 		}
 		if(GUI.Button(new Rect((Screen.width / 2) + 320,40,80,20), "Top")) {
-			transform.position = new Vector3(0.0f, 40.0f, 0.0f);
+			transform.position = new Vector3(cameraScript.centerPos.x, (cameraScript.centerPos.y + (cameraScript.height/2) + 20.0f), cameraScript.centerPos.z);
 			transform.rotation = Quaternion.Euler(90.0f, 0.0f, 0.0f);
 		}
 		if(GUI.Button(new Rect((Screen.width / 2) +410,40,80,20), "Bottom")) {
-			transform.position = new Vector3(-1.5f, -37.5f, 0.0f);
+			transform.position = new Vector3(cameraScript.centerPos.x, (cameraScript.centerPos.y - (cameraScript.height/2) - 20.0f), cameraScript.centerPos.z);
 			transform.rotation = Quaternion.Euler(270.0f, 0.0f, 0.0f);
 		}
 		
