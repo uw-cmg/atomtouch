@@ -3,6 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
+//L-J potentials from Zhen and Davies, Phys. Stat. Sol. a, 78, 595 (1983)
+//Symbol, epsilon/k_Boltzmann (K) n-m version, 12-6 version, sigma (Angstroms),
+//     mass in amu, mass in (20 amu) for Unity 
+//     FCC lattice parameter in Angstroms, expected NN bond (Angs)
+//Au: 4683.0, 5152.9, 2.6367, 196.967, 9.848, 4.080, 2.88
+//Cu: 3401.1, 4733.5, 2.3374,  63.546, 3.177, 3.610, 2.55
+//Pt: 7184.2, 7908.7, 2.5394, 165.084, 8.254, 3.920, 2.77
+
 public abstract class Atom : MonoBehaviour
 {
 	private List<GameObject> molecules;
@@ -13,12 +21,10 @@ public abstract class Atom : MonoBehaviour
 	public bool held { get; set; }
 
 	public static float timeScale = 1.0f;
-	public static float desiredTemperature = 100.0f;
-
-	private double kB = 1.381 * Math.Pow(10,-23); // J/K
+	
 	private float cutoff = 10; //mutliplier for cutoff
 
-	//variables that must be implemented
+	//variables that must be implemented because they are declared as abstract in the base class
 	protected abstract float epsilon{ get; } // J
 	protected abstract float sigma{ get; } // m=Angstroms for Unity
 	protected abstract float massamu{ get; } //amu
@@ -27,8 +33,6 @@ public abstract class Atom : MonoBehaviour
 	private Vector2 prevTouchPosition = new Vector2(0.0f, 0.0f);
 	private float deltaTouch2 = 0.0f;
 	private bool moveZDirection = false;
-
-	private String message = "Nothing yet!";
 
 	void FixedUpdate(){
 		Time.timeScale = timeScale;
@@ -40,15 +44,6 @@ public abstract class Atom : MonoBehaviour
 			double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
 			if(allMolecules[i] != gameObject && distance < (cutoff * sigma)){
 				molecules.Add(allMolecules[i]);
-			}
-
-			//compute the total energy in the system
-			GameObject molecule = allMolecules[i];
-			if(molecule.rigidbody && !molecule.rigidbody.isKinematic){
-				//mass is hardcoded
-				double mass = 3.27 * Math.Pow (10, -25);
-				double velocitySquared = Math.Pow((molecule.rigidbody.velocity.magnitude * 100), 2);
-				totalEnergy += (float)(.5f * (mass) * velocitySquared);
 			}
 		}
 
@@ -74,17 +69,17 @@ public abstract class Atom : MonoBehaviour
 		Vector3 adjustedForce = finalForce / (1.6605f * (float)(Math.Pow (10, -25))); //adjust mass input
 		adjustedForce = adjustedForce * (float)(Math.Pow (10, -10)); //normalize back Angstroms = m from extra r_ij denomintor term
 
-		rigidbody.AddForce (adjustedForce * 10.0f);
+		rigidbody.AddForce (adjustedForce);
 
 		//adjust velocity for the desired temperature of the system
-		double instantTemp = totalEnergy / (3.0f / 2.0f) / allMolecules.Length / kB;
-		double alpha = desiredTemperature / instantTemp;
-		Vector3 newVelocity = gameObject.rigidbody.velocity * (float)Math.Pow (alpha, .5f);
-		if (!rigidbody.isKinematic && !float.IsInfinity((float)alpha)) {
+		Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
+		if (!rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha)) {
 			rigidbody.velocity = newVelocity;
 		}
 
-		HandleTouch ();
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			HandleTouch ();
+		}
 	}
 
 	//controls for touch devices
@@ -204,49 +199,56 @@ public abstract class Atom : MonoBehaviour
 
 
 	//controls for debugging on pc
-//	void OnMouseDown (){
-//		rigidbody.isKinematic = true;
-//		
-//		screenPoint = Camera.main.WorldToScreenPoint(transform.position);
-//		offset = transform.position - Camera.main.ScreenToWorldPoint(
-//			new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
-//		held = true;
-//	}
-//
-//	void OnMouseDrag(){
-//		Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
-//		Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-//		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
-//		
-//		if (curPosition.y > cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer) {
-//			curPosition.y = cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer;
-//		}
-//		if (curPosition.y < cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer) {
-//			curPosition.y = cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer;
-//		}
-//		if (curPosition.x > cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer) {
-//			curPosition.x = cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer;
-//		}
-//		if (curPosition.x < cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer) {
-//			curPosition.x = cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer;
-//		}
-//		if (curPosition.z > cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer) {
-//			curPosition.z = cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer;
-//		}
-//		if (curPosition.z < cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer) {
-//			curPosition.z = cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer;
-//		}
-//		transform.position = curPosition;
-//		mouseDelta = Input.mousePosition - lastMousePosition;
-//		lastMousePosition = Input.mousePosition;
-//	}
-//
-//	void OnMouseUp (){
-//		Quaternion cameraRotation = Camera.main.transform.rotation;
-//		rigidbody.isKinematic = false;
-//		rigidbody.AddForce (cameraRotation * mouseDelta * 50.0f);
-//		held = false;
-//	}
+	void OnMouseDown (){
+		if (Application.platform != RuntimePlatform.IPhonePlayer) {
+			rigidbody.isKinematic = true;
+			
+			screenPoint = Camera.main.WorldToScreenPoint(transform.position);
+			offset = transform.position - Camera.main.ScreenToWorldPoint(
+				new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
+			held = true;
+		}
+	}
+
+	void OnMouseDrag(){
+		if (Application.platform != RuntimePlatform.IPhonePlayer) {
+			Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
+			Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
+			CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
+			
+			if (curPosition.y > cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer) {
+				curPosition.y = cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer;
+			}
+			if (curPosition.y < cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer) {
+				curPosition.y = cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer;
+			}
+			if (curPosition.x > cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer) {
+				curPosition.x = cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer;
+			}
+			if (curPosition.x < cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer) {
+				curPosition.x = cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer;
+			}
+			if (curPosition.z > cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer) {
+				curPosition.z = cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer;
+			}
+			if (curPosition.z < cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer) {
+				curPosition.z = cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer;
+			}
+			transform.position = curPosition;
+			mouseDelta = Input.mousePosition - lastMousePosition;
+			lastMousePosition = Input.mousePosition;
+		}
+
+	}
+
+	void OnMouseUp (){
+		if (Application.platform != RuntimePlatform.IPhonePlayer) {
+			Quaternion cameraRotation = Camera.main.transform.rotation;
+			rigidbody.isKinematic = false;
+			rigidbody.AddForce (cameraRotation * mouseDelta * 50.0f);
+			held = false;
+		}
+	}
 
 	void OnCollisionEnter (Collision col){
 		float magnitude = gameObject.rigidbody.velocity.magnitude * 10.0f;

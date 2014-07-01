@@ -46,8 +46,8 @@ public class InstantiateMolecule : MonoBehaviour {
 		}
 
 		if (!holdingAtom) {
-			if(!isClicked && Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Stationary)
-			//if(Input.GetMouseButtonDown(0) && !isClicked)
+			bool conditionForStartingTime = Application.platform == RuntimePlatform.IPhonePlayer ? !isClicked && Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Stationary : Input.GetMouseButtonDown(0) && !isClicked;
+			if(conditionForStartingTime)
 			{
 				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 				RaycastHit hit;
@@ -56,8 +56,8 @@ public class InstantiateMolecule : MonoBehaviour {
 					startTime = Time.time;
 				}
 			}
-			if (isClicked && Time.time - startTime > holdTime && Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Stationary)
-			//if (Input.GetMouseButton (0) && isClicked && Time.time - startTime > holdTime)
+			bool conditionForShowingMenu = Application.platform == RuntimePlatform.IPhonePlayer ? isClicked && Time.time - startTime > holdTime && Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Stationary : Input.GetMouseButton (0) && isClicked && Time.time - startTime > holdTime;
+			if (conditionForShowingMenu)
 			{
 				if(first){
 					copperButtonPosX = curScreenPoint.x;
@@ -70,10 +70,12 @@ public class InstantiateMolecule : MonoBehaviour {
 					clickedPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10.0f);
 				}
 			}
-//			if(Input.GetTouch(0).phase == TouchPhase.Ended || Input.GetTouch(0).phase == TouchPhase.Canceled){
-//				startTime = 0.0f;
-//				isClicked = false;
-//			}
+			if(Application.platform == RuntimePlatform.IPhonePlayer){
+				if(Input.GetTouch(0).phase == TouchPhase.Ended || Input.GetTouch(0).phase == TouchPhase.Canceled){
+					startTime = 0.0f;
+					isClicked = false;
+				}
+			}
 		}
 		else{
 			startTime = 0.0f;
@@ -182,10 +184,10 @@ public class InstantiateMolecule : MonoBehaviour {
 			isClicked = false;
 		}
 		
-		GUI.Label (new Rect (25, 95, 250, 20), "Temperature: " + Atom.desiredTemperature);
-		float newTemp = GUI.HorizontalSlider (new Rect (25, 135, 100, 30), Atom.desiredTemperature, 0.0001f, 800.0f);
+		GUI.Label (new Rect (25, 95, 250, 20), "Temperature: " + TemperatureCalc.desiredTemperature);
+		float newTemp = GUI.HorizontalSlider (new Rect (25, 135, 100, 30), TemperatureCalc.desiredTemperature, 0.0001f, 800.0f);
 		if (newTemp != SphereScript.desiredTemperature) {
-			Atom.desiredTemperature = newTemp;
+			TemperatureCalc.desiredTemperature = newTemp;
 			isClicked = false;
 		}
 
