@@ -72,10 +72,13 @@ public abstract class Atom : MonoBehaviour
 		rigidbody.AddForce (adjustedForce);
 
 		//adjust velocity for the desired temperature of the system
-		Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
-		if (!rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha)) {
-			rigidbody.velocity = newVelocity;
+		if (Time.time > 10.0f) {
+			Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
+			if (!rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha)) {
+				rigidbody.velocity = newVelocity;
+			}
 		}
+
 
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			HandleTouch ();

@@ -7,7 +7,8 @@ public class TemperatureCalc : MonoBehaviour {
 
 	private double kB = 1.381 * Math.Pow(10,-23); // J/K
 	public static float squareRootAlpha = 1.0f;
-	public static float desiredTemperature = 100.0f;
+	public static float desiredTemperature = 0.00001f; //K
+	//public static float desiredTemperature = 100.0f; //K
 	
 	void FixedUpdate () {
 
@@ -18,7 +19,7 @@ public class TemperatureCalc : MonoBehaviour {
 			GameObject molecule = allMolecules[i];
 			if(molecule.rigidbody && !molecule.rigidbody.isKinematic){
 				//mass is hardcoded
-				double mass = 3.27 * Math.Pow (10, -25);
+				double mass = 3.27;
 				//double mass = molecule.rigidbody.mass;
 				//print ("velocity: " + molecule.rigidbody.velocity.magnitude);
 				double velocitySquared = Math.Pow((molecule.rigidbody.velocity.magnitude), 2);
@@ -26,8 +27,8 @@ public class TemperatureCalc : MonoBehaviour {
 			}
 		}
 
-		double instantTemp = totalEnergy / (3.0f / 2.0f) / allMolecules.Length / kB;
-		//desired temperature should be moved into this class
+		double adjustedkB = kB / (1.6605f * (float)Math.Pow (10, -25));
+		double instantTemp = totalEnergy / (3.0f / 2.0f) / allMolecules.Length / adjustedkB;
 		double alpha = desiredTemperature / instantTemp;
 		squareRootAlpha = (float)Math.Pow (alpha, .5f);
 		print ("squareRootAlpha: " + squareRootAlpha);
