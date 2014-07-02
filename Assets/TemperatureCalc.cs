@@ -7,8 +7,8 @@ public class TemperatureCalc : MonoBehaviour {
 
 	private double kB = 1.381 * Math.Pow(10,-23); // J/K
 	public static float squareRootAlpha = 1.0f;
-	public static float desiredTemperature = 0.00001f; //K
-	//public static float desiredTemperature = 100.0f; //K
+	//public static float desiredTemperature = 0.00001f; //K
+	public static float desiredTemperature = 0.001f; //K
 	
 	void FixedUpdate () {
 
@@ -31,6 +31,6 @@ public class TemperatureCalc : MonoBehaviour {
 		double instantTemp = totalEnergy / (3.0f / 2.0f) / allMolecules.Length / adjustedkB;
 		double alpha = desiredTemperature / instantTemp;
 		squareRootAlpha = (float)Math.Pow (alpha, .5f);
-		print ("squareRootAlpha: " + squareRootAlpha);
+		//print ("squareRootAlpha: " + squareRootAlpha);
 	}
 }

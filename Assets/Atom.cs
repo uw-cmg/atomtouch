@@ -72,12 +72,12 @@ public abstract class Atom : MonoBehaviour
 		rigidbody.AddForce (adjustedForce);
 
 		//adjust velocity for the desired temperature of the system
-		if (Time.time > 10.0f) {
+		//if (Time.time > 10.0f) {
 			Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
 			if (!rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha)) {
 				rigidbody.velocity = newVelocity;
 			}
-		}
+		//}
 
 
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
@@ -254,30 +254,29 @@ public abstract class Atom : MonoBehaviour
 	}
 
 	void OnCollisionEnter (Collision col){
-		float magnitude = gameObject.rigidbody.velocity.magnitude * 10.0f;
 		if (col.gameObject.name == "BackPlane") {
-			//print(gameObject.name + " hit the BackPlane");
-			rigidbody.AddForce(-Vector3.forward * magnitude);
+			Vector3 newVelocity = new Vector3(gameObject.rigidbody.velocity.x, gameObject.rigidbody.velocity.y, -gameObject.rigidbody.velocity.z * 2);
+			gameObject.rigidbody.velocity = newVelocity;
 		}
 		if (col.gameObject.name == "FrontPlane") {
-			//print(gameObject.name + " hit the FrontPlane");
-			rigidbody.AddForce(Vector3.forward * magnitude);
+			Vector3 newVelocity = new Vector3(gameObject.rigidbody.velocity.x, gameObject.rigidbody.velocity.y, -gameObject.rigidbody.velocity.z * 2);
+			gameObject.rigidbody.velocity = newVelocity;
 		}
 		if (col.gameObject.name == "TopPlane") {
-			//print(gameObject.name + " hit the TopPlane");
-			rigidbody.AddForce(-Vector3.up * magnitude);
+			Vector3 newVelocity = new Vector3(gameObject.rigidbody.velocity.x, -gameObject.rigidbody.velocity.y * 2, gameObject.rigidbody.velocity.z);
+			gameObject.rigidbody.velocity = newVelocity;
 		}
 		if (col.gameObject.name == "BottomPlane") {
-			//print(gameObject.name + " hit the BottomPlane");
-			rigidbody.AddForce(Vector3.up * magnitude);
+			Vector3 newVelocity = new Vector3(gameObject.rigidbody.velocity.x, -gameObject.rigidbody.velocity.y * 2, gameObject.rigidbody.velocity.z);
+			gameObject.rigidbody.velocity = newVelocity;
 		}
 		if (col.gameObject.name == "RightPlane") {
-			//print(gameObject.name + " hit the RightPlane");
-			rigidbody.AddForce(-Vector3.right * magnitude);
+			Vector3 newVelocity = new Vector3(-gameObject.rigidbody.velocity.x * 2, gameObject.rigidbody.velocity.y, gameObject.rigidbody.velocity.z);
+			gameObject.rigidbody.velocity = newVelocity;
 		}
 		if (col.gameObject.name == "LeftPlane") {
-			//print(gameObject.name + " hit the LeftPlane");
-			rigidbody.AddForce(Vector3.right * magnitude);
+			Vector3 newVelocity = new Vector3(-gameObject.rigidbody.velocity.x * 2, gameObject.rigidbody.velocity.y, gameObject.rigidbody.velocity.z);
+			gameObject.rigidbody.velocity = newVelocity;
 		}
 	}
 }

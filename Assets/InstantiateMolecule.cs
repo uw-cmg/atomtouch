@@ -6,7 +6,7 @@ public class InstantiateMolecule : MonoBehaviour {
 	public Rigidbody copperPrefab;
 	public Rigidbody goldPrefab;
 	public Rigidbody platinumPrefab;
-	public float holdTime = 1.0f;
+	public float holdTime = 4.0f;
 	private bool isClicked;
 	private float startTime;
 	private Vector3 curScreenPoint;
@@ -45,66 +45,98 @@ public class InstantiateMolecule : MonoBehaviour {
 			}
 		}
 
-		if (!holdingAtom) {
-			bool conditionForStartingTime = Application.platform == RuntimePlatform.IPhonePlayer ? 
-				!isClicked && Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Stationary : 
-					Input.GetMouseButtonDown(0) && !isClicked;
-			if(conditionForStartingTime)
-			{
-				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-				RaycastHit hit;
-				if(!Physics.Raycast(ray,out hit) || hit.collider.gameObject.tag != "Molecule"){
-					isClicked = true;
-					startTime = Time.time;
+		//pc
+		if (Application.platform != RuntimePlatform.IPhonePlayer) {
+			if(!holdingAtom){
+				if(Input.GetMouseButtonDown(0) && !isClicked){
+					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+					RaycastHit hit;
+					if(Physics.Raycast(ray,out hit) && hit.collider.gameObject.tag == "Plane"){
+						isClicked = true;
+						startTime = Time.time;
+						first = true;
+						//print ("starting timer...");
+					}
 				}
-			}
-			bool conditionForShowingMenu = Application.platform == RuntimePlatform.IPhonePlayer ? 
-				isClicked && Time.time - startTime > holdTime && Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Stationary : 
-					Input.GetMouseButton (0) && isClicked && Time.time - startTime > holdTime;
-			if (conditionForShowingMenu)
-			{
-				if(first){
-					copperButtonPosX = curScreenPoint.x;
-					copperButtonPosY = (Screen.height - curScreenPoint.y) - 60;
-					goldButtonPosX = curScreenPoint.x;
-					goldButtonPosY = (Screen.height - curScreenPoint.y) + 60;
-					platinumButtonPosX = curScreenPoint.x - 120;
-					platinumButtonPosY = (Screen.height - curScreenPoint.y);
-					first = false;
-					clickedPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10.0f);
+				if(isClicked){
+					float currTime = Time.time - startTime;
+					if(currTime > holdTime){
+						if(first){
+							//print ("Timer has been eclipsed!");
+							first = false;
+							DisplayAtomOptions();
+							clickedPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 20.0f);
+						}
+					}
 				}
-			}
-			if(Application.platform == RuntimePlatform.IPhonePlayer){
-				if(Input.GetTouch(0).phase == TouchPhase.Ended || Input.GetTouch(0).phase == TouchPhase.Canceled){
-					startTime = 0.0f;
+				else{
 					isClicked = false;
-				}
-			}
-			else{
-				if(Input.GetMouseButtonUp(0)){
 					startTime = 0.0f;
-					isClicked = false;
+					//print ("resetting timer...");
 				}
 			}
 		}
+		//iOS
 		else{
-			startTime = 0.0f;
-			isClicked = false;
+			if(!holdingAtom){
+				if(Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Stationary && !isClicked){
+					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+					RaycastHit hit;
+					if(Physics.Raycast(ray,out hit) && hit.collider.gameObject.tag == "Plane"){
+						isClicked = true;
+						startTime = Time.time;
+						first = true;
+					}
+				}
+				if(isClicked){
+					float currTime = Time.time - startTime;
+					if(currTime > holdTime){
+						if(first){
+							//print ("Timer has been eclipsed!");
+							first = false;
+							DisplayAtomOptions();
+							clickedPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 20.0f);
+						}
+					}
+					if(Input.touchCount == 1 && Input.GetTouch(0).phase != TouchPhase.Stationary){
+						isClicked = false;
+						startTime = 0.0f;
+					}
+				}
+				else{
+					isClicked = false;
+					startTime = 0.0f;
+					//print ("resetting timer...");
+				}
+			}
 		}
+	}
+
+	void DisplayAtomOptions(){
+		copperButtonPosX = curScreenPoint.x;
+		copperButtonPosY = (Screen.height - curScreenPoint.y) - 60;
+		goldButtonPosX = curScreenPoint.x;
+		goldButtonPosY = (Screen.height - curScreenPoint.y) + 60;
+		platinumButtonPosX = curScreenPoint.x - 120;
+		platinumButtonPosY = (Screen.height - curScreenPoint.y);
+	}
+
+	void RemoveAtomOptions(){
+		isClicked = false;
+		startTime = 0.0f;
+		copperButtonPosX = -1000.0f;
+		copperButtonPosY = -1000.0f;
+		goldButtonPosX = -1000.0f;
+		goldButtonPosY = -1000.0f;
+		platinumButtonPosX = -1000.0f;
+		platinumButtonPosY = -1000.0f;
+		first = true;
 	}
 
 	void OnGUI(){
 
 		if(GUI.Button(new Rect(copperButtonPosX - 60,copperButtonPosY,120,20), "Add Copper")) {
-			isClicked = false;
-			startTime = 0.0f;
-			copperButtonPosX = -1000.0f;
-			copperButtonPosY = -1000.0f;
-			goldButtonPosX = -1000.0f;
-			goldButtonPosY = -1000.0f;
-			platinumButtonPosX = -1000.0f;
-			platinumButtonPosY = -1000.0f;
-			first = true;
+			RemoveAtomOptions();
 			
 			Vector3 curPosition = Camera.main.ScreenToWorldPoint(clickedPoint);
 			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
@@ -113,15 +145,7 @@ public class InstantiateMolecule : MonoBehaviour {
 		}
 
 		if(GUI.Button(new Rect(goldButtonPosX - 60,goldButtonPosY,120,20), "Add Gold")) {
-			isClicked = false;
-			startTime = 0.0f;
-			copperButtonPosX = -1000.0f;
-			copperButtonPosY = -1000.0f;
-			goldButtonPosX = -1000.0f;
-			goldButtonPosY = -1000.0f;
-			platinumButtonPosX = -1000.0f;
-			platinumButtonPosY = -1000.0f;
-			first = true;
+			RemoveAtomOptions();
 			
 			Vector3 curPosition = Camera.main.ScreenToWorldPoint(clickedPoint);
 			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
@@ -130,15 +154,7 @@ public class InstantiateMolecule : MonoBehaviour {
 		}
 
 		if(GUI.Button(new Rect(platinumButtonPosX - 60,platinumButtonPosY,120,20), "Add Platinum")) {
-			isClicked = false;
-			startTime = 0.0f;
-			copperButtonPosX = -1000.0f;
-			copperButtonPosY = -1000.0f;
-			goldButtonPosX = -1000.0f;
-			goldButtonPosY = -1000.0f;
-			platinumButtonPosX = -1000.0f;
-			platinumButtonPosY = -1000.0f;
-			first = true;
+			RemoveAtomOptions();
 			
 			Vector3 curPosition = Camera.main.ScreenToWorldPoint(clickedPoint);
 			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
@@ -147,15 +163,7 @@ public class InstantiateMolecule : MonoBehaviour {
 		}
 
 		if(GUI.Button(new Rect(platinumButtonPosX + 180,platinumButtonPosY,120,20), "Dismiss")) {
-			isClicked = false;
-			startTime = 0.0f;
-			copperButtonPosX = -1000.0f;
-			copperButtonPosY = -1000.0f;
-			goldButtonPosX = -1000.0f;
-			goldButtonPosY = -1000.0f;
-			platinumButtonPosX = -1000.0f;
-			platinumButtonPosY = -1000.0f;
-			first = true;
+			RemoveAtomOptions();
 		}
 
 		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
@@ -191,14 +199,12 @@ public class InstantiateMolecule : MonoBehaviour {
 		float timeScale = GUI.HorizontalSlider(new Rect(25, 55, 100, 30), Atom.timeScale, 0.0001f, 5.0f);
 		if (timeScale != SphereScript.timeScale) {
 			Atom.timeScale = timeScale;
-			isClicked = false;
 		}
 		
 		GUI.Label (new Rect (25, 95, 250, 20), "Temperature: " + TemperatureCalc.desiredTemperature);
-		float newTemp = GUI.HorizontalSlider (new Rect (25, 135, 100, 30), TemperatureCalc.desiredTemperature, 0.00001f, 0.00008f);
+		float newTemp = GUI.HorizontalSlider (new Rect (25, 135, 100, 30), TemperatureCalc.desiredTemperature, 0.001f, 1.0f);
 		if (newTemp != SphereScript.desiredTemperature) {
 			TemperatureCalc.desiredTemperature = newTemp;
-			isClicked = false;
 		}
 
 		GUI.Label (new Rect (25, 175, 250, 20), "Time: " + Time.time);
