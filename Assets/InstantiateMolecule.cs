@@ -55,14 +55,12 @@ public class InstantiateMolecule : MonoBehaviour {
 						isClicked = true;
 						startTime = Time.time;
 						first = true;
-						//print ("starting timer...");
 					}
 				}
 				if(isClicked){
 					float currTime = Time.time - startTime;
 					if(currTime > holdTime){
 						if(first){
-							//print ("Timer has been eclipsed!");
 							first = false;
 							DisplayAtomOptions();
 							clickedPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 20.0f);
@@ -72,7 +70,6 @@ public class InstantiateMolecule : MonoBehaviour {
 				else{
 					isClicked = false;
 					startTime = 0.0f;
-					//print ("resetting timer...");
 				}
 			}
 		}
@@ -88,25 +85,19 @@ public class InstantiateMolecule : MonoBehaviour {
 						first = true;
 					}
 				}
-				if(isClicked){
+				if(isClicked && Input.GetTouch (0).phase == TouchPhase.Stationary){
 					float currTime = Time.time - startTime;
 					if(currTime > holdTime){
 						if(first){
-							//print ("Timer has been eclipsed!");
 							first = false;
 							DisplayAtomOptions();
 							clickedPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 20.0f);
 						}
 					}
-					if(Input.touchCount == 1 && Input.GetTouch(0).phase != TouchPhase.Stationary){
-						isClicked = false;
-						startTime = 0.0f;
-					}
 				}
 				else{
 					isClicked = false;
 					startTime = 0.0f;
-					//print ("resetting timer...");
 				}
 			}
 		}
