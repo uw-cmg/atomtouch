@@ -86,14 +86,14 @@ public abstract class Atom : MonoBehaviour
 
 	}
 
-	void BoundingSphere(){
-		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
-		if (Vector3.Distance (cameraScript.centerPos, transform.position) > FlipNormals.radius) {
-			rigidbody.velocity = Vector3.Reflect(rigidbody.velocity, (cameraScript.centerPos - transform.position).normalized);
-			//Vector3 f = new Vector3(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value) * 20.0f;
-			//rigidbody.AddForce(f);
-		}
-	}
+//	void BoundingSphere(){
+//		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
+//		if (Vector3.Distance (cameraScript.centerPos, transform.position) > FlipNormals.radius) {
+//			rigidbody.velocity = Vector3.Reflect(rigidbody.velocity, (cameraScript.centerPos - transform.position).normalized);
+//			//Vector3 f = new Vector3(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value) * 20.0f;
+//			//rigidbody.AddForce(f);
+//		}
+//	}
 
 	//controls for touch devices
 	void HandleTouch(){
