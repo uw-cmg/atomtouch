@@ -5,7 +5,7 @@
 -nowarn:BCW0016
 -nowarn:BCW0003
 -method:Main
--out:Temp/Assembly-UnityScript.dll
+-out:Temp/Assembly-UnityScript-firstpass.dll
 -x-type-inference-rule-attribute:UnityEngineInternal.TypeInferenceRuleAttribute
 -debug
 -pragmas:strict,downcast
@@ -41,22 +41,10 @@
 -define:ENABLE_PROFILER
 -define:UNITY_EDITOR
 -define:UNITY_EDITOR_OSX
--define:UNITY_TEAM_LICENSE
--define:UNITY_PRO_LICENSE
 -r:'/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll'
--r:'Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll'
--r:'Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll'
 -i:UnityEditor
-'Assets/Standard Assets (Mobile)/Scripts/CameraRelativeControl.js'
-'Assets/Standard Assets (Mobile)/Scripts/FirstPersonControl.js'
-'Assets/Standard Assets (Mobile)/Scripts/FollowTransform.js'
-'Assets/Standard Assets (Mobile)/Scripts/Joystick.js'
-'Assets/Standard Assets (Mobile)/Scripts/ObliqueNear.js'
-'Assets/Standard Assets (Mobile)/Scripts/PlayerRelativeControl.js'
-'Assets/Standard Assets (Mobile)/Scripts/RollABall.js'
-'Assets/Standard Assets (Mobile)/Scripts/RotationConstraint.js'
-'Assets/Standard Assets (Mobile)/Scripts/SidescrollControl.js'
-'Assets/Standard Assets (Mobile)/Scripts/SmoothFollow2D.js'
-'Assets/Standard Assets (Mobile)/Scripts/ZoomCamera.js'
-'Assets/Standard Assets (Mobile)/Scripts/tapcontrol.js'
+'Assets/Standard Assets/Scripts/Camera Scripts/MouseOrbit.js'
+'Assets/Standard Assets/Scripts/Camera Scripts/SmoothFollow.js'
+'Assets/Standard Assets/Scripts/Camera Scripts/SmoothLookAt.js'
+'Assets/Standard Assets/Scripts/General Scripts/DragRigidbody.js'

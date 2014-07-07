@@ -7,6 +7,8 @@ public class InstantiateMolecule : MonoBehaviour {
 	public Rigidbody goldPrefab;
 	public Rigidbody platinumPrefab;
 	public float holdTime = 4.0f;
+	public GUISkin sliderControls;
+
 	private bool isClicked;
 	private float startTime;
 	private Vector3 curScreenPoint;
@@ -19,8 +21,12 @@ public class InstantiateMolecule : MonoBehaviour {
 	private float goldButtonPosY;
 	private float platinumButtonPosX;
 	private float platinumButtonPosY;
+	private bool holdingAtom;
+	private GameObject heldGameObject;
 
-	
+
+	float dummyValue = 10.0f;
+
 	void Start () {
 		isClicked = false;
 		copperButtonPosX = -1000.0f;
@@ -36,11 +42,12 @@ public class InstantiateMolecule : MonoBehaviour {
 		curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10.0f);
 
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		bool holdingAtom = false;
+		holdingAtom = false;
 		for (int i = 0; i < allMolecules.Length; i++) {
 			Atom atomScript = allMolecules[i].GetComponent<Atom>();
 			if(atomScript.held){
 				holdingAtom = true;
+				heldGameObject = allMolecules[i];
 				break;
 			}
 		}
@@ -54,7 +61,7 @@ public class InstantiateMolecule : MonoBehaviour {
 					if(Physics.Raycast(ray,out hit) && hit.collider.gameObject.tag == "Plane"){
 						isClicked = true;
 						startTime = Time.time;
-						first = true;
+						first = true; 
 					}
 				}
 				if(isClicked){
@@ -160,67 +167,71 @@ public class InstantiateMolecule : MonoBehaviour {
 		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
 		
 		
-		if(GUI.Button(new Rect((Screen.width / 2) - 40,40,80,20), "Front")) {
-			transform.position = new Vector3(cameraScript.centerPos.x, cameraScript.centerPos.y, (cameraScript.centerPos.z - (cameraScript.depth/2) - 20.0f));
-			transform.rotation = Quaternion.Euler(0, 0, 0);
-		}
-		if(GUI.Button(new Rect((Screen.width / 2) + 50,40,80,20), "Left")) {
-			transform.position = new Vector3((cameraScript.centerPos.x - (cameraScript.width/2) - 20.0f), cameraScript.centerPos.y, cameraScript.centerPos.z);
-			transform.rotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
-		}
-		if(GUI.Button(new Rect((Screen.width / 2) + 140,40,80,20), "Back")) {
-			transform.position = new Vector3(cameraScript.centerPos.x, cameraScript.centerPos.y, (cameraScript.centerPos.z + (cameraScript.depth/2) + 20.0f));
-			transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
-		}
-		if(GUI.Button(new Rect((Screen.width / 2) + 230,40,80,20), "Right")) {
-			transform.position = new Vector3((cameraScript.centerPos.x + (cameraScript.width/2) + 20.0f), cameraScript.centerPos.y, cameraScript.centerPos.z);
-			transform.rotation = Quaternion.Euler(0.0f, 270.0f, 0.0f);
-		}
-		if(GUI.Button(new Rect((Screen.width / 2) + 320,40,80,20), "Top")) {
-			transform.position = new Vector3(cameraScript.centerPos.x, (cameraScript.centerPos.y + (cameraScript.height/2) + 20.0f), cameraScript.centerPos.z);
-			transform.rotation = Quaternion.Euler(90.0f, 0.0f, 0.0f);
-		}
-		if(GUI.Button(new Rect((Screen.width / 2) +410,40,80,20), "Bottom")) {
-			transform.position = new Vector3(cameraScript.centerPos.x, (cameraScript.centerPos.y - (cameraScript.height/2) - 20.0f), cameraScript.centerPos.z);
-			transform.rotation = Quaternion.Euler(270.0f, 0.0f, 0.0f);
-		}
+//		if(GUI.Button(new Rect((Screen.width / 2) - 40,40,80,20), "Front")) {
+//			transform.position = new Vector3(cameraScript.centerPos.x, cameraScript.centerPos.y, (cameraScript.centerPos.z - (cameraScript.depth/2) - 20.0f));
+//			transform.rotation = Quaternion.Euler(0, 0, 0);
+//		}
+//		if(GUI.Button(new Rect((Screen.width / 2) + 50,40,80,20), "Left")) {
+//			transform.position = new Vector3((cameraScript.centerPos.x - (cameraScript.width/2) - 20.0f), cameraScript.centerPos.y, cameraScript.centerPos.z);
+//			transform.rotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
+//		}
+//		if(GUI.Button(new Rect((Screen.width / 2) + 140,40,80,20), "Back")) {
+//			transform.position = new Vector3(cameraScript.centerPos.x, cameraScript.centerPos.y, (cameraScript.centerPos.z + (cameraScript.depth/2) + 20.0f));
+//			transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+//		}
+//		if(GUI.Button(new Rect((Screen.width / 2) + 230,40,80,20), "Right")) {
+//			transform.position = new Vector3((cameraScript.centerPos.x + (cameraScript.width/2) + 20.0f), cameraScript.centerPos.y, cameraScript.centerPos.z);
+//			transform.rotation = Quaternion.Euler(0.0f, 270.0f, 0.0f);
+//		}
+//		if(GUI.Button(new Rect((Screen.width / 2) + 320,40,80,20), "Top")) {
+//			transform.position = new Vector3(cameraScript.centerPos.x, (cameraScript.centerPos.y + (cameraScript.height/2) + 20.0f), cameraScript.centerPos.z);
+//			transform.rotation = Quaternion.Euler(90.0f, 0.0f, 0.0f);
+//		}
+//		if(GUI.Button(new Rect((Screen.width / 2) +410,40,80,20), "Bottom")) {
+//			transform.position = new Vector3(cameraScript.centerPos.x, (cameraScript.centerPos.y - (cameraScript.height/2) - 20.0f), cameraScript.centerPos.z);
+//			transform.rotation = Quaternion.Euler(270.0f, 0.0f, 0.0f);
+//		}
 		
 		
-		GUI.Label(new Rect(25, 15, 200, 20), "Time Scale: " + Atom.timeScale);
-		float timeScale = GUI.HorizontalSlider(new Rect(25, 55, 100, 30), Atom.timeScale, 0.0001f, 5.0f);
-		if (timeScale != SphereScript.timeScale) {
-			Atom.timeScale = timeScale;
+//		GUI.Label(new Rect(25, 15, 200, 20), "Time Scale: " + Atom.timeScale);
+//		float timeScale = GUI.HorizontalSlider(new Rect(25, 55, 100, 30), Atom.timeScale, 0.0001f, 5.0f);
+//		if (timeScale != SphereScript.timeScale) {
+//			Atom.timeScale = timeScale;
+//		}
+
+		if (sliderControls != null) {
+			GUI.skin = sliderControls;
 		}
-		
-		GUI.Label (new Rect (25, 95, 250, 20), "Temperature: " + TemperatureCalc.desiredTemperature);
-		float newTemp = GUI.HorizontalSlider (new Rect (25, 135, 100, 30), TemperatureCalc.desiredTemperature, 0.001f, 1.0f);
+
+		GUI.Label (new Rect (25, 25, 250, 20), "Temperature: " + TemperatureCalc.desiredTemperature);
+		float newTemp = GUI.VerticalSlider (new Rect (75, 55, 30, (Screen.height - 135)), TemperatureCalc.desiredTemperature, 0.001f, 1.0f);
 		if (newTemp != SphereScript.desiredTemperature) {
 			TemperatureCalc.desiredTemperature = newTemp;
 		}
 
-		GUI.Label (new Rect (25, 175, 250, 20), "Time: " + Time.time);
+		GUI.Label (new Rect (Screen.width - 100, 25, 250, 20), "Time: " + Time.time);            
 	}
 
 	Vector3 CheckPosition(Vector3 curPosition){
-		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
-		if (curPosition.y > cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer) {
-			curPosition.y = cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer;
-		}
-		if (curPosition.y < cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer) {
-			curPosition.y = cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer;
-		}
-		if (curPosition.x > cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer) {
-			curPosition.x = cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer;
-		}
-		if (curPosition.x < cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer) {
-			curPosition.x = cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer;
-		}
-		if (curPosition.z > cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer) {
-			curPosition.z = cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer;
-		}
-		if (curPosition.z < cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer) {
-			curPosition.z = cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer;
-		}
+//		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
+//		if (curPosition.y > cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer) {
+//			curPosition.y = cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer;
+//		}
+//		if (curPosition.y < cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer) {
+//			curPosition.y = cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer;
+//		}
+//		if (curPosition.x > cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer) {
+//			curPosition.x = cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer;
+//		}
+//		if (curPosition.x < cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer) {
+//			curPosition.x = cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer;
+//		}
+//		if (curPosition.z > cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer) {
+//			curPosition.z = cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer;
+//		}
+//		if (curPosition.z < cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer) {
+//			curPosition.z = cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer;
+//		}
 		return curPosition;
 	}
 

@@ -34,11 +34,11 @@
 -define:ENABLE_AUDIO
 -define:ENABLE_NAVMESH_CARVING
 -define:ENABLE_SINGLE_INSTANCE_BUILD_SETTING
--define:UNITY_PRO_LICENSE
 'Assets/Atom.cs'
 'Assets/CameraScript.cs'
 'Assets/Copper.cs'
 'Assets/DontGoThroughThings.cs'
+'Assets/FlipNormals.cs'
 'Assets/Gold.cs'
 'Assets/InstantiateMolecule.cs'
 'Assets/PinchZoom.cs'

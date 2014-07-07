@@ -1,9 +1,14 @@
--debug
 -target:library
--nowarn:0169
--out:'Temp/Assembly-CSharp-firstpass.dll'
--r:'/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll'
--r:'/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll'
+-i:UnityEngine
+-i:System.Collections
+-base:UnityEngine.MonoBehaviour
+-nowarn:BCW0016
+-nowarn:BCW0003
+-method:Main
+-out:Temp/Assembly-UnityScript-firstpass.dll
+-x-type-inference-rule-attribute:UnityEngineInternal.TypeInferenceRuleAttribute
+-debug
+-pragmas:strict,downcast
 -define:UNITY_4_5_0
 -define:UNITY_4_5
 -define:UNITY_IPHONE
@@ -33,11 +38,9 @@
 -define:ENABLE_AUDIO
 -define:ENABLE_NAVMESH_CARVING
 -define:ENABLE_SINGLE_INSTANCE_BUILD_SETTING
--define:ENABLE_PROFILER
--define:UNITY_EDITOR
--define:UNITY_EDITOR_OSX
--define:UNITY_TEAM_LICENSE
--define:UNITY_PRO_LICENSE
-'Assets/Standard Assets/Scripts/General Scripts/ActivateTrigger.cs'
--r:'/Applications/Unity/Unity.app/Contents/Frameworks/Mono/lib/mono/unity/System.Runtime.Serialization.dll'
--r:'/Applications/Unity/Unity.app/Contents/Frameworks/Mono/lib/mono/unity/System.Xml.Linq.dll'
+-r:'/Applications/Unity/Unity.app/Contents/PlaybackEngines/iOSSupport/Managed/UnityEngine.dll'
+-disable-eval:eval is not supported on the current build target (iPhone).
+'Assets/Standard Assets/Scripts/Camera Scripts/MouseOrbit.js'
+'Assets/Standard Assets/Scripts/Camera Scripts/SmoothFollow.js'
+'Assets/Standard Assets/Scripts/Camera Scripts/SmoothLookAt.js'
+'Assets/Standard Assets/Scripts/General Scripts/DragRigidbody.js'

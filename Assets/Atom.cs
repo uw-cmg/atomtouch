@@ -83,6 +83,16 @@ public abstract class Atom : MonoBehaviour
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			HandleTouch ();
 		}
+
+	}
+
+	void BoundingSphere(){
+		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
+		if (Vector3.Distance (cameraScript.centerPos, transform.position) > FlipNormals.radius) {
+			rigidbody.velocity = Vector3.Reflect(rigidbody.velocity, (cameraScript.centerPos - transform.position).normalized);
+			//Vector3 f = new Vector3(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value) * 20.0f;
+			//rigidbody.AddForce(f);
+		}
 	}
 
 	//controls for touch devices
@@ -91,15 +101,14 @@ public abstract class Atom : MonoBehaviour
 			HandleMovingAtom();
 		}
 		else if(Input.touchCount == 2){
-			//HandleMovingAtom();
 
 			Touch touch2 = Input.GetTouch(1);
 			if(touch2.phase == TouchPhase.Began){
 				moveZDirection = true;
-				if(moleculeToMove != null){
-					Quaternion cameraRotation = Camera.main.transform.rotation;
-					moleculeToMove.transform.position = (cameraRotation * new Vector3(0.0f, 0.0f, moleculeToMove.transform.position.z));
-				}
+//				if(moleculeToMove != null){
+//					Quaternion cameraRotation = Camera.main.transform.rotation;
+//					moleculeToMove.transform.position = (cameraRotation * new Vector3(0.0f, 0.0f, moleculeToMove.transform.position.z));
+//				}
 			}
 			else if(touch2.phase == TouchPhase.Moved){
 				Vector2 touchOnePrevPos = touch2.position - touch2.deltaPosition;
@@ -111,31 +120,6 @@ public abstract class Atom : MonoBehaviour
 					Quaternion cameraRotation = Camera.main.transform.rotation;
 					moleculeToMove.transform.position += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
 					screenPoint += new Vector3(0.0f, 0.0f, deltaTouch2);
-					CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
-					if(moleculeToMove.transform.position.z > cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer){
-						moleculeToMove.transform.position = new Vector3(moleculeToMove.transform.position.x, moleculeToMove.transform.position.y, cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer);
-						//screenPoint.z = cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer;
-					}
-					if(moleculeToMove.transform.position.z < cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer){
-						moleculeToMove.transform.position = new Vector3(moleculeToMove.transform.position.x, moleculeToMove.transform.position.y, cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer);
-						//screenPoint.z = cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer;
-					}
-					if(moleculeToMove.transform.position.x > cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer){
-						moleculeToMove.transform.position = new Vector3(cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer, moleculeToMove.transform.position.y, moleculeToMove.transform.position.z);
-						//screenPoint.x = cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer;
-					}
-					if(moleculeToMove.transform.position.x < cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer){
-						moleculeToMove.transform.position = new Vector3(cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer, moleculeToMove.transform.position.y, moleculeToMove.transform.position.z);
-						//screenPoint.x = cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer;
-					}
-					if(moleculeToMove.transform.position.y > cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer){
-						moleculeToMove.transform.position = new Vector3(moleculeToMove.transform.position.x, cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer, moleculeToMove.transform.position.z);
-						//screenPoint.y = cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer;
-					}
-					if(moleculeToMove.transform.position.y < cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer){
-						moleculeToMove.transform.position = new Vector3(moleculeToMove.transform.position.x, cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer, moleculeToMove.transform.position.z);
-						//screenPoint.y = cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer;
-					}
 				}
 			}
 		}
@@ -156,7 +140,7 @@ public abstract class Atom : MonoBehaviour
 			{
 				moleculeToMove = gameObject;
 				screenPoint = Camera.main.WorldToScreenPoint(transform.position);
-				offset = moleculeToMove.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, screenPoint.z));
+				offset = moleculeToMove.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y - 50, screenPoint.z));
 				held = true;
 				rigidbody.isKinematic = true;
 			}
@@ -167,25 +151,6 @@ public abstract class Atom : MonoBehaviour
 			mouseDelta = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - lastMousePosition;
 			lastMousePosition = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f);
 			if(moleculeToMove != null){
-				CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
-				if (curPosition.y > cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer) {
-					curPosition.y = cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer;
-				}
-				if (curPosition.y < cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer) {
-					curPosition.y = cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer;
-				}
-				if (curPosition.x > cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer) {
-					curPosition.x = cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer;
-				}
-				if (curPosition.x < cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer) {
-					curPosition.x = cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer;
-				}
-				if (curPosition.z > cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer) {
-					curPosition.z = cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer;
-				}
-				if (curPosition.z < cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer) {
-					curPosition.z = cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer;
-				}
 				moleculeToMove.transform.position = curPosition;
 			}
 		}
@@ -218,25 +183,6 @@ public abstract class Atom : MonoBehaviour
 			Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
 			Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
 			CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
-			
-			if (curPosition.y > cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer) {
-				curPosition.y = cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer;
-			}
-			if (curPosition.y < cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer) {
-				curPosition.y = cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer;
-			}
-			if (curPosition.x > cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer) {
-				curPosition.x = cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer;
-			}
-			if (curPosition.x < cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer) {
-				curPosition.x = cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer;
-			}
-			if (curPosition.z > cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer) {
-				curPosition.z = cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer;
-			}
-			if (curPosition.z < cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer) {
-				curPosition.z = cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer;
-			}
 			transform.position = curPosition;
 			mouseDelta = Input.mousePosition - lastMousePosition;
 			lastMousePosition = Input.mousePosition;
@@ -250,33 +196,6 @@ public abstract class Atom : MonoBehaviour
 			rigidbody.isKinematic = false;
 			rigidbody.AddForce (cameraRotation * mouseDelta * 50.0f);
 			held = false;
-		}
-	}
-
-	void OnCollisionEnter (Collision col){
-		if (col.gameObject.name == "BackPlane") {
-			Vector3 newVelocity = new Vector3(gameObject.rigidbody.velocity.x, gameObject.rigidbody.velocity.y, -gameObject.rigidbody.velocity.z * 2);
-			gameObject.rigidbody.velocity = newVelocity;
-		}
-		if (col.gameObject.name == "FrontPlane") {
-			Vector3 newVelocity = new Vector3(gameObject.rigidbody.velocity.x, gameObject.rigidbody.velocity.y, -gameObject.rigidbody.velocity.z * 2);
-			gameObject.rigidbody.velocity = newVelocity;
-		}
-		if (col.gameObject.name == "TopPlane") {
-			Vector3 newVelocity = new Vector3(gameObject.rigidbody.velocity.x, -gameObject.rigidbody.velocity.y * 2, gameObject.rigidbody.velocity.z);
-			gameObject.rigidbody.velocity = newVelocity;
-		}
-		if (col.gameObject.name == "BottomPlane") {
-			Vector3 newVelocity = new Vector3(gameObject.rigidbody.velocity.x, -gameObject.rigidbody.velocity.y * 2, gameObject.rigidbody.velocity.z);
-			gameObject.rigidbody.velocity = newVelocity;
-		}
-		if (col.gameObject.name == "RightPlane") {
-			Vector3 newVelocity = new Vector3(-gameObject.rigidbody.velocity.x * 2, gameObject.rigidbody.velocity.y, gameObject.rigidbody.velocity.z);
-			gameObject.rigidbody.velocity = newVelocity;
-		}
-		if (col.gameObject.name == "LeftPlane") {
-			Vector3 newVelocity = new Vector3(-gameObject.rigidbody.velocity.x * 2, gameObject.rigidbody.velocity.y, gameObject.rigidbody.velocity.z);
-			gameObject.rigidbody.velocity = newVelocity;
 		}
 	}
 }

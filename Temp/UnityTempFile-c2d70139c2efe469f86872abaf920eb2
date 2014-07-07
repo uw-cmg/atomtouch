@@ -38,12 +38,9 @@
 -define:ENABLE_PROFILER
 -define:UNITY_EDITOR
 -define:UNITY_EDITOR_OSX
--define:UNITY_TEAM_LICENSE
--define:UNITY_PRO_LICENSE
 'Assets/Atom.cs'
 'Assets/CameraScript.cs'
 'Assets/Copper.cs'
-'Assets/DontGoThroughThings.cs'
 'Assets/Gold.cs'
 'Assets/InstantiateMolecule.cs'
 'Assets/PinchZoom.cs'
