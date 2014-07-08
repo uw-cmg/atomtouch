@@ -9,12 +9,13 @@ public class InstantiateMolecule : MonoBehaviour {
 	public GUISkin sliderControls;
 	public Texture copperTexture;
 	public Texture addCopperTexture;
+	public bool addGraphic = false;
 
 	private bool clicked = false;
 	private float startTime = 0.0f;
 	private bool first = true;
 	public float holdTime = 0.05f;
-	private bool addGraphic = false;
+
 
 
 	void OnGUI(){
@@ -39,7 +40,11 @@ public class InstantiateMolecule : MonoBehaviour {
 		GUI.Label (new Rect (Screen.width - 100, 25, 250, 20), "Time: " + Time.time);
 
 		if (addGraphic) {
+			Color guiColor = Color.white;
+			guiColor.a = 0.25f;
+			GUI.color = guiColor;
 			GUI.DrawTexture(new Rect((Input.mousePosition.x - 25.0f), (Screen.height - Input.mousePosition.y) - 25.0f, 50.0f, 50.0f), addCopperTexture);
+			GUI.color = Color.white;
 		}
 
 		if (GUI.RepeatButton (new Rect (75, Screen.height - 75, 75, 75), copperTexture)) {
@@ -62,7 +67,7 @@ public class InstantiateMolecule : MonoBehaviour {
 		if (Input.GetMouseButtonUp (0)) {
 
 			if(addGraphic){
-				Vector3 curPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10.0f));
+				Vector3 curPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 20.0f));
 				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
 				Instantiate(copperPrefab, curPosition, curRotation);
 			}

@@ -152,25 +152,6 @@ public abstract class Atom : MonoBehaviour
 				lastMousePosition = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f);
 				moleculeToMove.transform.position = curPosition;
 			}
-			else{
-				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-				bool holdingAtom = false;
-				for (int i = 0; i < allMolecules.Length; i++) {
-					Atom atomScript = allMolecules[i].GetComponent<Atom>();
-					if(atomScript.held){
-						holdingAtom = true;
-						break;
-					}
-				}
-
-				if(!holdingAtom){
-					Vector2 touchPrevPos = touch.position - touch.deltaPosition;
-					float deltaMagnitudeDiff = touch.position.x - touchPrevPos.x;
-					float deltaTouch = deltaMagnitudeDiff / 50.0f;
-					CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
-					Camera.main.transform.RotateAround(cameraScript.centerPos, Vector3.up, deltaTouch);
-				}
-			}
 		}
 		else if(touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled){
 			if(moleculeToMove != null){
