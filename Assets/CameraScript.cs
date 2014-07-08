@@ -125,7 +125,7 @@ public class CameraScript : MonoBehaviour {
 
 				InstantiateMolecule instan = Camera.main.GetComponent<InstantiateMolecule>();
 				
-				if(!holdingAtom && !instan.addGraphic){
+				if(!holdingAtom && !instan.addGraphicCopper && !instan.addGraphicGold && !instan.addGraphicPlatinum){
 					Vector2 touchPrevPos = touch.position - touch.deltaPosition;
 					float deltaMagnitudeDiff = touch.position.x - touchPrevPos.x;
 					float deltaTouch = deltaMagnitudeDiff / 10.0f;
