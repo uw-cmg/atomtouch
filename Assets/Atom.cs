@@ -74,7 +74,7 @@ public abstract class Atom : MonoBehaviour
 		//adjust velocity for the desired temperature of the system
 		//if (Time.time > 10.0f) {
 			Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
-			if (!rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha)) {
+		if (!rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && allMolecules.Length > 1) {
 				rigidbody.velocity = newVelocity;
 			}
 		//}
@@ -105,6 +105,7 @@ public abstract class Atom : MonoBehaviour
 			Touch touch2 = Input.GetTouch(1);
 			if(touch2.phase == TouchPhase.Began){
 				moveZDirection = true;
+				//moves the atom to the center of the screen (0, 0)
 //				if(moleculeToMove != null){
 //					Quaternion cameraRotation = Camera.main.transform.rotation;
 //					moleculeToMove.transform.position = (cameraRotation * new Vector3(0.0f, 0.0f, moleculeToMove.transform.position.z));
@@ -112,10 +113,8 @@ public abstract class Atom : MonoBehaviour
 			}
 			else if(touch2.phase == TouchPhase.Moved){
 				Vector2 touchOnePrevPos = touch2.position - touch2.deltaPosition;
-				float prevTouchDeltaMag = touchOnePrevPos.magnitude;
-				float touchDeltaMag = touch2.position.magnitude;
-				float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
-				deltaTouch2 = deltaMagnitudeDiff / -10.0f;
+				float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
+				deltaTouch2 = deltaMagnitudeDiff / 10.0f;
 				if(moleculeToMove != null){
 					Quaternion cameraRotation = Camera.main.transform.rotation;
 					moleculeToMove.transform.position += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
@@ -146,12 +145,31 @@ public abstract class Atom : MonoBehaviour
 			}
 		}
 		else if(touch.phase == TouchPhase.Moved){
-			Vector3 curScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, screenPoint.z);
-			Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-			mouseDelta = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - lastMousePosition;
-			lastMousePosition = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f);
 			if(moleculeToMove != null){
+				Vector3 curScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, screenPoint.z);
+				Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
+				mouseDelta = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - lastMousePosition;
+				lastMousePosition = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f);
 				moleculeToMove.transform.position = curPosition;
+			}
+			else{
+				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+				bool holdingAtom = false;
+				for (int i = 0; i < allMolecules.Length; i++) {
+					Atom atomScript = allMolecules[i].GetComponent<Atom>();
+					if(atomScript.held){
+						holdingAtom = true;
+						break;
+					}
+				}
+
+				if(!holdingAtom){
+					Vector2 touchPrevPos = touch.position - touch.deltaPosition;
+					float deltaMagnitudeDiff = touch.position.x - touchPrevPos.x;
+					float deltaTouch = deltaMagnitudeDiff / 50.0f;
+					CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
+					Camera.main.transform.RotateAround(cameraScript.centerPos, Vector3.up, deltaTouch);
+				}
 			}
 		}
 		else if(touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled){

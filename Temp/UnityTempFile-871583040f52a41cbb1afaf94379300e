@@ -41,8 +41,6 @@
 'Assets/Atom.cs'
 'Assets/CameraScript.cs'
 'Assets/Copper.cs'
-'Assets/DontGoThroughThings.cs'
-'Assets/FlipNormals.cs'
 'Assets/Gold.cs'
 'Assets/InstantiateMolecule.cs'
 'Assets/PinchZoom.cs'

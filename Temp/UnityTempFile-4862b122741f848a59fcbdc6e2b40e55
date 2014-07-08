@@ -1,14 +1,11 @@
--target:library
--i:UnityEngine
--i:System.Collections
--base:UnityEngine.MonoBehaviour
--nowarn:BCW0016
--nowarn:BCW0003
--method:Main
--out:Temp/Assembly-UnityScript-firstpass.dll
--x-type-inference-rule-attribute:UnityEngineInternal.TypeInferenceRuleAttribute
 -debug
--pragmas:strict,downcast
+-target:library
+-nowarn:0169
+-out:'Temp/Assembly-CSharp.dll'
+-r:'/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll'
+-r:'Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll'
+-r:'Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll'
+-r:'/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll'
 -define:UNITY_4_5_0
 -define:UNITY_4_5
 -define:UNITY_IPHONE
@@ -41,10 +38,14 @@
 -define:ENABLE_PROFILER
 -define:UNITY_EDITOR
 -define:UNITY_EDITOR_OSX
--r:'/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll'
--r:'/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll'
--i:UnityEditor
-'Assets/Standard Assets/Scripts/Camera Scripts/MouseOrbit.js'
-'Assets/Standard Assets/Scripts/Camera Scripts/SmoothFollow.js'
-'Assets/Standard Assets/Scripts/Camera Scripts/SmoothLookAt.js'
-'Assets/Standard Assets/Scripts/General Scripts/DragRigidbody.js'
+'Assets/Atom.cs'
+'Assets/CameraScript.cs'
+'Assets/Copper.cs'
+'Assets/Gold.cs'
+'Assets/InstantiateMolecule.cs'
+'Assets/PinchZoom.cs'
+'Assets/Platinum.cs'
+'Assets/SphereScript.cs'
+'Assets/TemperatureCalc.cs'
+-r:'/Applications/Unity/Unity.app/Contents/Frameworks/Mono/lib/mono/unity/System.Runtime.Serialization.dll'
+-r:'/Applications/Unity/Unity.app/Contents/Frameworks/Mono/lib/mono/unity/System.Xml.Linq.dll'
