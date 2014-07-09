@@ -212,7 +212,6 @@ public abstract class Atom : MonoBehaviour
 	void OnMouseDown (){
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
 			rigidbody.isKinematic = true;
-			
 			screenPoint = Camera.main.WorldToScreenPoint(transform.position);
 			offset = transform.position - Camera.main.ScreenToWorldPoint(
 				new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));

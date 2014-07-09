@@ -13,6 +13,7 @@ public class CameraScript : MonoBehaviour {
 	public GameObject plane;
 	public Vector3 centerPos = new Vector3(0.0f, 0.0f, 0.0f);
 	public float errorBuffer = 0.5f;
+	private Vector2 touchPrevPos;
 
 	void Start () {
 
@@ -100,42 +101,26 @@ public class CameraScript : MonoBehaviour {
 			}
 		}
 		else{
-			if (Input.GetKey (KeyCode.W)) {
-				transform.Translate(Vector3.forward * moveSpeed);
+			if(Input.GetMouseButton(0)){
+				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+				bool holdingAtom = false;
+				for (int i = 0; i < allMolecules.Length; i++) {
+					Atom atomScript = allMolecules[i].GetComponent<Atom>();
+					if(atomScript.held){
+						holdingAtom = true;
+						break;
+					}
+				}
+				
+				InstantiateMolecule instan = Camera.main.GetComponent<InstantiateMolecule>();
+				if(!holdingAtom && !instan.addGraphicCopper && !instan.addGraphicGold && !instan.addGraphicPlatinum){
+					print ("Rotating around: " + centerPos);
+					float deltaMagnitudeDiff = Input.mousePosition.x - touchPrevPos.x;
+					float deltaTouch = deltaMagnitudeDiff / 10.0f;
+					Camera.main.transform.RotateAround(centerPos, Vector3.up, deltaTouch);
+				}
 			}
-			if (Input.GetKey (KeyCode.S)) {
-				transform.Translate(-Vector3.forward * moveSpeed);
-			}
-			if (Input.GetKey (KeyCode.D)) {
-				transform.Translate(Vector3.right * moveSpeed);
-			}
-			
-			if (Input.GetKey (KeyCode.A)) {
-				transform.Translate(-Vector3.right * moveSpeed);
-			}
-			if (Input.GetKey (KeyCode.F)) {
-				transform.Translate(Vector3.up * moveSpeed);
-			}
-			if (Input.GetKey (KeyCode.V)) {
-				transform.Translate(-Vector3.up * moveSpeed);
-			}
-			
-			if (Input.GetKey (KeyCode.J)) {
-				transform.Rotate(Vector3.up, -turnSpeed);
-			}
-			if (Input.GetKey (KeyCode.K)) {
-				transform.Rotate(Vector3.up, turnSpeed);
-			}
-			if (Input.GetKey (KeyCode.N)) {
-				transform.Rotate(Vector3.right, turnSpeed);
-			}
-			if (Input.GetKey (KeyCode.M)) {
-				transform.Rotate(Vector3.right, -turnSpeed);
-			}
-			
-			if (Input.GetKey (KeyCode.P)) {
-				print ("position " + transform.position + " rotation: "  + transform.eulerAngles);
-			}
+			touchPrevPos = Input.mousePosition;
 		}
 		
 	}
