@@ -71,70 +71,79 @@ public class CameraScript : MonoBehaviour {
 //		leftPlane.tag = "Plane";
 	}
 
-	void FixedUpdate () {
+	void Update () {
 
-		if (Input.GetKey (KeyCode.W)) {
-			transform.Translate(Vector3.forward * moveSpeed);
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			if(Input.touchCount == 1){
+				Touch touch = Input.GetTouch (0);
+				if (touch.phase == TouchPhase.Moved) {
+					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+					bool holdingAtom = false;
+					for (int i = 0; i < allMolecules.Length; i++) {
+						Atom atomScript = allMolecules[i].GetComponent<Atom>();
+						if(atomScript.held){
+							holdingAtom = true;
+							break;
+						}
+					}
+					
+					InstantiateMolecule instan = Camera.main.GetComponent<InstantiateMolecule>();
+					
+					if(!holdingAtom && !instan.addGraphicCopper && !instan.addGraphicGold && !instan.addGraphicPlatinum){
+						print ("Rotating around: " + centerPos);
+						Vector2 touchPrevPos = touch.position - touch.deltaPosition;
+						float deltaMagnitudeDiff = touch.position.x - touchPrevPos.x;
+						float deltaTouch = deltaMagnitudeDiff / 10.0f;
+						Camera.main.transform.RotateAround(centerPos, Vector3.up, deltaTouch);
+					}
+				}
+			}
 		}
-		if (Input.GetKey (KeyCode.S)) {
-			transform.Translate(-Vector3.forward * moveSpeed);
+		else{
+			if (Input.GetKey (KeyCode.W)) {
+				transform.Translate(Vector3.forward * moveSpeed);
+			}
+			if (Input.GetKey (KeyCode.S)) {
+				transform.Translate(-Vector3.forward * moveSpeed);
+			}
+			if (Input.GetKey (KeyCode.D)) {
+				transform.Translate(Vector3.right * moveSpeed);
+			}
+			
+			if (Input.GetKey (KeyCode.A)) {
+				transform.Translate(-Vector3.right * moveSpeed);
+			}
+			if (Input.GetKey (KeyCode.F)) {
+				transform.Translate(Vector3.up * moveSpeed);
+			}
+			if (Input.GetKey (KeyCode.V)) {
+				transform.Translate(-Vector3.up * moveSpeed);
+			}
+			
+			if (Input.GetKey (KeyCode.J)) {
+				transform.Rotate(Vector3.up, -turnSpeed);
+			}
+			if (Input.GetKey (KeyCode.K)) {
+				transform.Rotate(Vector3.up, turnSpeed);
+			}
+			if (Input.GetKey (KeyCode.N)) {
+				transform.Rotate(Vector3.right, turnSpeed);
+			}
+			if (Input.GetKey (KeyCode.M)) {
+				transform.Rotate(Vector3.right, -turnSpeed);
+			}
+			
+			if (Input.GetKey (KeyCode.P)) {
+				print ("position " + transform.position + " rotation: "  + transform.eulerAngles);
+			}
 		}
-		if (Input.GetKey (KeyCode.D)) {
-			transform.Translate(Vector3.right * moveSpeed);
-		}
-		
-		if (Input.GetKey (KeyCode.A)) {
-			transform.Translate(-Vector3.right * moveSpeed);
-		}
-		if (Input.GetKey (KeyCode.F)) {
-			transform.Translate(Vector3.up * moveSpeed);
-		}
-		if (Input.GetKey (KeyCode.V)) {
-			transform.Translate(-Vector3.up * moveSpeed);
-		}
-
-		if (Input.GetKey (KeyCode.J)) {
-			transform.Rotate(Vector3.up, -turnSpeed);
-		}
-		if (Input.GetKey (KeyCode.K)) {
-			transform.Rotate(Vector3.up, turnSpeed);
-		}
-		if (Input.GetKey (KeyCode.N)) {
-			transform.Rotate(Vector3.right, turnSpeed);
-		}
-		if (Input.GetKey (KeyCode.M)) {
-			transform.Rotate(Vector3.right, -turnSpeed);
-		}
-
-		if (Input.GetKey (KeyCode.P)) {
-			print ("position " + transform.position + " rotation: "  + transform.eulerAngles);
-		}
-
-//		if (Application.platform == RuntimePlatform.IPhonePlayer) {
-//			Touch touch = Input.GetTouch (0);
-//			if (touch.phase == TouchPhase.Moved) {
-//				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-//				bool holdingAtom = false;
-//				for (int i = 0; i < allMolecules.Length; i++) {
-//					Atom atomScript = allMolecules[i].GetComponent<Atom>();
-//					if(atomScript.held){
-//						holdingAtom = true;
-//						break;
-//					}
-//				}
-//
-//				InstantiateMolecule instan = Camera.main.GetComponent<InstantiateMolecule>();
-//				
-//				if(!holdingAtom && !instan.addGraphicCopper && !instan.addGraphicGold && !instan.addGraphicPlatinum){
-//					Vector2 touchPrevPos = touch.position - touch.deltaPosition;
-//					float deltaMagnitudeDiff = touch.position.x - touchPrevPos.x;
-//					float deltaTouch = deltaMagnitudeDiff / 10.0f;
-//					Camera.main.transform.RotateAround(centerPos, Vector3.up, deltaTouch);
-//				}
-//			}
-//		}
-
 		
 	}
-	
+
+	public void setCameraCoordinates(Transform objTransform){
+		//transform.position = new Vector3 (objTransform.position.x, objTransform.position.y, objTransform.position.z - 10.0f);
+		//centerPos = objTransform.position;
+		transform.LookAt (objTransform);
+	}
+
 }

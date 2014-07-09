@@ -21,6 +21,7 @@ public class InstantiateMolecule : MonoBehaviour {
 	[HideInInspector]public bool addGraphicPlatinum;
 
 	public Texture garbageTexture;
+	public Texture redXTexture;
 	
 	private bool clicked = false;
 	private float startTime = 0.0f;
@@ -141,8 +142,15 @@ public class InstantiateMolecule : MonoBehaviour {
 				atomBeingHeld = allMolecules[i];
 				break;
 			}
+			if(atomScript.doubleTapped){
+				if(GUI.Button(new Rect(455, Screen.height - 75, 75, 75), redXTexture)){
+					atomScript.doubleTapped = false;
+					Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
+				}
+			}
 		}
 
+		
 		if (Application.platform == RuntimePlatform.IPhonePlayer && Input.touchCount == 0 && destroyAtom) {
 			Destroy(atomToDelete);
 			destroyAtom = false;

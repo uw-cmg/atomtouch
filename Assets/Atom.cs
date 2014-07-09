@@ -33,6 +33,11 @@ public abstract class Atom : MonoBehaviour
 	private Vector2 prevTouchPosition = new Vector2(0.0f, 0.0f);
 	private float deltaTouch2 = 0.0f;
 	private bool moveZDirection = false;
+	private bool reflecting = false;
+	private Vector3 reflectingVelocity;
+	private float radius = 15.0f;
+	private float lastTapTime;
+	[HideInInspector]public bool doubleTapped = false;
 
 	void FixedUpdate(){
 		Time.timeScale = timeScale;
@@ -79,21 +84,39 @@ public abstract class Atom : MonoBehaviour
 			}
 		//}
 
-
-		if (Application.platform == RuntimePlatform.IPhonePlayer) {
-			HandleTouch ();
-		}
+		BoundingSphere ();
 
 	}
 
-//	void BoundingSphere(){
-//		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
-//		if (Vector3.Distance (cameraScript.centerPos, transform.position) > FlipNormals.radius) {
-//			rigidbody.velocity = Vector3.Reflect(rigidbody.velocity, (cameraScript.centerPos - transform.position).normalized);
-//			//Vector3 f = new Vector3(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value) * 20.0f;
-//			//rigidbody.AddForce(f);
-//		}
-//	}
+	void Update(){
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			HandleTouch ();
+		}
+		if (doubleTapped) {
+			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
+			cameraScript.setCameraCoordinates(transform);
+		}
+	}
+
+	void BoundingSphere(){
+		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
+		if (Vector3.Distance (cameraScript.centerPos, transform.position) > radius) {
+			if(reflecting){
+				//print ("Ball is most likely stuck");
+				rigidbody.velocity = reflectingVelocity;
+			}
+			else{
+				reflecting = true;
+				reflectingVelocity = Vector3.Reflect(rigidbody.velocity, (cameraScript.centerPos - transform.position).normalized);
+				rigidbody.velocity = reflectingVelocity;
+				//Vector3 f = new Vector3(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value) * 20.0f;
+				//rigidbody.AddForce(f);
+			}
+		}
+		else{
+			reflecting = false;
+		}
+	}
 
 	//controls for touch devices
 	void HandleTouch(){
@@ -115,10 +138,17 @@ public abstract class Atom : MonoBehaviour
 				Vector2 touchOnePrevPos = touch2.position - touch2.deltaPosition;
 				float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
 				deltaTouch2 = deltaMagnitudeDiff / 10.0f;
+				CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 				if(moleculeToMove != null){
 					Quaternion cameraRotation = Camera.main.transform.rotation;
-					moleculeToMove.transform.position += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
-					screenPoint += new Vector3(0.0f, 0.0f, deltaTouch2);
+
+					//forcast what the z-direction will be
+					Vector3 forcastPosition = moleculeToMove.transform.position;
+					forcastPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
+					if (Vector3.Distance (cameraScript.centerPos, forcastPosition) < radius){
+						moleculeToMove.transform.position += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
+						screenPoint += new Vector3(0.0f, 0.0f, deltaTouch2);
+					}
 				}
 			}
 		}
@@ -126,6 +156,14 @@ public abstract class Atom : MonoBehaviour
 			moveZDirection = false;
 			moleculeToMove = null;
 			held = false;
+		}
+	}
+
+	void ResetDoubleTapped(){
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			Atom atomScript = allMolecules[i].GetComponent<Atom>();
+			atomScript.doubleTapped = false;
 		}
 	}
 
@@ -137,15 +175,20 @@ public abstract class Atom : MonoBehaviour
 			RaycastHit hitInfo;
 			if (Physics.Raycast( ray, out hitInfo ) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject)
 			{
+				if((Time.time - lastTapTime) < 1.0f){
+					ResetDoubleTapped();
+					doubleTapped = true;
+				}
 				moleculeToMove = gameObject;
 				screenPoint = Camera.main.WorldToScreenPoint(transform.position);
 				offset = moleculeToMove.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y - 50, screenPoint.z));
 				held = true;
 				rigidbody.isKinematic = true;
+				lastTapTime = Time.time;
 			}
 		}
 		else if(touch.phase == TouchPhase.Moved){
-			if(moleculeToMove != null){
+			if(moleculeToMove != null && !doubleTapped){
 				Vector3 curScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, screenPoint.z);
 				Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
 				mouseDelta = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - lastMousePosition;
