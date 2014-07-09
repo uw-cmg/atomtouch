@@ -110,29 +110,29 @@ public class CameraScript : MonoBehaviour {
 			print ("position " + transform.position + " rotation: "  + transform.eulerAngles);
 		}
 
-		if (Application.platform == RuntimePlatform.IPhonePlayer) {
-			Touch touch = Input.GetTouch (0);
-			if (touch.phase == TouchPhase.Moved) {
-				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-				bool holdingAtom = false;
-				for (int i = 0; i < allMolecules.Length; i++) {
-					Atom atomScript = allMolecules[i].GetComponent<Atom>();
-					if(atomScript.held){
-						holdingAtom = true;
-						break;
-					}
-				}
-
-				InstantiateMolecule instan = Camera.main.GetComponent<InstantiateMolecule>();
-				
-				if(!holdingAtom && !instan.addGraphicCopper && !instan.addGraphicGold && !instan.addGraphicPlatinum){
-					Vector2 touchPrevPos = touch.position - touch.deltaPosition;
-					float deltaMagnitudeDiff = touch.position.x - touchPrevPos.x;
-					float deltaTouch = deltaMagnitudeDiff / 10.0f;
-					Camera.main.transform.RotateAround(centerPos, Vector3.up, deltaTouch);
-				}
-			}
-		}
+//		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+//			Touch touch = Input.GetTouch (0);
+//			if (touch.phase == TouchPhase.Moved) {
+//				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+//				bool holdingAtom = false;
+//				for (int i = 0; i < allMolecules.Length; i++) {
+//					Atom atomScript = allMolecules[i].GetComponent<Atom>();
+//					if(atomScript.held){
+//						holdingAtom = true;
+//						break;
+//					}
+//				}
+//
+//				InstantiateMolecule instan = Camera.main.GetComponent<InstantiateMolecule>();
+//				
+//				if(!holdingAtom && !instan.addGraphicCopper && !instan.addGraphicGold && !instan.addGraphicPlatinum){
+//					Vector2 touchPrevPos = touch.position - touch.deltaPosition;
+//					float deltaMagnitudeDiff = touch.position.x - touchPrevPos.x;
+//					float deltaTouch = deltaMagnitudeDiff / 10.0f;
+//					Camera.main.transform.RotateAround(centerPos, Vector3.up, deltaTouch);
+//				}
+//			}
+//		}
 
 		
 	}

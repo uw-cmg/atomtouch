@@ -26,6 +26,8 @@ public class InstantiateMolecule : MonoBehaviour {
 	private float startTime = 0.0f;
 	private bool first = true;
 	public float holdTime = 0.05f;
+	private bool destroyAtom = false;
+	private GameObject atomToDelete;
 
 
 	void Start(){
@@ -130,23 +132,34 @@ public class InstantiateMolecule : MonoBehaviour {
 		}
 
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		GameObject atomToDelete = null;
+		GameObject atomBeingHeld = null;
 		bool holdingAtom = false;
 		for (int i = 0; i < allMolecules.Length; i++) {
 			Atom atomScript = allMolecules[i].GetComponent<Atom>();
 			if(atomScript.held){
 				holdingAtom = true;
-				atomToDelete = allMolecules[i];
+				atomBeingHeld = allMolecules[i];
 				break;
 			}
+		}
+
+		if (Application.platform == RuntimePlatform.IPhonePlayer && Input.touchCount == 0 && destroyAtom) {
+			Destroy(atomToDelete);
+			destroyAtom = false;
 		}
 		
 		if (holdingAtom && Input.mousePosition.x < 435 && Input.mousePosition.x > 360 && Input.mousePosition.y < 75 && Input.mousePosition.y > 0) {
 			Color guiColor = Color.red;
 			guiColor.a = 0.25f;
 			GUI.color = guiColor;
-			if(Input.GetMouseButtonUp(0) && atomToDelete != null){
-				Destroy(atomToDelete);
+			if(Application.platform != RuntimePlatform.IPhonePlayer){
+				if(Input.GetMouseButtonUp(0) && atomBeingHeld != null){
+					Destroy(atomBeingHeld);
+				}
+			}
+			else if(Input.touchCount == 1){
+				destroyAtom = true;
+				atomToDelete = atomBeingHeld;
 			}
 		}
 		
