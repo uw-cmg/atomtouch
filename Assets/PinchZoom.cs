@@ -5,12 +5,6 @@ public class PinchZoom : MonoBehaviour {
 
 	public float perspectiveZoomSpeed = 0.5f;
 	public float orthoZoomSpeed = 0.5f;
-
-
-	// Use this for initialization
-	void Start () {
-	
-	}
 	
 	// Update is called once per frame
 	void Update () {

@@ -1,12 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Atom.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/StaticVariables.cs">
     <Files>
-      <File FileName="Assets/Atom.cs" Line="113" Column="46" />
+      <File FileName="Assets/Atom.cs" Line="1" Column="1" />
+      <File FileName="Assets/Atom.cs" Line="1" Column="1" />
       <File FileName="Assets/TemperatureCalc.cs" Line="1" Column="1" />
-      <File FileName="Assets/InstantiateMolecule.cs" Line="176" Column="3" />
-      <File FileName="Assets/PinchZoom.cs" Line="1" Column="1" />
-      <File FileName="Assets/CameraScript.cs" Line="123" Column="39" />
+      <File FileName="Assets/InstantiateMolecule.cs" Line="1" Column="1" />
+      <File FileName="Assets/PinchZoom.cs" Line="7" Column="37" />
+      <File FileName="Assets/CameraScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/StaticVariables.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

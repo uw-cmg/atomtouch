@@ -18,17 +18,6 @@ public abstract class Atom : MonoBehaviour
 	private Vector3 screenPoint;
 	private Vector3 lastMousePosition;
 	private Vector3 mouseDelta;
-	public bool held { get; set; }
-
-	public static float timeScale = 1.0f;
-	
-	private float cutoff = 10; //mutliplier for cutoff
-
-	//variables that must be implemented because they are declared as abstract in the base class
-	protected abstract float epsilon{ get; } // J
-	protected abstract float sigma{ get; } // m=Angstroms for Unity
-	protected abstract float massamu{ get; } //amu
-
 	private GameObject moleculeToMove = null;
 	private Vector2 prevTouchPosition = new Vector2(0.0f, 0.0f);
 	private float deltaTouch2 = 0.0f;
@@ -38,16 +27,27 @@ public abstract class Atom : MonoBehaviour
 	private float radius = 15.0f;
 	private float lastTapTime;
 	[HideInInspector]public bool doubleTapped = false;
+	private Vector3 adjustedForce;
+	private double adjustedForceMagnitude;
+
+	public bool held { get; set; }
+
+	//variables that must be implemented because they are declared as abstract in the base class
+	protected abstract float epsilon{ get; } // J
+	protected abstract float sigma{ get; } // m=Angstroms for Unity
+	protected abstract float massamu{ get; } //amu
+
+
 
 	void FixedUpdate(){
-		Time.timeScale = timeScale;
+		Time.timeScale = StaticVariables.timeScale;
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		molecules = new List<GameObject>();
 		float totalEnergy = 0.0f;
 
 		for(int i = 0; i < allMolecules.Length; i++){
 			double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
-			if(allMolecules[i] != gameObject && distance < (cutoff * sigma)){
+			if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff * sigma)){
 				molecules.Add(allMolecules[i]);
 			}
 		}
@@ -61,25 +61,26 @@ public abstract class Atom : MonoBehaviour
 			direction.Normalize();
 			
 			double distance = Vector3.Distance(transform.position, molecules[i].transform.position);
-			//print ("distance: " + distance);
-			double part1 = ((-48 * epsilon) / Math.Pow(distance, 2));
-			//print ("part1: " + part1);
+			double distanceMeters = distance * StaticVariables.angstromsToMeters; //distance in meters, though viewed in Angstroms
+			double part1 = ((-48 * epsilon) / Math.Pow(distanceMeters, 2));
 			double part2 = (Math.Pow ((sigma / distance), 12) - (.5f * Math.Pow ((sigma / distance), 6)));
-			//print ("part2: " + part2);
-			double magnitude = (part1 * part2 * distance);
+			double magnitude = (part1 * part2 * distanceMeters);
 			finalForce += (direction * (float)magnitude);
 			finalMagnitude += magnitude;
 		}
 
-		Vector3 adjustedForce = finalForce / (1.6605f * (float)(Math.Pow (10, -25))); //adjust mass input
-		adjustedForce = adjustedForce * (float)(Math.Pow (10, -10)); //normalize back Angstroms = m from extra r_ij denomintor term
+		adjustedForceMagnitude = finalMagnitude / StaticVariables.mass100amuToKg;
+		adjustedForceMagnitude = adjustedForceMagnitude * StaticVariables.eyeAdjustment;
+		adjustedForce = finalForce / StaticVariables.mass100amuToKg; //adjust mass input for units of 100 amu
+		//Distances are all in meters right now; do not distance-correct adjustedForce = adjustedForce * (float)(Math		.Pow (10, -10)); //normalize back Angstroms = m from extra r_ij denomintor term
+		adjustedForce = adjustedForce * StaticVariables.eyeAdjustment; 
 
 		rigidbody.AddForce (adjustedForce);
 
 		//adjust velocity for the desired temperature of the system
-		//if (Time.time > 10.0f) {
+		//if (Time.time > StaticVariables.tempDelay) {
 			Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
-		if (!rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && allMolecules.Length > 1) {
+			if (!rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && allMolecules.Length > 1) {
 				rigidbody.velocity = newVelocity;
 			}
 		//}

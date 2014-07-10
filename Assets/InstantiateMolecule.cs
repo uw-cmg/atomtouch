@@ -50,7 +50,7 @@ public class InstantiateMolecule : MonoBehaviour {
 		}
 
 		GUI.Label (new Rect (25, 25, 250, 20), "Temperature: " + TemperatureCalc.desiredTemperature);
-		float newTemp = GUI.VerticalSlider (new Rect (75, 55, 30, (Screen.height - 135)), TemperatureCalc.desiredTemperature, 0.001f, 1.0f);
+		float newTemp = GUI.VerticalSlider (new Rect (75, 55, 30, (Screen.height - 135)), TemperatureCalc.desiredTemperature, StaticVariables.tempRangeLow, StaticVariables.tempRangeHigh);
 		if (newTemp != SphereScript.desiredTemperature) {
 			TemperatureCalc.desiredTemperature = newTemp;
 		}
