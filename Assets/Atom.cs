@@ -102,15 +102,16 @@ public abstract class Atom : MonoBehaviour
 		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
 		if (Vector3.Distance (cameraScript.centerPos, transform.position) > radius) {
 			if(reflecting){
-				//print ("Ball is most likely stuck");
-				rigidbody.velocity = reflectingVelocity;
+				if(!rigidbody.isKinematic){
+					rigidbody.velocity = reflectingVelocity;
+				}
 			}
 			else{
-				reflecting = true;
-				reflectingVelocity = Vector3.Reflect(rigidbody.velocity, (cameraScript.centerPos - transform.position).normalized);
-				rigidbody.velocity = reflectingVelocity;
-				//Vector3 f = new Vector3(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value) * 20.0f;
-				//rigidbody.AddForce(f);
+				if(!rigidbody.isKinematic){
+					reflecting = true;
+					reflectingVelocity = Vector3.Reflect(rigidbody.velocity, (cameraScript.centerPos - transform.position).normalized);
+					rigidbody.velocity = reflectingVelocity;
+				}
 			}
 		}
 		else{
