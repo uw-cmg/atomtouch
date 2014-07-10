@@ -13,7 +13,6 @@ using System;
 
 public abstract class Atom : MonoBehaviour
 {
-	private List<GameObject> molecules;
 	private Vector3 offset;
 	private Vector3 screenPoint;
 	private Vector3 lastMousePosition;
@@ -27,8 +26,6 @@ public abstract class Atom : MonoBehaviour
 	private float radius = 15.0f;
 	private float lastTapTime;
 	[HideInInspector]public bool doubleTapped = false;
-	private Vector3 adjustedForce;
-	private double adjustedForceMagnitude;
 
 	public bool held { get; set; }
 
@@ -42,40 +39,23 @@ public abstract class Atom : MonoBehaviour
 	void FixedUpdate(){
 		Time.timeScale = StaticVariables.timeScale;
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		molecules = new List<GameObject>();
+		List<GameObject> molecules = new List<GameObject>();
 		float totalEnergy = 0.0f;
 
 		for(int i = 0; i < allMolecules.Length; i++){
 			double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
 			if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff * sigma)){
-				molecules.Add(allMolecules[i]);
+				//Atom atomScript = allMolecules[i].GetComponent<Atom>();
+				//if(!atomScript.held){
+					molecules.Add(allMolecules[i]);
+				//}
 			}
 		}
 
+		Vector3 force = GetLennardJonesForce (molecules);
 
-		double finalMagnitude = 0;
-		Vector3 finalForce = new Vector3 (0.000f, 0.000f, 0.000f);
-		for (int i = 0; i < molecules.Count; i++) {
-			//Vector3 vect = molecules[i].transform.position - transform.position;
-			Vector3 direction = new Vector3(molecules[i].transform.position.x - transform.position.x, molecules[i].transform.position.y - transform.position.y, molecules[i].transform.position.z - transform.position.z);
-			direction.Normalize();
-			
-			double distance = Vector3.Distance(transform.position, molecules[i].transform.position);
-			double distanceMeters = distance * StaticVariables.angstromsToMeters; //distance in meters, though viewed in Angstroms
-			double part1 = ((-48 * epsilon) / Math.Pow(distanceMeters, 2));
-			double part2 = (Math.Pow ((sigma / distance), 12) - (.5f * Math.Pow ((sigma / distance), 6)));
-			double magnitude = (part1 * part2 * distanceMeters);
-			finalForce += (direction * (float)magnitude);
-			finalMagnitude += magnitude;
-		}
 
-		adjustedForceMagnitude = finalMagnitude / StaticVariables.mass100amuToKg;
-		adjustedForceMagnitude = adjustedForceMagnitude * StaticVariables.eyeAdjustment;
-		adjustedForce = finalForce / StaticVariables.mass100amuToKg; //adjust mass input for units of 100 amu
-		//Distances are all in meters right now; do not distance-correct adjustedForce = adjustedForce * (float)(Math		.Pow (10, -10)); //normalize back Angstroms = m from extra r_ij denomintor term
-		adjustedForce = adjustedForce * StaticVariables.eyeAdjustment; 
-
-		rigidbody.AddForce (adjustedForce);
+		rigidbody.AddForce (force);
 
 		//adjust velocity for the desired temperature of the system
 		//if (Time.time > StaticVariables.tempDelay) {
@@ -87,6 +67,31 @@ public abstract class Atom : MonoBehaviour
 
 		BoundingSphere ();
 
+	}
+
+	Vector3 GetLennardJonesForce(List<GameObject> objectsInRange){
+		double finalMagnitude = 0;
+		Vector3 finalForce = new Vector3 (0.000f, 0.000f, 0.000f);
+		for (int i = 0; i < objectsInRange.Count; i++) {
+			//Vector3 vect = molecules[i].transform.position - transform.position;
+			Vector3 direction = new Vector3(objectsInRange[i].transform.position.x - transform.position.x, objectsInRange[i].transform.position.y - transform.position.y, objectsInRange[i].transform.position.z - transform.position.z);
+			direction.Normalize();
+			
+			double distance = Vector3.Distance(transform.position, objectsInRange[i].transform.position);
+			double distanceMeters = distance * StaticVariables.angstromsToMeters; //distance in meters, though viewed in Angstroms
+			double part1 = ((-48 * epsilon) / Math.Pow(distanceMeters, 2));
+			double part2 = (Math.Pow ((sigma / distance), 12) - (.5f * Math.Pow ((sigma / distance), 6)));
+			double magnitude = (part1 * part2 * distanceMeters);
+			finalForce += (direction * (float)magnitude);
+			finalMagnitude += magnitude;
+		}
+		
+		double adjustedForceMagnitude = finalMagnitude / StaticVariables.mass100amuToKg;
+		adjustedForceMagnitude = adjustedForceMagnitude * StaticVariables.eyeAdjustment;
+		Vector3 adjustedForce = finalForce / StaticVariables.mass100amuToKg; //adjust mass input for units of 100 amu
+		//Distances are all in meters right now; do not distance-correct adjustedForce = adjustedForce * (float)(Math		.Pow (10, -10)); //normalize back Angstroms = m from extra r_ij denomintor term
+		adjustedForce = adjustedForce * StaticVariables.eyeAdjustment;
+		return adjustedForce;
 	}
 
 	void Update(){
