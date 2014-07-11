@@ -151,6 +151,8 @@ public class InstantiateMolecule : MonoBehaviour {
 			}
 			if(atomScript.doubleTapped){
 				if(GUI.Button(new Rect(455, Screen.height - 75, 75, 75), redXTexture)){
+					CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
+					cameraScript.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
 					atomScript.doubleTapped = false;
 					Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
 				}

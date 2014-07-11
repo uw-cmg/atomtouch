@@ -127,7 +127,7 @@ public class CameraScript : MonoBehaviour {
 
 	public void setCameraCoordinates(Transform objTransform){
 		//transform.position = new Vector3 (objTransform.position.x, objTransform.position.y, objTransform.position.z - 10.0f);
-		//centerPos = objTransform.position;
+		centerPos = objTransform.position;
 		transform.LookAt (objTransform);
 	}
 
