@@ -37,7 +37,8 @@ public class InstantiateMolecule : MonoBehaviour {
 	}
 
 	void OnGUI(){
-		
+
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		
 //		GUI.Label(new Rect(25, 15, 200, 20), "Time Scale: " + Atom.timeScale);
 //		float timeScale = GUI.HorizontalSlider(new Rect(25, 55, 100, 30), Atom.timeScale, 0.0001f, 5.0f);
@@ -55,7 +56,13 @@ public class InstantiateMolecule : MonoBehaviour {
 			TemperatureCalc.desiredTemperature = newTemp;
 		}
 
-		GUI.Label (new Rect (Screen.width - 100, 25, 250, 20), "Time: " + Time.time);
+		GUI.Label (new Rect (Screen.width - 100, 25, 250, 20), "Drag: " + allMolecules[0].rigidbody.drag);
+		float newDrag = GUI.VerticalSlider (new Rect (Screen.width - 75, 55, 30, (Screen.height - 135)), allMolecules[0].rigidbody.drag, 0.0f, 30.0f);
+		for (int i = 0; i < allMolecules.Length; i++) {
+			allMolecules[i].rigidbody.drag = newDrag;
+		}
+
+		GUI.Label (new Rect (Screen.width - 100, (Screen.height - 50), 250, 20), "Time: " + Time.time);
 
 		if (addGraphicCopper) {
 			Color guiColor = Color.white;
@@ -132,7 +139,7 @@ public class InstantiateMolecule : MonoBehaviour {
 			}
 		}
 
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+
 		GameObject atomBeingHeld = null;
 		bool holdingAtom = false;
 		for (int i = 0; i < allMolecules.Length; i++) {
