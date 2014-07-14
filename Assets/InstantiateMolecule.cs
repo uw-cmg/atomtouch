@@ -34,17 +34,12 @@ public class InstantiateMolecule : MonoBehaviour {
 	void Start(){
 		addGraphicCopper = false;
 		addGraphicGold = false;
+		addGraphicPlatinum = false;
 	}
 
 	void OnGUI(){
 
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		
-//		GUI.Label(new Rect(25, 15, 200, 20), "Time Scale: " + Atom.timeScale);
-//		float timeScale = GUI.HorizontalSlider(new Rect(25, 55, 100, 30), Atom.timeScale, 0.0001f, 5.0f);
-//		if (timeScale != SphereScript.timeScale) {
-//			Atom.timeScale = timeScale;
-//		}
 
 		if (sliderControls != null) {
 			GUI.skin = sliderControls;

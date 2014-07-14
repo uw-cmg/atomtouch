@@ -24,5 +24,6 @@ public class Copper : Atom {
 	void Start () {
 		Color moleculeColor = new Color(.7216f, .451f, 0.2f, 1.0f);
 		gameObject.renderer.material.color = moleculeColor;
+		gameObject.transform.localScale = new Vector3(sigma, sigma, sigma);
 	}
 }

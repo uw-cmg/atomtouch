@@ -34,8 +34,6 @@ public abstract class Atom : MonoBehaviour
 	protected abstract float sigma{ get; } // m=Angstroms for Unity
 	protected abstract float massamu{ get; } //amu
 
-
-
 	void FixedUpdate(){
 		Time.timeScale = StaticVariables.timeScale;
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");

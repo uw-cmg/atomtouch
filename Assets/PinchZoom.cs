@@ -36,7 +36,7 @@ public class PinchZoom : MonoBehaviour {
 			}
 			else{
 				camera.fieldOfView += deltaMagnitudeDiff * perspectiveZoomSpeed;
-				camera.fieldOfView = Mathf.Clamp(camera.fieldOfView, 0.1f, 179.9f);
+				camera.fieldOfView = Mathf.Clamp(camera.fieldOfView, 5.0f, 100.0f);
 			}
 		}
 	}

@@ -91,11 +91,15 @@ public class CameraScript : MonoBehaviour {
 					InstantiateMolecule instan = Camera.main.GetComponent<InstantiateMolecule>();
 					
 					if(!holdingAtom && !instan.addGraphicCopper && !instan.addGraphicGold && !instan.addGraphicPlatinum){
-						print ("Rotating around: " + centerPos);
 						Vector2 touchPrevPos = touch.position - touch.deltaPosition;
-						float deltaMagnitudeDiff = touch.position.x - touchPrevPos.x;
-						float deltaTouch = deltaMagnitudeDiff / 10.0f;
-						Camera.main.transform.RotateAround(centerPos, Vector3.up, deltaTouch);
+						float deltaMagnitudeDiffX = touch.position.x - touchPrevPos.x;
+						float deltaTouchX = deltaMagnitudeDiffX / 10.0f;
+						Camera.main.transform.RotateAround(centerPos, Vector3.up, deltaTouchX);
+
+						//for rotation over the x-axis
+//						float deltaMagnitudeDiffY = touch.position.y - touchPrevPos.y;
+//						float deltaTouchY = deltaMagnitudeDiffY / 10.0f;
+//						Camera.main.transform.RotateAround(centerPos, Vector3.right, deltaTouchY);
 					}
 				}
 			}
@@ -114,10 +118,14 @@ public class CameraScript : MonoBehaviour {
 				
 				InstantiateMolecule instan = Camera.main.GetComponent<InstantiateMolecule>();
 				if(!holdingAtom && !instan.addGraphicCopper && !instan.addGraphicGold && !instan.addGraphicPlatinum){
-					print ("Rotating around: " + centerPos);
-					float deltaMagnitudeDiff = Input.mousePosition.x - touchPrevPos.x;
-					float deltaTouch = deltaMagnitudeDiff / 10.0f;
-					Camera.main.transform.RotateAround(centerPos, Vector3.up, deltaTouch);
+					float deltaMagnitudeDiffX = Input.mousePosition.x - touchPrevPos.x;
+					float deltaTouchX = deltaMagnitudeDiffX / 10.0f;
+					Camera.main.transform.RotateAround(centerPos, Vector3.up, deltaTouchX);
+
+					//for rotation over the x-axis
+//					float deltaMagnitudeDiffY = Input.mousePosition.y - touchPrevPos.y;
+//					float deltaTouchY = deltaMagnitudeDiffY / 10.0f;
+//					Camera.main.transform.RotateAround(centerPos, Vector3.right, deltaTouchY);
 				}
 			}
 			touchPrevPos = Input.mousePosition;

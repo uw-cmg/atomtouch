@@ -23,6 +23,7 @@ public class Gold : Atom
 	{
 		Color moleculeColor = new Color(1.0f, .8431f, 0.0f, 1.0f);
 		gameObject.renderer.material.color = moleculeColor;
+		gameObject.transform.localScale = new Vector3(sigma, sigma, sigma);
 	}
 }
 

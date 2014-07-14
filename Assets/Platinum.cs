@@ -23,5 +23,6 @@ public class Platinum : Atom {
 	void Start () {
 		Color moleculeColor = new Color(.898f, .8941f, 0.8863f, 1.0f);
 		gameObject.renderer.material.color = moleculeColor;
+		gameObject.transform.localScale = new Vector3(sigma, sigma, sigma);
 	}
 }
