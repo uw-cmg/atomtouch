@@ -19,11 +19,16 @@ public class Gold : Atom
 		get { return 196.967f; } //amu
 	}
 
+	protected override Color color {
+		get {
+			return new Color(1.0f, .8431f, 0.0f, 1.0f);
+		}
+	}
+	
 	void Start ()
 	{
-		Color moleculeColor = new Color(1.0f, .8431f, 0.0f, 1.0f);
-		gameObject.renderer.material.color = moleculeColor;
-		gameObject.transform.localScale = new Vector3(sigma, sigma, sigma);
+		gameObject.renderer.material.color = color;
+		gameObject.transform.localScale = new Vector3(sigma * .5f, sigma * .5f, sigma * .5f);
 	}
 }
 

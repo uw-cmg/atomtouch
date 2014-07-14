@@ -33,6 +33,11 @@ public abstract class Atom : MonoBehaviour
 	protected abstract float epsilon{ get; } // J
 	protected abstract float sigma{ get; } // m=Angstroms for Unity
 	protected abstract float massamu{ get; } //amu
+	protected abstract Color color { get; }
+
+	public Color GetColor(){
+		return color;
+	}
 
 	void FixedUpdate(){
 		Time.timeScale = StaticVariables.timeScale;
@@ -43,16 +48,11 @@ public abstract class Atom : MonoBehaviour
 		for(int i = 0; i < allMolecules.Length; i++){
 			double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
 			if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff * sigma)){
-				//Atom atomScript = allMolecules[i].GetComponent<Atom>();
-				//if(!atomScript.held){
-					molecules.Add(allMolecules[i]);
-				//}
+				molecules.Add(allMolecules[i]);
 			}
 		}
 
 		Vector3 force = GetLennardJonesForce (molecules);
-
-
 		rigidbody.AddForce (force);
 
 		//adjust velocity for the desired temperature of the system

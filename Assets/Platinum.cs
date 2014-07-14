@@ -19,10 +19,15 @@ public class Platinum : Atom {
 		get { return 195.084f; } //amu
 	}
 
+	protected override Color color {
+		get {
+			return new Color(.898f, .8941f, 0.8863f, 1.0f);
+		}
+	}
+	
 	// Use this for initialization
 	void Start () {
-		Color moleculeColor = new Color(.898f, .8941f, 0.8863f, 1.0f);
-		gameObject.renderer.material.color = moleculeColor;
-		gameObject.transform.localScale = new Vector3(sigma, sigma, sigma);
+		gameObject.renderer.material.color = color;
+		gameObject.transform.localScale = new Vector3(sigma * .5f, sigma * .5f, sigma * .5f);
 	}
 }

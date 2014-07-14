@@ -19,11 +19,14 @@ public class Copper : Atom {
 		get { return 63.546f; } //amu
 	}
 
-
-	// Use this for initialization
+	protected override Color color {
+		get {
+			return new Color(.7216f, .451f, 0.2f, 1.0f);
+		}
+	}
+	
 	void Start () {
-		Color moleculeColor = new Color(.7216f, .451f, 0.2f, 1.0f);
-		gameObject.renderer.material.color = moleculeColor;
-		gameObject.transform.localScale = new Vector3(sigma, sigma, sigma);
+		gameObject.renderer.material.color = color;
+		gameObject.transform.localScale = new Vector3(sigma * .5f, sigma * .5f, sigma * .5f);
 	}
 }
