@@ -3,7 +3,8 @@ using System.Collections;
 
 public class PinchZoom : MonoBehaviour {
 
-	public float perspectiveZoomSpeed = 0.5f;
+	public float touchPerspectiveZoomSpeed = 0.5f;
+	public float pcPerspectiveZoomSpeed = 5.0f;
 	public float orthoZoomSpeed = 0.5f;
 	
 	// Update is called once per frame
@@ -18,7 +19,7 @@ public class PinchZoom : MonoBehaviour {
 			}
 		}
 
-		if (Input.touchCount == 2 && !beingHeld) {
+		if (Application.platform == RuntimePlatform.IPhonePlayer && Input.touchCount == 2 && !beingHeld) {
 			Touch touchZero = Input.GetTouch (0);
 			Touch touchOne = Input.GetTouch (1);
 
@@ -35,9 +36,14 @@ public class PinchZoom : MonoBehaviour {
 				camera.orthographicSize = Mathf.Max (camera.orthographicSize, 0.1f);
 			}
 			else{
-				camera.fieldOfView += deltaMagnitudeDiff * perspectiveZoomSpeed;
+				camera.fieldOfView += deltaMagnitudeDiff * touchPerspectiveZoomSpeed;
 				camera.fieldOfView = Mathf.Clamp(camera.fieldOfView, 5.0f, 100.0f);
 			}
+		}
+		else if(Application.platform != RuntimePlatform.IPhonePlayer && !beingHeld){
+			float deltaMagnitudeDiff = Input.GetAxis("Mouse ScrollWheel");
+			camera.fieldOfView += deltaMagnitudeDiff * pcPerspectiveZoomSpeed;
+			camera.fieldOfView = Mathf.Clamp(camera.fieldOfView, 5.0f, 100.0f);
 		}
 	}
 }
