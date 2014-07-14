@@ -23,7 +23,7 @@ public abstract class Atom : MonoBehaviour
 	private bool moveZDirection = false;
 	private bool reflecting = false;
 	private Vector3 reflectingVelocity;
-	private float radius = 15.0f;
+	private float radius = 10.0f;
 	private float lastTapTime;
 	[HideInInspector]public bool doubleTapped = false;
 
@@ -63,7 +63,7 @@ public abstract class Atom : MonoBehaviour
 			}
 		//}
 
-		BoundingSphere ();
+		//BoundingSphere ();
 
 	}
 
@@ -95,6 +95,20 @@ public abstract class Atom : MonoBehaviour
 	void Update(){
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			HandleTouch ();
+		}
+		else{
+			if(Input.GetMouseButtonDown(0)){
+				Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
+				RaycastHit hitInfo;
+				if (Physics.Raycast( ray, out hitInfo ) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
+					if((Time.time - lastTapTime) < 1.0f){
+						ResetDoubleTapped();
+						doubleTapped = true;
+						print ("doubleTapped");
+					}
+					lastTapTime = Time.time;
+				}
+			}
 		}
 		if (doubleTapped) {
 			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
@@ -226,11 +240,13 @@ public abstract class Atom : MonoBehaviour
 
 	void OnMouseDrag(){
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
-			Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
-			Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-			CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
-			transform.position = curPosition;
-			mouseDelta = Input.mousePosition - lastMousePosition;
+			if((lastMousePosition - Input.mousePosition).magnitude > 0){
+				Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
+				Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
+				CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
+				transform.position = curPosition;
+				mouseDelta = Input.mousePosition - lastMousePosition;
+			}
 			lastMousePosition = Input.mousePosition;
 		}
 
@@ -238,9 +254,9 @@ public abstract class Atom : MonoBehaviour
 
 	void OnMouseUp (){
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
-			Quaternion cameraRotation = Camera.main.transform.rotation;
-			rigidbody.isKinematic = false;
-			rigidbody.AddForce (cameraRotation * mouseDelta * 50.0f);
+			//Quaternion cameraRotation = Camera.main.transform.rotation;
+			//rigidbody.isKinematic = false;
+			//rigidbody.AddForce (cameraRotation * mouseDelta * 50.0f);
 			held = false;
 		}
 	}
