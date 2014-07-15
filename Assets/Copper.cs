@@ -4,6 +4,8 @@ using System;
 
 public class Copper : Atom {
 
+	private Color copperColor;
+
 	protected override float epsilon
 	{
 		get { return ((float)(6.537 * Math.Pow(10, -20))); } // J
@@ -21,12 +23,22 @@ public class Copper : Atom {
 
 	protected override Color color {
 		get {
-			return new Color(.7216f, .451f, 0.2f, 1.0f);
+			return copperColor;
+		}
+	}
+
+	protected override void ChangeColor (bool selected){
+		if (selected) {
+			copperColor = new Color(0.0f, 1.0f, 0.0f);
+		}
+		else{
+			copperColor = new Color (.7216f, .451f, 0.2f, 1.0f);
 		}
 	}
 	
 	void Start () {
-		gameObject.renderer.material.color = color;
+		ChangeColor (false);
 		gameObject.transform.localScale = new Vector3(sigma * .5f, sigma * .5f, sigma * .5f);
 	}
+
 }

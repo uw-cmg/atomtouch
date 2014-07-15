@@ -4,6 +4,8 @@ using System;
 
 public class Platinum : Atom {
 
+	private Color platinumColor;
+
 	protected override float epsilon
 	{
 		get { return ((float)(1.0922 * Math.Pow(10, -19))); } // J
@@ -21,13 +23,22 @@ public class Platinum : Atom {
 
 	protected override Color color {
 		get {
-			return new Color(.898f, .8941f, 0.8863f, 1.0f);
+			return platinumColor;
 		}
 	}
-	
-	// Use this for initialization
+
+	protected override void ChangeColor (bool selected){
+		if (selected) {
+			platinumColor = new Color(0.0f, 1.0f, 0.0f);
+		}
+		else{
+			platinumColor = new Color(.898f, .8941f, 0.8863f, 1.0f);
+		}
+	}
+
 	void Start () {
-		gameObject.renderer.material.color = color;
+		ChangeColor (false);
 		gameObject.transform.localScale = new Vector3(sigma * .5f, sigma * .5f, sigma * .5f);
 	}
+
 }

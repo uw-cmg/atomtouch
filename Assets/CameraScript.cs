@@ -17,9 +17,9 @@ public class CameraScript : MonoBehaviour {
 
 	void Start () {
 
-		float width = 10.0f;
-		float height = 10.0f;
-		float depth = 10.0f;
+		float width = 20.0f;
+		float height = 20.0f;
+		float depth = 20.0f;
 
 		//create the atoms
 		for (int i = 0; i < numMolecules; i++) {
@@ -29,47 +29,53 @@ public class CameraScript : MonoBehaviour {
 		}
 
 //		//create the box
-//		Quaternion bottonPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 0.0f);
-//		Vector3 bottomPlanePos = new Vector3 (centerPos.x, centerPos.y - (height/2.0f), centerPos.z);
-//		GameObject bottomPlane = Instantiate (plane, bottomPlanePos, bottonPlaneRotation) as GameObject;
-//		bottomPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
-//		bottomPlane.name = "BottomPlane";
-//		bottomPlane.tag = "Plane";
-//
-//		Quaternion topPlaneRotation = Quaternion.Euler (0.0f, 180.0f, 180.0f);
-//		Vector3 topPlanePos = new Vector3 (centerPos.x, centerPos.y + (height/2.0f), centerPos.z);
-//		GameObject topPlane = Instantiate (plane, topPlanePos, topPlaneRotation) as GameObject;
-//		topPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
-//		topPlane.name = "TopPlane";
-//		topPlane.tag = "Plane";
-//
-//		Quaternion backPlaneRotation = Quaternion.Euler (270.0f, 0.0f, 0.0f);
-//		Vector3 backPlanePos = new Vector3 (centerPos.x, centerPos.y, centerPos.z + (depth/2.0f));
-//		GameObject backPlane = Instantiate (plane, backPlanePos, backPlaneRotation) as GameObject;
-//		backPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
-//		backPlane.name = "BackPlane";
-//		backPlane.tag = "Plane";
-//
-//		Quaternion frontPlaneRotation = Quaternion.Euler (90.0f, 0.0f, 0.0f);
-//		Vector3 frontPlanePos = new Vector3 (centerPos.x, centerPos.y, centerPos.z - (depth/2.0f));
-//		GameObject frontPlane = Instantiate (plane, frontPlanePos, frontPlaneRotation) as GameObject;
-//		frontPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
-//		frontPlane.name = "FrontPlane";
-//		frontPlane.tag = "Plane";
-//
-//		Quaternion rightPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 90.0f);
-//		Vector3 rightPlanePos = new Vector3 (centerPos.x + (width/2.0f), centerPos.y, centerPos.z);
-//		GameObject rightPlane = Instantiate (plane, rightPlanePos, rightPlaneRotation) as GameObject;
-//		rightPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
-//		rightPlane.name = "RightPlane";
-//		rightPlane.tag = "Plane";
-//
-//		Quaternion leftPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 270.0f);
-//		Vector3 leftPlanePos = new Vector3 (centerPos.x - (width/2.0f), centerPos.y, centerPos.z);
-//		GameObject leftPlane = Instantiate (plane, leftPlanePos, leftPlaneRotation) as GameObject;
-//		leftPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
-//		leftPlane.name = "LeftPlane";
-//		leftPlane.tag = "Plane";
+		Quaternion bottonPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 0.0f);
+		Vector3 bottomPlanePos = new Vector3 (centerPos.x, centerPos.y - (height/2.0f), centerPos.z);
+		GameObject bottomPlane = Instantiate (plane, bottomPlanePos, bottonPlaneRotation) as GameObject;
+		bottomPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
+		bottomPlane.name = "BottomPlane";
+		bottomPlane.tag = "Plane";
+
+		Quaternion topPlaneRotation = Quaternion.Euler (0.0f, 180.0f, 180.0f);
+		Vector3 topPlanePos = new Vector3 (centerPos.x, centerPos.y + (height/2.0f), centerPos.z);
+		GameObject topPlane = Instantiate (plane, topPlanePos, topPlaneRotation) as GameObject;
+		topPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
+		topPlane.name = "TopPlane";
+		topPlane.tag = "Plane";
+
+		Quaternion backPlaneRotation = Quaternion.Euler (270.0f, 0.0f, 0.0f);
+		Vector3 backPlanePos = new Vector3 (centerPos.x, centerPos.y, centerPos.z + (depth/2.0f));
+		GameObject backPlane = Instantiate (plane, backPlanePos, backPlaneRotation) as GameObject;
+		backPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
+		backPlane.name = "BackPlane";
+		backPlane.tag = "Plane";
+
+		Quaternion frontPlaneRotation = Quaternion.Euler (90.0f, 0.0f, 0.0f);
+		Vector3 frontPlanePos = new Vector3 (centerPos.x, centerPos.y, centerPos.z - (depth/2.0f));
+		GameObject frontPlane = Instantiate (plane, frontPlanePos, frontPlaneRotation) as GameObject;
+		frontPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
+		frontPlane.name = "FrontPlane";
+		frontPlane.tag = "Plane";
+
+		Quaternion rightPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 90.0f);
+		Vector3 rightPlanePos = new Vector3 (centerPos.x + (width/2.0f), centerPos.y, centerPos.z);
+		GameObject rightPlane = Instantiate (plane, rightPlanePos, rightPlaneRotation) as GameObject;
+		rightPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
+		rightPlane.name = "RightPlane";
+		rightPlane.tag = "Plane";
+
+		Quaternion leftPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 270.0f);
+		Vector3 leftPlanePos = new Vector3 (centerPos.x - (width/2.0f), centerPos.y, centerPos.z);
+		GameObject leftPlane = Instantiate (plane, leftPlanePos, leftPlaneRotation) as GameObject;
+		leftPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
+		leftPlane.name = "LeftPlane";
+		leftPlane.tag = "Plane";
+
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			currAtom.name = i.ToString();
+		}
 	}
 
 	void Update () {

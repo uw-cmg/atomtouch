@@ -21,11 +21,16 @@ public abstract class Atom : MonoBehaviour
 	private Vector2 prevTouchPosition = new Vector2(0.0f, 0.0f);
 	private float deltaTouch2 = 0.0f;
 	private bool moveZDirection = false;
+	private float lastTapTime;
+	[HideInInspector]public bool selected = false;
+	[HideInInspector]public bool doubleTapped = false;
+	private Dictionary<String, Vector3> gameObjectOffsets;
+	private Dictionary<String, Vector3> gameObjectScreenPoints;
+
+	//variables for (defunct) bounding sphere
 	private bool reflecting = false;
 	private Vector3 reflectingVelocity;
 	private float radius = 10.0f;
-	private float lastTapTime;
-	[HideInInspector]public bool doubleTapped = false;
 
 	public bool held { get; set; }
 
@@ -34,6 +39,7 @@ public abstract class Atom : MonoBehaviour
 	protected abstract float sigma{ get; } // m=Angstroms for Unity
 	protected abstract float massamu{ get; } //amu
 	protected abstract Color color { get; }
+	protected abstract void ChangeColor (bool selected);
 
 	public Color GetColor(){
 		return color;
@@ -93,6 +99,7 @@ public abstract class Atom : MonoBehaviour
 	}
 
 	void Update(){
+		gameObject.renderer.material.color = color;
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			HandleTouch ();
 		}
@@ -108,10 +115,23 @@ public abstract class Atom : MonoBehaviour
 					lastTapTime = Time.time;
 				}
 			}
+
+			HandleRightClick();
 		}
 		if (doubleTapped) {
 			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 			cameraScript.setCameraCoordinates(transform);
+		}
+	}
+
+	void HandleRightClick(){
+		if (Input.GetMouseButtonDown (1)) {
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hitInfo;
+			if(Physics.Raycast(ray, out hitInfo) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
+				selected = !selected;
+				ChangeColor(selected);
+			}
 		}
 	}
 
@@ -154,15 +174,8 @@ public abstract class Atom : MonoBehaviour
 				CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 				if(moleculeToMove != null){
 					Quaternion cameraRotation = Camera.main.transform.rotation;
-
-					//this part may need to change depending on the implementation of the bounds
-					//forcast what the z-direction will be
-					Vector3 forcastPosition = moleculeToMove.transform.position;
-					forcastPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
-					if (Vector3.Distance (cameraScript.centerPos, forcastPosition) < radius){
-						moleculeToMove.transform.position += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
-						screenPoint += new Vector3(0.0f, 0.0f, deltaTouch2);
-					}
+					moleculeToMove.transform.position += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
+					screenPoint += new Vector3(0.0f, 0.0f, deltaTouch2);
 				}
 			}
 		}
@@ -225,42 +238,88 @@ public abstract class Atom : MonoBehaviour
 	//controls for debugging on pc
 	void OnMouseDown (){
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
-			rigidbody.isKinematic = true;
-			screenPoint = Camera.main.WorldToScreenPoint(transform.position);
-			offset = transform.position - Camera.main.ScreenToWorldPoint(
-				new Vector3(Input.mousePosition.x, Input.mousePosition.y - 10.0f, screenPoint.z));
-			held = true;
+			if(!selected){
+				rigidbody.isKinematic = true;
+				screenPoint = Camera.main.WorldToScreenPoint(transform.position);
+				offset = transform.position - Camera.main.ScreenToWorldPoint(
+					new Vector3(Input.mousePosition.x, Input.mousePosition.y - 20.0f, screenPoint.z));
+				held = true;
+			}
+			else{
+				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+				gameObjectOffsets = new Dictionary<String, Vector3>();
+				gameObjectScreenPoints = new Dictionary<String, Vector3>();
+				for(int i = 0; i < allMolecules.Length; i++){
+					GameObject currAtom = allMolecules[i];
+					Atom atomScript = currAtom.GetComponent<Atom>();
+					if(atomScript.selected){
+						currAtom.rigidbody.isKinematic = true;
+						Vector3 pointOnScreen = Camera.main.WorldToScreenPoint(currAtom.transform.position);
+						Vector3 atomOffset = currAtom.transform.position - Camera.main.ScreenToWorldPoint(
+							new Vector3(Input.mousePosition.x, Input.mousePosition.y - 20.0f, pointOnScreen.z));
+						atomScript.held = true;
+						gameObjectOffsets.Add(currAtom.name, atomOffset);
+						gameObjectScreenPoints.Add(currAtom.name, pointOnScreen);
+					}
+				}
+			}
+
 		}
 	}
 
 	void OnMouseDrag(){
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
-			if((lastMousePosition - Input.mousePosition).magnitude > 0 && !doubleTapped){
-				Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
-				Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-				CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
-				transform.position = curPosition;
-				mouseDelta = Input.mousePosition - lastMousePosition;
+			if(!selected){
+				if((lastMousePosition - Input.mousePosition).magnitude > 0 && !doubleTapped){
+					Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
+					Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
+					CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
+					transform.position = curPosition;
+				}
+
+				float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
+				Quaternion cameraRotation = Camera.main.transform.rotation;
+				transform.position += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
+				screenPoint += new Vector3(0.0f, 0.0f, deltaZ);
 			}
+			else{
+				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+				for(int i = 0; i < allMolecules.Length; i++){
+					GameObject currAtom = allMolecules[i];
+					Atom atomScript = currAtom.GetComponent<Atom>();
+					if((lastMousePosition - Input.mousePosition).magnitude > 0 && !atomScript.doubleTapped && atomScript.selected){
+						Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
+						Vector3 currOffset = gameObjectOffsets[currAtom.name];
+						Vector3 objScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, currScreenPoint.z);
+						Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
+						currAtom.transform.position = curPosition;
+					}
+					//add z scrolling here
+				}
+			}
+			mouseDelta = Input.mousePosition - lastMousePosition;
 			lastMousePosition = Input.mousePosition;
-
-
-			float deltaZ = Input.GetAxis("Mouse ScrollWheel");
-			Quaternion cameraRotation = Camera.main.transform.rotation;
-			transform.position += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
-			screenPoint += new Vector3(0.0f, 0.0f, deltaZ);
-
-
 		}
 
 	}
 
 	void OnMouseUp (){
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
-			//Quaternion cameraRotation = Camera.main.transform.rotation;
-			rigidbody.isKinematic = false;
-			//rigidbody.AddForce (cameraRotation * mouseDelta * 50.0f);
-			held = false;
+			if(!selected){
+				rigidbody.isKinematic = false;
+				held = false;
+			}
+			else{
+				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+				for(int i = 0; i < allMolecules.Length; i++){
+					GameObject currAtom = allMolecules[i];
+					Atom atomScript = currAtom.GetComponent<Atom>();
+					if(atomScript.selected){
+						currAtom.rigidbody.isKinematic = false;
+						atomScript.held = false;
+					}
+				}
+			}
 		}
 	}
 }
