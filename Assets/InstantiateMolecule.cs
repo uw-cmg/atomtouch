@@ -22,6 +22,9 @@ public class InstantiateMolecule : MonoBehaviour {
 
 	public Texture garbageTexture;
 	public Texture redXTexture;
+
+	public Texture touchIcon;
+	public Texture clickIcon;
 	
 	private bool clicked = false;
 	private float startTime = 0.0f;
@@ -43,6 +46,19 @@ public class InstantiateMolecule : MonoBehaviour {
 
 		if (sliderControls != null) {
 			GUI.skin = sliderControls;
+		}
+
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			if(StaticVariables.touchScreen){
+				if(GUI.Button(new Rect(Screen.width - 165, 20, 50, 50), touchIcon)){
+					StaticVariables.touchScreen = false;
+				}
+			}
+			else{
+				if(GUI.Button(new Rect(Screen.width - 165, 20, 50, 50), clickIcon)){
+					StaticVariables.touchScreen = true;
+				}
+			}
 		}
 
 		GUI.Label (new Rect (25, 25, 250, 20), "Temperature: " + TemperatureCalc.desiredTemperature);

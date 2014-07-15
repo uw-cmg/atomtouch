@@ -33,4 +33,6 @@ public class StaticVariables {
 	//Time scale
 	public static float timeScale = 1.0f; //1.0f;
 
+	public static bool touchScreen = true;
+
 }
