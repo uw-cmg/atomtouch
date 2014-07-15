@@ -46,13 +46,13 @@ public class InstantiateMolecule : MonoBehaviour {
 		}
 
 		GUI.Label (new Rect (25, 25, 250, 20), "Temperature: " + TemperatureCalc.desiredTemperature);
-		float newTemp = GUI.VerticalSlider (new Rect (75, 55, 30, (Screen.height - 135)), TemperatureCalc.desiredTemperature, StaticVariables.tempRangeLow, StaticVariables.tempRangeHigh);
+		float newTemp = GUI.VerticalSlider (new Rect (75, 55, 30, (Screen.height - 135)), TemperatureCalc.desiredTemperature, StaticVariables.tempRangeHigh, StaticVariables.tempRangeLow);
 		if (newTemp != SphereScript.desiredTemperature) {
 			TemperatureCalc.desiredTemperature = newTemp;
 		}
 
 		GUI.Label (new Rect (Screen.width - 100, 25, 250, 20), "Drag: " + allMolecules[0].rigidbody.drag);
-		float newDrag = GUI.VerticalSlider (new Rect (Screen.width - 75, 55, 30, (Screen.height - 135)), allMolecules[0].rigidbody.drag, 0.0f, 30.0f);
+		float newDrag = GUI.VerticalSlider (new Rect (Screen.width - 75, 55, 30, (Screen.height - 135)), allMolecules[0].rigidbody.drag, 30.0f, 0.0f);
 		for (int i = 0; i < allMolecules.Length; i++) {
 			allMolecules[i].rigidbody.drag = newDrag;
 		}
@@ -142,7 +142,6 @@ public class InstantiateMolecule : MonoBehaviour {
 			if(atomScript.held){
 				holdingAtom = true;
 				atomBeingHeld = allMolecules[i];
-				break;
 			}
 			if(atomScript.doubleTapped){
 				if(GUI.Button(new Rect(455, Screen.height - 75, 75, 75), redXTexture)){
