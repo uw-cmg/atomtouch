@@ -48,16 +48,14 @@ public class InstantiateMolecule : MonoBehaviour {
 			GUI.skin = sliderControls;
 		}
 
-		if (Application.platform == RuntimePlatform.IPhonePlayer) {
-			if(StaticVariables.touchScreen){
-				if(GUI.Button(new Rect(Screen.width - 165, 20, 50, 50), touchIcon)){
-					StaticVariables.touchScreen = false;
-				}
+		if(StaticVariables.touchScreen){
+			if(GUI.Button(new Rect(Screen.width - 165, 20, 50, 50), touchIcon)){
+				StaticVariables.touchScreen = false;
 			}
-			else{
-				if(GUI.Button(new Rect(Screen.width - 165, 20, 50, 50), clickIcon)){
-					StaticVariables.touchScreen = true;
-				}
+		}
+		else{
+			if(GUI.Button(new Rect(Screen.width - 165, 20, 50, 50), clickIcon)){
+				StaticVariables.touchScreen = true;
 			}
 		}
 
