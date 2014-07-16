@@ -4,7 +4,8 @@ using System;
 
 public class Copper : Atom {
 
-	private Color copperColor;
+	private Color currentColor;
+	private Color copperColor = new Color (.7216f, .451f, 0.2f, 1.0f);
 
 	protected override float epsilon
 	{
@@ -23,19 +24,28 @@ public class Copper : Atom {
 
 	protected override Color color {
 		get {
-			return copperColor;
+			return currentColor;
 		}
 	}
 
 	protected override void ChangeColor (bool selected){
 		if (selected) {
-			copperColor = new Color(0.0f, 1.0f, 0.0f);
+			currentColor = new Color(0.0f, 1.0f, 0.0f);
 		}
 		else{
-			copperColor = new Color (.7216f, .451f, 0.2f, 1.0f);
+			currentColor = copperColor;
 		}
 	}
-	
+
+	protected override void ChangeIntersection (bool intersected){
+		if (intersected) {
+			currentColor = new Color(1.0f, 0.0f, 0.0f);
+		}
+		else{
+			currentColor = copperColor;
+		}
+	}
+
 	void Start () {
 		ChangeColor (false);
 		gameObject.transform.localScale = new Vector3(sigma * .5f, sigma * .5f, sigma * .5f);

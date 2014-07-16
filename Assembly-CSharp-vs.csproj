@@ -57,6 +57,7 @@
      <Compile Include="Assets\StaticVariables.cs" />
      <Compile Include="Assets\TemperatureCalc.cs" />
      <Compile Include="Assets\VisualizeInteraction.cs" />
+     <Compile Include="Assets\ZPlaneTrigger.cs" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Particle Shaders\Mobile Multiply Culled.shader" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Miscellaneous Shaders\Mobile Background.shader" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Vertex Colored Shaders\Mobile Transparent Vertex Color.shader" />

@@ -28,6 +28,10 @@ public abstract class Atom : MonoBehaviour
 	private Dictionary<String, Vector3> gameObjectOffsets;
 	private Dictionary<String, Vector3> gameObjectScreenPoints;
 
+	//variables for plane that is aligned with z-axis
+	public GameObject plane;
+	private GameObject zPlane;
+
 	//variables for (defunct) bounding sphere
 	private bool reflecting = false;
 	private Vector3 reflectingVelocity;
@@ -41,6 +45,11 @@ public abstract class Atom : MonoBehaviour
 	protected abstract float massamu{ get; } //amu
 	protected abstract Color color { get; }
 	protected abstract void ChangeColor (bool selected);
+	protected abstract void ChangeIntersection (bool intersected);
+
+	public void ChangeAtomIntersection(bool intersected){
+		ChangeIntersection (intersected);
+	}
 
 	public Color GetColor(){
 		return color;
@@ -127,6 +136,13 @@ public abstract class Atom : MonoBehaviour
 		if (doubleTapped) {
 			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 			cameraScript.setCameraCoordinates(transform);
+		}
+		if (zPlane != null) {
+			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
+			//Quaternion cameraRotation = Camera.main.transform.rotation;
+			//Quaternion backPlaneRotation = Quaternion.Euler (270.0f, 0.0f, 0.0f);
+			//zPlane.transform.rotation *= cameraRotation;
+			zPlane.transform.position = new Vector3 (cameraScript.centerPos.x, cameraScript.centerPos.y, transform.position.z);
 		}
 	}
 
@@ -341,6 +357,15 @@ public abstract class Atom : MonoBehaviour
 					offset = transform.position - Camera.main.ScreenToWorldPoint(
 						new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, screenPoint.z));
 					held = true;
+
+					CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
+					Quaternion cameraRotation = Camera.main.transform.rotation;
+					Quaternion backPlaneRotation = Quaternion.Euler (270.0f, 0.0f, 0.0f);
+					Vector3 backPlanePos = new Vector3 (cameraScript.centerPos.x, cameraScript.centerPos.y, transform.position.z);
+					zPlane = Instantiate (plane, backPlanePos, backPlaneRotation) as GameObject;
+					zPlane.transform.localScale = new Vector3 (cameraScript.width / 10.0f, cameraScript.depth / 10.0f, cameraScript.height / 10.0f);
+					ZPlaneTrigger zPlaneTrigger = zPlane.GetComponent<ZPlaneTrigger>();
+					zPlaneTrigger.SetClickedAtom(gameObject);
 				}
 				else{
 					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
@@ -425,10 +450,12 @@ public abstract class Atom : MonoBehaviour
 
 	void OnMouseUp (){
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
+			ChangeAllIntersections();
 			if(StaticVariables.touchScreen){
 				if(!selected){
 					rigidbody.isKinematic = false;
 					held = false;
+					Destroy(zPlane);
 				}
 				else{
 					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
@@ -466,6 +493,15 @@ public abstract class Atom : MonoBehaviour
 			position.z = cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer;
 		}
 		return position;
+	}
+
+	void ChangeAllIntersections(){
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for(int i = 0; i < allMolecules.Length; i++){
+			GameObject currAtom = allMolecules[i];
+			Atom atomScript = currAtom.GetComponent<Atom>();
+			atomScript.ChangeAtomIntersection(false);
+		}
 	}
 
 }

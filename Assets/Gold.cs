@@ -4,7 +4,8 @@ using System;
 
 public class Gold : Atom
 {
-	private Color goldColor;
+	private Color currentColor;
+	private Color goldColor = new Color (1.0f, .8431f, 0.0f, 1.0f);
 
 	protected override float epsilon
 	{
@@ -23,16 +24,25 @@ public class Gold : Atom
 
 	protected override Color color {
 		get {
-			return goldColor;
+			return currentColor;
 		}
 	}
 
 	protected override void ChangeColor (bool selected){
 		if (selected) {
-			goldColor = new Color(0.0f, 1.0f, 0.0f);
+			currentColor = new Color(0.0f, 1.0f, 0.0f);
 		}
 		else{
-			goldColor = new Color(1.0f, .8431f, 0.0f, 1.0f);
+			currentColor = goldColor;
+		}
+	}
+
+	protected override void ChangeIntersection (bool intersected){
+		if (intersected) {
+			currentColor = new Color(1.0f, 0.0f, 0.0f);
+		}
+		else{
+			currentColor = goldColor;
 		}
 	}
 	

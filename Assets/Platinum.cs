@@ -4,7 +4,8 @@ using System;
 
 public class Platinum : Atom {
 
-	private Color platinumColor;
+	private Color currentColor;
+	private Color platinumColor = new Color (.898f, .8941f, 0.8863f, 1.0f);
 
 	protected override float epsilon
 	{
@@ -32,7 +33,16 @@ public class Platinum : Atom {
 			platinumColor = new Color(0.0f, 1.0f, 0.0f);
 		}
 		else{
-			platinumColor = new Color(.898f, .8941f, 0.8863f, 1.0f);
+			platinumColor = platinumColor;
+		}
+	}
+
+	protected override void ChangeIntersection (bool intersected){
+		if (intersected) {
+			currentColor = new Color(1.0f, 0.0f, 0.0f);
+		}
+		else{
+			currentColor = platinumColor;
 		}
 	}
 
