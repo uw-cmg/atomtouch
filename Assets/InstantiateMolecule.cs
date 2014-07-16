@@ -25,6 +25,7 @@ public class InstantiateMolecule : MonoBehaviour {
 
 	public Texture touchIcon;
 	public Texture clickIcon;
+	public Texture cameraTexture;
 	
 	private bool clicked = false;
 	private float startTime = 0.0f;
@@ -57,6 +58,11 @@ public class InstantiateMolecule : MonoBehaviour {
 			if(GUI.Button(new Rect(Screen.width - 165, 20, 50, 50), clickIcon)){
 				StaticVariables.touchScreen = true;
 			}
+		}
+
+		if(GUI.Button(new Rect(Screen.width - 225, 20, 50, 50), cameraTexture)){
+			Camera.main.transform.position = new Vector3(0.0f, 0.0f, -26.0f);
+			Camera.main.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 		}
 
 		GUI.Label (new Rect (25, 25, 250, 20), "Temperature: " + TemperatureCalc.desiredTemperature);
@@ -167,28 +173,16 @@ public class InstantiateMolecule : MonoBehaviour {
 			}
 		}
 
-		
-		if (Application.platform == RuntimePlatform.IPhonePlayer && Input.touchCount == 0 && destroyAtom) {
-			Destroy(atomToDelete);
-			destroyAtom = false;
-		}
-		
-		if (holdingAtom && Input.mousePosition.x < 435 && Input.mousePosition.x > 360 && Input.mousePosition.y < 75 && Input.mousePosition.y > 0) {
-			Color guiColor = Color.red;
-			guiColor.a = 0.25f;
-			GUI.color = guiColor;
-			if(Application.platform != RuntimePlatform.IPhonePlayer){
-				if(Input.GetMouseButtonUp(0) && atomBeingHeld != null){
-					Destroy(atomBeingHeld);
+
+		if (GUI.Button (new Rect (360, Screen.height - 75, 75, 75), garbageTexture)) {
+			for(int i = 0; i < allMolecules.Length; i++){
+				GameObject currAtom = allMolecules[i];
+				Atom atomScript = currAtom.GetComponent<Atom>();
+				if(atomScript.selected){
+					Destroy(currAtom);
 				}
 			}
-			else if(Input.touchCount == 1){
-				destroyAtom = true;
-				atomToDelete = atomBeingHeld;
-			}
 		}
-		
-		GUI.DrawTexture (new Rect (360, Screen.height - 75, 75, 75), garbageTexture);
 
 		
 		if (Input.GetMouseButtonUp (0)) {

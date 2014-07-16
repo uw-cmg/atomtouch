@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class CameraScript : MonoBehaviour {
 
@@ -14,21 +15,22 @@ public class CameraScript : MonoBehaviour {
 	public Vector3 centerPos = new Vector3(0.0f, 0.0f, 0.0f);
 	public float errorBuffer = 0.5f;
 	private Vector2 touchPrevPos;
-
+	private bool rotateAroundY = false;
+	private bool first = true;
+	public float width = 20.0f;
+	public float height = 20.0f;
+	public float depth = 20.0f;
+	
 	void Start () {
-
-		float width = 20.0f;
-		float height = 20.0f;
-		float depth = 20.0f;
-
+	
 		//create the atoms
 		for (int i = 0; i < numMolecules; i++) {
-			Vector3 position = new Vector3(centerPos.x + (Random.Range(-(width/2.0f) + errorBuffer, (width/2.0f) - errorBuffer)), centerPos.y + (Random.Range(-(height/2.0f) + errorBuffer, (height/2.0f) - errorBuffer)), centerPos.z + (Random.Range(-(depth/2.0f) + errorBuffer, (depth/2.0f) - errorBuffer)));
+			Vector3 position = new Vector3(centerPos.x + (UnityEngine.Random.Range(-(width/2.0f) + errorBuffer, (width/2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range(-(height/2.0f) + errorBuffer, (height/2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range(-(depth/2.0f) + errorBuffer, (depth/2.0f) - errorBuffer)));
 			Quaternion rotation = Quaternion.Euler(0, 0, 0);
 			Instantiate(molecules[moleculeToSpawn].rigidbody, position, rotation);
 		}
 
-//		//create the box
+		//create the box
 		Quaternion bottonPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 0.0f);
 		Vector3 bottomPlanePos = new Vector3 (centerPos.x, centerPos.y - (height/2.0f), centerPos.z);
 		GameObject bottomPlane = Instantiate (plane, bottomPlanePos, bottonPlaneRotation) as GameObject;
@@ -83,6 +85,9 @@ public class CameraScript : MonoBehaviour {
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			if(Input.touchCount == 1){
 				Touch touch = Input.GetTouch (0);
+				if(touch.phase == TouchPhase.Canceled || touch.phase == TouchPhase.Ended){
+					first = true;
+				}
 				if (touch.phase == TouchPhase.Moved) {
 					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 					bool holdingAtom = false;
@@ -97,20 +102,39 @@ public class CameraScript : MonoBehaviour {
 					InstantiateMolecule instan = Camera.main.GetComponent<InstantiateMolecule>();
 					
 					if(!holdingAtom && !instan.addGraphicCopper && !instan.addGraphicGold && !instan.addGraphicPlatinum){
+						Quaternion cameraRotation = Camera.main.transform.rotation;
 						Vector2 touchPrevPos = touch.position - touch.deltaPosition;
 						float deltaMagnitudeDiffX = touch.position.x - touchPrevPos.x;
 						float deltaTouchX = deltaMagnitudeDiffX / 10.0f;
-						Camera.main.transform.RotateAround(centerPos, Vector3.up, deltaTouchX);
 
 						//for rotation over the x-axis
-//						float deltaMagnitudeDiffY = touch.position.y - touchPrevPos.y;
-//						float deltaTouchY = deltaMagnitudeDiffY / 10.0f;
-//						Camera.main.transform.RotateAround(centerPos, Vector3.right, deltaTouchY);
+						float deltaMagnitudeDiffY = touch.position.y - touchPrevPos.y;
+						float deltaTouchY = deltaMagnitudeDiffY / 10.0f;
+
+						if(first && (Math.Abs(deltaTouchX) > .5f || Math.Abs(deltaTouchY) > .5f)){
+							if(Math.Abs(deltaTouchX) > Math.Abs(deltaTouchY)){
+								rotateAroundY = true;
+							}
+							else{
+								rotateAroundY = false;
+							}
+							first = false;
+						}
+
+						if(rotateAroundY){
+							Camera.main.transform.RotateAround(centerPos, cameraRotation * Vector3.up, deltaTouchX);
+						}
+						else{
+							Camera.main.transform.RotateAround(centerPos, cameraRotation * Vector3.right, deltaTouchY);
+						}
 					}
 				}
 			}
 		}
 		else{
+			if(Input.GetMouseButtonUp(0)){
+				first = true;
+			}
 			if(Input.GetMouseButton(0)){
 				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 				bool holdingAtom = false;
@@ -124,16 +148,33 @@ public class CameraScript : MonoBehaviour {
 				
 				InstantiateMolecule instan = Camera.main.GetComponent<InstantiateMolecule>();
 				if(!holdingAtom && !instan.addGraphicCopper && !instan.addGraphicGold && !instan.addGraphicPlatinum){
+					Quaternion cameraRotation = Camera.main.transform.rotation;
 					float deltaMagnitudeDiffX = Input.mousePosition.x - touchPrevPos.x;
 					float deltaTouchX = deltaMagnitudeDiffX / 10.0f;
-					Camera.main.transform.RotateAround(centerPos, Vector3.up, deltaTouchX);
 
 					//for rotation over the x-axis
-//					float deltaMagnitudeDiffY = Input.mousePosition.y - touchPrevPos.y;
-//					float deltaTouchY = deltaMagnitudeDiffY / 10.0f;
-//					Camera.main.transform.RotateAround(centerPos, Vector3.right, deltaTouchY);
+					float deltaMagnitudeDiffY = Input.mousePosition.y - touchPrevPos.y;
+					float deltaTouchY = deltaMagnitudeDiffY / 10.0f;
+
+					if(first && (Math.Abs(deltaTouchX) > .5f || Math.Abs(deltaTouchY) > .5f)){
+						if(Math.Abs(deltaTouchX) > Math.Abs(deltaTouchY)){
+							rotateAroundY = true;
+						}
+						else{
+							rotateAroundY = false;
+						}
+						first = false;
+					}
+
+					if(rotateAroundY){
+						Camera.main.transform.RotateAround(centerPos, cameraRotation * Vector3.up, deltaTouchX);
+					}
+					else{
+						Camera.main.transform.RotateAround(centerPos, cameraRotation * Vector3.right, deltaTouchY);
+					}
 				}
 			}
+
 			touchPrevPos = Input.mousePosition;
 		}
 		

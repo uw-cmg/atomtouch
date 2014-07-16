@@ -111,17 +111,17 @@ public abstract class Atom : MonoBehaviour
 		}
 		else{
 			if(Input.GetMouseButtonDown(0) && !selected){
+				if((Time.time - lastTapTime) < tapTime){
+					ResetDoubleTapped();
+					doubleTapped = true;
+				}
 				Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
 				RaycastHit hitInfo;
 				if (Physics.Raycast( ray, out hitInfo ) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
-					if((Time.time - lastTapTime) < tapTime){
-						ResetDoubleTapped();
-						doubleTapped = true;
-					}
 					lastTapTime = Time.time;
 				}
 			}
-
+			
 			HandleRightClick();
 		}
 		if (doubleTapped) {
@@ -194,7 +194,9 @@ public abstract class Atom : MonoBehaviour
 					CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 					if(moleculeToMove != null){
 						Quaternion cameraRotation = Camera.main.transform.rotation;
-						moleculeToMove.transform.position += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
+						Vector3 projectPosition = moleculeToMove.transform.position;
+						projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
+						moleculeToMove.transform.position = CheckPosition(projectPosition);
 						screenPoint += new Vector3(0.0f, 0.0f, deltaTouch2);
 					}
 				}
@@ -206,7 +208,9 @@ public abstract class Atom : MonoBehaviour
 					for(int i = 0; i < allMolecules.Length; i++){
 						GameObject currAtom = allMolecules[i];
 						Quaternion cameraRotation = Camera.main.transform.rotation;
-						currAtom.transform.position += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
+						Vector3 projectPosition = currAtom.transform.position;
+						projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
+						currAtom.transform.position = CheckPosition(projectPosition);
 						if(gameObjectScreenPoints != null){
 							gameObjectScreenPoints[currAtom.name] += new Vector3(0.0f, 0.0f, deltaTouch2);
 						}
@@ -233,14 +237,14 @@ public abstract class Atom : MonoBehaviour
 		Touch touch = Input.GetTouch(0);
 		
 		if(touch.phase == TouchPhase.Began){
+			if((Time.time - lastTapTime) < tapTime){
+				ResetDoubleTapped();
+				doubleTapped = true;
+			}
 			Ray ray = Camera.main.ScreenPointToRay( Input.touches[0].position );
 			RaycastHit hitInfo;
 			if (Physics.Raycast( ray, out hitInfo ) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject)
 			{
-				if((Time.time - lastTapTime) < tapTime){
-					ResetDoubleTapped();
-					doubleTapped = true;
-				}
 				if(!selected){
 					moleculeToMove = gameObject;
 					screenPoint = Camera.main.WorldToScreenPoint(transform.position);
@@ -277,6 +281,7 @@ public abstract class Atom : MonoBehaviour
 					Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
 					mouseDelta = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - lastMousePosition;
 					lastMousePosition = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f);
+					curPosition = CheckPosition(curPosition);
 					moleculeToMove.transform.position = curPosition;
 				}
 			}
@@ -292,6 +297,7 @@ public abstract class Atom : MonoBehaviour
 								Vector3 currOffset = gameObjectOffsets[currAtom.name];
 								Vector3 objScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, currScreenPoint.z);
 								Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
+								curPosition = CheckPosition(curPosition);
 								currAtom.transform.position = curPosition;
 							}
 						}
@@ -360,9 +366,10 @@ public abstract class Atom : MonoBehaviour
 				selected = !selected;
 				ChangeColor(selected);
 			}
+			
 		}
 	}
-
+	
 	void OnMouseDrag(){
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
 
@@ -372,12 +379,15 @@ public abstract class Atom : MonoBehaviour
 						Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
 						Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
 						CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
+						curPosition = CheckPosition(curPosition);
 						transform.position = curPosition;
 					}
 					
 					float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
 					Quaternion cameraRotation = Camera.main.transform.rotation;
-					transform.position += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
+					Vector3 projectPosition = transform.position;
+					projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
+					transform.position = CheckPosition(projectPosition);
 					screenPoint += new Vector3(0.0f, 0.0f, deltaZ);
 				}
 				else{
@@ -391,16 +401,20 @@ public abstract class Atom : MonoBehaviour
 							Vector3 currOffset = gameObjectOffsets[currAtom.name];
 							Vector3 objScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, currScreenPoint.z);
 							Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
+							curPosition = CheckPosition(curPosition);
 							currAtom.transform.position = curPosition;
 						}
 						
 						if(atomScript.selected){
 							float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
 							Quaternion cameraRotation = Camera.main.transform.rotation;
-							currAtom.transform.position += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
+							Vector3 projectPosition = currAtom.transform.position;
+							projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
+							currAtom.transform.position = CheckPosition(projectPosition);
 							gameObjectScreenPoints[currAtom.name] += new Vector3(0.0f, 0.0f, deltaZ);
 						}
 					}
+
 				}
 			}
 			mouseDelta = Input.mousePosition - lastMousePosition;
@@ -430,5 +444,29 @@ public abstract class Atom : MonoBehaviour
 			}
 		}
 	}
+
+	Vector3 CheckPosition(Vector3 position){
+		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
+		if (position.y > cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer) {
+			position.y = cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer;
+		}
+		if (position.y < cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer) {
+			position.y = cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer;;
+		}
+		if (position.x > cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer) {
+			position.x = cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer;
+		}
+		if (position.x < cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer) {
+			position.x = cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer;
+		}
+		if (position.z > cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer) {
+			position.z = cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer;
+		}
+		if (position.z < cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer) {
+			position.z = cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer;
+		}
+		return position;
+	}
+
 }
 
