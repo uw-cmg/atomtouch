@@ -1,18 +1,18 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Atom.cs">
     <Files>
+      <File FileName="Assets/Atom.cs" Line="504" Column="4" />
       <File FileName="Assets/TemperatureCalc.cs" Line="1" Column="1" />
-      <File FileName="Assets/InstantiateMolecule.cs" Line="177" Column="81" />
+      <File FileName="Assets/InstantiateMolecule.cs" Line="174" Column="4" />
       <File FileName="Assets/PinchZoom.cs" Line="1" Column="1" />
       <File FileName="Assets/CameraScript.cs" Line="48" Column="1" />
       <File FileName="Assets/StaticVariables.cs" Line="1" Column="1" />
-      <File FileName="Assets/Copper.cs" Line="1" Column="1" />
-      <File FileName="Assets/Gold.cs" Line="1" Column="1" />
-      <File FileName="Assets/Platinum.cs" Line="1" Column="1" />
+      <File FileName="Assets/Copper.cs" Line="47" Column="3" />
+      <File FileName="Assets/Gold.cs" Line="46" Column="4" />
+      <File FileName="Assets/Platinum.cs" Line="47" Column="3" />
       <File FileName="Assets/VisualizeInteraction.cs" Line="1" Column="1" />
-      <File FileName="Assets/ZPlaneTrigger.cs" Line="19" Column="1" />
-      <File FileName="Assets/Atom.cs" Line="362" Column="73" />
+      <File FileName="Assets/ZPlaneTrigger.cs" Line="24" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

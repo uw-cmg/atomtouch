@@ -51,6 +51,10 @@ public abstract class Atom : MonoBehaviour
 		ChangeIntersection (intersected);
 	}
 
+	public void ChangeAtomColor(bool selected){
+		ChangeColor (selected);
+	}
+
 	public Color GetColor(){
 		return color;
 	}
@@ -500,7 +504,7 @@ public abstract class Atom : MonoBehaviour
 		for(int i = 0; i < allMolecules.Length; i++){
 			GameObject currAtom = allMolecules[i];
 			Atom atomScript = currAtom.GetComponent<Atom>();
-			atomScript.ChangeAtomIntersection(false);
+			atomScript.ChangeColor(atomScript.selected);
 		}
 	}
 

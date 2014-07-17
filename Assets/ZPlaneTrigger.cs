@@ -19,7 +19,7 @@ public class ZPlaneTrigger : MonoBehaviour {
 	void OnTriggerExit(Collider other){
 		if (other.gameObject != clickedAtom) {
 			Atom atomScript = other.gameObject.GetComponent<Atom>();
-			atomScript.ChangeAtomIntersection(false);
+			atomScript.ChangeAtomColor(atomScript.selected);
 		}
 	}
 	
