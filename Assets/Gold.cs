@@ -50,6 +50,7 @@ public class Gold : Atom
 	{
 		ChangeColor (false);
 		gameObject.transform.localScale = new Vector3(sigma * .5f, sigma * .5f, sigma * .5f);
+		//gameObject.rigidbody.velocity = new Vector3(0.0f, 5.0f, 0.0f);
 	}
 }
 

@@ -49,6 +49,7 @@
      <Compile Include="Assets\Atom.cs" />
      <Compile Include="Assets\CameraScript.cs" />
      <Compile Include="Assets\Copper.cs" />
+     <Compile Include="Assets\CreateEnvironment.cs" />
      <Compile Include="Assets\Gold.cs" />
      <Compile Include="Assets\InstantiateMolecule.cs" />
      <Compile Include="Assets\PinchZoom.cs" />

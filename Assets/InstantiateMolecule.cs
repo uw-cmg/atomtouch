@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class InstantiateMolecule : MonoBehaviour {
 
@@ -33,6 +34,7 @@ public class InstantiateMolecule : MonoBehaviour {
 	public float holdTime = 0.05f;
 	private bool destroyAtom = false;
 	private GameObject atomToDelete;
+	public bool changingTemp = false;
 
 
 	void Start(){
@@ -65,16 +67,11 @@ public class InstantiateMolecule : MonoBehaviour {
 			Camera.main.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 		}
 
-		GUI.Label (new Rect (25, 25, 250, 20), "Temperature: " + TemperatureCalc.desiredTemperature);
+		GUI.Label (new Rect (25, 25, 350, 20), "Temperature: " + TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 272.15, 2)).ToString() + "C)");
 		float newTemp = GUI.VerticalSlider (new Rect (75, 55, 30, (Screen.height - 135)), TemperatureCalc.desiredTemperature, StaticVariables.tempRangeHigh, StaticVariables.tempRangeLow);
-		if (newTemp != SphereScript.desiredTemperature) {
+		if (newTemp != TemperatureCalc.desiredTemperature) {
 			TemperatureCalc.desiredTemperature = newTemp;
-		}
-
-		GUI.Label (new Rect (Screen.width - 100, 25, 250, 20), "Drag: " + allMolecules[0].rigidbody.drag);
-		float newDrag = GUI.VerticalSlider (new Rect (Screen.width - 75, 55, 30, (Screen.height - 135)), allMolecules[0].rigidbody.drag, 30.0f, 0.0f);
-		for (int i = 0; i < allMolecules.Length; i++) {
-			allMolecules[i].rigidbody.drag = newDrag;
+			changingTemp = true;
 		}
 
 		GUI.Label (new Rect (Screen.width - 100, (Screen.height - 50), 250, 20), "Time: " + Time.time);
@@ -165,11 +162,14 @@ public class InstantiateMolecule : MonoBehaviour {
 			}
 			if(atomScript.doubleTapped){
 				if(GUI.Button(new Rect(455, Screen.height - 75, 75, 75), redXTexture)){
-					CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
-					cameraScript.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
+					CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
+					createEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
 					atomScript.doubleTapped = false;
 					Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
 				}
+
+				DisplayAtomProperties(allMolecules[i]);
+
 			}
 		}
 
@@ -211,6 +211,7 @@ public class InstantiateMolecule : MonoBehaviour {
 			addGraphicCopper = false;
 			addGraphicGold = false;
 			addGraphicPlatinum = false;
+			changingTemp = false;
 			first = true;
 			clicked = false;
 			startTime = 0.0f;
@@ -218,25 +219,50 @@ public class InstantiateMolecule : MonoBehaviour {
 
 	}
 
+	void DisplayAtomProperties(GameObject currAtom){
+
+		String elementName = "";
+		String elementSymbol = "";
+
+		//probably a better way to do this via polymorphism
+		if (currAtom.GetComponent<Copper> () != null) {
+			elementName = "Copper";
+			elementSymbol = "Cu";
+		}
+		else if (currAtom.GetComponent<Gold> () != null) {
+			elementName = "Gold";
+			elementSymbol = "Au";
+		}
+		else if (currAtom.GetComponent<Platinum> () != null) {
+			elementName = "Platinum";
+			elementSymbol = "Pt";
+		}
+
+		GUI.Label (new Rect (Screen.width - 225, 100, 225, 30), "Element Name: " + elementName);
+		GUI.Label (new Rect (Screen.width - 225, 130, 225, 30), "Element Symbol: " + elementSymbol);
+		GUI.Label (new Rect (Screen.width - 225, 160, 225, 30), "Position: " + currAtom.transform.position);
+
+	}
+
 	Vector3 CheckPosition(Vector3 position){
-		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
-		if (position.y > cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer) {
-			position.y = cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer;
+		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		if (position.y > createEnvironment.centerPos.y + (createEnvironment.height/2.0f) - createEnvironment.errorBuffer) {
+			position.y = createEnvironment.centerPos.y + (createEnvironment.height/2.0f) - createEnvironment.errorBuffer;
 		}
-		if (position.y < cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer) {
-			position.y = cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer;;
+		if (position.y < createEnvironment.centerPos.y - (createEnvironment.height/2.0f) + createEnvironment.errorBuffer) {
+			position.y = createEnvironment.centerPos.y - (createEnvironment.height/2.0f) + createEnvironment.errorBuffer;;
 		}
-		if (position.x > cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer) {
-			position.x = cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer;
+		if (position.x > createEnvironment.centerPos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer) {
+			position.x = createEnvironment.centerPos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
 		}
-		if (position.x < cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer) {
-			position.x = cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer;
+		if (position.x < createEnvironment.centerPos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer) {
+			position.x = createEnvironment.centerPos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
 		}
-		if (position.z > cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer) {
-			position.z = cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer;
+		if (position.z > createEnvironment.centerPos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer) {
+			position.z = createEnvironment.centerPos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
 		}
-		if (position.z < cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer) {
-			position.z = cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer;
+		if (position.z < createEnvironment.centerPos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer) {
+			position.z = createEnvironment.centerPos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
 		}
 		return position;
 	}

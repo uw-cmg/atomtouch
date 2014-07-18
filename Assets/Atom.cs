@@ -73,7 +73,7 @@ public abstract class Atom : MonoBehaviour
 			}
 		}
 
-		Vector3 force = GetLennardJonesForce (molecules);
+	    Vector3 force = GetLennardJonesForce (molecules);
 		rigidbody.AddForce (force);
 
 		//adjust velocity for the desired temperature of the system
@@ -85,6 +85,7 @@ public abstract class Atom : MonoBehaviour
 		//}
 
 		velocityBeforeCollision = rigidbody.velocity;
+		//print (gameObject.name + " velocityX: " + rigidbody.velocity.x + " velocityY: " + rigidbody.velocity.y + " velocityZ: " + rigidbody.velocity.z);
 	}
 
 	Vector3 GetLennardJonesForce(List<GameObject> objectsInRange){
@@ -183,7 +184,6 @@ public abstract class Atom : MonoBehaviour
 					Vector2 touchOnePrevPos = touch2.position - touch2.deltaPosition;
 					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
 					deltaTouch2 = deltaMagnitudeDiff / 10.0f;
-					CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 					if(moleculeToMove != null){
 						Quaternion cameraRotation = Camera.main.transform.rotation;
 						Vector3 projectPosition = moleculeToMove.transform.position;
@@ -370,7 +370,6 @@ public abstract class Atom : MonoBehaviour
 					if((lastMousePosition - Input.mousePosition).magnitude > 0 && !doubleTapped){
 						Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
 						Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-						CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
 						curPosition = CheckPosition(curPosition);
 						transform.position = curPosition;
 					}
@@ -440,31 +439,34 @@ public abstract class Atom : MonoBehaviour
 	}
 
 	void OnCollisionEnter(Collision other){
-		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
+		//for (int i = 0; i < 100; i++) print ("");
+		//print (gameObject.name + " velocityBeforeCollisionX: " + velocityBeforeCollision.x + " y: " + velocityBeforeCollision.y + " z: " + velocityBeforeCollision.z);
+		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 		GameObject collidedPlane = other.transform.gameObject;
-		Vector3 newVelocity = Vector3.Reflect (velocityBeforeCollision, (cameraScript.centerPos - collidedPlane.transform.position).normalized);
+		//rigidbody.AddForce (Vector3.Reflect (velocityBeforeCollision, (cameraScript.centerPos - collidedPlane.transform.position).normalized), ForceMode.Impulse);
+		Vector3 newVelocity = Vector3.Reflect (velocityBeforeCollision, (createEnvironment.centerPos - collidedPlane.transform.position).normalized);
 		rigidbody.velocity = newVelocity;
 	}
 
 	Vector3 CheckPosition(Vector3 position){
-		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
-		if (position.y > cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer) {
-			position.y = cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer;
+		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		if (position.y > createEnvironment.centerPos.y + (createEnvironment.height/2.0f) - createEnvironment.errorBuffer) {
+			position.y = createEnvironment.centerPos.y + (createEnvironment.height/2.0f) - createEnvironment.errorBuffer;
 		}
-		if (position.y < cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer) {
-			position.y = cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer;;
+		if (position.y < createEnvironment.centerPos.y - (createEnvironment.height/2.0f) + createEnvironment.errorBuffer) {
+			position.y = createEnvironment.centerPos.y - (createEnvironment.height/2.0f) + createEnvironment.errorBuffer;
 		}
-		if (position.x > cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer) {
-			position.x = cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer;
+		if (position.x > createEnvironment.centerPos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer) {
+			position.x = createEnvironment.centerPos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
 		}
-		if (position.x < cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer) {
-			position.x = cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer;
+		if (position.x < createEnvironment.centerPos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer) {
+			position.x = createEnvironment.centerPos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
 		}
-		if (position.z > cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer) {
-			position.z = cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer;
+		if (position.z > createEnvironment.centerPos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer) {
+			position.z = createEnvironment.centerPos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
 		}
-		if (position.z < cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer) {
-			position.z = cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer;
+		if (position.z < createEnvironment.centerPos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer) {
+			position.z = createEnvironment.centerPos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
 		}
 		return position;
 	}
