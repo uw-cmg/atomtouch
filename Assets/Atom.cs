@@ -29,9 +29,7 @@ public abstract class Atom : MonoBehaviour
 	private Dictionary<String, Vector3> gameObjectScreenPoints;
 	private Vector3 velocityBeforeCollision;
 
-	//variables for plane that is aligned with z-axis
-	public GameObject plane;
-	private GameObject zPlane;
+	public Material lineMaterial;
 
 	//variables for (defunct) bounding sphere
 	private bool reflecting = false;
@@ -421,7 +419,6 @@ public abstract class Atom : MonoBehaviour
 				if(!selected){
 					rigidbody.isKinematic = false;
 					held = false;
-					Destroy(zPlane);
 				}
 				else{
 					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
@@ -436,6 +433,55 @@ public abstract class Atom : MonoBehaviour
 				}
 			}
 		}
+	}
+
+	void OnRenderObject(){
+		//print ("OnWillRenderObject()");
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			Atom atomScript = currAtom.GetComponent<Atom>();
+			if(atomScript.held){
+				DrawLineBorders(currAtom);
+			}
+		}
+	}
+
+	void DrawLineBorders(GameObject currAtom){
+
+		print ("attempting to draw border");
+		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
+
+		//x-y plane
+		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), bottomPlanePos.y, currAtom.transform.position.z), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), bottomPlanePos.y, currAtom.transform.position.z),
+		                         Color.red, Color.red, .1f, lineMaterial);
+		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), bottomPlanePos.y, currAtom.transform.position.z), new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), bottomPlanePos.y + createEnvironment.height, currAtom.transform.position.z),
+		                          Color.red, Color.red, .1f, lineMaterial);
+		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), bottomPlanePos.y, currAtom.transform.position.z), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), bottomPlanePos.y + createEnvironment.height, currAtom.transform.position.z),
+		                          Color.red, Color.red, .1f, lineMaterial);
+		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), bottomPlanePos.y + createEnvironment.height, currAtom.transform.position.z), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), bottomPlanePos.y + createEnvironment.height, currAtom.transform.position.z),
+		                          Color.red, Color.red, .1f, lineMaterial);
+
+		//x-z plane
+		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)),
+		                          Color.blue, Color.blue, .1f, lineMaterial);
+		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
+		                          Color.blue, Color.blue, .1f, lineMaterial);
+		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
+		                          Color.blue, Color.blue, .1f, lineMaterial);
+		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
+		                          Color.blue, Color.blue, .1f, lineMaterial);
+
+		//y-z plane
+		StaticVariables.DrawLine (new Vector3 (currAtom.transform.position.x, bottomPlanePos.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (currAtom.transform.position.x, bottomPlanePos.y + createEnvironment.height, bottomPlanePos.z - (createEnvironment.depth/2.0f)),
+		                          Color.green, Color.green, .1f, lineMaterial);
+		StaticVariables.DrawLine (new Vector3 (currAtom.transform.position.x, bottomPlanePos.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)), new Vector3 (currAtom.transform.position.x, bottomPlanePos.y + createEnvironment.height, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
+		                          Color.green, Color.green, .1f, lineMaterial);
+		StaticVariables.DrawLine (new Vector3 (currAtom.transform.position.x, bottomPlanePos.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (currAtom.transform.position.x, bottomPlanePos.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
+		                          Color.green, Color.green, .1f, lineMaterial);
+		StaticVariables.DrawLine (new Vector3 (currAtom.transform.position.x, bottomPlanePos.y + createEnvironment.height, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (currAtom.transform.position.x, bottomPlanePos.y + createEnvironment.height, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
+		                          Color.green, Color.green, .1f, lineMaterial);
 	}
 
 	void OnCollisionEnter(Collision other){

@@ -20,7 +20,7 @@ public class CreateEnvironment : MonoBehaviour {
 	private TextMesh bottomText;
 	private TextMesh sideText;
 	private TextMesh depthText;
-	private GameObject bottomPlane;
+	public GameObject bottomPlane;
 	
 	void Start () {
 	
