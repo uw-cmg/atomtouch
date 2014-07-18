@@ -190,18 +190,21 @@ public class InstantiateMolecule : MonoBehaviour {
 			if(addGraphicCopper && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
 				Vector3 curPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 20.0f));
 				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+				curPosition = CheckPosition(curPosition);
 				Instantiate(copperPrefab, curPosition, curRotation);
 			}
 
 			if(addGraphicGold && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
 				Vector3 curPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 20.0f));
 				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+				curPosition = CheckPosition(curPosition);
 				Instantiate(goldPrefab, curPosition, curRotation);
 			}
 
 			if(addGraphicPlatinum && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
 				Vector3 curPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 20.0f));
 				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+				curPosition = CheckPosition(curPosition);
 				Instantiate(platinumPrefab, curPosition, curRotation);
 			}
 			
@@ -215,4 +218,27 @@ public class InstantiateMolecule : MonoBehaviour {
 
 	}
 
+	Vector3 CheckPosition(Vector3 position){
+		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
+		if (position.y > cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer) {
+			position.y = cameraScript.centerPos.y + (cameraScript.height/2.0f) - cameraScript.errorBuffer;
+		}
+		if (position.y < cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer) {
+			position.y = cameraScript.centerPos.y - (cameraScript.height/2.0f) + cameraScript.errorBuffer;;
+		}
+		if (position.x > cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer) {
+			position.x = cameraScript.centerPos.x + (cameraScript.width/2.0f) - cameraScript.errorBuffer;
+		}
+		if (position.x < cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer) {
+			position.x = cameraScript.centerPos.x - (cameraScript.width/2.0f) + cameraScript.errorBuffer;
+		}
+		if (position.z > cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer) {
+			position.z = cameraScript.centerPos.z + (cameraScript.depth/2.0f) - cameraScript.errorBuffer;
+		}
+		if (position.z < cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer) {
+			position.z = cameraScript.centerPos.z - (cameraScript.depth/2.0f) + cameraScript.errorBuffer;
+		}
+		return position;
+	}
+	
 }

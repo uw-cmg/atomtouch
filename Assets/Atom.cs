@@ -27,6 +27,7 @@ public abstract class Atom : MonoBehaviour
 	[HideInInspector]public bool doubleTapped = false;
 	private Dictionary<String, Vector3> gameObjectOffsets;
 	private Dictionary<String, Vector3> gameObjectScreenPoints;
+	private Vector3 velocityBeforeCollision;
 
 	//variables for plane that is aligned with z-axis
 	public GameObject plane;
@@ -83,8 +84,7 @@ public abstract class Atom : MonoBehaviour
 			}
 		//}
 
-		//BoundingSphere ();
-
+		velocityBeforeCollision = rigidbody.velocity;
 	}
 
 	Vector3 GetLennardJonesForce(List<GameObject> objectsInRange){
@@ -141,13 +141,6 @@ public abstract class Atom : MonoBehaviour
 			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 			cameraScript.setCameraCoordinates(transform);
 		}
-		if (zPlane != null) {
-			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
-			//Quaternion cameraRotation = Camera.main.transform.rotation;
-			//Quaternion backPlaneRotation = Quaternion.Euler (270.0f, 0.0f, 0.0f);
-			//zPlane.transform.rotation *= cameraRotation;
-			zPlane.transform.position = new Vector3 (cameraScript.centerPos.x, cameraScript.centerPos.y, transform.position.z);
-		}
 	}
 
 	void HandleTouchSelect(){
@@ -171,27 +164,6 @@ public abstract class Atom : MonoBehaviour
 				selected = !selected;
 				ChangeColor(selected);
 			}
-		}
-	}
-
-	void BoundingSphere(){
-		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
-		if (Vector3.Distance (cameraScript.centerPos, transform.position) > radius) {
-			if(reflecting){
-				if(!rigidbody.isKinematic){
-					rigidbody.velocity = reflectingVelocity;
-				}
-			}
-			else{
-				if(!rigidbody.isKinematic){
-					reflecting = true;
-					reflectingVelocity = Vector3.Reflect(rigidbody.velocity, (cameraScript.centerPos - transform.position).normalized);
-					rigidbody.velocity = reflectingVelocity;
-				}
-			}
-		}
-		else{
-			reflecting = false;
 		}
 	}
 
@@ -361,15 +333,6 @@ public abstract class Atom : MonoBehaviour
 					offset = transform.position - Camera.main.ScreenToWorldPoint(
 						new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, screenPoint.z));
 					held = true;
-
-					CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
-					Quaternion cameraRotation = Camera.main.transform.rotation;
-					Quaternion backPlaneRotation = Quaternion.Euler (270.0f, 0.0f, 0.0f);
-					Vector3 backPlanePos = new Vector3 (cameraScript.centerPos.x, cameraScript.centerPos.y, transform.position.z);
-					zPlane = Instantiate (plane, backPlanePos, backPlaneRotation) as GameObject;
-					zPlane.transform.localScale = new Vector3 (cameraScript.width / 10.0f, cameraScript.depth / 10.0f, cameraScript.height / 10.0f);
-					ZPlaneTrigger zPlaneTrigger = zPlane.GetComponent<ZPlaneTrigger>();
-					zPlaneTrigger.SetClickedAtom(gameObject);
 				}
 				else{
 					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
@@ -474,6 +437,13 @@ public abstract class Atom : MonoBehaviour
 				}
 			}
 		}
+	}
+
+	void OnCollisionEnter(Collision other){
+		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
+		GameObject collidedPlane = other.transform.gameObject;
+		Vector3 newVelocity = Vector3.Reflect (velocityBeforeCollision, (cameraScript.centerPos - collidedPlane.transform.position).normalized);
+		rigidbody.velocity = newVelocity;
 	}
 
 	Vector3 CheckPosition(Vector3 position){

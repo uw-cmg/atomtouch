@@ -77,6 +77,7 @@ public class CameraScript : MonoBehaviour {
 		for (int i = 0; i < allMolecules.Length; i++) {
 			GameObject currAtom = allMolecules[i];
 			currAtom.name = i.ToString();
+			//currAtom.rigidbody.velocity = new Vector3(0.0f, 5.0f, 0.0f);
 		}
 	}
 
