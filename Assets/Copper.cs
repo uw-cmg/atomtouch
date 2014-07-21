@@ -22,13 +22,13 @@ public class Copper : Atom {
 		get { return 63.546f; } //amu
 	}
 
-	protected override Color color {
+	public override Color color {
 		get {
 			return currentColor;
 		}
 	}
 
-	protected override void ChangeColor (bool selected){
+	protected override void SetSelected (bool selected){
 		if (selected) {
 			currentColor = new Color(0.0f, 1.0f, 0.0f);
 		}
@@ -37,17 +37,17 @@ public class Copper : Atom {
 		}
 	}
 
-	protected override void ChangeIntersection (bool intersected){
-		if (intersected) {
-			currentColor = new Color(1.0f, 0.0f, 0.0f);
+	public override void ChangeColor (Color color){
+		if (color == Color.black) {
+			currentColor = copperColor;
 		}
 		else{
-			currentColor = copperColor;
+			currentColor = color;
 		}
 	}
 
 	void Start () {
-		ChangeColor (false);
+		SetSelected (false);
 		gameObject.transform.localScale = new Vector3(sigma * .5f, sigma * .5f, sigma * .5f);
 		//gameObject.rigidbody.velocity = new Vector3(0.0f, 5.0f, 0.0f);
 	}

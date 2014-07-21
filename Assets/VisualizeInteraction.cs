@@ -18,7 +18,7 @@ public class VisualizeInteraction : MonoBehaviour {
 					//draw a line from currAtom to atomNeighbor
 					Atom currAtomScript = currAtom.GetComponent<Atom>();
 					Atom neighAtomScript = atomNeighbor.GetComponent<Atom>();
-					StaticVariables.DrawLine (currAtom.transform.position, atomNeighbor.transform.position, currAtomScript.GetColor(), neighAtomScript.GetColor(), .2f, mat);
+					StaticVariables.DrawLine (currAtom.transform.position, atomNeighbor.transform.position, currAtomScript.color, neighAtomScript.color, .2f, mat);
 				}
 			}
 		}

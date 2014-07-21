@@ -11,6 +11,7 @@ public class CreateEnvironment : MonoBehaviour {
 	public GameObject plane;
 	public Vector3 centerPos = new Vector3(0.0f, 0.0f, 0.0f);
 	public float errorBuffer = 0.5f;
+	public Material mat;
 	
 
 	public float width = 20.0f;
@@ -20,7 +21,7 @@ public class CreateEnvironment : MonoBehaviour {
 	private TextMesh bottomText;
 	private TextMesh sideText;
 	private TextMesh depthText;
-	public GameObject bottomPlane;
+	[HideInInspector]public GameObject bottomPlane;
 	
 	void Start () {
 	
@@ -88,7 +89,7 @@ public class CreateEnvironment : MonoBehaviour {
 		bottomText = Instantiate(textMeshPrefab, new Vector3(bottomPlanePos.x - 2.0f, bottomPlanePos.y - 1.0f, bottomPlanePos.z - (depth/2.0f)), Quaternion.identity) as TextMesh;
 		bottomText.text = width.ToString() + " Angstroms";
 		LineRenderer bottomLine = bottomText.transform.gameObject.AddComponent<LineRenderer> ();
-		bottomLine.material = new Material(Shader.Find("Particles/Additive"));
+		bottomLine.material = mat;
 		bottomLine.SetColors(Color.yellow, Color.yellow);
 		bottomLine.SetWidth(0.2F, 0.2F);
 		bottomLine.SetVertexCount(2);
@@ -96,7 +97,7 @@ public class CreateEnvironment : MonoBehaviour {
 		sideText = Instantiate(textMeshPrefab, new Vector3(bottomPlanePos.x + (width/2.0f) + 1.0f, bottomPlanePos.y + (height/2.0f), bottomPlanePos.z - (depth/2.0f)), Quaternion.identity) as TextMesh;
 		sideText.text = height.ToString() + " Angstroms";
 		LineRenderer sideLine = sideText.transform.gameObject.AddComponent<LineRenderer> ();
-		sideLine.material = new Material(Shader.Find("Particles/Additive"));
+		sideLine.material = mat;
 		sideLine.SetColors(Color.yellow, Color.yellow);
 		sideLine.SetWidth(0.2F, 0.2F);
 		sideLine.SetVertexCount(2);
@@ -105,7 +106,7 @@ public class CreateEnvironment : MonoBehaviour {
 		depthText = Instantiate(textMeshPrefab, new Vector3(centerPos.x + (width/2.0f), bottomPlanePos.y - 1.0f, centerPos.z - 2.0f), Quaternion.Euler(0.0f, -90.0f, 0.0f)) as TextMesh;
 		depthText.text = width.ToString() + " Angstroms";
 		LineRenderer depthLine = depthText.transform.gameObject.AddComponent<LineRenderer> ();
-		depthLine.material = new Material(Shader.Find("Particles/Additive"));
+		depthLine.material = mat;
 		depthLine.SetColors(Color.yellow, Color.yellow);
 		depthLine.SetWidth(0.2F, 0.2F);
 		depthLine.SetVertexCount(2);

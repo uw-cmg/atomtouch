@@ -28,35 +28,18 @@ public abstract class Atom : MonoBehaviour
 	private Dictionary<String, Vector3> gameObjectOffsets;
 	private Dictionary<String, Vector3> gameObjectScreenPoints;
 	private Vector3 velocityBeforeCollision;
+	private bool atomIsClicked = false;
 
 	public Material lineMaterial;
-
-	//variables for (defunct) bounding sphere
-	private bool reflecting = false;
-	private Vector3 reflectingVelocity;
-	private float radius = 10.0f;
-
 	public bool held { get; set; }
 
 	//variables that must be implemented because they are declared as abstract in the base class
 	protected abstract float epsilon{ get; } // J
 	protected abstract float sigma{ get; } // m=Angstroms for Unity
 	protected abstract float massamu{ get; } //amu
-	protected abstract Color color { get; }
-	protected abstract void ChangeColor (bool selected);
-	protected abstract void ChangeIntersection (bool intersected);
-
-	public void ChangeAtomIntersection(bool intersected){
-		ChangeIntersection (intersected);
-	}
-
-	public void ChangeAtomColor(bool selected){
-		ChangeColor (selected);
-	}
-
-	public Color GetColor(){
-		return color;
-	}
+	protected abstract void SetSelected (bool selected);
+	public abstract Color color { get; }
+	public abstract void ChangeColor (Color color);
 
 	void FixedUpdate(){
 		Time.timeScale = StaticVariables.timeScale;
@@ -149,7 +132,7 @@ public abstract class Atom : MonoBehaviour
 				RaycastHit hitInfo;
 				if(Physics.Raycast(ray, out hitInfo) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
 					selected = !selected;
-					ChangeColor(selected);
+					SetSelected(selected);
 				}
 			}
 		}
@@ -161,7 +144,7 @@ public abstract class Atom : MonoBehaviour
 			RaycastHit hitInfo;
 			if(Physics.Raycast(ray, out hitInfo) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
 				selected = !selected;
-				ChangeColor(selected);
+				SetSelected(selected);
 			}
 		}
 	}
@@ -183,6 +166,7 @@ public abstract class Atom : MonoBehaviour
 					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
 					deltaTouch2 = deltaMagnitudeDiff / 10.0f;
 					if(moleculeToMove != null){
+						HighlightAtoms();
 						Quaternion cameraRotation = Camera.main.transform.rotation;
 						Vector3 projectPosition = moleculeToMove.transform.position;
 						projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
@@ -195,6 +179,7 @@ public abstract class Atom : MonoBehaviour
 					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
 					deltaTouch2 = deltaMagnitudeDiff / 10.0f;
 					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+					HighlightAtoms();
 					for(int i = 0; i < allMolecules.Length; i++){
 						GameObject currAtom = allMolecules[i];
 						Quaternion cameraRotation = Camera.main.transform.rotation;
@@ -212,6 +197,13 @@ public abstract class Atom : MonoBehaviour
 			moveZDirection = false;
 			moleculeToMove = null;
 			held = false;
+			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+			for(int i = 0; i < allMolecules.Length; i++){
+				GameObject currAtom = allMolecules[i];
+				Atom atomScript = currAtom.GetComponent<Atom>();
+				atomScript.SetSelected(atomScript.selected);
+			}
+			
 		}
 	}
 
@@ -265,8 +257,10 @@ public abstract class Atom : MonoBehaviour
 			}
 		}
 		else if(touch.phase == TouchPhase.Moved){
+			atomIsClicked = true;
 			if(!selected){
 				if(moleculeToMove != null && !doubleTapped){
+					HighlightAtoms();
 					Vector3 curScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, screenPoint.z);
 					Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
 					mouseDelta = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - lastMousePosition;
@@ -277,6 +271,7 @@ public abstract class Atom : MonoBehaviour
 			}
 			else{
 				if (held){
+					HighlightAtoms();
 					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 					for(int i = 0; i < allMolecules.Length; i++){
 						GameObject currAtom = allMolecules[i];
@@ -296,6 +291,8 @@ public abstract class Atom : MonoBehaviour
 			}
 		}
 		else if(touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled){
+			atomIsClicked = false;
+			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 			if(!selected){
 				if(moleculeToMove != null){
 					moleculeToMove = null;
@@ -306,7 +303,6 @@ public abstract class Atom : MonoBehaviour
 				}
 			}
 			else{
-				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 				for(int i = 0; i < allMolecules.Length; i++){
 					GameObject currAtom = allMolecules[i];
 					Atom atomScript = currAtom.GetComponent<Atom>();
@@ -316,9 +312,15 @@ public abstract class Atom : MonoBehaviour
 					}
 				}
 			}
+
+			for(int i = 0; i < allMolecules.Length; i++){
+				GameObject currAtom = allMolecules[i];
+				Atom atomScript = currAtom.GetComponent<Atom>();
+				atomScript.SetSelected(atomScript.selected);
+			}
 		}
 	}
-
+	
 
 	//controls for debugging on pc
 	void OnMouseDown (){
@@ -354,14 +356,15 @@ public abstract class Atom : MonoBehaviour
 			}
 			else{
 				selected = !selected;
-				ChangeColor(selected);
+				SetSelected(selected);
 			}
-			
 		}
 	}
 	
 	void OnMouseDrag(){
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
+			atomIsClicked = true;
+			HighlightAtoms();
 
 			if(StaticVariables.touchScreen){
 				if(!selected){
@@ -414,14 +417,14 @@ public abstract class Atom : MonoBehaviour
 
 	void OnMouseUp (){
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
-			ChangeAllIntersections();
+			atomIsClicked = false;
+			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 			if(StaticVariables.touchScreen){
 				if(!selected){
 					rigidbody.isKinematic = false;
 					held = false;
 				}
 				else{
-					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 					for(int i = 0; i < allMolecules.Length; i++){
 						GameObject currAtom = allMolecules[i];
 						Atom atomScript = currAtom.GetComponent<Atom>();
@@ -431,17 +434,52 @@ public abstract class Atom : MonoBehaviour
 						}
 					}
 				}
+
+				for(int i = 0; i < allMolecules.Length; i++){
+					GameObject currAtom = allMolecules[i];
+					Atom atomScript = currAtom.GetComponent<Atom>();
+					atomScript.SetSelected(atomScript.selected);
+				}
+
 			}
 		}
 	}
 
+	void HighlightAtoms(){
+
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			if(currAtom == gameObject) continue;
+			Color finalColor = Color.black;
+			if(currAtom.transform.position.x < gameObject.transform.position.x + createEnvironment.errorBuffer
+			   && currAtom.transform.position.x > gameObject.transform.position.x - createEnvironment.errorBuffer){
+				//green
+				finalColor += Color.green;
+			}
+			if(currAtom.transform.position.y < gameObject.transform.position.y + createEnvironment.errorBuffer
+			   && currAtom.transform.position.y > gameObject.transform.position.y - createEnvironment.errorBuffer){
+				//blue
+				finalColor += Color.blue;
+			}
+			if(currAtom.transform.position.z < gameObject.transform.position.z + createEnvironment.errorBuffer
+			   && currAtom.transform.position.z > gameObject.transform.position.z - createEnvironment.errorBuffer){
+				//red
+				finalColor += Color.red;
+			}
+			Atom atomScript = currAtom.GetComponent<Atom>();
+			atomScript.ChangeColor(finalColor);
+		}
+
+	}
+
 	void OnRenderObject(){
-		//print ("OnWillRenderObject()");
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		for (int i = 0; i < allMolecules.Length; i++) {
 			GameObject currAtom = allMolecules[i];
 			Atom atomScript = currAtom.GetComponent<Atom>();
-			if(atomScript.held){
+			if(atomScript.atomIsClicked && atomScript.held){
 				DrawLineBorders(currAtom);
 			}
 		}
@@ -449,7 +487,6 @@ public abstract class Atom : MonoBehaviour
 
 	void DrawLineBorders(GameObject currAtom){
 
-		print ("attempting to draw border");
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
 
@@ -517,14 +554,6 @@ public abstract class Atom : MonoBehaviour
 		return position;
 	}
 
-	void ChangeAllIntersections(){
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for(int i = 0; i < allMolecules.Length; i++){
-			GameObject currAtom = allMolecules[i];
-			Atom atomScript = currAtom.GetComponent<Atom>();
-			atomScript.ChangeColor(atomScript.selected);
-		}
-	}
 
 }
 
