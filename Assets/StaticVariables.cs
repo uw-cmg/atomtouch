@@ -34,6 +34,7 @@ public class StaticVariables {
 	public static float timeScale = 1.0f; //1.0f;
 
 	public static bool touchScreen = true;
+	public static bool axisUI = true;
 
 
 	public static void DrawLine(Vector3 startingPos, Vector3 endingPos, Color atomColor1, Color atomColor2, float lineWidth, Material mat){

@@ -447,40 +447,44 @@ public abstract class Atom : MonoBehaviour
 
 	void HighlightAtoms(){
 
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			if(currAtom == gameObject) continue;
-			Color finalColor = Color.black;
-			if(currAtom.transform.position.x < gameObject.transform.position.x + createEnvironment.errorBuffer
-			   && currAtom.transform.position.x > gameObject.transform.position.x - createEnvironment.errorBuffer){
-				//green
-				finalColor += Color.green;
+		if (StaticVariables.axisUI) {
+			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+			CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+			for (int i = 0; i < allMolecules.Length; i++) {
+				GameObject currAtom = allMolecules[i];
+				if(currAtom == gameObject) continue;
+				Color finalColor = Color.black;
+				if(currAtom.transform.position.x < gameObject.transform.position.x + createEnvironment.errorBuffer
+				   && currAtom.transform.position.x > gameObject.transform.position.x - createEnvironment.errorBuffer){
+					//green
+					finalColor += Color.green;
+				}
+				if(currAtom.transform.position.y < gameObject.transform.position.y + createEnvironment.errorBuffer
+				   && currAtom.transform.position.y > gameObject.transform.position.y - createEnvironment.errorBuffer){
+					//blue
+					finalColor += Color.blue;
+				}
+				if(currAtom.transform.position.z < gameObject.transform.position.z + createEnvironment.errorBuffer
+				   && currAtom.transform.position.z > gameObject.transform.position.z - createEnvironment.errorBuffer){
+					//red
+					finalColor += Color.red;
+				}
+				Atom atomScript = currAtom.GetComponent<Atom>();
+				atomScript.ChangeColor(finalColor);
 			}
-			if(currAtom.transform.position.y < gameObject.transform.position.y + createEnvironment.errorBuffer
-			   && currAtom.transform.position.y > gameObject.transform.position.y - createEnvironment.errorBuffer){
-				//blue
-				finalColor += Color.blue;
-			}
-			if(currAtom.transform.position.z < gameObject.transform.position.z + createEnvironment.errorBuffer
-			   && currAtom.transform.position.z > gameObject.transform.position.z - createEnvironment.errorBuffer){
-				//red
-				finalColor += Color.red;
-			}
-			Atom atomScript = currAtom.GetComponent<Atom>();
-			atomScript.ChangeColor(finalColor);
 		}
 
 	}
 
 	void OnRenderObject(){
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			Atom atomScript = currAtom.GetComponent<Atom>();
-			if(atomScript.atomIsClicked && atomScript.held){
-				DrawLineBorders(currAtom);
+		if (StaticVariables.axisUI) {
+			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+			for (int i = 0; i < allMolecules.Length; i++) {
+				GameObject currAtom = allMolecules[i];
+				Atom atomScript = currAtom.GetComponent<Atom>();
+				if(atomScript.atomIsClicked && atomScript.held && !atomScript.doubleTapped){
+					DrawLineBorders(currAtom);
+				}
 			}
 		}
 	}
@@ -533,23 +537,24 @@ public abstract class Atom : MonoBehaviour
 
 	Vector3 CheckPosition(Vector3 position){
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-		if (position.y > createEnvironment.centerPos.y + (createEnvironment.height/2.0f) - createEnvironment.errorBuffer) {
-			position.y = createEnvironment.centerPos.y + (createEnvironment.height/2.0f) - createEnvironment.errorBuffer;
+		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
+		if (position.y > bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer) {
+			position.y = bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer;
 		}
-		if (position.y < createEnvironment.centerPos.y - (createEnvironment.height/2.0f) + createEnvironment.errorBuffer) {
-			position.y = createEnvironment.centerPos.y - (createEnvironment.height/2.0f) + createEnvironment.errorBuffer;
+		if (position.y < bottomPlanePos.y + createEnvironment.errorBuffer) {
+			position.y = bottomPlanePos.y + createEnvironment.errorBuffer;;
 		}
-		if (position.x > createEnvironment.centerPos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer) {
-			position.x = createEnvironment.centerPos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
+		if (position.x > bottomPlanePos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer) {
+			position.x = bottomPlanePos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
 		}
-		if (position.x < createEnvironment.centerPos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer) {
-			position.x = createEnvironment.centerPos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
+		if (position.x < bottomPlanePos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer) {
+			position.x = bottomPlanePos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
 		}
-		if (position.z > createEnvironment.centerPos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer) {
-			position.z = createEnvironment.centerPos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
+		if (position.z > bottomPlanePos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer) {
+			position.z = bottomPlanePos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
 		}
-		if (position.z < createEnvironment.centerPos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer) {
-			position.z = createEnvironment.centerPos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
+		if (position.z < bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer) {
+			position.z = bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
 		}
 		return position;
 	}

@@ -27,6 +27,7 @@ public class InstantiateMolecule : MonoBehaviour {
 	public Texture touchIcon;
 	public Texture clickIcon;
 	public Texture cameraTexture;
+	public Texture axisTexture;
 	
 	private bool clicked = false;
 	private float startTime = 0.0f;
@@ -34,7 +35,7 @@ public class InstantiateMolecule : MonoBehaviour {
 	public float holdTime = 0.05f;
 	private bool destroyAtom = false;
 	private GameObject atomToDelete;
-	public bool changingTemp = false;
+	[HideInInspector]public bool changingTemp = false;
 
 
 	void Start(){
@@ -66,6 +67,16 @@ public class InstantiateMolecule : MonoBehaviour {
 			Camera.main.transform.position = new Vector3(0.0f, 0.0f, -26.0f);
 			Camera.main.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 		}
+
+		if (!StaticVariables.axisUI) {
+			GUI.color = Color.black;
+		}
+
+		if (GUI.Button (new Rect (Screen.width - 285, 20, 50, 50), axisTexture)) {
+			StaticVariables.axisUI = !StaticVariables.axisUI;
+		}
+
+		GUI.color = Color.white;
 
 		GUI.Label (new Rect (25, 25, 350, 20), "Temperature: " + TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 272.15, 2)).ToString() + "C)");
 		float newTemp = GUI.VerticalSlider (new Rect (75, 55, 30, (Screen.height - 135)), TemperatureCalc.desiredTemperature, StaticVariables.tempRangeHigh, StaticVariables.tempRangeLow);
@@ -246,23 +257,24 @@ public class InstantiateMolecule : MonoBehaviour {
 
 	Vector3 CheckPosition(Vector3 position){
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-		if (position.y > createEnvironment.centerPos.y + (createEnvironment.height/2.0f) - createEnvironment.errorBuffer) {
-			position.y = createEnvironment.centerPos.y + (createEnvironment.height/2.0f) - createEnvironment.errorBuffer;
+		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
+		if (position.y > bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer) {
+			position.y = bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer;
 		}
-		if (position.y < createEnvironment.centerPos.y - (createEnvironment.height/2.0f) + createEnvironment.errorBuffer) {
-			position.y = createEnvironment.centerPos.y - (createEnvironment.height/2.0f) + createEnvironment.errorBuffer;;
+		if (position.y < bottomPlanePos.y + createEnvironment.errorBuffer) {
+			position.y = bottomPlanePos.y + createEnvironment.errorBuffer;;
 		}
-		if (position.x > createEnvironment.centerPos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer) {
-			position.x = createEnvironment.centerPos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
+		if (position.x > bottomPlanePos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer) {
+			position.x = bottomPlanePos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
 		}
-		if (position.x < createEnvironment.centerPos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer) {
-			position.x = createEnvironment.centerPos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
+		if (position.x < bottomPlanePos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer) {
+			position.x = bottomPlanePos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
 		}
-		if (position.z > createEnvironment.centerPos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer) {
-			position.z = createEnvironment.centerPos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
+		if (position.z > bottomPlanePos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer) {
+			position.z = bottomPlanePos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
 		}
-		if (position.z < createEnvironment.centerPos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer) {
-			position.z = createEnvironment.centerPos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
+		if (position.z < bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer) {
+			position.z = bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
 		}
 		return position;
 	}
