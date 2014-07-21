@@ -30,7 +30,7 @@ public class Platinum : Atom {
 
 	protected override void SetSelected (bool selected){
 		if (selected) {
-			platinumColor = new Color(0.0f, 1.0f, 0.0f);
+			platinumColor = StaticVariables.selectedColor;
 		}
 		else{
 			platinumColor = platinumColor;

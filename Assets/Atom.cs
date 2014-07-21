@@ -105,7 +105,7 @@ public abstract class Atom : MonoBehaviour
 			}
 		}
 		else{
-			if(Input.GetMouseButtonDown(0) && !selected){
+			if(Input.GetMouseButtonDown(0)){
 				if((Time.time - lastTapTime) < tapTime){
 					ResetDoubleTapped();
 					doubleTapped = true;
@@ -276,7 +276,7 @@ public abstract class Atom : MonoBehaviour
 					for(int i = 0; i < allMolecules.Length; i++){
 						GameObject currAtom = allMolecules[i];
 						Atom atomScript = currAtom.GetComponent<Atom>();
-						if(!atomScript.doubleTapped && atomScript.selected){
+						if(atomScript.selected){
 							if(gameObjectOffsets != null && gameObjectScreenPoints != null){
 								Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
 								Vector3 currOffset = gameObjectOffsets[currAtom.name];
@@ -384,29 +384,37 @@ public abstract class Atom : MonoBehaviour
 				}
 				else{
 					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+					bool noneDoubleTapped = true;
 					for(int i = 0; i < allMolecules.Length; i++){
 						GameObject currAtom = allMolecules[i];
 						Atom atomScript = currAtom.GetComponent<Atom>();
-						if((lastMousePosition - Input.mousePosition).magnitude > 0 && !atomScript.doubleTapped && atomScript.selected){
-							//print ("looking for key: " + currAtom.name);
-							Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
-							Vector3 currOffset = gameObjectOffsets[currAtom.name];
-							Vector3 objScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, currScreenPoint.z);
-							Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
-							curPosition = CheckPosition(curPosition);
-							currAtom.transform.position = curPosition;
-						}
-						
-						if(atomScript.selected){
-							float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
-							Quaternion cameraRotation = Camera.main.transform.rotation;
-							Vector3 projectPosition = currAtom.transform.position;
-							projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
-							currAtom.transform.position = CheckPosition(projectPosition);
-							gameObjectScreenPoints[currAtom.name] += new Vector3(0.0f, 0.0f, deltaZ);
-						}
+						if(atomScript.doubleTapped && atomScript.selected) noneDoubleTapped = false;
 					}
 
+					if(noneDoubleTapped){
+						for(int i = 0; i < allMolecules.Length; i++){
+							GameObject currAtom = allMolecules[i];
+							Atom atomScript = currAtom.GetComponent<Atom>();
+							if((lastMousePosition - Input.mousePosition).magnitude > 0 && atomScript.selected){
+								//print ("looking for key: " + currAtom.name);
+								Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
+								Vector3 currOffset = gameObjectOffsets[currAtom.name];
+								Vector3 objScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, currScreenPoint.z);
+								Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
+								curPosition = CheckPosition(curPosition);
+								currAtom.transform.position = curPosition;
+							}
+							
+							if(atomScript.selected){
+								float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
+								Quaternion cameraRotation = Camera.main.transform.rotation;
+								Vector3 projectPosition = currAtom.transform.position;
+								projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
+								currAtom.transform.position = CheckPosition(projectPosition);
+								gameObjectScreenPoints[currAtom.name] += new Vector3(0.0f, 0.0f, deltaZ);
+							}
+						}
+					}
 				}
 			}
 			mouseDelta = Input.mousePosition - lastMousePosition;
@@ -470,6 +478,11 @@ public abstract class Atom : MonoBehaviour
 					finalColor += Color.red;
 				}
 				Atom atomScript = currAtom.GetComponent<Atom>();
+				if(finalColor == Color.black){
+					if(atomScript.selected){
+						finalColor = StaticVariables.selectedColor;
+					}
+				}
 				atomScript.ChangeColor(finalColor);
 			}
 		}

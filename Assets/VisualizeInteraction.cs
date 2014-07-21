@@ -9,7 +9,6 @@ public class VisualizeInteraction : MonoBehaviour {
 	void OnPostRender(){
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 
-
 		for (int i = 0; i < allMolecules.Length; i++) {
 			GameObject currAtom = allMolecules[i];
 			for(int j = i + 1; j < allMolecules.Length; j++){

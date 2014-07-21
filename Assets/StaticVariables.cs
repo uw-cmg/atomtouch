@@ -35,6 +35,7 @@ public class StaticVariables {
 
 	public static bool touchScreen = true;
 	public static bool axisUI = true;
+	public static Color selectedColor = new Color (.75f, .75f, 0.0f);
 
 
 	public static void DrawLine(Vector3 startingPos, Vector3 endingPos, Color atomColor1, Color atomColor2, float lineWidth, Material mat){

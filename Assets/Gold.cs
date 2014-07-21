@@ -30,7 +30,7 @@ public class Gold : Atom
 
 	protected override void SetSelected (bool selected){
 		if (selected) {
-			currentColor = new Color(0.0f, 1.0f, 0.0f);
+			currentColor = StaticVariables.selectedColor;
 		}
 		else{
 			currentColor = goldColor;
