@@ -29,8 +29,10 @@ public abstract class Atom : MonoBehaviour
 	private Dictionary<String, Vector3> gameObjectScreenPoints;
 	private Vector3 velocityBeforeCollision;
 	private bool atomIsClicked = false;
+	private TextMesh angstromText;
 
 	public Material lineMaterial;
+	public TextMesh textMeshPrefab;
 	public bool held { get; set; }
 
 	//variables that must be implemented because they are declared as abstract in the base class
@@ -67,6 +69,7 @@ public abstract class Atom : MonoBehaviour
 			//}
 			
 			velocityBeforeCollision = rigidbody.velocity;
+
 			//print (gameObject.name + " velocityX: " + rigidbody.velocity.x + " velocityY: " + rigidbody.velocity.y + " velocityZ: " + rigidbody.velocity.z);
 		}
 		else{
@@ -339,6 +342,20 @@ public abstract class Atom : MonoBehaviour
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
 
 			if(StaticVariables.touchScreen){
+
+				Quaternion cameraRotation = Camera.main.transform.rotation;
+				Vector3 up = cameraRotation * Vector3.up;
+				up.Normalize();
+				angstromText = Instantiate(textMeshPrefab, new Vector3(0.0f, 0.0f, 0.0f), cameraRotation) as TextMesh;
+				Vector3 newPosition = new Vector3(transform.position.x - 1.0f, transform.position.y, transform.position.z) + (up * 2.0f);
+				angstromText.transform.position = newPosition;
+				angstromText.text = "1 Angstrom";
+				//LineRenderer angstromLine = angstromText.transform.gameObject.AddComponent<LineRenderer> ();
+				//angstromLine.material = lineMaterial;
+				//angstromLine.SetColors(Color.yellow, Color.yellow);
+				//angstromLine.SetWidth(0.2F, 0.2F);
+				//angstromLine.SetVertexCount(2);
+
 				if(!selected){
 					rigidbody.isKinematic = true;
 					screenPoint = Camera.main.WorldToScreenPoint(transform.position);
@@ -378,7 +395,17 @@ public abstract class Atom : MonoBehaviour
 			atomIsClicked = true;
 			HighlightAtoms();
 
+			Quaternion cameraRotation = Camera.main.transform.rotation;
+			Vector3 up = cameraRotation * Vector3.up;
+			up.Normalize();
+			Vector3 newPosition = new Vector3(transform.position.x - 1.0f, transform.position.y, transform.position.z) + (up * 2.0f);
+			angstromText.transform.position = newPosition;
+			//LineRenderer angstromLine = angstromText.GetComponent<LineRenderer> ();
+			//angstromLine.SetPosition(0, new Vector3(transform.position.x - .5f, transform.position.y + 1.0f, transform.position.z));
+			//angstromLine.SetPosition(1, new Vector3(transform.position.x + .5f, transform.position.y + 1.0f, transform.position.z));
+
 			if(StaticVariables.touchScreen){
+
 				if(!selected){
 					if((lastMousePosition - Input.mousePosition).magnitude > 0 && !doubleTapped){
 						Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
@@ -388,7 +415,6 @@ public abstract class Atom : MonoBehaviour
 					}
 					
 					float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
-					Quaternion cameraRotation = Camera.main.transform.rotation;
 					Vector3 projectPosition = transform.position;
 					projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
 					transform.position = CheckPosition(projectPosition);
@@ -419,7 +445,6 @@ public abstract class Atom : MonoBehaviour
 							
 							if(atomScript.selected){
 								float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
-								Quaternion cameraRotation = Camera.main.transform.rotation;
 								Vector3 projectPosition = currAtom.transform.position;
 								projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
 								currAtom.transform.position = CheckPosition(projectPosition);
@@ -439,6 +464,9 @@ public abstract class Atom : MonoBehaviour
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
 			atomIsClicked = false;
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+			//LineRenderer angstromLine = angstromText.GetComponent<LineRenderer> ();
+			//Destroy(angstromLine);
+			Destroy(angstromText);
 			if(StaticVariables.touchScreen){
 				if(!selected){
 					rigidbody.isKinematic = false;

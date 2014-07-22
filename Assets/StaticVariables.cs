@@ -14,7 +14,7 @@ public class StaticVariables {
 	//see on the Unity screen, which is 1 Angstrom per second.
 	//So, if the real vibration is supposed to be 1000 m/s, we see it as
 	//1 Angstrom per second.
-	public static float eyeAdjustment = (float) Math.Pow (10, -15); 
+	public static float eyeAdjustment = (float) Math.Pow (10, -13); 
 
 	//Convert units of Angstroms to meters
 	public static float angstromsToMeters = (float) Math.Pow (10,-10);
