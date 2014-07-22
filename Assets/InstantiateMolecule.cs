@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 public class InstantiateMolecule : MonoBehaviour {
 
@@ -28,6 +29,8 @@ public class InstantiateMolecule : MonoBehaviour {
 	public Texture clickIcon;
 	public Texture cameraTexture;
 	public Texture axisTexture;
+	public Texture bondLines;
+	public Texture timeTexture;
 	
 	private bool clicked = false;
 	private float startTime = 0.0f;
@@ -37,6 +40,9 @@ public class InstantiateMolecule : MonoBehaviour {
 	private GameObject atomToDelete;
 	[HideInInspector]public bool changingTemp = false;
 
+	//bond text
+	public TextMesh textMeshPrefab;
+	bool createDistanceText = true;
 
 	void Start(){
 		addGraphicCopper = false;
@@ -52,6 +58,14 @@ public class InstantiateMolecule : MonoBehaviour {
 			GUI.skin = sliderControls;
 		}
 
+		if (!StaticVariables.drawBondLines) {
+			GUI.color = Color.black;
+		}
+		if(GUI.Button(new Rect(Screen.width - 105, 20, 50, 50), bondLines)){
+			StaticVariables.drawBondLines = !StaticVariables.drawBondLines;
+		}
+		GUI.color = Color.white;
+		
 		if(StaticVariables.touchScreen){
 			if(GUI.Button(new Rect(Screen.width - 165, 20, 50, 50), touchIcon)){
 				StaticVariables.touchScreen = false;
@@ -71,13 +85,20 @@ public class InstantiateMolecule : MonoBehaviour {
 		if (!StaticVariables.axisUI) {
 			GUI.color = Color.black;
 		}
-
 		if (GUI.Button (new Rect (Screen.width - 285, 20, 50, 50), axisTexture)) {
 			StaticVariables.axisUI = !StaticVariables.axisUI;
 		}
-
 		GUI.color = Color.white;
 
+		if (StaticVariables.pauseTime) {
+			GUI.color = Color.black;
+		}
+		if(GUI.Button(new Rect(Screen.width - 345, 20, 50, 50), timeTexture)){
+			StaticVariables.pauseTime = !StaticVariables.pauseTime;
+		}
+		GUI.color = Color.white;
+		
+		
 		GUI.Label (new Rect (25, 25, 350, 20), "Temperature: " + TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 272.15, 2)).ToString() + "C)");
 		float newTemp = GUI.VerticalSlider (new Rect (75, 55, 30, (Screen.height - 135)), TemperatureCalc.desiredTemperature, StaticVariables.tempRangeHigh, StaticVariables.tempRangeLow);
 		if (newTemp != TemperatureCalc.desiredTemperature) {
@@ -249,9 +270,62 @@ public class InstantiateMolecule : MonoBehaviour {
 			elementSymbol = "Pt";
 		}
 
-		GUI.Label (new Rect (Screen.width - 225, 100, 225, 30), "Element Name: " + elementName);
-		GUI.Label (new Rect (Screen.width - 225, 130, 225, 30), "Element Symbol: " + elementSymbol);
-		GUI.Label (new Rect (Screen.width - 225, 160, 225, 30), "Position: " + currAtom.transform.position);
+		GUI.Label (new Rect (Screen.width - 285, 100, 225, 30), "Element Name: " + elementName);
+		GUI.Label (new Rect (Screen.width - 285, 130, 225, 30), "Element Symbol: " + elementSymbol);
+		GUI.Label (new Rect (Screen.width - 285, 160, 225, 30), "Position: " + currAtom.transform.position);
+
+		DisplayBondProperties (currAtom);
+
+	}
+
+	void DisplayBondProperties(GameObject currAtom){
+
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		List<Vector3> bonds = new List<Vector3>();
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject atomNeighbor = allMolecules[i];
+			if(atomNeighbor == currAtom) continue;
+			if(Vector3.Distance(currAtom.transform.position, atomNeighbor.transform.position) < StaticVariables.bondDistance){
+				bonds.Add(atomNeighbor.transform.position);
+			}
+		}
+
+		if (bonds.Count == 1) {
+			GUI.Label(new Rect(Screen.width - 285, 190, 225, 30), "Bond 1: " + "Distance: " + Math.Round(Vector3.Distance(bonds[0], currAtom.transform.position), 3).ToString());
+		}
+		else{
+			//figure out the angles between the vectors
+			for(int i = 0; i < bonds.Count; i++){
+				GUI.Label(new Rect(Screen.width - 285, 190 + (i*30), 225, 30), "Bond " + (i+1).ToString() + " Distance: " + Math.Round (Vector3.Distance(bonds[i], currAtom.transform.position), 3).ToString());
+			}
+
+			int angleNumber = 1;
+			//to display the angles, we must compute the angles between every pair of bonds
+			for(int i = 0; i < bonds.Count; i++){
+				for(int j = i+1; j < bonds.Count; j++){
+					Vector3 vector1 = (bonds[i] - currAtom.transform.position);
+					Vector3 vector2 = (bonds[j] - currAtom.transform.position);
+					float angle = (float)Math.Round(Vector3.Angle(vector1, vector2), 3);
+					GUI.Label(new Rect(Screen.width - 285, 220 + (bonds.Count * 30) + ((angleNumber-1)*30), 225, 30), "Angle " + angleNumber + ": " + angle);
+					angleNumber++;
+				}
+			}
+
+		}
+
+//		if (bonds.Count == 1) {
+//			if(createDistanceText){
+//				float distance = Vector3.Distance(bonds[0], currAtom.transform.position);
+//				Vector3 direction = (bonds[0] - currAtom.transform.position);
+//				direction.Normalize();
+//				float magnitude = (bonds[0] - currAtom.transform.position).magnitude;
+//				Vector3 position = direction * (magnitude * .5f);
+//				//Vector3 position = new Vector3(direction.x * (magnitude*.5f), direction.y * (magnitude*.5f), bonds[0].z);
+//				TextMesh bondText = Instantiate(textMeshPrefab, position, Quaternion.identity) as TextMesh;
+//				bondText.text = (Math.Round(distance, 2)).ToString();
+//				createDistanceText = false;
+//			}
+//		}
 
 	}
 

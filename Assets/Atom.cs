@@ -43,30 +43,42 @@ public abstract class Atom : MonoBehaviour
 
 	void FixedUpdate(){
 		Time.timeScale = StaticVariables.timeScale;
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		List<GameObject> molecules = new List<GameObject>();
-		float totalEnergy = 0.0f;
-
-		for(int i = 0; i < allMolecules.Length; i++){
-			double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
-			if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff * sigma)){
-				molecules.Add(allMolecules[i]);
+		if (!StaticVariables.pauseTime) {
+			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+			List<GameObject> molecules = new List<GameObject>();
+			float totalEnergy = 0.0f;
+			
+			for(int i = 0; i < allMolecules.Length; i++){
+				double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
+				if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff * sigma)){
+					molecules.Add(allMolecules[i]);
+				}
 			}
-		}
-
-	    Vector3 force = GetLennardJonesForce (molecules);
-		rigidbody.AddForce (force);
-
-		//adjust velocity for the desired temperature of the system
-		//if (Time.time > StaticVariables.tempDelay) {
+			
+			Vector3 force = GetLennardJonesForce (molecules);
+			rigidbody.AddForce (force);
+			
+			//adjust velocity for the desired temperature of the system
+			//if (Time.time > StaticVariables.tempDelay) {
 			Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
 			if (!rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && allMolecules.Length > 1) {
 				rigidbody.velocity = newVelocity;
 			}
-		//}
+			//}
+			
+			velocityBeforeCollision = rigidbody.velocity;
+			//print (gameObject.name + " velocityX: " + rigidbody.velocity.x + " velocityY: " + rigidbody.velocity.y + " velocityZ: " + rigidbody.velocity.z);
+		}
+		else{
+			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+			for(int i = 0; i < allMolecules.Length; i++){
+				GameObject currAtom = allMolecules[i];
+				if(!currAtom.rigidbody.isKinematic){
+					currAtom.rigidbody.velocity = new Vector3(0.0f, 0.0f, 0.0f);
+				}
+			}
+		}
 
-		velocityBeforeCollision = rigidbody.velocity;
-		//print (gameObject.name + " velocityX: " + rigidbody.velocity.x + " velocityY: " + rigidbody.velocity.y + " velocityZ: " + rigidbody.velocity.z);
 	}
 
 	Vector3 GetLennardJonesForce(List<GameObject> objectsInRange){
@@ -451,6 +463,12 @@ public abstract class Atom : MonoBehaviour
 
 			}
 		}
+	}
+
+	//hasnt been tested
+	void SetTransparency(float transparency){
+		Color newColor = new Color (color.r, color.g, color.b, transparency);
+		ChangeColor (newColor);
 	}
 
 	void HighlightAtoms(){
