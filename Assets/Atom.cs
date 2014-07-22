@@ -345,16 +345,16 @@ public abstract class Atom : MonoBehaviour
 
 				Quaternion cameraRotation = Camera.main.transform.rotation;
 				Vector3 up = cameraRotation * Vector3.up;
-				up.Normalize();
+				Vector3 left = cameraRotation * -Vector3.right;
 				angstromText = Instantiate(textMeshPrefab, new Vector3(0.0f, 0.0f, 0.0f), cameraRotation) as TextMesh;
-				Vector3 newPosition = new Vector3(transform.position.x - 1.0f, transform.position.y, transform.position.z) + (up * 2.0f);
+				Vector3 newPosition = transform.position + (left * 1.0f) + (up * 2.0f);
 				angstromText.transform.position = newPosition;
 				angstromText.text = "1 Angstrom";
-				//LineRenderer angstromLine = angstromText.transform.gameObject.AddComponent<LineRenderer> ();
-				//angstromLine.material = lineMaterial;
-				//angstromLine.SetColors(Color.yellow, Color.yellow);
-				//angstromLine.SetWidth(0.2F, 0.2F);
-				//angstromLine.SetVertexCount(2);
+				LineRenderer angstromLine = angstromText.transform.gameObject.AddComponent<LineRenderer> ();
+				angstromLine.material = lineMaterial;
+				angstromLine.SetColors(Color.yellow, Color.yellow);
+				angstromLine.SetWidth(0.2F, 0.2F);
+				angstromLine.SetVertexCount(2);
 
 				if(!selected){
 					rigidbody.isKinematic = true;
@@ -397,12 +397,14 @@ public abstract class Atom : MonoBehaviour
 
 			Quaternion cameraRotation = Camera.main.transform.rotation;
 			Vector3 up = cameraRotation * Vector3.up;
-			up.Normalize();
-			Vector3 newPosition = new Vector3(transform.position.x - 1.0f, transform.position.y, transform.position.z) + (up * 2.0f);
+			Vector3 left = cameraRotation * -Vector3.right;
+			Vector3 newPosition = transform.position + (left * 1.0f) + (up * 2.0f);
 			angstromText.transform.position = newPosition;
-			//LineRenderer angstromLine = angstromText.GetComponent<LineRenderer> ();
-			//angstromLine.SetPosition(0, new Vector3(transform.position.x - .5f, transform.position.y + 1.0f, transform.position.z));
-			//angstromLine.SetPosition(1, new Vector3(transform.position.x + .5f, transform.position.y + 1.0f, transform.position.z));
+			LineRenderer angstromLine = angstromText.GetComponent<LineRenderer> ();
+			Vector3 position1 = transform.position + (left * .5f) + (up);
+			Vector3 position2 = transform.position + (left * -.5f) + (up);
+			angstromLine.SetPosition(0, position1);
+			angstromLine.SetPosition(1, position2);
 
 			if(StaticVariables.touchScreen){
 
@@ -464,8 +466,8 @@ public abstract class Atom : MonoBehaviour
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
 			atomIsClicked = false;
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-			//LineRenderer angstromLine = angstromText.GetComponent<LineRenderer> ();
-			//Destroy(angstromLine);
+			LineRenderer angstromLine = angstromText.GetComponent<LineRenderer> ();
+			Destroy(angstromLine);
 			Destroy(angstromText);
 			if(StaticVariables.touchScreen){
 				if(!selected){
