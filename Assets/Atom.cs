@@ -543,8 +543,7 @@ public abstract class Atom : MonoBehaviour
 			}
 		}
 	}
-
-	//hasnt been tested
+	
 	void SetTransparency(float transparency){
 		Color newColor = new Color (color.r, color.g, color.b, transparency);
 		ChangeColor (newColor);
