@@ -111,6 +111,7 @@ public abstract class Atom : MonoBehaviour
 
 	void Update(){
 		gameObject.renderer.material.color = color;
+		gameObject.renderer.material.renderQueue = StaticVariables.overlay;
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			if(StaticVariables.touchScreen){
 				HandleTouch ();
@@ -376,6 +377,7 @@ public abstract class Atom : MonoBehaviour
 				Vector3 up = cameraRotation * Vector3.up;
 				Vector3 left = cameraRotation * -Vector3.right;
 				angstromText = Instantiate(textMeshPrefab, new Vector3(0.0f, 0.0f, 0.0f), cameraRotation) as TextMesh;
+				angstromText.renderer.material.renderQueue = StaticVariables.overlay;
 				Vector3 newPosition = transform.position + (left * 1.0f) + (up * 2.0f);
 				angstromText.transform.position = newPosition;
 				angstromText.text = "1 Angstrom";
