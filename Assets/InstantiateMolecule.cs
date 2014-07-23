@@ -210,6 +210,11 @@ public class InstantiateMolecule : MonoBehaviour {
 			for(int i = 0; i < allMolecules.Length; i++){
 				GameObject currAtom = allMolecules[i];
 				Atom atomScript = currAtom.GetComponent<Atom>();
+				if(atomScript.doubleTapped){
+					CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
+					createEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
+					Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
+				}
 				if(atomScript.selected){
 					Destroy(currAtom);
 				}
@@ -277,7 +282,7 @@ public class InstantiateMolecule : MonoBehaviour {
 		DisplayBondProperties (currAtom);
 
 	}
-
+	
 	void DisplayBondProperties(GameObject currAtom){
 
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
