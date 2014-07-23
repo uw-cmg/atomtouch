@@ -432,25 +432,45 @@ public abstract class Atom : MonoBehaviour
 					}
 
 					if(noneDoubleTapped){
+						List<Vector3> atomPositions = new List<Vector3>();
+						bool moveAtoms = true;
 						for(int i = 0; i < allMolecules.Length; i++){
 							GameObject currAtom = allMolecules[i];
 							Atom atomScript = currAtom.GetComponent<Atom>();
+							Vector3 newAtomPosition = currAtom.transform.position;
 							if((lastMousePosition - Input.mousePosition).magnitude > 0 && atomScript.selected){
 								//print ("looking for key: " + currAtom.name);
 								Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
 								Vector3 currOffset = gameObjectOffsets[currAtom.name];
 								Vector3 objScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, currScreenPoint.z);
 								Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
-								curPosition = CheckPosition(curPosition);
-								currAtom.transform.position = curPosition;
+								newAtomPosition = CheckPosition(curPosition);
+								if(newAtomPosition != curPosition){
+									moveAtoms = false;
+								}
+								//currAtom.transform.position = newAtomPosition;
 							}
-							
+
+							Vector3 finalPosition = newAtomPosition;
+
 							if(atomScript.selected){
 								float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
-								Vector3 projectPosition = currAtom.transform.position;
+								Vector3 projectPosition = newAtomPosition;
 								projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
-								currAtom.transform.position = CheckPosition(projectPosition);
+								finalPosition = CheckPosition(projectPosition);
 								gameObjectScreenPoints[currAtom.name] += new Vector3(0.0f, 0.0f, deltaZ);
+								if(finalPosition != projectPosition){
+									moveAtoms = false;
+								}
+							}
+							atomPositions.Add(finalPosition);
+						}
+
+						if(atomPositions.Count > 0 && moveAtoms){
+							for(int i = 0; i < allMolecules.Length; i++){
+								Vector3 newAtomPosition = atomPositions[i];
+								GameObject currAtom = allMolecules[i];
+								currAtom.transform.position = newAtomPosition;
 							}
 						}
 					}
