@@ -257,6 +257,7 @@ public abstract class Atom : MonoBehaviour
 			RaycastHit hitInfo;
 			if (Physics.Raycast( ray, out hitInfo ) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject)
 			{
+				SpawnAngstromText();
 				if(!selected){
 					moleculeToMove = gameObject;
 					screenPoint = Camera.main.WorldToScreenPoint(transform.position);
@@ -288,6 +289,7 @@ public abstract class Atom : MonoBehaviour
 		}
 		else if(touch.phase == TouchPhase.Moved){
 			atomIsClicked = true;
+			MoveAngstromText();
 			if(!selected){
 				if(moleculeToMove != null && !doubleTapped){
 					HighlightAtoms();
@@ -337,6 +339,7 @@ public abstract class Atom : MonoBehaviour
 		}
 		else if(touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled){
 			atomIsClicked = false;
+			DestroyAngstromText();
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 			if(!selected){
 				if(moleculeToMove != null){
@@ -365,27 +368,54 @@ public abstract class Atom : MonoBehaviour
 			}
 		}
 	}
-	
 
+	void SpawnAngstromText(){
+		Quaternion cameraRotation = Camera.main.transform.rotation;
+		Vector3 up = cameraRotation * Vector3.up;
+		Vector3 left = cameraRotation * -Vector3.right;
+		angstromText = Instantiate(textMeshPrefab, new Vector3(0.0f, 0.0f, 0.0f), cameraRotation) as TextMesh;
+		angstromText.renderer.material.renderQueue = StaticVariables.overlay;
+		Vector3 newPosition = transform.position + (left * 1.0f) + (up * 2.0f);
+		angstromText.transform.position = newPosition;
+		angstromText.text = "1 Angstrom";
+		LineRenderer angstromLine = angstromText.transform.gameObject.AddComponent<LineRenderer> ();
+		angstromLine.material = lineMaterial;
+		angstromLine.SetColors(Color.yellow, Color.yellow);
+		angstromLine.SetWidth(0.2F, 0.2F);
+		angstromLine.SetVertexCount(2);
+	}
+
+	void MoveAngstromText(){
+		Quaternion cameraRotation = Camera.main.transform.rotation;
+		Vector3 up = cameraRotation * Vector3.up;
+		Vector3 left = cameraRotation * -Vector3.right;
+		Vector3 newPosition = transform.position + (left * 1.0f) + (up * 2.0f);
+		if (angstromText != null) {
+			angstromText.transform.position = newPosition;
+			LineRenderer angstromLine = angstromText.GetComponent<LineRenderer> ();
+			Vector3 position1 = transform.position + (left * .5f) + (up);
+			Vector3 position2 = transform.position + (left * -.5f) + (up);
+			angstromLine.SetPosition(0, position1);
+			angstromLine.SetPosition(1, position2);
+		}
+	}
+
+	void DestroyAngstromText(){
+		if (angstromText != null) {
+			LineRenderer angstromLine = angstromText.GetComponent<LineRenderer> ();
+			Destroy(angstromLine);
+			Destroy(angstromText);
+		}
+	}
+	
+	
 	//controls for debugging on pc
 	void OnMouseDown (){
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
 
 			if(StaticVariables.touchScreen){
 
-				Quaternion cameraRotation = Camera.main.transform.rotation;
-				Vector3 up = cameraRotation * Vector3.up;
-				Vector3 left = cameraRotation * -Vector3.right;
-				angstromText = Instantiate(textMeshPrefab, new Vector3(0.0f, 0.0f, 0.0f), cameraRotation) as TextMesh;
-				angstromText.renderer.material.renderQueue = StaticVariables.overlay;
-				Vector3 newPosition = transform.position + (left * 1.0f) + (up * 2.0f);
-				angstromText.transform.position = newPosition;
-				angstromText.text = "1 Angstrom";
-				LineRenderer angstromLine = angstromText.transform.gameObject.AddComponent<LineRenderer> ();
-				angstromLine.material = lineMaterial;
-				angstromLine.SetColors(Color.yellow, Color.yellow);
-				angstromLine.SetWidth(0.2F, 0.2F);
-				angstromLine.SetVertexCount(2);
+				SpawnAngstromText();
 
 				if(!selected){
 					rigidbody.isKinematic = true;
@@ -425,17 +455,8 @@ public abstract class Atom : MonoBehaviour
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
 			atomIsClicked = true;
 			HighlightAtoms();
-
 			Quaternion cameraRotation = Camera.main.transform.rotation;
-			Vector3 up = cameraRotation * Vector3.up;
-			Vector3 left = cameraRotation * -Vector3.right;
-			Vector3 newPosition = transform.position + (left * 1.0f) + (up * 2.0f);
-			angstromText.transform.position = newPosition;
-			LineRenderer angstromLine = angstromText.GetComponent<LineRenderer> ();
-			Vector3 position1 = transform.position + (left * .5f) + (up);
-			Vector3 position2 = transform.position + (left * -.5f) + (up);
-			angstromLine.SetPosition(0, position1);
-			angstromLine.SetPosition(1, position2);
+			MoveAngstromText();
 
 			if(StaticVariables.touchScreen){
 
@@ -517,9 +538,7 @@ public abstract class Atom : MonoBehaviour
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
 			atomIsClicked = false;
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-			LineRenderer angstromLine = angstromText.GetComponent<LineRenderer> ();
-			Destroy(angstromLine);
-			Destroy(angstromText);
+			DestroyAngstromText();
 			if(StaticVariables.touchScreen){
 				if(!selected){
 					rigidbody.isKinematic = false;
