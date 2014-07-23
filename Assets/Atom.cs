@@ -195,14 +195,28 @@ public abstract class Atom : MonoBehaviour
 					deltaTouch2 = deltaMagnitudeDiff / 10.0f;
 					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 					HighlightAtoms();
+					List<Vector3> atomPositions = new List<Vector3>();
+					bool moveAtoms = true;
 					for(int i = 0; i < allMolecules.Length; i++){
 						GameObject currAtom = allMolecules[i];
 						Quaternion cameraRotation = Camera.main.transform.rotation;
 						Vector3 projectPosition = currAtom.transform.position;
 						projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
-						currAtom.transform.position = CheckPosition(projectPosition);
+						Vector3 newAtomPosition = CheckPosition(projectPosition);
+						if(newAtomPosition != projectPosition){
+							moveAtoms = false;
+						}
 						if(gameObjectScreenPoints != null){
 							gameObjectScreenPoints[currAtom.name] += new Vector3(0.0f, 0.0f, deltaTouch2);
+						}
+						atomPositions.Add(newAtomPosition);
+					}
+
+					if(atomPositions.Count > 0 && moveAtoms){
+						for(int i = 0; i < allMolecules.Length; i++){
+							GameObject currAtom = allMolecules[i];
+							Vector3 newAtomPosition = atomPositions[i];
+							currAtom.transform.position = newAtomPosition;
 						}
 					}
 				}
@@ -288,6 +302,8 @@ public abstract class Atom : MonoBehaviour
 				if (held){
 					HighlightAtoms();
 					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+					List<Vector3> atomPositions = new List<Vector3>();
+					bool moveAtoms = true;
 					for(int i = 0; i < allMolecules.Length; i++){
 						GameObject currAtom = allMolecules[i];
 						Atom atomScript = currAtom.GetComponent<Atom>();
@@ -297,11 +313,24 @@ public abstract class Atom : MonoBehaviour
 								Vector3 currOffset = gameObjectOffsets[currAtom.name];
 								Vector3 objScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, currScreenPoint.z);
 								Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
-								curPosition = CheckPosition(curPosition);
-								currAtom.transform.position = curPosition;
+								Vector3 newAtomPosition = CheckPosition(curPosition);
+								if(newAtomPosition != curPosition){
+									moveAtoms = false;
+								}
+								atomPositions.Add(newAtomPosition);
 							}
 						}
 					}
+
+					if(atomPositions.Count > 0 && moveAtoms){
+						for(int i = 0; i < allMolecules.Length; i++){
+							GameObject currAtom = allMolecules[i];
+							Vector3 newAtomPosition = atomPositions[i];
+							currAtom.transform.position = newAtomPosition;
+						}
+					}
+
+
 				}
 			}
 		}
