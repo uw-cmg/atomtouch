@@ -277,7 +277,8 @@ public class InstantiateMolecule : MonoBehaviour {
 
 		GUI.Label (new Rect (Screen.width - 285, 100, 225, 30), "Element Name: " + elementName);
 		GUI.Label (new Rect (Screen.width - 285, 130, 225, 30), "Element Symbol: " + elementSymbol);
-		GUI.Label (new Rect (Screen.width - 285, 160, 225, 30), "Position: " + currAtom.transform.position);
+		GUI.Label (new Rect (Screen.width - 285, 160, 225, 30), "Position: " + currAtom.transform.position.ToString("E0"));
+		GUI.Label (new Rect (Screen.width - 285, 180, 225, 30), "Velocity: " + currAtom.transform.rigidbody.velocity.ToString("E0"));
 
 		DisplayBondProperties (currAtom);
 

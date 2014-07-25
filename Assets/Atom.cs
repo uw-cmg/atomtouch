@@ -43,12 +43,13 @@ public abstract class Atom : MonoBehaviour
 	public abstract Color color { get; }
 	public abstract void ChangeColor (Color color);
 
+	public double totalPotentialEnergyJ;
+	public double totalKineticEnergyJ;
+
 	void FixedUpdate(){
-		Time.timeScale = StaticVariables.timeScale;
 		if (!StaticVariables.pauseTime) {
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 			List<GameObject> molecules = new List<GameObject>();
-			float totalEnergy = 0.0f;
 			
 			for(int i = 0; i < allMolecules.Length; i++){
 				double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
@@ -58,19 +59,31 @@ public abstract class Atom : MonoBehaviour
 			}
 			
 			Vector3 force = GetLennardJonesForce (molecules);
-			rigidbody.AddForce (force);
-			
-			//adjust velocity for the desired temperature of the system
-			//if (Time.time > StaticVariables.tempDelay) {
-			Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
-			if (!rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && allMolecules.Length > 1) {
-				rigidbody.velocity = newVelocity;
+			for (int i=0; i< allMolecules.Length; i++){
+				 double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
+				 if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff * sigma)){
+					molecules.Add(allMolecules[i]);
+				 }
+				 double singlepotentialEnergy = GetLennardJonesPotentialEnergy(molecules);
+				 totalPotentialEnergyJ += singlepotentialEnergy;
 			}
-			//}
-			
+
+			//TTM clear out old velocities - actually, this seems to NOT work
+			//gameObject.rigidbody.velocity = Vector3.zero;
+			//gameObject.rigidbody.angularVelocity = Vector3.zero;
+			gameObject.rigidbody.AddForce (force, mode:ForceMode.Force);
+
+			Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
+			//TTM only reset velocity if not zero
+			if ((rigidbody.velocity.magnitude != 0) && !rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && allMolecules.Length > 1) {
+				gameObject.rigidbody.velocity = newVelocity;
+			}
+
 			velocityBeforeCollision = rigidbody.velocity;
 
-			//print (gameObject.name + " velocityX: " + rigidbody.velocity.x + " velocityY: " + rigidbody.velocity.y + " velocityZ: " + rigidbody.velocity.z);
+			//print (gameObject.name + " velocityX: " + gameObject.rigidbody.velocity.x + " velocityY: " + gameObject.rigidbody.velocity.y + " velocityZ: " + gameObject.rigidbody.velocity.z);
+			totalKineticEnergyJ = TemperatureCalc.totalKineticEnergyJ;
+
 		}
 		else{
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
@@ -85,10 +98,8 @@ public abstract class Atom : MonoBehaviour
 	}
 
 	Vector3 GetLennardJonesForce(List<GameObject> objectsInRange){
-		double finalMagnitude = 0;
 		Vector3 finalForce = new Vector3 (0.000f, 0.000f, 0.000f);
 		for (int i = 0; i < objectsInRange.Count; i++) {
-			//Vector3 vect = molecules[i].transform.position - transform.position;
 			Vector3 direction = new Vector3(objectsInRange[i].transform.position.x - transform.position.x, objectsInRange[i].transform.position.y - transform.position.y, objectsInRange[i].transform.position.z - transform.position.z);
 			direction.Normalize();
 			
@@ -98,20 +109,33 @@ public abstract class Atom : MonoBehaviour
 			double part2 = (Math.Pow ((sigma / distance), 12) - (.5f * Math.Pow ((sigma / distance), 6)));
 			double magnitude = (part1 * part2 * distanceMeters);
 			finalForce += (direction * (float)magnitude);
-			finalMagnitude += magnitude;
 		}
-		
-		double adjustedForceMagnitude = finalMagnitude / StaticVariables.mass100amuToKg;
-		adjustedForceMagnitude = adjustedForceMagnitude * StaticVariables.eyeAdjustment;
-		Vector3 adjustedForce = finalForce / StaticVariables.mass100amuToKg; //adjust mass input for units of 100 amu
-		//Distances are all in meters right now; do not distance-correct adjustedForce = adjustedForce * (float)(Math		.Pow (10, -10)); //normalize back Angstroms = m from extra r_ij denomintor term
-		adjustedForce = adjustedForce * StaticVariables.eyeAdjustment;
+
+		Vector3 adjustedForce = finalForce / StaticVariables.mass100amuToKg;
+		adjustedForce = adjustedForce / StaticVariables.angstromsToMeters;
+		adjustedForce = adjustedForce * StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime;
 		return adjustedForce;
 	}
 
+	//TTM add potential energy function
+	double GetLennardJonesPotentialEnergy(List<GameObject> objectsInRange){
+		double finalPotentialEnergy = 0.0;
+		for (int i = 0; i < objectsInRange.Count; i++) {
+			 //Vector3 vect = molecules[i].transform.position - transform.position;
+			 Vector3 direction = new Vector3(objectsInRange[i].transform.position.x - transform.position.x, objectsInRange[i].transform.position.y - transform.position.y, objectsInRange[i].transform.position.z - transform.position.z);
+			 direction.Normalize();
+			 double distance = Vector3.Distance(transform.position, objectsInRange[i].transform.position);
+			 double potentialEnergy = 4*epsilon*(Math.Pow ((sigma/distance),12)-Math.Pow ((sigma/distance),6)); //distance and sigma are both in angstroms, so units cancel
+			 finalPotentialEnergy+= potentialEnergy;
+		}
+		//epsilon was in J, so no unit conversion is necessary.
+		return finalPotentialEnergy;
+	}
+
 	void Update(){
+		//print ("UpdateDelta: " + Time.deltaTime);
 		gameObject.renderer.material.color = color;
-		gameObject.renderer.material.renderQueue = StaticVariables.overlay;
+		//gameObject.renderer.material.renderQueue = 3100;
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			if(StaticVariables.touchScreen){
 				HandleTouch ();
@@ -561,6 +585,39 @@ public abstract class Atom : MonoBehaviour
 					atomScript.SetSelected(atomScript.selected);
 				}
 
+			}
+		}
+	}
+
+	void IdentifiyStructure(){
+
+		List<int> angles = new List<int> ();
+		angles.Add (60);
+//		angles.Add (60);
+//		angles.Add (60);
+
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		List<Vector3> atomNeighbors = new List<Vector3>();
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject atomNeighbor = allMolecules[i];
+			if(atomNeighbor == gameObject) continue;
+			if(Vector3.Distance(gameObject.transform.position, atomNeighbor.transform.position) < StaticVariables.bondDistance){
+				atomNeighbors.Add(atomNeighbor.transform.position);
+			}
+		}
+
+		if (atomNeighbors.Count > 1) {
+			for(int i = 0; i < atomNeighbors.Count; i++){
+				for(int j = i+1; j < atomNeighbors.Count; j++){
+					Vector3 vector1 = (atomNeighbors[i] - gameObject.transform.position);
+					Vector3 vector2 = (atomNeighbors[j] - gameObject.transform.position);
+					int angle = (int)Math.Round(Vector3.Angle(vector1, vector2));
+					angles.Remove(angle);
+				}
+			}
+
+			if(angles.Count == 0){
+				print ("We have identified a triangle");
 			}
 		}
 	}

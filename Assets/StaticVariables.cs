@@ -4,17 +4,18 @@ using System;
 
 public class StaticVariables {
 
+	public static float MDTimestep = 0.5f * (float) Math.Pow (10, -15);
+	//Suppose every FixedUpdate physics interval (e.g. 0.02 seconds) is the
+	//Molecular Dynamics timestep of 0.5 * 10^-15 seconds
+	public static float fixedUpdateIntervalToRealTime = MDTimestep / Time.fixedDeltaTime;
+	//do not scale temperature all at once
+	public static float alphaDrag = 1.0f * Time.fixedDeltaTime;
+
 	//Boltzmann constant in J/K
 	public static float kB = 1.381f * (float) Math.Pow(10,-23);
 
 	//Convert units of 100 amu to kg
 	public static float mass100amuToKg = 100f * 1.6605f * (float) Math.Pow(10,-27); 
-
-	//Eye adjustment for converting 1000 meters/second into a length scale that we can 
-	//see on the Unity screen, which is 1 Angstrom per second.
-	//So, if the real vibration is supposed to be 1000 m/s, we see it as
-	//1 Angstrom per second.
-	public static float eyeAdjustment = (float) Math.Pow (10, -13); 
 
 	//Convert units of Angstroms to meters
 	public static float angstromsToMeters = (float) Math.Pow (10,-10);
@@ -31,7 +32,7 @@ public class StaticVariables {
 	public static float tempRangeHigh = 3000.0f; 
 
 	//Time scale
-	public static float timeScale = 1.0f; //1.0f;
+	public static float timeScale = (0.02f/40.0f); //1.0f;
 
 	public static bool touchScreen = true;
 	public static bool axisUI = false;
@@ -39,6 +40,7 @@ public class StaticVariables {
 	public static float bondDistance = 5.0f;
 	public static bool drawBondLines = true;
 	public static bool pauseTime = false;
+	public static int transparent = 3000;
 	public static int overlay = 4000;
 
 
