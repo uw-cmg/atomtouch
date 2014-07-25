@@ -53,8 +53,12 @@ public abstract class Atom : MonoBehaviour
 			List<GameObject> molecules = new List<GameObject>();
 			
 			for(int i = 0; i < allMolecules.Length; i++){
+				Atom otherAtomScript = allMolecules[i].GetComponent<Atom>();
+				float otherSigma = otherAtomScript.sigma;
+				float finalSigma = sigma;
+				if(otherSigma != sigma) finalSigma = (float)Math.Pow(sigma + otherSigma, .5f);
 				double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
-				if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff * sigma)){
+				if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff * finalSigma)){
 					molecules.Add(allMolecules[i]);
 				}
 			}
@@ -110,13 +114,17 @@ public abstract class Atom : MonoBehaviour
 	Vector3 GetLennardJonesForce(List<GameObject> objectsInRange){
 		Vector3 finalForce = new Vector3 (0.000f, 0.000f, 0.000f);
 		for (int i = 0; i < objectsInRange.Count; i++) {
+			Atom otherAtomScript = objectsInRange[i].GetComponent<Atom>();
+			float otherSigma = otherAtomScript.sigma;
+			float finalSigma = sigma;
+			if(otherSigma != sigma) finalSigma = (float)Math.Pow(sigma + otherSigma, .5f);
 			Vector3 direction = new Vector3(objectsInRange[i].transform.position.x - transform.position.x, objectsInRange[i].transform.position.y - transform.position.y, objectsInRange[i].transform.position.z - transform.position.z);
 			direction.Normalize();
 			
 			double distance = Vector3.Distance(transform.position, objectsInRange[i].transform.position);
 			double distanceMeters = distance * StaticVariables.angstromsToMeters; //distance in meters, though viewed in Angstroms
 			double part1 = ((-48 * epsilon) / Math.Pow(distanceMeters, 2));
-			double part2 = (Math.Pow ((sigma / distance), 12) - (.5f * Math.Pow ((sigma / distance), 6)));
+			double part2 = (Math.Pow ((finalSigma / distance), 12) - (.5f * Math.Pow ((finalSigma / distance), 6)));
 			double magnitude = (part1 * part2 * distanceMeters);
 			finalForce += (direction * (float)magnitude);
 		}
@@ -131,11 +139,15 @@ public abstract class Atom : MonoBehaviour
 	double GetLennardJonesPotentialEnergy(List<GameObject> objectsInRange){
 		double finalPotentialEnergy = 0.0;
 		for (int i = 0; i < objectsInRange.Count; i++) {
-			 //Vector3 vect = molecules[i].transform.position - transform.position;
+			Atom otherAtomScript = objectsInRange[i].GetComponent<Atom>();
+			float otherSigma = otherAtomScript.sigma;
+			float finalSigma = sigma;
+			if(otherSigma != sigma) finalSigma = (float)Math.Pow(sigma + otherSigma, .5f);
+			//Vector3 vect = molecules[i].transform.position - transform.position;
 			 Vector3 direction = new Vector3(objectsInRange[i].transform.position.x - transform.position.x, objectsInRange[i].transform.position.y - transform.position.y, objectsInRange[i].transform.position.z - transform.position.z);
 			 direction.Normalize();
 			 double distance = Vector3.Distance(transform.position, objectsInRange[i].transform.position);
-			 double potentialEnergy = 4*epsilon*(Math.Pow ((sigma/distance),12)-Math.Pow ((sigma/distance),6)); //distance and sigma are both in angstroms, so units cancel
+			 double potentialEnergy = 4*epsilon*(Math.Pow ((finalSigma/distance),12)-Math.Pow ((finalSigma/distance),6)); //distance and sigma are both in angstroms, so units cancel
 			 finalPotentialEnergy+= potentialEnergy;
 		}
 		//epsilon was in J, so no unit conversion is necessary.
@@ -613,8 +625,11 @@ public abstract class Atom : MonoBehaviour
 	}
 
 	public float BondDistance(GameObject otherAtom){
-		//this will change soon when we need to give otherAtom as a parameter to sigma
-		return 1.225f * sigma;
+		Atom otherAtomScript = otherAtom.GetComponent<Atom>();
+		float otherSigma = otherAtomScript.sigma;
+		float finalSigma = sigma;
+		if(otherSigma != sigma) finalSigma = (float)Math.Pow(sigma + otherSigma, .5f);
+		return 1.225f * finalSigma;
 	}
 	
 	void HighlightAtoms(){
