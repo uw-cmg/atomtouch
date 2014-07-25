@@ -584,43 +584,18 @@ public abstract class Atom : MonoBehaviour
 					Atom atomScript = currAtom.GetComponent<Atom>();
 					atomScript.SetSelected(atomScript.selected);
 				}
-
 			}
+
+			Quaternion cameraRotation = Camera.main.transform.rotation;
+			Vector2 direction = (Input.mousePosition - lastMousePosition);
+			direction.Normalize();
+			float magnitude = 25.0f;
+			Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
+			gameObject.rigidbody.AddForce(cameraRotation * flingVector, ForceMode.Impulse);
+
 		}
 	}
 
-	void IdentifiyStructure(){
-
-		List<int> angles = new List<int> ();
-		angles.Add (60);
-//		angles.Add (60);
-//		angles.Add (60);
-
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		List<Vector3> atomNeighbors = new List<Vector3>();
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject atomNeighbor = allMolecules[i];
-			if(atomNeighbor == gameObject) continue;
-			if(Vector3.Distance(gameObject.transform.position, atomNeighbor.transform.position) < StaticVariables.bondDistance){
-				atomNeighbors.Add(atomNeighbor.transform.position);
-			}
-		}
-
-		if (atomNeighbors.Count > 1) {
-			for(int i = 0; i < atomNeighbors.Count; i++){
-				for(int j = i+1; j < atomNeighbors.Count; j++){
-					Vector3 vector1 = (atomNeighbors[i] - gameObject.transform.position);
-					Vector3 vector2 = (atomNeighbors[j] - gameObject.transform.position);
-					int angle = (int)Math.Round(Vector3.Angle(vector1, vector2));
-					angles.Remove(angle);
-				}
-			}
-
-			if(angles.Count == 0){
-				print ("We have identified a triangle");
-			}
-		}
-	}
 	
 	void SetTransparency(float transparency){
 		Color newColor = new Color (color.r, color.g, color.b, transparency);

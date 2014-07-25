@@ -106,7 +106,8 @@ public class InstantiateMolecule : MonoBehaviour {
 			changingTemp = true;
 		}
 
-		GUI.Label (new Rect (Screen.width - 100, (Screen.height - 50), 250, 20), "Time: " + Time.time);
+		GUI.Label (new Rect (Screen.width - 150, (Screen.height - 50), 250, 20), "Time: " + Time.time);
+		GUI.Label (new Rect (Screen.width - 150, (Screen.height - 25), 250, 20), "Realtime: " + Time.realtimeSinceStartup);
 
 		if (addGraphicCopper) {
 			Color guiColor = Color.white;
