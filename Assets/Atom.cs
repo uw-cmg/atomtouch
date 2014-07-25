@@ -47,6 +47,7 @@ public abstract class Atom : MonoBehaviour
 	public double totalKineticEnergyJ;
 
 	void FixedUpdate(){
+		//Time.timeScale = StaticVariables.timeScale;
 		if (!StaticVariables.pauseTime) {
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 			List<GameObject> molecules = new List<GameObject>();
@@ -59,14 +60,23 @@ public abstract class Atom : MonoBehaviour
 			}
 			
 			Vector3 force = GetLennardJonesForce (molecules);
-			for (int i=0; i< allMolecules.Length; i++){
-				 double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
-				 if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff * sigma)){
-					molecules.Add(allMolecules[i]);
-				 }
-				 double singlepotentialEnergy = GetLennardJonesPotentialEnergy(molecules);
-				 totalPotentialEnergyJ += singlepotentialEnergy;
-			}
+
+			/*
+			 * This calculation of totalPotentialEnergy doesnt seem right to me. It looks like we are adding 
+			 * all of the atomNeighbors to the List molecules twice...that should throw the calculation off.
+			 * Additionally, this script is being run on every atom so totalPotentialEnergyJ is being calculated
+			 * on every atom. This means we shouldn't ever have a nested for loop (because this would be a O(n^3) algorithm.
+			 *
+			 */
+
+//			for (int i=0; i< allMolecules.Length; i++){
+//				 double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
+//				 if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff * sigma)){
+//					molecules.Add(allMolecules[i]);
+//				 }
+//				 double singlepotentialEnergy = GetLennardJonesPotentialEnergy(molecules);
+//				 totalPotentialEnergyJ += singlepotentialEnergy;
+//			}
 
 			//TTM clear out old velocities - actually, this seems to NOT work
 			//gameObject.rigidbody.velocity = Vector3.zero;

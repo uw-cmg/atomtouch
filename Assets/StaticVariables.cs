@@ -25,14 +25,14 @@ public class StaticVariables {
 
 	//Cutoff for "seeing" other atoms, in Angstroms
 	//multiplied by sigma for Lennard-Jones potential
-	public static float cutoff = 20; //mutliplier for cutoff
+	public static float cutoff = 2.5f; //mutliplier for cutoff
 
 	//Temperature slider bounds in K
 	public static float tempRangeLow = 0.0000001f; 
 	public static float tempRangeHigh = 3000.0f; 
 
 	//Time scale
-	public static float timeScale = (0.02f/40.0f); //1.0f;
+	public static float timeScale = (1.0f/40.0f); //1.0f;
 
 	public static bool touchScreen = true;
 	public static bool axisUI = false;
