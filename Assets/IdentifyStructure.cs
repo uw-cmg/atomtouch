@@ -23,7 +23,8 @@ public class IdentifyStructure : MonoBehaviour {
 			for(int j = 0; j < allMolecules.Length; j++){
 				GameObject atomNeighbor = allMolecules[j];
 				if(atomNeighbor == currAtom) continue;
-				if(Vector3.Distance(currAtom.transform.position, atomNeighbor.transform.position) < StaticVariables.bondDistance){
+				Atom atomScript = currAtom.GetComponent<Atom>();
+				if(Vector3.Distance(currAtom.transform.position, atomNeighbor.transform.position) < atomScript.BondDistance(atomNeighbor)){
 					atomNeighbors.Add(atomNeighbor.transform.position);
 				}
 			}

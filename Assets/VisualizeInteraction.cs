@@ -14,7 +14,8 @@ public class VisualizeInteraction : MonoBehaviour {
 				GameObject currAtom = allMolecules[i];
 				for(int j = i + 1; j < allMolecules.Length; j++){
 					GameObject atomNeighbor = allMolecules[j];
-					if(Vector3.Distance(currAtom.transform.position, atomNeighbor.transform.position) < StaticVariables.bondDistance){
+					Atom atomScript = currAtom.GetComponent<Atom>();
+					if(Vector3.Distance(currAtom.transform.position, atomNeighbor.transform.position) < atomScript.BondDistance(atomNeighbor)){
 						//draw a line from currAtom to atomNeighbor
 						Atom currAtomScript = currAtom.GetComponent<Atom>();
 						Atom neighAtomScript = atomNeighbor.GetComponent<Atom>();

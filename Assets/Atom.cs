@@ -602,6 +602,11 @@ public abstract class Atom : MonoBehaviour
 		ChangeColor (newColor);
 	}
 
+	public float BondDistance(GameObject otherAtom){
+		//this will change soon when we need to give otherAtom as a parameter to sigma
+		return 1.225f * sigma;
+	}
+	
 	void HighlightAtoms(){
 
 		if (StaticVariables.axisUI) {

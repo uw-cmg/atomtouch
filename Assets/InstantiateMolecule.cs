@@ -292,7 +292,8 @@ public class InstantiateMolecule : MonoBehaviour {
 		for (int i = 0; i < allMolecules.Length; i++) {
 			GameObject atomNeighbor = allMolecules[i];
 			if(atomNeighbor == currAtom) continue;
-			if(Vector3.Distance(currAtom.transform.position, atomNeighbor.transform.position) < StaticVariables.bondDistance){
+			Atom atomScript = currAtom.GetComponent<Atom>();
+			if(Vector3.Distance(currAtom.transform.position, atomNeighbor.transform.position) < atomScript.BondDistance(atomNeighbor)){
 				bonds.Add(atomNeighbor.transform.position);
 			}
 		}

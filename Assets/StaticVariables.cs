@@ -37,12 +37,11 @@ public class StaticVariables {
 	public static bool touchScreen = true;
 	public static bool axisUI = false;
 	public static Color selectedColor = new Color (.25f, .25f, .25f);
-	public static float bondDistance = 5.0f;
+	//public static float bondDistance = 5.0f;
 	public static bool drawBondLines = true;
 	public static bool pauseTime = false;
 	public static int transparent = 3000;
 	public static int overlay = 4000;
-
 
 	public static void DrawLine(Vector3 startingPos, Vector3 endingPos, Color atomColor1, Color atomColor2, float lineWidth, Material mat){
 		
