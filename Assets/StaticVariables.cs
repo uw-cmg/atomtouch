@@ -25,7 +25,18 @@ public class StaticVariables {
 
 	//Cutoff for "seeing" other atoms, in Angstroms
 	//multiplied by sigma for Lennard-Jones potential
-	public static float cutoff = 2.5f; //mutliplier for cutoff
+	public static float cutoff = 2.5f; //mutliplier for cutoff 
+
+	//When r_ij is small, the Lennard-Jones potential is extremely large.
+	//At a certain r_min, we will substitute the L-J potential with a function that
+	//curves to a constant as r_ij goes to zero.
+
+	//Multiplier for transition between actual L-J potential and curve to constant
+	//    This number will be multiplied by sigma to find the transition distance
+	public static float r_min_multiplier = 0.75f;
+
+	//melting temperatures
+	//Copper, 1358 K
 
 	//Temperature slider bounds in K
 	public static float tempRangeLow = 0.0000001f; 

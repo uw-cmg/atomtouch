@@ -49,7 +49,7 @@ public class TemperatureCalc : MonoBehaviour {
 		//from 100K, = 100.5K, and alpha = 100.5/100 = 1.0050
 		double draggedTemp = 0.0;
 		if (Math.Abs (instantTemp) < 0.000000000001) {
-			/*
+						/*
 			//Temp is zero; assign atoms a random velocity
 			draggedTemp = desiredTemperature * StaticVariables.alphaDrag;
 			double avgKE = 1.5 * StaticVariables.kB * draggedTemp;
@@ -74,7 +74,13 @@ public class TemperatureCalc : MonoBehaviour {
 				}
 			}
 			*/
-			draggedAlpha = 1.0; //allow time for system to develop velocities based on forces;
+						draggedAlpha = 1.0; //allow time for system to develop velocities based on forces;
+		} 
+		else if (instantTemp > 5000) {
+			//adjust to damp very high temperatures quickly
+			draggedAlpha = alpha; 
+			//draggedTemp = (desiredTemperature - instantTemp) * StaticVariables.alphaDrag * 100 + instantTemp;
+			//draggedAlpha = draggedTemp / instantTemp;
 		}
 		else if (alpha > 1){
 			draggedTemp = (desiredTemperature - instantTemp) * StaticVariables.alphaDrag + instantTemp;

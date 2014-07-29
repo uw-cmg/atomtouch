@@ -120,12 +120,35 @@ public abstract class Atom : MonoBehaviour
 			if(otherSigma != sigma) finalSigma = (float)Math.Pow(sigma + otherSigma, .5f);
 			Vector3 direction = new Vector3(objectsInRange[i].transform.position.x - transform.position.x, objectsInRange[i].transform.position.y - transform.position.y, objectsInRange[i].transform.position.z - transform.position.z);
 			direction.Normalize();
-			
+
+			//TTM add transition to smooth curve to constant, instead of asymptote to infinity
+			double r_min = StaticVariables.r_min_multiplier * finalSigma;
+
 			double distance = Vector3.Distance(transform.position, objectsInRange[i].transform.position);
 			double distanceMeters = distance * StaticVariables.angstromsToMeters; //distance in meters, though viewed in Angstroms
-			double part1 = ((-48 * epsilon) / Math.Pow(distanceMeters, 2));
-			double part2 = (Math.Pow ((finalSigma / distance), 12) - (.5f * Math.Pow ((finalSigma / distance), 6)));
-			double magnitude = (part1 * part2 * distanceMeters);
+			double magnitude = 0.0;
+
+			if(distance > r_min){
+				double part1 = ((-48 * epsilon) / Math.Pow(distanceMeters, 2));
+				double part2 = (Math.Pow ((finalSigma / distance), 12) - (.5f * Math.Pow ((finalSigma / distance), 6)));
+				magnitude = (part1 * part2 * distanceMeters);
+			}
+			else{
+				double r_min_meters = r_min * StaticVariables.angstromsToMeters;
+				double V_rmin_part1 = ((-48 * epsilon) / Math.Pow(r_min_meters, 2));
+				double V_rmin_part2 = (Math.Pow ((finalSigma / r_min), 12) - (.5f * Math.Pow ((finalSigma / r_min), 6)));
+				double V_rmin_magnitude = (V_rmin_part1 * V_rmin_part2 * r_min_meters);
+
+				double r_Vmax = StaticVariables.r_min_multiplier * finalSigma/1.5;
+				double r_Vmax_meters = r_Vmax * StaticVariables.angstromsToMeters;
+				double Vmax_part1 = ((-48 * epsilon) / Math.Pow(r_Vmax_meters, 2));
+				double Vmax_part2 = (Math.Pow ((finalSigma / r_Vmax), 12) - (.5f * Math.Pow ((finalSigma / r_Vmax), 6)));
+				double Vmax_magnitude = (Vmax_part1 * Vmax_part2 * r_Vmax_meters);
+
+				double part1 = (distance/r_min)*(Math.Exp (distance)/Math.Exp (r_min));
+				double part2 = Vmax_magnitude - V_rmin_magnitude;
+				magnitude = Vmax_magnitude - (part1* part2);
+			}
 			finalForce += (direction * (float)magnitude);
 		}
 
