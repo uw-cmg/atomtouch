@@ -37,13 +37,13 @@ public class PinchZoom : MonoBehaviour {
 			}
 			else{
 				camera.fieldOfView += deltaMagnitudeDiff * touchPerspectiveZoomSpeed;
-				camera.fieldOfView = Mathf.Clamp(camera.fieldOfView, 5.0f, 100.0f);
+				camera.fieldOfView = Mathf.Clamp(camera.fieldOfView, 5.0f, 150.0f);
 			}
 		}
 		else if(Application.platform != RuntimePlatform.IPhonePlayer && !beingHeld){
 			float deltaMagnitudeDiff = Input.GetAxis("Mouse ScrollWheel");
 			camera.fieldOfView += deltaMagnitudeDiff * pcPerspectiveZoomSpeed;
-			camera.fieldOfView = Mathf.Clamp(camera.fieldOfView, 5.0f, 100.0f);
+			camera.fieldOfView = Mathf.Clamp(camera.fieldOfView, 5.0f, 150.0f);
 		}
 	}
 }

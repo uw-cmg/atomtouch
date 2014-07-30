@@ -12,16 +12,20 @@ public class CreateEnvironment : MonoBehaviour {
 	public Vector3 centerPos = new Vector3(0.0f, 0.0f, 0.0f);
 	public float errorBuffer = 0.5f;
 	public Material mat;
-	
-
 	public float width = 20.0f;
 	public float height = 20.0f;
 	public float depth = 20.0f;
 	public TextMesh textMeshPrefab;
+
 	private TextMesh bottomText;
 	private TextMesh sideText;
 	private TextMesh depthText;
 	[HideInInspector]public GameObject bottomPlane;
+	private GameObject topPlane;
+	private GameObject backPlane;
+	private GameObject frontPlane;
+	private GameObject rightPlane;
+	private GameObject leftPlane;
 	
 	void Start () {
 	
@@ -44,35 +48,35 @@ public class CreateEnvironment : MonoBehaviour {
 
 		Quaternion topPlaneRotation = Quaternion.Euler (0.0f, 180.0f, 180.0f);
 		Vector3 topPlanePos = new Vector3 (centerPos.x, centerPos.y + (height/2.0f), centerPos.z);
-		GameObject topPlane = Instantiate (plane, topPlanePos, topPlaneRotation) as GameObject;
+		topPlane = Instantiate (plane, topPlanePos, topPlaneRotation) as GameObject;
 		topPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
 		topPlane.name = "TopPlane";
 		topPlane.tag = "Plane";
 		
 		Quaternion backPlaneRotation = Quaternion.Euler (270.0f, 0.0f, 0.0f);
 		Vector3 backPlanePos = new Vector3 (centerPos.x, centerPos.y, centerPos.z + (depth/2.0f));
-		GameObject backPlane = Instantiate (plane, backPlanePos, backPlaneRotation) as GameObject;
+		backPlane = Instantiate (plane, backPlanePos, backPlaneRotation) as GameObject;
 		backPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
 		backPlane.name = "BackPlane";
 		backPlane.tag = "Plane";
 		
 		Quaternion frontPlaneRotation = Quaternion.Euler (90.0f, 0.0f, 0.0f);
 		Vector3 frontPlanePos = new Vector3 (centerPos.x, centerPos.y, centerPos.z - (depth/2.0f));
-		GameObject frontPlane = Instantiate (plane, frontPlanePos, frontPlaneRotation) as GameObject;
+		frontPlane = Instantiate (plane, frontPlanePos, frontPlaneRotation) as GameObject;
 		frontPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
 		frontPlane.name = "FrontPlane";
 		frontPlane.tag = "Plane";
 		
 		Quaternion rightPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 90.0f);
 		Vector3 rightPlanePos = new Vector3 (centerPos.x + (width/2.0f), centerPos.y, centerPos.z);
-		GameObject rightPlane = Instantiate (plane, rightPlanePos, rightPlaneRotation) as GameObject;
+		rightPlane = Instantiate (plane, rightPlanePos, rightPlaneRotation) as GameObject;
 		rightPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
 		rightPlane.name = "RightPlane";
 		rightPlane.tag = "Plane";
 		
 		Quaternion leftPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 270.0f);
 		Vector3 leftPlanePos = new Vector3 (centerPos.x - (width/2.0f), centerPos.y, centerPos.z);
-		GameObject leftPlane = Instantiate (plane, leftPlanePos, leftPlaneRotation) as GameObject;
+		leftPlane = Instantiate (plane, leftPlanePos, leftPlaneRotation) as GameObject;
 		leftPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
 		leftPlane.name = "LeftPlane";
 		leftPlane.tag = "Plane";
@@ -104,7 +108,7 @@ public class CreateEnvironment : MonoBehaviour {
 
 
 		depthText = Instantiate(textMeshPrefab, new Vector3(centerPos.x + (width/2.0f), bottomPlanePos.y - 1.0f, centerPos.z - 2.0f), Quaternion.Euler(0.0f, -90.0f, 0.0f)) as TextMesh;
-		depthText.text = width.ToString() + " Angstroms";
+		depthText.text = depth.ToString() + " Angstroms";
 		LineRenderer depthLine = depthText.transform.gameObject.AddComponent<LineRenderer> ();
 		depthLine.material = mat;
 		depthLine.SetColors(Color.yellow, Color.yellow);
@@ -113,7 +117,7 @@ public class CreateEnvironment : MonoBehaviour {
 	}
 
 	void Update () {
-	
+
 		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
 
 		LineRenderer bottomLine = bottomText.GetComponent<LineRenderer> ();
@@ -121,12 +125,33 @@ public class CreateEnvironment : MonoBehaviour {
 		bottomLine.SetPosition(1, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomText.transform.position.y + 0.5f, bottomText.transform.position.z));
 		
 		LineRenderer sideLine = sideText.GetComponent<LineRenderer> ();
-		sideLine.SetPosition (0, new Vector3 (sideText.transform.position.x - .5f, bottomPlane.transform.position.y, sideText.transform.position.z));
-		sideLine.SetPosition (1, new Vector3 (sideText.transform.position.x - .5f, bottomPlane.transform.position.y + height, sideText.transform.position.z));
+		sideLine.SetPosition (0, new Vector3 (bottomPlane.transform.position.x + (width/2.0f) + .5f, bottomPlane.transform.position.y, sideText.transform.position.z));
+		sideLine.SetPosition (1, new Vector3 (bottomPlane.transform.position.x + (width/2.0f) + .5f, bottomPlane.transform.position.y + height, sideText.transform.position.z));
 
 		LineRenderer depthLine = depthText.GetComponent<LineRenderer> ();
 		depthLine.SetPosition(0, new Vector3(bottomPlane.transform.position.x + (width/2.0f), depthText.transform.position.y + .5f, bottomPlane.transform.position.z - (depth/2.0f)));
 		depthLine.SetPosition(1, new Vector3(bottomPlane.transform.position.x + (width/2.0f), depthText.transform.position.y + .5f, bottomPlane.transform.position.z + (depth/2.0f)));
+
+		bottomText.text = width.ToString() + " Angstroms";
+		sideText.text = height.ToString() + " Angstroms";
+		depthText.text = depth.ToString() + " Angstroms";
+		sideText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f) + 1.0f, bottomPlane.transform.position.y + (height / 2.0f), bottomPlane.transform.position.z - (depth / 2.0f));
+		depthText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f), bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - 2.0f);
+		bottomText.transform.position = new Vector3 (bottomPlane.transform.position.x - 2.0f, bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - (depth / 2.0f));
+
+		rightPlane.transform.position = new Vector3 (centerPos.x + (width/2.0f), centerPos.y, centerPos.z);
+		leftPlane.transform.position = new Vector3 (centerPos.x - (width/2.0f), centerPos.y, centerPos.z);
+		bottomPlane.transform.position = new Vector3 (centerPos.x, centerPos.y - (height/2.0f), centerPos.z);
+		topPlane.transform.position = new Vector3 (centerPos.x, centerPos.y + (height/2.0f), centerPos.z);
+		backPlane.transform.position = new Vector3 (centerPos.x, centerPos.y, centerPos.z + (depth/2.0f));
+		frontPlane.transform.position = new Vector3 (centerPos.x, centerPos.y, centerPos.z - (depth/2.0f));
+
+		bottomPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
+		topPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
+		backPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
+		frontPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
+		rightPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
+		leftPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
 
 	}
 }
