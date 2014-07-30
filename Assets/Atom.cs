@@ -46,6 +46,10 @@ public abstract class Atom : MonoBehaviour
 	public double totalPotentialEnergyJ;
 	public double totalKineticEnergyJ;
 
+	public Vector3 lastVelocity = Vector3.zero;
+	public Vector3 a_n = Vector3.zero;
+	public Vector3 a_nplus1 = Vector3.zero;
+
 	void FixedUpdate(){
 		//Time.timeScale = StaticVariables.timeScale;
 		if (!StaticVariables.pauseTime) {
@@ -84,12 +88,38 @@ public abstract class Atom : MonoBehaviour
 
 			//TTM clear out old velocities - actually, this seems to NOT work
 			//gameObject.rigidbody.velocity = Vector3.zero;
-			//gameObject.rigidbody.angularVelocity = Vector3.zero;
-			gameObject.rigidbody.AddForce (force, mode:ForceMode.Force);
+			gameObject.rigidbody.angularVelocity = Vector3.zero;
+			//gameObject.rigidbody.AddForce (force, mode:ForceMode.Force);
+			//gameObject.rigidbody.AddForce (force*StaticVariables.fixedUpdateIntervalToRealTime, mode:ForceMode.Impulse);
+			//gameObject.rigidbody.velocity= new Vector3 (0.5f, 0.5f, 0.5f);
 
-			Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
+			//TTM velocity verlet: v_n+1 = v_n + 0.5*(a_n+1 + a_n)*delta_t
+			// we have v_n (current velocity before update)
+			//         a_n+1 (acceleration it should have after update)
+			//         x_n (current position)
+			//         delta_t (time step)
+			// we do not have a_n (current acceleration)
+			// we do not have v_n-1 (previous velocity), to calculate a_n
+			Vector3 v_n = gameObject.rigidbody.velocity;
+			//float mymass = massamu/100.0f;
+			//a_nplus1 = force/mymass; //force was already adjusted to 100 amu * Angstroms / unity time ^2
+			a_nplus1 = force/gameObject.rigidbody.mass; 
+			float delta_t = Time.fixedDeltaTime;
+			Vector3 v_verlet = Vector3.zero;
+			//TTM if no velocity to start out with, set a velocity
+			if (v_n.magnitude == 0){
+				v_verlet = a_nplus1 * delta_t;
+				//gameObject.rigidbody.AddForce (force, mode:ForceMode.Force);
+			}
+			else{
+				a_n = (v_n - lastVelocity) / delta_t;
+				v_verlet = v_n + 0.5f*(a_nplus1 + a_n)*delta_t;
+			}
+			lastVelocity = v_n;
+			Vector3 newVelocity = v_verlet * TemperatureCalc.squareRootAlpha;
+			//Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
 			//TTM only reset velocity if not zero
-			if ((rigidbody.velocity.magnitude != 0) && !rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && allMolecules.Length > 1) {
+			if (!rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && allMolecules.Length > 1) {
 				gameObject.rigidbody.velocity = newVelocity;
 			}
 
@@ -112,6 +142,7 @@ public abstract class Atom : MonoBehaviour
 	}
 
 	Vector3 GetLennardJonesForce(List<GameObject> objectsInRange){
+		//double startTime = Time.realtimeSinceStartup;
 		Vector3 finalForce = new Vector3 (0.000f, 0.000f, 0.000f);
 		for (int i = 0; i < objectsInRange.Count; i++) {
 			Atom otherAtomScript = objectsInRange[i].GetComponent<Atom>();
@@ -150,6 +181,8 @@ public abstract class Atom : MonoBehaviour
 				magnitude = Vmax_magnitude - (part1* part2);
 			}
 			finalForce += (direction * (float)magnitude);
+			//double endTime = Time.realtimeSinceStartup;
+			//print ("elapsedTime: " + (endTime - startTime));
 		}
 
 		Vector3 adjustedForce = finalForce / StaticVariables.mass100amuToKg;
