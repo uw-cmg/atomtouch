@@ -793,22 +793,22 @@ public abstract class Atom : MonoBehaviour
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 		Vector3 newVelocity = gameObject.rigidbody.velocity;
 		if (gameObject.transform.position.x > createEnvironment.centerPos.x + (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer) {
-			newVelocity.x = newVelocity.x * -1;
+			newVelocity.x = Math.Abs(newVelocity.x) * -1;
 		}
 		if (gameObject.transform.position.x < createEnvironment.centerPos.x - (createEnvironment.width / 2.0f) + createEnvironment.errorBuffer) {
-			newVelocity.x = newVelocity.x * -1;
+			newVelocity.x = Math.Abs(newVelocity.x);
 		}
 		if (gameObject.transform.position.y > createEnvironment.centerPos.y + (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer) {
-			newVelocity.y = newVelocity.y * -1;
+			newVelocity.y = Math.Abs(newVelocity.y) * -1;
 		}
 		if (gameObject.transform.position.y < createEnvironment.centerPos.y - (createEnvironment.height / 2.0f) + createEnvironment.errorBuffer) {
-			newVelocity.y = newVelocity.y * -1;
+			newVelocity.y = Math.Abs(newVelocity.y);
 		}
 		if (gameObject.transform.position.z > createEnvironment.centerPos.z + (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer) {
-			newVelocity.z = newVelocity.z * -1;
+			newVelocity.z = Math.Abs(newVelocity.z) * -1;
 		}
 		if (gameObject.transform.position.z < createEnvironment.centerPos.z - (createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer) {
-			newVelocity.z = newVelocity.z * -1;
+			newVelocity.z = Math.Abs(newVelocity.z);
 		}
 		gameObject.rigidbody.velocity = newVelocity;
 	}
