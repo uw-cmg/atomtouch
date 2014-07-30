@@ -12,9 +12,10 @@ public class CreateEnvironment : MonoBehaviour {
 	public Vector3 centerPos = new Vector3(0.0f, 0.0f, 0.0f);
 	public float errorBuffer = 0.5f;
 	public Material mat;
-	public float width = 20.0f;
-	public float height = 20.0f;
-	public float depth = 20.0f;
+	public float width;
+	public float height;
+	public float depth;
+	public float volume = 8000.0f;
 	public TextMesh textMeshPrefab;
 
 	private TextMesh bottomText;
@@ -37,6 +38,10 @@ public class CreateEnvironment : MonoBehaviour {
 			Quaternion rotation = Quaternion.Euler(0, 0, 0);
 			Instantiate(molecules[moleculeToSpawn].rigidbody, position, rotation);
 		}
+
+		width = (float)Math.Pow (volume, (1.0f / 3.0f));
+		height = (float)Math.Pow (volume, (1.0f / 3.0f));
+		depth = (float)Math.Pow (volume, (1.0f / 3.0f));
 		
 		//create the box
 		Quaternion bottonPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 0.0f);
@@ -118,6 +123,10 @@ public class CreateEnvironment : MonoBehaviour {
 
 	void Update () {
 
+		width = (float)Math.Pow (volume, (1.0f / 3.0f));
+		height = (float)Math.Pow (volume, (1.0f / 3.0f));
+		depth = (float)Math.Pow (volume, (1.0f / 3.0f));
+		
 		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
 
 		LineRenderer bottomLine = bottomText.GetComponent<LineRenderer> ();

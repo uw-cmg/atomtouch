@@ -97,10 +97,18 @@ public class InstantiateMolecule : MonoBehaviour {
 			StaticVariables.pauseTime = !StaticVariables.pauseTime;
 		}
 		GUI.color = Color.white;
+
+		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		GUI.Label (new Rect (25, 25, 350, 20), "Volume: " + createEnvironment.volume);
+		float newVolume = GUI.VerticalSlider (new Rect (75, 55, 30, Screen.height - 135), createEnvironment.volume, 125000.0f, 1000.0f);
+		if (newVolume != createEnvironment.volume) {
+			createEnvironment.volume = newVolume;
+			changingTemp = true; //hack for not adding another variable
+		}
+
 		
-		
-		GUI.Label (new Rect (25, 25, 350, 20), "Temperature: " + TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 272.15, 2)).ToString() + "C)");
-		float newTemp = GUI.VerticalSlider (new Rect (75, 55, 30, (Screen.height - 135)), TemperatureCalc.desiredTemperature, StaticVariables.tempRangeHigh, StaticVariables.tempRangeLow);
+		GUI.Label (new Rect (170, 25, 350, 20), "Temperature: " + TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 272.15, 2)).ToString() + "C)");
+		float newTemp = GUI.VerticalSlider (new Rect (170, 55, 30, (Screen.height - 135)), TemperatureCalc.desiredTemperature, StaticVariables.tempRangeHigh, StaticVariables.tempRangeLow);
 		if (newTemp != TemperatureCalc.desiredTemperature) {
 			TemperatureCalc.desiredTemperature = newTemp;
 			changingTemp = true;
@@ -195,7 +203,6 @@ public class InstantiateMolecule : MonoBehaviour {
 			}
 			if(atomScript.doubleTapped){
 				if(GUI.Button(new Rect(455, Screen.height - 75, 75, 75), redXTexture)){
-					CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
 					createEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
 					atomScript.doubleTapped = false;
 					Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
@@ -212,7 +219,6 @@ public class InstantiateMolecule : MonoBehaviour {
 				GameObject currAtom = allMolecules[i];
 				Atom atomScript = currAtom.GetComponent<Atom>();
 				if(atomScript.doubleTapped){
-					CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
 					createEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
 					Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
 				}
