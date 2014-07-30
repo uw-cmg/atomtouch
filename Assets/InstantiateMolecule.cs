@@ -344,7 +344,7 @@ public class InstantiateMolecule : MonoBehaviour {
 			position.y = bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer;
 		}
 		if (position.y < bottomPlanePos.y + createEnvironment.errorBuffer) {
-			position.y = bottomPlanePos.y + createEnvironment.errorBuffer;;
+			position.y = bottomPlanePos.y + createEnvironment.errorBuffer;
 		}
 		if (position.x > bottomPlanePos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer) {
 			position.x = bottomPlanePos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;

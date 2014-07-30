@@ -88,7 +88,7 @@ public abstract class Atom : MonoBehaviour
 
 			//TTM clear out old velocities - actually, this seems to NOT work
 			//gameObject.rigidbody.velocity = Vector3.zero;
-			gameObject.rigidbody.angularVelocity = Vector3.zero;
+			if(!gameObject.rigidbody.isKinematic) gameObject.rigidbody.angularVelocity = Vector3.zero;
 			//gameObject.rigidbody.AddForce (force, mode:ForceMode.Force);
 			//gameObject.rigidbody.AddForce (force*StaticVariables.fixedUpdateIntervalToRealTime, mode:ForceMode.Impulse);
 			//gameObject.rigidbody.velocity= new Vector3 (0.5f, 0.5f, 0.5f);
@@ -241,6 +241,7 @@ public abstract class Atom : MonoBehaviour
 			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 			cameraScript.setCameraCoordinates(transform);
 		}
+		CheckCollision ();
 	}
 
 	void HandleTouchSelect(){
@@ -697,18 +698,18 @@ public abstract class Atom : MonoBehaviour
 				GameObject currAtom = allMolecules[i];
 				if(currAtom == gameObject) continue;
 				Color finalColor = Color.black;
-				if(currAtom.transform.position.x < gameObject.transform.position.x + createEnvironment.errorBuffer
-				   && currAtom.transform.position.x > gameObject.transform.position.x - createEnvironment.errorBuffer){
+				if(currAtom.transform.position.x < gameObject.transform.position.x + sigma
+				   && currAtom.transform.position.x > gameObject.transform.position.x - sigma){
 					//green
 					finalColor += Color.green;
 				}
-				if(currAtom.transform.position.y < gameObject.transform.position.y + createEnvironment.errorBuffer
-				   && currAtom.transform.position.y > gameObject.transform.position.y - createEnvironment.errorBuffer){
+				if(currAtom.transform.position.y < gameObject.transform.position.y + sigma
+				   && currAtom.transform.position.y > gameObject.transform.position.y - sigma){
 					//blue
 					finalColor += Color.blue;
 				}
-				if(currAtom.transform.position.z < gameObject.transform.position.z + createEnvironment.errorBuffer
-				   && currAtom.transform.position.z > gameObject.transform.position.z - createEnvironment.errorBuffer){
+				if(currAtom.transform.position.z < gameObject.transform.position.z + sigma
+				   && currAtom.transform.position.z > gameObject.transform.position.z - sigma){
 					//red
 					finalColor += Color.red;
 				}
@@ -783,26 +784,32 @@ public abstract class Atom : MonoBehaviour
 		rigidbody.velocity = newVelocity;
 	}
 
+	void CheckCollision(){
+
+
+
+	}
+
 	Vector3 CheckPosition(Vector3 position){
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
-		if (position.y > bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer) {
-			position.y = bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer;
+		if (position.y > bottomPlanePos.y + (createEnvironment.height) - sigma) {
+			position.y = bottomPlanePos.y + (createEnvironment.height) - sigma;
 		}
-		if (position.y < bottomPlanePos.y + createEnvironment.errorBuffer) {
-			position.y = bottomPlanePos.y + createEnvironment.errorBuffer;;
+		if (position.y < bottomPlanePos.y + sigma) {
+			position.y = bottomPlanePos.y + sigma;
 		}
-		if (position.x > bottomPlanePos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer) {
-			position.x = bottomPlanePos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
+		if (position.x > bottomPlanePos.x + (createEnvironment.width/2.0f) - sigma) {
+			position.x = bottomPlanePos.x + (createEnvironment.width/2.0f) - sigma;
 		}
-		if (position.x < bottomPlanePos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer) {
-			position.x = bottomPlanePos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
+		if (position.x < bottomPlanePos.x - (createEnvironment.width/2.0f) + sigma) {
+			position.x = bottomPlanePos.x - (createEnvironment.width/2.0f) + sigma;
 		}
-		if (position.z > bottomPlanePos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer) {
-			position.z = bottomPlanePos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
+		if (position.z > bottomPlanePos.z + (createEnvironment.depth/2.0f) - sigma) {
+			position.z = bottomPlanePos.z + (createEnvironment.depth/2.0f) - sigma;
 		}
-		if (position.z < bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer) {
-			position.z = bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
+		if (position.z < bottomPlanePos.z - (createEnvironment.depth/2.0f) + sigma) {
+			position.z = bottomPlanePos.z - (createEnvironment.depth/2.0f) + sigma;
 		}
 		return position;
 	}
