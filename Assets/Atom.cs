@@ -30,6 +30,7 @@ public abstract class Atom : MonoBehaviour
 	private Vector3 velocityBeforeCollision;
 	private bool atomIsClicked = false;
 	private TextMesh angstromText;
+	private bool reflecting = false;
 
 	public Material lineMaterial;
 	public TextMesh textMeshPrefab;
@@ -124,6 +125,8 @@ public abstract class Atom : MonoBehaviour
 			}
 
 			velocityBeforeCollision = rigidbody.velocity;
+
+			CheckVelocity();
 
 			//print (gameObject.name + " velocityX: " + gameObject.rigidbody.velocity.x + " velocityY: " + gameObject.rigidbody.velocity.y + " velocityZ: " + gameObject.rigidbody.velocity.z);
 			totalKineticEnergyJ = TemperatureCalc.totalKineticEnergyJ;
@@ -241,7 +244,6 @@ public abstract class Atom : MonoBehaviour
 			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 			cameraScript.setCameraCoordinates(transform);
 		}
-		CheckCollision ();
 	}
 
 	void HandleTouchSelect(){
@@ -665,12 +667,12 @@ public abstract class Atom : MonoBehaviour
 				}
 			}
 
-			Quaternion cameraRotation = Camera.main.transform.rotation;
-			Vector2 direction = (Input.mousePosition - lastMousePosition);
-			direction.Normalize();
-			float magnitude = 25.0f;
-			Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
-			gameObject.rigidbody.AddForce(cameraRotation * flingVector, ForceMode.Impulse);
+//			Quaternion cameraRotation = Camera.main.transform.rotation;
+//			Vector2 direction = (Input.mousePosition - lastMousePosition);
+//			direction.Normalize();
+//			float magnitude = 25.0f;
+//			Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
+//			gameObject.rigidbody.AddForce(cameraRotation * flingVector, ForceMode.Impulse);
 
 		}
 	}
@@ -784,10 +786,31 @@ public abstract class Atom : MonoBehaviour
 		rigidbody.velocity = newVelocity;
 	}
 
-	void CheckCollision(){
+	void CheckVelocity(){
 
+		if (gameObject.rigidbody.isKinematic) return;
 
-
+		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		Vector3 newVelocity = gameObject.rigidbody.velocity;
+		if (gameObject.transform.position.x > createEnvironment.centerPos.x + (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer) {
+			newVelocity.x = newVelocity.x * -1;
+		}
+		if (gameObject.transform.position.x < createEnvironment.centerPos.x - (createEnvironment.width / 2.0f) + createEnvironment.errorBuffer) {
+			newVelocity.x = newVelocity.x * -1;
+		}
+		if (gameObject.transform.position.y > createEnvironment.centerPos.y + (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer) {
+			newVelocity.y = newVelocity.y * -1;
+		}
+		if (gameObject.transform.position.y < createEnvironment.centerPos.y - (createEnvironment.height / 2.0f) + createEnvironment.errorBuffer) {
+			newVelocity.y = newVelocity.y * -1;
+		}
+		if (gameObject.transform.position.z > createEnvironment.centerPos.z + (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer) {
+			newVelocity.z = newVelocity.z * -1;
+		}
+		if (gameObject.transform.position.z < createEnvironment.centerPos.z - (createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer) {
+			newVelocity.z = newVelocity.z * -1;
+		}
+		gameObject.rigidbody.velocity = newVelocity;
 	}
 
 	Vector3 CheckPosition(Vector3 position){

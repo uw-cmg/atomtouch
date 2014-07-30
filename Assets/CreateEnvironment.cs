@@ -10,7 +10,7 @@ public class CreateEnvironment : MonoBehaviour {
 	public int moleculeToSpawn = 0;
 	public GameObject plane;
 	public Vector3 centerPos = new Vector3(0.0f, 0.0f, 0.0f);
-	public float errorBuffer = 1.0f;
+	public float errorBuffer = 0.5f;
 	public Material mat;
 	
 
