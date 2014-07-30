@@ -40,7 +40,7 @@ public class StaticVariables {
 
 	//Temperature slider bounds in K
 	public static float tempRangeLow = 0.0000001f; 
-	public static float tempRangeHigh = 3000.0f; 
+	public static float tempRangeHigh = 5000.0f; 
 
 	//Time scale
 	public static float timeScale = (1.0f/40.0f); //1.0f;
