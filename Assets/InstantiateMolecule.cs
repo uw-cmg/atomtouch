@@ -149,11 +149,11 @@ public class InstantiateMolecule : MonoBehaviour {
 		if (GUI.RepeatButton (new Rect (75, Screen.height - 75, 75, 75), copperTexture)) {
 			if(!clicked){
 				clicked = true;
-				startTime = Time.time;
+				startTime = Time.realtimeSinceStartup;
 				first = true;
 			}
 			else{
-				float currTime = Time.time - startTime;
+				float currTime = Time.realtimeSinceStartup - startTime;
 				if(currTime > holdTime){
 					if(first){
 						first = false;
@@ -166,11 +166,11 @@ public class InstantiateMolecule : MonoBehaviour {
 		if (GUI.RepeatButton (new Rect (170, Screen.height - 75, 75, 75), goldTexture)) {
 			if(!clicked){
 				clicked = true;
-				startTime = Time.time;
+				startTime = Time.realtimeSinceStartup;
 				first = true;
 			}
 			else{
-				float currTime = Time.time - startTime;
+				float currTime = Time.realtimeSinceStartup - startTime;
 				if(currTime > holdTime){
 					if(first){
 						first = false;
@@ -183,11 +183,11 @@ public class InstantiateMolecule : MonoBehaviour {
 		if (GUI.RepeatButton (new Rect (265, Screen.height - 75, 75, 75), platinumTexture)) {
 			if(!clicked){
 				clicked = true;
-				startTime = Time.time;
+				startTime = Time.realtimeSinceStartup;
 				first = true;
 			}
 			else{
-				float currTime = Time.time - startTime;
+				float currTime = Time.realtimeSinceStartup - startTime;
 				if(currTime > holdTime){
 					if(first){
 						first = false;
