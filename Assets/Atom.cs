@@ -656,19 +656,18 @@ public abstract class Atom : MonoBehaviour
 				GameObject currAtom = allMolecules[i];
 				if(currAtom == gameObject) continue;
 				Color finalColor = Color.black;
-				float finalSigma = sigma();
-				if(currAtom.transform.position.x < gameObject.transform.position.x + finalSigma
-				   && currAtom.transform.position.x > gameObject.transform.position.x - finalSigma){
+				if(currAtom.transform.position.x < gameObject.transform.position.x + createEnvironment.errorBuffer
+				   && currAtom.transform.position.x > gameObject.transform.position.x - createEnvironment.errorBuffer){
 					//green
 					finalColor += Color.green;
 				}
-				if(currAtom.transform.position.y < gameObject.transform.position.y + finalSigma
-				   && currAtom.transform.position.y > gameObject.transform.position.y - finalSigma){
+				if(currAtom.transform.position.y < gameObject.transform.position.y + createEnvironment.errorBuffer
+				   && currAtom.transform.position.y > gameObject.transform.position.y - createEnvironment.errorBuffer){
 					//blue
 					finalColor += Color.blue;
 				}
-				if(currAtom.transform.position.z < gameObject.transform.position.z + finalSigma
-				   && currAtom.transform.position.z > gameObject.transform.position.z - finalSigma){
+				if(currAtom.transform.position.z < gameObject.transform.position.z + createEnvironment.errorBuffer
+				   && currAtom.transform.position.z > gameObject.transform.position.z - createEnvironment.errorBuffer){
 					//red
 					finalColor += Color.red;
 				}
