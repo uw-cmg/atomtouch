@@ -27,7 +27,6 @@ public abstract class Atom : MonoBehaviour
 	[HideInInspector]public bool doubleTapped = false;
 	private Dictionary<String, Vector3> gameObjectOffsets;
 	private Dictionary<String, Vector3> gameObjectScreenPoints;
-	private Vector3 velocityBeforeCollision;
 	private bool atomIsClicked = false;
 	private TextMesh angstromText;
 	private bool reflecting = false;
@@ -43,10 +42,7 @@ public abstract class Atom : MonoBehaviour
 	protected abstract void SetSelected (bool selected);
 	public abstract Color color { get; }
 	public abstract void ChangeColor (Color color);
-
-	public double totalPotentialEnergyJ;
-	public double totalKineticEnergyJ;
-
+	
 	public Vector3 lastVelocity = Vector3.zero;
 	public Vector3 a_n = Vector3.zero;
 	public Vector3 a_nplus1 = Vector3.zero;
@@ -69,23 +65,6 @@ public abstract class Atom : MonoBehaviour
 			}
 			
 			Vector3 force = GetLennardJonesForce (molecules);
-
-			/*
-			 * This calculation of totalPotentialEnergy doesnt seem right to me. It looks like we are adding 
-			 * all of the atomNeighbors to the List molecules twice...that should throw the calculation off.
-			 * Additionally, this script is being run on every atom so totalPotentialEnergyJ is being calculated
-			 * on every atom. This means we shouldn't ever have a nested for loop (because this would be a O(n^3) algorithm.
-			 *
-			 */
-
-//			for (int i=0; i< allMolecules.Length; i++){
-//				 double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
-//				 if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff * sigma)){
-//					molecules.Add(allMolecules[i]);
-//				 }
-//				 double singlepotentialEnergy = GetLennardJonesPotentialEnergy(molecules);
-//				 totalPotentialEnergyJ += singlepotentialEnergy;
-//			}
 
 			//TTM clear out old velocities - actually, this seems to NOT work
 			//gameObject.rigidbody.velocity = Vector3.zero;
@@ -124,13 +103,7 @@ public abstract class Atom : MonoBehaviour
 				gameObject.rigidbody.velocity = newVelocity;
 			}
 
-			velocityBeforeCollision = rigidbody.velocity;
-
 			CheckVelocity();
-
-			//print (gameObject.name + " velocityX: " + gameObject.rigidbody.velocity.x + " velocityY: " + gameObject.rigidbody.velocity.y + " velocityZ: " + gameObject.rigidbody.velocity.z);
-			totalKineticEnergyJ = TemperatureCalc.totalKineticEnergyJ;
-
 		}
 		else{
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
@@ -194,24 +167,7 @@ public abstract class Atom : MonoBehaviour
 		return adjustedForce;
 	}
 
-	//TTM add potential energy function
-	double GetLennardJonesPotentialEnergy(List<GameObject> objectsInRange){
-		double finalPotentialEnergy = 0.0;
-		for (int i = 0; i < objectsInRange.Count; i++) {
-			Atom otherAtomScript = objectsInRange[i].GetComponent<Atom>();
-			float otherSigma = otherAtomScript.sigma;
-			float finalSigma = sigma;
-			if(otherSigma != sigma) finalSigma = (float)Math.Pow(sigma + otherSigma, .5f);
-			//Vector3 vect = molecules[i].transform.position - transform.position;
-			 Vector3 direction = new Vector3(objectsInRange[i].transform.position.x - transform.position.x, objectsInRange[i].transform.position.y - transform.position.y, objectsInRange[i].transform.position.z - transform.position.z);
-			 direction.Normalize();
-			 double distance = Vector3.Distance(transform.position, objectsInRange[i].transform.position);
-			 double potentialEnergy = 4*epsilon*(Math.Pow ((finalSigma/distance),12)-Math.Pow ((finalSigma/distance),6)); //distance and sigma are both in angstroms, so units cancel
-			 finalPotentialEnergy+= potentialEnergy;
-		}
-		//epsilon was in J, so no unit conversion is necessary.
-		return finalPotentialEnergy;
-	}
+
 
 	void Update(){
 		//print ("UpdateDelta: " + Time.deltaTime);
@@ -775,17 +731,7 @@ public abstract class Atom : MonoBehaviour
 		StaticVariables.DrawLine (new Vector3 (currAtom.transform.position.x, bottomPlanePos.y + createEnvironment.height, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (currAtom.transform.position.x, bottomPlanePos.y + createEnvironment.height, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
 		                          Color.green, Color.green, .1f, lineMaterial);
 	}
-
-	void OnCollisionEnter(Collision other){
-		//for (int i = 0; i < 100; i++) print ("");
-		//print (gameObject.name + " velocityBeforeCollisionX: " + velocityBeforeCollision.x + " y: " + velocityBeforeCollision.y + " z: " + velocityBeforeCollision.z);
-		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-		GameObject collidedPlane = other.transform.gameObject;
-		//rigidbody.AddForce (Vector3.Reflect (velocityBeforeCollision, (cameraScript.centerPos - collidedPlane.transform.position).normalized), ForceMode.Impulse);
-		Vector3 newVelocity = Vector3.Reflect (velocityBeforeCollision, (createEnvironment.centerPos - collidedPlane.transform.position).normalized);
-		rigidbody.velocity = newVelocity;
-	}
-
+	
 	void CheckVelocity(){
 
 		if (gameObject.rigidbody.isKinematic) return;
@@ -816,23 +762,23 @@ public abstract class Atom : MonoBehaviour
 	Vector3 CheckPosition(Vector3 position){
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
-		if (position.y > bottomPlanePos.y + (createEnvironment.height) - sigma) {
-			position.y = bottomPlanePos.y + (createEnvironment.height) - sigma;
+		if (position.y > bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer) {
+			position.y = bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer;
 		}
-		if (position.y < bottomPlanePos.y + sigma) {
-			position.y = bottomPlanePos.y + sigma;
+		if (position.y < bottomPlanePos.y + createEnvironment.errorBuffer) {
+			position.y = bottomPlanePos.y + createEnvironment.errorBuffer;
 		}
-		if (position.x > bottomPlanePos.x + (createEnvironment.width/2.0f) - sigma) {
-			position.x = bottomPlanePos.x + (createEnvironment.width/2.0f) - sigma;
+		if (position.x > bottomPlanePos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer) {
+			position.x = bottomPlanePos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
 		}
-		if (position.x < bottomPlanePos.x - (createEnvironment.width/2.0f) + sigma) {
-			position.x = bottomPlanePos.x - (createEnvironment.width/2.0f) + sigma;
+		if (position.x < bottomPlanePos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer) {
+			position.x = bottomPlanePos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
 		}
-		if (position.z > bottomPlanePos.z + (createEnvironment.depth/2.0f) - sigma) {
-			position.z = bottomPlanePos.z + (createEnvironment.depth/2.0f) - sigma;
+		if (position.z > bottomPlanePos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer) {
+			position.z = bottomPlanePos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
 		}
-		if (position.z < bottomPlanePos.z - (createEnvironment.depth/2.0f) + sigma) {
-			position.z = bottomPlanePos.z - (createEnvironment.depth/2.0f) + sigma;
+		if (position.z < bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer) {
+			position.z = bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
 		}
 		return position;
 	}

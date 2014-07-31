@@ -50,7 +50,7 @@ public class Copper : Atom {
 		SetSelected (false);
 		gameObject.transform.localScale = new Vector3(sigma * .5f, sigma * .5f, sigma * .5f);
 		//gameObject.rigidbody.AddForce(new Vector3(0.0f, 10.0f, 0.0f));
-		//gameObject.rigidbody.velocity = new Vector3(0.0f, 5.0f, 0.0f);
+		//gameObject.rigidbody.velocity = new Vector3(0.0f, 15.0f, 0.0f);
 	}
 
 }
