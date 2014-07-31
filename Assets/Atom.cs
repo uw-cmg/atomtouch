@@ -48,6 +48,12 @@ public abstract class Atom : MonoBehaviour
 	private Vector3 a_n = Vector3.zero;
 	private Vector3 a_nplus1 = Vector3.zero;
 
+	void Awake(){
+
+		gameObject.rigidbody.velocity = new Vector3 (UnityEngine.Random.Range(-1.0f, 1.0f), UnityEngine.Random.Range(-1.0f, 1.0f), UnityEngine.Random.Range(-1.0f, 1.0f));
+
+	}
+
 	void FixedUpdate(){
 		//Time.timeScale = StaticVariables.timeScale;
 		if (!StaticVariables.pauseTime) {
