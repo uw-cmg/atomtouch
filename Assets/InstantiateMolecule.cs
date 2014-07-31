@@ -118,6 +118,7 @@ public class InstantiateMolecule : MonoBehaviour {
 			changingTemp = true;
 		}
 
+		if (Time.timeScale < 1.0f) GUI.Label (new Rect (Screen.width - 150, Screen.height - 75, 250, 20), "Slow Motion!");
 		GUI.Label (new Rect (Screen.width - 150, (Screen.height - 50), 250, 20), "Time: " + Time.time);
 		GUI.Label (new Rect (Screen.width - 150, (Screen.height - 25), 250, 20), "Realtime: " + Time.realtimeSinceStartup);
 
@@ -210,6 +211,7 @@ public class InstantiateMolecule : MonoBehaviour {
 					createEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
 					atomScript.doubleTapped = false;
 					Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
+					Time.timeScale = 1.0f;
 				}
 
 				DisplayAtomProperties(allMolecules[i]);
@@ -309,7 +311,7 @@ public class InstantiateMolecule : MonoBehaviour {
 		}
 
 		if (bonds.Count == 1) {
-			GUI.Label(new Rect(Screen.width - 285, 190, 225, 30), "Bond 1: " + "Distance: " + Math.Round(Vector3.Distance(bonds[0], currAtom.transform.position), 3).ToString());
+			GUI.Label(new Rect(Screen.width - 285, 200, 225, 30), "Bond 1: " + "Distance: " + Math.Round(Vector3.Distance(bonds[0], currAtom.transform.position), 3).ToString());
 		}
 		else{
 			//figure out the angles between the vectors

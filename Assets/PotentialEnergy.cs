@@ -21,6 +21,17 @@ public class PotentialEnergy : MonoBehaviour {
 
 	void Update () {
 	
+//		if (Input.GetKey (KeyCode.J)) {
+//			if(Time.timeScale == 1.0f){
+//				Time.timeScale = .05f;
+//			}
+//			else{
+//				Time.timeScale = 1.0f;
+//			}
+//			print ("Timescale: " + Time.timeScale);
+//		}
+
+
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 
 		for (int i = 0; i < allMolecules.Length; i++) {
