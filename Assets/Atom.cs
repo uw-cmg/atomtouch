@@ -37,15 +37,16 @@ public abstract class Atom : MonoBehaviour
 
 	//variables that must be implemented because they are declared as abstract in the base class
 	protected abstract float epsilon{ get; } // J
-	protected abstract float sigma{ get; } // m=Angstroms for Unity
+	public abstract float sigma(GameObject otherAtom);
+	public abstract float sigma();
 	protected abstract float massamu{ get; } //amu
 	protected abstract void SetSelected (bool selected);
 	public abstract Color color { get; }
 	public abstract void ChangeColor (Color color);
 	
-	public Vector3 lastVelocity = Vector3.zero;
-	public Vector3 a_n = Vector3.zero;
-	public Vector3 a_nplus1 = Vector3.zero;
+	private Vector3 lastVelocity = Vector3.zero;
+	private Vector3 a_n = Vector3.zero;
+	private Vector3 a_nplus1 = Vector3.zero;
 
 	void FixedUpdate(){
 		//Time.timeScale = StaticVariables.timeScale;
@@ -55,11 +56,8 @@ public abstract class Atom : MonoBehaviour
 			
 			for(int i = 0; i < allMolecules.Length; i++){
 				Atom otherAtomScript = allMolecules[i].GetComponent<Atom>();
-				float otherSigma = otherAtomScript.sigma;
-				float finalSigma = sigma;
-				if(otherSigma != sigma) finalSigma = (float)Math.Pow(sigma + otherSigma, .5f);
 				double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
-				if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff * finalSigma)){
+				if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff * sigma(allMolecules[i]))){
 					molecules.Add(allMolecules[i]);
 				}
 			}
@@ -122,12 +120,10 @@ public abstract class Atom : MonoBehaviour
 		Vector3 finalForce = new Vector3 (0.000f, 0.000f, 0.000f);
 		for (int i = 0; i < objectsInRange.Count; i++) {
 			Atom otherAtomScript = objectsInRange[i].GetComponent<Atom>();
-			float otherSigma = otherAtomScript.sigma;
-			float finalSigma = sigma;
-			if(otherSigma != sigma) finalSigma = (float)Math.Pow(sigma + otherSigma, .5f);
 			Vector3 direction = new Vector3(objectsInRange[i].transform.position.x - transform.position.x, objectsInRange[i].transform.position.y - transform.position.y, objectsInRange[i].transform.position.z - transform.position.z);
 			direction.Normalize();
 
+			float finalSigma = sigma(objectsInRange[i]);
 			//TTM add transition to smooth curve to constant, instead of asymptote to infinity
 			double r_min = StaticVariables.r_min_multiplier * finalSigma;
 
@@ -641,10 +637,7 @@ public abstract class Atom : MonoBehaviour
 
 	public float BondDistance(GameObject otherAtom){
 		Atom otherAtomScript = otherAtom.GetComponent<Atom>();
-		float otherSigma = otherAtomScript.sigma;
-		float finalSigma = sigma;
-		if(otherSigma != sigma) finalSigma = (float)Math.Pow(sigma + otherSigma, .5f);
-		return 1.225f * finalSigma;
+		return 1.225f * sigma(otherAtom);
 	}
 	
 	void HighlightAtoms(){
@@ -656,18 +649,19 @@ public abstract class Atom : MonoBehaviour
 				GameObject currAtom = allMolecules[i];
 				if(currAtom == gameObject) continue;
 				Color finalColor = Color.black;
-				if(currAtom.transform.position.x < gameObject.transform.position.x + sigma
-				   && currAtom.transform.position.x > gameObject.transform.position.x - sigma){
+				float finalSigma = sigma();
+				if(currAtom.transform.position.x < gameObject.transform.position.x + finalSigma
+				   && currAtom.transform.position.x > gameObject.transform.position.x - finalSigma){
 					//green
 					finalColor += Color.green;
 				}
-				if(currAtom.transform.position.y < gameObject.transform.position.y + sigma
-				   && currAtom.transform.position.y > gameObject.transform.position.y - sigma){
+				if(currAtom.transform.position.y < gameObject.transform.position.y + finalSigma
+				   && currAtom.transform.position.y > gameObject.transform.position.y - finalSigma){
 					//blue
 					finalColor += Color.blue;
 				}
-				if(currAtom.transform.position.z < gameObject.transform.position.z + sigma
-				   && currAtom.transform.position.z > gameObject.transform.position.z - sigma){
+				if(currAtom.transform.position.z < gameObject.transform.position.z + finalSigma
+				   && currAtom.transform.position.z > gameObject.transform.position.z - finalSigma){
 					//red
 					finalColor += Color.red;
 				}
