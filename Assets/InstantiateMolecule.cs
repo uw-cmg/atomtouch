@@ -104,6 +104,7 @@ public class InstantiateMolecule : MonoBehaviour {
 		if (newVolume != createEnvironment.volume) {
 			createEnvironment.volume = newVolume;
 			changingTemp = true; //hack for not adding another variable
+			CheckAtomVolumePositions();
 		}
 
 		
@@ -365,6 +366,36 @@ public class InstantiateMolecule : MonoBehaviour {
 			position.z = bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
 		}
 		return position;
+	}
+
+	void CheckAtomVolumePositions(){
+
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			Vector3 newPosition = currAtom.transform.position;
+			if(currAtom.transform.position.x > createEnvironment.centerPos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer){
+				newPosition.x = createEnvironment.centerPos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
+			}
+			if(currAtom.transform.position.x < createEnvironment.centerPos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer){
+				newPosition.x = createEnvironment.centerPos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
+			}
+			if(currAtom.transform.position.y > createEnvironment.centerPos.y + (createEnvironment.height/2.0f) - createEnvironment.errorBuffer){
+				newPosition.y = createEnvironment.centerPos.y + (createEnvironment.height/2.0f) - createEnvironment.errorBuffer;
+			}
+			if(currAtom.transform.position.y < createEnvironment.centerPos.y - (createEnvironment.height/2.0f) + createEnvironment.errorBuffer){
+				newPosition.y = createEnvironment.centerPos.y - (createEnvironment.height/2.0f) + createEnvironment.errorBuffer;
+			}
+			if(currAtom.transform.position.z > createEnvironment.centerPos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer){
+				newPosition.z = createEnvironment.centerPos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
+			}
+			if(currAtom.transform.position.z < createEnvironment.centerPos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer){
+				newPosition.z = createEnvironment.centerPos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
+			}
+			currAtom.transform.position = newPosition;
+		}
+
 	}
 	
 }
