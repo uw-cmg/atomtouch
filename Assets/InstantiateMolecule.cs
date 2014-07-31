@@ -98,6 +98,9 @@ public class InstantiateMolecule : MonoBehaviour {
 		}
 		GUI.color = Color.white;
 
+		GUI.Label (new Rect(Screen.width - 285, 80, 250, 50), "Potential Energy: " + PotentialEnergy.finalPotentialEnergy);
+
+
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 		GUI.Label (new Rect (25, 25, 350, 20), "Volume: " + createEnvironment.volume);
 		float newVolume = GUI.VerticalSlider (new Rect (75, 55, 30, Screen.height - 135), createEnvironment.volume, 125000.0f, 1000.0f);

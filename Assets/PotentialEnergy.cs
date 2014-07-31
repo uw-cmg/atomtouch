@@ -4,19 +4,23 @@ using System.Collections.Generic;
 
 public class PotentialEnergy : MonoBehaviour {
 
-	public double totalPotentialEnergyJ;
+	private double totalPotentialEnergyJ;
 	//public double totalKineticEnergyJ;
 	private float startTime = 0.0f;
-	private float timeToUpdate = 5.0f;
+	private float timeToUpdate = 1.0f;
+	private int updateCalls;
+	public static float finalPotentialEnergy = 0.0f;
+	private bool first = true;
+
 	
 	void Start () {
 		totalPotentialEnergyJ = 0.0f;
 		startTime = Time.realtimeSinceStartup;
+		updateCalls = 0;
 	}
 
 	void Update () {
 	
-		totalPotentialEnergyJ = 0.0f;
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 
 		for (int i = 0; i < allMolecules.Length; i++) {
@@ -37,10 +41,15 @@ public class PotentialEnergy : MonoBehaviour {
 			}
 			totalPotentialEnergyJ += potentialEnergyPerAtom;
 		}
+		updateCalls++;
 
-		if (Time.realtimeSinceStartup - startTime > timeToUpdate) {
-			print ("time: " + Time.realtimeSinceStartup + " Potential Energy: " + totalPotentialEnergyJ);
+		if (Time.realtimeSinceStartup - startTime > timeToUpdate || first) {
+			first = false;
+			finalPotentialEnergy = (float) (totalPotentialEnergyJ / updateCalls); //take the average of the potential energy
+			totalPotentialEnergyJ = 0.0f;
+			updateCalls = 0;
 			startTime = Time.realtimeSinceStartup;
+			print ("Time: " + Time.realtimeSinceStartup);
 		}
 
 

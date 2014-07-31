@@ -32,16 +32,16 @@ public class Platinum : Atom {
 
 	public override Color color {
 		get {
-			return platinumColor;
+			return currentColor;
 		}
 	}
 
 	protected override void SetSelected (bool selected){
 		if (selected) {
-			platinumColor = StaticVariables.selectedColor;
+			currentColor = StaticVariables.selectedColor;
 		}
 		else{
-			platinumColor = platinumColor;
+			currentColor = platinumColor;
 		}
 	}
 
