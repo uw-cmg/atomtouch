@@ -314,7 +314,7 @@ public class InstantiateMolecule : MonoBehaviour {
 		else{
 			//figure out the angles between the vectors
 			for(int i = 0; i < bonds.Count; i++){
-				GUI.Label(new Rect(Screen.width - 285, 190 + (i*30), 225, 30), "Bond " + (i+1).ToString() + " Distance: " + Math.Round (Vector3.Distance(bonds[i], currAtom.transform.position), 3).ToString());
+				GUI.Label(new Rect(Screen.width - 285, 200 + (i*30), 225, 30), "Bond " + (i+1).ToString() + " Distance: " + Math.Round (Vector3.Distance(bonds[i], currAtom.transform.position), 3).ToString());
 			}
 
 			int angleNumber = 1;
@@ -324,7 +324,7 @@ public class InstantiateMolecule : MonoBehaviour {
 					Vector3 vector1 = (bonds[i] - currAtom.transform.position);
 					Vector3 vector2 = (bonds[j] - currAtom.transform.position);
 					float angle = (float)Math.Round(Vector3.Angle(vector1, vector2), 3);
-					GUI.Label(new Rect(Screen.width - 285, 220 + (bonds.Count * 30) + ((angleNumber-1)*30), 225, 30), "Angle " + angleNumber + ": " + angle);
+					GUI.Label(new Rect(Screen.width - 285, 230 + (bonds.Count * 30) + ((angleNumber-1)*30), 225, 30), "Angle " + angleNumber + ": " + angle);
 					angleNumber++;
 				}
 			}

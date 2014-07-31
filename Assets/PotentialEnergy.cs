@@ -49,7 +49,6 @@ public class PotentialEnergy : MonoBehaviour {
 			totalPotentialEnergyJ = 0.0f;
 			updateCalls = 0;
 			startTime = Time.realtimeSinceStartup;
-			print ("Time: " + Time.realtimeSinceStartup);
 		}
 
 

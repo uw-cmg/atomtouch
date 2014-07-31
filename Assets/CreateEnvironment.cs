@@ -27,9 +27,12 @@ public class CreateEnvironment : MonoBehaviour {
 	private GameObject frontPlane;
 	private GameObject rightPlane;
 	private GameObject leftPlane;
+	private Vector3 initialCenterPos;
 	
 	void Start () {
 	
+
+		initialCenterPos = centerPos;
 		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
 
 		//create the atoms
@@ -123,9 +126,9 @@ public class CreateEnvironment : MonoBehaviour {
 
 	void Update () {
 
-		width = (float)Math.Pow (volume, (1.0f / 3.0f));
-		height = (float)Math.Pow (volume, (1.0f / 3.0f));
-		depth = (float)Math.Pow (volume, (1.0f / 3.0f));
+//		width = (float)Math.Pow (volume, (1.0f / 3.0f));
+//		height = (float)Math.Pow (volume, (1.0f / 3.0f));
+//		depth = (float)Math.Pow (volume, (1.0f / 3.0f));
 		
 		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
 
@@ -148,12 +151,12 @@ public class CreateEnvironment : MonoBehaviour {
 		depthText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f), bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - 2.0f);
 		bottomText.transform.position = new Vector3 (bottomPlane.transform.position.x - 2.0f, bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - (depth / 2.0f));
 
-		rightPlane.transform.position = new Vector3 (centerPos.x + (width/2.0f), centerPos.y, centerPos.z);
-		leftPlane.transform.position = new Vector3 (centerPos.x - (width/2.0f), centerPos.y, centerPos.z);
-		bottomPlane.transform.position = new Vector3 (centerPos.x, centerPos.y - (height/2.0f), centerPos.z);
-		topPlane.transform.position = new Vector3 (centerPos.x, centerPos.y + (height/2.0f), centerPos.z);
-		backPlane.transform.position = new Vector3 (centerPos.x, centerPos.y, centerPos.z + (depth/2.0f));
-		frontPlane.transform.position = new Vector3 (centerPos.x, centerPos.y, centerPos.z - (depth/2.0f));
+		rightPlane.transform.position = new Vector3 (initialCenterPos.x + (width/2.0f), initialCenterPos.y, initialCenterPos.z);
+		leftPlane.transform.position = new Vector3 (initialCenterPos.x - (width/2.0f), initialCenterPos.y, initialCenterPos.z);
+		bottomPlane.transform.position = new Vector3 (initialCenterPos.x, initialCenterPos.y - (height/2.0f), initialCenterPos.z);
+		topPlane.transform.position = new Vector3 (initialCenterPos.x, initialCenterPos.y + (height/2.0f), initialCenterPos.z);
+		backPlane.transform.position = new Vector3 (initialCenterPos.x, initialCenterPos.y, initialCenterPos.z + (depth/2.0f));
+		frontPlane.transform.position = new Vector3 (initialCenterPos.x, initialCenterPos.y, initialCenterPos.z - (depth/2.0f));
 
 		bottomPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
 		topPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
