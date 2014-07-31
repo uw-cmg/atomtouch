@@ -8,7 +8,7 @@ public class Copper : Atom {
 	private Color copperColor = new Color (.7216f, .451f, 0.2f, 1.0f);
 	private float sigmaValue = 2.3374f;
 
-	protected override float epsilon
+	public override float epsilon
 	{
 		get { return ((float)(6.537 * Math.Pow(10, -20))); } // J
 	}

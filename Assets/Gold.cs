@@ -8,7 +8,7 @@ public class Gold : Atom
 	private Color goldColor = new Color (1.0f, .8431f, 0.0f, 1.0f);
 	private float sigmaValue = 2.6367f;
 
-	protected override float epsilon
+	public override float epsilon
 	{
 		get { return 5152.9f * 1.381f * (float)Math.Pow (10, -23); } // J
 	}

@@ -36,7 +36,7 @@ public abstract class Atom : MonoBehaviour
 	public bool held { get; set; }
 
 	//variables that must be implemented because they are declared as abstract in the base class
-	protected abstract float epsilon{ get; } // J
+	public abstract float epsilon{ get; } // J
 	public abstract float sigma(GameObject otherAtom);
 	public abstract float sigma();
 	protected abstract float massamu{ get; } //amu
