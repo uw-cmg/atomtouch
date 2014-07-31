@@ -103,7 +103,7 @@ public class InstantiateMolecule : MonoBehaviour {
 
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 		GUI.Label (new Rect (25, 25, 350, 20), "Volume: " + createEnvironment.volume);
-		float newVolume = GUI.VerticalSlider (new Rect (75, 55, 30, Screen.height - 135), createEnvironment.volume, 125000.0f, 1000.0f);
+		float newVolume = GUI.VerticalSlider (new Rect (75, 55, 30, Screen.height - 135), createEnvironment.volume, 64000.0f, 1000.0f);
 		if (newVolume != createEnvironment.volume) {
 			createEnvironment.volume = newVolume;
 			changingTemp = true; //hack for not adding another variable

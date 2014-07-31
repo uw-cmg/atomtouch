@@ -126,9 +126,9 @@ public class CreateEnvironment : MonoBehaviour {
 
 	void Update () {
 
-//		width = (float)Math.Pow (volume, (1.0f / 3.0f));
-//		height = (float)Math.Pow (volume, (1.0f / 3.0f));
-//		depth = (float)Math.Pow (volume, (1.0f / 3.0f));
+		width = (float)Math.Pow (volume, (1.0f / 3.0f));
+		height = (float)Math.Pow (volume, (1.0f / 3.0f));
+		depth = (float)Math.Pow (volume, (1.0f / 3.0f));
 		
 		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
 
