@@ -206,16 +206,12 @@ public class InstantiateMolecule : MonoBehaviour {
 		}
 
 
-		GameObject atomBeingHeld = null;
-		bool holdingAtom = false;
+
 		for (int i = 0; i < allMolecules.Length; i++) {
 			Atom atomScript = allMolecules[i].GetComponent<Atom>();
-			if(atomScript.held){
-				holdingAtom = true;
-				atomBeingHeld = allMolecules[i];
-			}
 			if(atomScript.doubleTapped){
 				if(GUI.Button(new Rect(455, Screen.height - 75, 75, 75), redXTexture)){
+					atomScript.ResetTransparency();
 					createEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
 					atomScript.doubleTapped = false;
 					Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));

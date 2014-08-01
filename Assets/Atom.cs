@@ -16,9 +16,7 @@ public abstract class Atom : MonoBehaviour
 	private Vector3 offset;
 	private Vector3 screenPoint;
 	private Vector3 lastMousePosition;
-	private Vector3 mouseDelta;
 	private GameObject moleculeToMove = null;
-	private Vector2 prevTouchPosition = new Vector2(0.0f, 0.0f);
 	private float deltaTouch2 = 0.0f;
 	private bool moveZDirection = false;
 	private float lastTapTime;
@@ -29,7 +27,6 @@ public abstract class Atom : MonoBehaviour
 	private Dictionary<String, Vector3> gameObjectScreenPoints;
 	private bool atomIsClicked = false;
 	private TextMesh angstromText;
-	private bool reflecting = false;
 
 	public Material lineMaterial;
 	public TextMesh textMeshPrefab;
@@ -61,7 +58,6 @@ public abstract class Atom : MonoBehaviour
 			List<GameObject> molecules = new List<GameObject>();
 			
 			for(int i = 0; i < allMolecules.Length; i++){
-				Atom otherAtomScript = allMolecules[i].GetComponent<Atom>();
 				double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
 				if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff * sigma(allMolecules[i]))){
 					molecules.Add(allMolecules[i]);
@@ -125,7 +121,6 @@ public abstract class Atom : MonoBehaviour
 		//double startTime = Time.realtimeSinceStartup;
 		Vector3 finalForce = new Vector3 (0.000f, 0.000f, 0.000f);
 		for (int i = 0; i < objectsInRange.Count; i++) {
-			Atom otherAtomScript = objectsInRange[i].GetComponent<Atom>();
 			Vector3 direction = new Vector3(objectsInRange[i].transform.position.x - transform.position.x, objectsInRange[i].transform.position.y - transform.position.y, objectsInRange[i].transform.position.z - transform.position.z);
 			direction.Normalize();
 
@@ -185,20 +180,21 @@ public abstract class Atom : MonoBehaviour
 		}
 		else{
 			if(Input.GetMouseButtonDown(0)){
-				if((Time.time - lastTapTime) < tapTime){
+				if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
 					ResetDoubleTapped();
 					doubleTapped = true;
 				}
 				Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
 				RaycastHit hitInfo;
 				if (Physics.Raycast( ray, out hitInfo ) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
-					lastTapTime = Time.time;
+					lastTapTime = Time.realtimeSinceStartup;
 				}
 			}
 			
 			HandleRightClick();
 		}
 		if (doubleTapped) {
+			ApplyTransparency(StaticVariables.atomTransparency);
 			Time.timeScale = .05f;
 			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 			cameraScript.setCameraCoordinates(transform);
@@ -360,7 +356,6 @@ public abstract class Atom : MonoBehaviour
 					HighlightAtoms();
 					Vector3 curScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, screenPoint.z);
 					Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-					mouseDelta = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - lastMousePosition;
 					lastMousePosition = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f);
 					curPosition = CheckPosition(curPosition);
 					moleculeToMove.transform.position = curPosition;
@@ -594,7 +589,6 @@ public abstract class Atom : MonoBehaviour
 					}
 				}
 			}
-			mouseDelta = Input.mousePosition - lastMousePosition;
 			lastMousePosition = Input.mousePosition;
 		}
 
@@ -698,17 +692,29 @@ public abstract class Atom : MonoBehaviour
 	}
 
 	void ApplyTransparency(float transparency){
-
+		ResetTransparency ();
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		for (int i = 0; i < allMolecules.Length; i++) {
 			GameObject currAtom = allMolecules[i];
 			if(currAtom == gameObject) continue;
 			Color transparentColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, transparency);
 			Atom currAtomScript = currAtom.GetComponent<Atom>();
+			if(!currAtomScript.selected){
+				currAtomScript.ChangeColor(transparentColor);
+			}
+		}
+	}
+
+	public void ResetTransparency(){
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			Color transparentColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, 1.0f);
+			Atom currAtomScript = currAtom.GetComponent<Atom>();
 			currAtomScript.ChangeColor(transparentColor);
 		}
 	}
-	
+
 	void DrawLineBorders(GameObject currAtom){
 
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
