@@ -235,7 +235,7 @@ public abstract class Atom : MonoBehaviour
 			HandleMovingAtom();
 		}
 		else if(Input.touchCount == 2){
-
+			MoveAngstromText();
 			Touch touch2 = Input.GetTouch(1);
 			if(touch2.phase == TouchPhase.Began){
 				moveZDirection = true;
