@@ -54,6 +54,7 @@ public class StaticVariables {
 	public static bool pauseTime = false;
 	public static int transparent = 3000;
 	public static int overlay = 4000;
+	public static float atomTransparency = .5f;
 
 	public static void DrawLine(Vector3 startingPos, Vector3 endingPos, Color atomColor1, Color atomColor2, float lineWidth, Material mat){
 		

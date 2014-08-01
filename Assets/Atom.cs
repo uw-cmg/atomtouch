@@ -322,6 +322,7 @@ public abstract class Atom : MonoBehaviour
 			if (Physics.Raycast( ray, out hitInfo ) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject)
 			{
 				SpawnAngstromText();
+				ApplyTransparency(StaticVariables.atomTransparency);
 				if(!selected){
 					moleculeToMove = gameObject;
 					screenPoint = Camera.main.WorldToScreenPoint(transform.position);
@@ -480,6 +481,7 @@ public abstract class Atom : MonoBehaviour
 			if(StaticVariables.touchScreen){
 
 				SpawnAngstromText();
+				ApplyTransparency(StaticVariables.atomTransparency);
 
 				if(!selected){
 					rigidbody.isKinematic = true;
@@ -643,7 +645,6 @@ public abstract class Atom : MonoBehaviour
 	}
 
 	public float BondDistance(GameObject otherAtom){
-		Atom otherAtomScript = otherAtom.GetComponent<Atom>();
 		return 1.225f * sigma(otherAtom);
 	}
 	
@@ -696,6 +697,18 @@ public abstract class Atom : MonoBehaviour
 		}
 	}
 
+	void ApplyTransparency(float transparency){
+
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			if(currAtom == gameObject) continue;
+			Color transparentColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, transparency);
+			Atom currAtomScript = currAtom.GetComponent<Atom>();
+			currAtomScript.ChangeColor(transparentColor);
+		}
+	}
+	
 	void DrawLineBorders(GameObject currAtom){
 
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
