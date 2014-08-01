@@ -31,6 +31,7 @@ public class InstantiateMolecule : MonoBehaviour {
 	public Texture axisTexture;
 	public Texture bondLines;
 	public Texture timeTexture;
+	public Texture velocityTexture;
 	
 	private bool clicked = false;
 	private float startTime = 0.0f;
@@ -97,6 +98,13 @@ public class InstantiateMolecule : MonoBehaviour {
 			StaticVariables.pauseTime = !StaticVariables.pauseTime;
 		}
 		GUI.color = Color.white;
+
+		if (GUI.Button (new Rect (Screen.width - 405, 20, 50, 50), velocityTexture)) {
+			for(int i = 0; i < allMolecules.Length; i++){
+				GameObject currAtom = allMolecules[i];
+				currAtom.rigidbody.velocity = new Vector3(UnityEngine.Random.Range(-5.0f, 5.0f), UnityEngine.Random.Range(-5.0f, 5.0f), UnityEngine.Random.Range(-5.0f, 5.0f));
+			}
+		}
 
 		GUI.Label (new Rect(Screen.width - 285, 80, 250, 50), "Potential Energy: " + PotentialEnergy.finalPotentialEnergy);
 
