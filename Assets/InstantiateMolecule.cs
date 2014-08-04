@@ -122,8 +122,15 @@ public class InstantiateMolecule : MonoBehaviour {
 		GUI.Label (new Rect (170, 25, 350, 20), "Temperature: " + TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 272.15, 2)).ToString() + "C)");
 		float newTemp = GUI.VerticalSlider (new Rect (170, 55, 30, (Screen.height - 135)), TemperatureCalc.desiredTemperature, StaticVariables.tempRangeHigh, StaticVariables.tempRangeLow);
 		if (newTemp != TemperatureCalc.desiredTemperature) {
-			TemperatureCalc.desiredTemperature = newTemp;
 			changingTemp = true;
+			TemperatureCalc.desiredTemperature = newTemp;
+		}
+		else{
+			//the gui temperature has been set, we can safely change the desired temperature
+			int temp = (int)TemperatureCalc.desiredTemperature;
+			int remainder = temp % 50;
+			temp -= remainder;
+			TemperatureCalc.desiredTemperature = temp;
 		}
 
 		if (Time.timeScale < 1.0f) GUI.Label (new Rect (Screen.width - 150, Screen.height - 75, 250, 20), "Slow Motion!");
