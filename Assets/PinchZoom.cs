@@ -31,19 +31,13 @@ public class PinchZoom : MonoBehaviour {
 
 			float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
 
-			if(camera.isOrthoGraphic){
-				camera.orthographicSize += deltaMagnitudeDiff * orthoZoomSpeed;
-				camera.orthographicSize = Mathf.Max (camera.orthographicSize, 0.1f);
-			}
-			else{
-				camera.fieldOfView += deltaMagnitudeDiff * touchPerspectiveZoomSpeed;
-				camera.fieldOfView = Mathf.Clamp(camera.fieldOfView, 5.0f, 150.0f);
-			}
+			Quaternion cameraRotation = camera.transform.rotation;
+			camera.transform.position -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * pcPerspectiveZoomSpeed));
 		}
 		else if(Application.platform != RuntimePlatform.IPhonePlayer && !beingHeld){
 			float deltaMagnitudeDiff = Input.GetAxis("Mouse ScrollWheel");
-			camera.fieldOfView += deltaMagnitudeDiff * pcPerspectiveZoomSpeed;
-			camera.fieldOfView = Mathf.Clamp(camera.fieldOfView, 5.0f, 150.0f);
+			Quaternion cameraRotation = camera.transform.rotation;
+			camera.transform.position -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * pcPerspectiveZoomSpeed));
 		}
 	}
 }
