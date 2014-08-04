@@ -44,7 +44,7 @@ public class CameraScript : MonoBehaviour {
 
 						//for rotation over the x-axis
 						float deltaMagnitudeDiffY = touch.position.y - touchPrevPos.y;
-						float deltaTouchY = deltaMagnitudeDiffY / 10.0f;
+						float deltaTouchY = deltaMagnitudeDiffY / -10.0f;
 
 						if(first && (Math.Abs(deltaTouchX) > .5f || Math.Abs(deltaTouchY) > .5f)){
 							if(Math.Abs(deltaTouchX) > Math.Abs(deltaTouchY)){
@@ -89,7 +89,7 @@ public class CameraScript : MonoBehaviour {
 
 					//for rotation over the x-axis
 					float deltaMagnitudeDiffY = Input.mousePosition.y - touchPrevPos.y;
-					float deltaTouchY = deltaMagnitudeDiffY / 10.0f;
+					float deltaTouchY = deltaMagnitudeDiffY / -10.0f;
 
 					if(first && (Math.Abs(deltaTouchX) > .5f || Math.Abs(deltaTouchY) > .5f)){
 						if(Math.Abs(deltaTouchX) > Math.Abs(deltaTouchY)){
