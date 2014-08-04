@@ -41,6 +41,8 @@ public class InstantiateMolecule : MonoBehaviour {
 	private GameObject atomToDelete;
 	[HideInInspector]public bool changingTemp = false;
 
+	private float guiVolume;
+
 	//bond text
 	public TextMesh textMeshPrefab;
 	bool createDistanceText = true;
@@ -49,6 +51,9 @@ public class InstantiateMolecule : MonoBehaviour {
 		addGraphicCopper = false;
 		addGraphicGold = false;
 		addGraphicPlatinum = false;
+
+		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		guiVolume = createEnvironment.volume;
 	}
 
 	void OnGUI(){
@@ -110,11 +115,49 @@ public class InstantiateMolecule : MonoBehaviour {
 
 
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-		GUI.Label (new Rect (25, 25, 350, 20), "Volume: " + createEnvironment.volume);
-		float newVolume = GUI.VerticalSlider (new Rect (75, 55, 30, Screen.height - 135), createEnvironment.volume, 64000.0f, 1000.0f);
-		if (newVolume != createEnvironment.volume) {
-			createEnvironment.volume = newVolume;
+		GUI.Label (new Rect (25, 25, 350, 20), "Volume: " + guiVolume);
+		float newVolume = GUI.VerticalSlider (new Rect (75, 55, 30, Screen.height - 135), guiVolume, 64000.0f, 1000.0f);
+		if (newVolume != guiVolume) {
+			guiVolume = newVolume;
 			changingTemp = true; //hack for not adding another variable
+		}
+		else{
+			int volume = (int)guiVolume;
+			int remainder10 = Math.Abs(1000 - volume);
+			int remainder15 = Math.Abs(3375 - volume);
+			int remainder20 = Math.Abs(8000 - volume);
+			int remainder25 = Math.Abs(15625 - volume);
+			int remainder30 = Math.Abs(27000 - volume);
+			int remainder35 = Math.Abs(42875 - volume);
+			int remainder40 = Math.Abs(64000 - volume);
+			if(remainder10 < remainder15 && remainder10 < remainder20 && remainder10 < remainder25 && remainder10 < remainder30 && remainder10 < remainder35 && remainder10 < remainder40){
+				createEnvironment.volume = 1000;
+				guiVolume = 1000;
+			}
+			else if(remainder15 < remainder10 && remainder15 < remainder20 && remainder15 < remainder25 && remainder15 < remainder30 && remainder15 < remainder35 && remainder15 < remainder40){
+				createEnvironment.volume = 3375;
+				guiVolume = 3375;
+			}
+			else if(remainder20 < remainder15 && remainder20 < remainder10 && remainder20 < remainder25 && remainder20 < remainder30 && remainder20 < remainder35 && remainder20 < remainder40){
+				createEnvironment.volume = 8000;
+				guiVolume = 8000;
+			}
+			else if(remainder25 < remainder10 && remainder25 < remainder15 && remainder25 < remainder20 && remainder25 < remainder30 && remainder25 < remainder35 && remainder25 < remainder40){
+				createEnvironment.volume = 15625;
+				guiVolume = 15625;
+			}
+			else if(remainder30 < remainder15 && remainder30 < remainder20 && remainder30 < remainder25 && remainder30 < remainder10 && remainder30 < remainder35 && remainder30 < remainder40){
+				createEnvironment.volume = 27000;
+				guiVolume = 27000;
+			}
+			else if(remainder35 < remainder10 && remainder35 < remainder15 && remainder35 < remainder20 && remainder35 < remainder25 && remainder35 < remainder30 && remainder35 < remainder40){
+				createEnvironment.volume = 42875;
+				guiVolume = 42875;
+			}
+			else if(remainder40 < remainder15 && remainder40 < remainder20 && remainder40 < remainder25 && remainder40 < remainder30 && remainder40 < remainder35 && remainder40 < remainder10){
+				createEnvironment.volume = 64000;
+				guiVolume = 64000;
+			}
 			CheckAtomVolumePositions();
 		}
 
