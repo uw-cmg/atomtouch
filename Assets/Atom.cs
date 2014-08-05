@@ -622,11 +622,12 @@ public abstract class Atom : MonoBehaviour
 				}
 			}
 
-//			Quaternion cameraRotation = Camera.main.transform.rotation;
-//			Vector2 direction = (Input.mousePosition - lastMousePosition);
-//			direction.Normalize();
-//			float magnitude = 25.0f;
-//			Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
+			Quaternion cameraRotation = Camera.main.transform.rotation;
+			Vector2 direction = (Input.mousePosition - lastMousePosition);
+			direction.Normalize();
+			float magnitude = 10.0f;
+			Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
+			gameObject.rigidbody.velocity = flingVector;
 //			gameObject.rigidbody.AddForce(cameraRotation * flingVector, ForceMode.Impulse);
 
 		}

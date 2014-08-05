@@ -21,9 +21,11 @@ public class Graph : MonoBehaviour {
 	private float dataMinimum = StaticVariables.tempRangeLow;
 	private float lowTime;
 	private float highTime;
+	private bool first;
 
 	void Start () {
 	
+		first = true;
 		maxDataPoints = (width / spacing) + 1;
 		dataPoints = new Queue ();
 		startTime = Time.realtimeSinceStartup;
@@ -34,7 +36,7 @@ public class Graph : MonoBehaviour {
 
 	void Update(){
 
-		if (Time.realtimeSinceStartup - startTime > refreshInterval && !StaticVariables.pauseTime) {
+		if ((Time.realtimeSinceStartup - startTime > refreshInterval && !StaticVariables.pauseTime) || first) {
 			if(dataPoints.Count < maxDataPoints){
 				dataPoints.Enqueue(TemperatureCalc.desiredTemperature);
 			}
@@ -44,6 +46,7 @@ public class Graph : MonoBehaviour {
 				lowTime += 2.0f;
 				highTime += 2.0f;
 			}
+			first = false;
 			startTime = Time.realtimeSinceStartup;
 		}
 
