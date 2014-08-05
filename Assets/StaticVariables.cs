@@ -128,4 +128,22 @@ public class StaticVariables {
 		GL.PopMatrix();
 	}
 
+	public static void DrawQuad(Vector3 upperLeft, Vector3 upperRight, Vector3 lowerLeft, Vector3 lowerRight, Color color, Material mat){
+
+		if (!mat) {
+			return;
+		}
+		GL.LoadProjectionMatrix (Camera.main.projectionMatrix);
+		GL.PushMatrix ();
+		mat.SetPass (0);
+		GL.Begin (GL.QUADS);
+		GL.Color (color);
+		GL.Vertex (upperLeft);
+		GL.Vertex (upperRight);
+		GL.Vertex (lowerRight);
+		GL.Vertex (lowerLeft);
+		GL.End ();
+		GL.PopMatrix ();
+	}
+
 }
