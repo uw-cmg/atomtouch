@@ -4,18 +4,19 @@ using System.Collections;
 public class Graph : MonoBehaviour {
 
 	public Material mat;
+	public TextMesh textMeshPrefab;
 	private Queue dataPoints;
 	private float startTime;
 
 	//graph variables
 	private float xCoord = 3.75f;
 	private float yCoord = -2.3f;
-	private float width = 1.5f;
-	private float height = 1.5f;
+	private float width = 181.0f;
+	private float height = 184.0f;
 	private float lineWidth = .015f;
 	private float zDepth = 5.0f;
 	private float refreshInterval = 2.0f;
-	private float spacing = .1f;
+	private float spacing = 15.0f;
 	private float maxDataPoints;
 	private float dataMaximum = StaticVariables.tempRangeHigh;
 	private float dataMinimum = StaticVariables.tempRangeLow;
@@ -59,52 +60,40 @@ public class Graph : MonoBehaviour {
 		GUI.Label (new Rect (Screen.width - 305, Screen.height - 90, 100, 20), (StaticVariables.tempRangeLow).ToString () + "K");
 		GUI.Label (new Rect (Screen.width - 265, Screen.height - 70, 100, 20), (lowTime).ToString () + "s");
 		GUI.Label (new Rect (Screen.width - 90, Screen.height - 70, 100, 20), (highTime).ToString() + "s");
+		//print ("lowTimePosition: " + new Rect (Screen.width - 265, Screen.height - 70, 100, 20));
+		//print ("screen height: " + Screen.height);
 	}
 	
 	void OnPostRender(){
 
 		Quaternion cameraRotation = Camera.main.transform.rotation;
 
-		Vector3 upperLeft = cameraRotation * new Vector3 (xCoord, yCoord+height, zDepth);
-		upperLeft += Camera.main.transform.position;
-		Vector3 upperRight = cameraRotation * new Vector3 (xCoord+width, yCoord+height, zDepth);
-		upperRight += Camera.main.transform.position;
-		Vector3 lowerLeft = cameraRotation * new Vector3 (xCoord, yCoord, zDepth);
-		lowerLeft += Camera.main.transform.position;
-		Vector3 lowerRight = cameraRotation * new Vector3 (xCoord+width, yCoord, zDepth);
-		lowerRight += Camera.main.transform.position;
+		//Vector3 upperLeft = cameraRotation * new Vector3 (xCoord, yCoord+height, zDepth);
+		//upperLeft += Camera.main.transform.position;
+		Vector3 upperLeft = camera.ScreenToWorldPoint (new Vector3 (Screen.width - 250, (254), 5.0f));
+		Vector3 lowerLeft = camera.ScreenToWorldPoint (new Vector3(Screen.width - 250, 70, 5.0f));
+		Vector3 upperRight = camera.ScreenToWorldPoint (new Vector3 (Screen.width - 69, (254), 5.0f));
+		Vector3 lowerRight = camera.ScreenToWorldPoint (new Vector3(Screen.width - 69, 70, 5.0f));
 		Color customColor = new Color (1.0f, 1.0f, 1.0f, .2f);
 		StaticVariables.DrawQuad (upperLeft, upperRight, lowerLeft, lowerRight, customColor, mat);
 
 		//horizontal line
-		Vector3 vectorToAdd = cameraRotation * new Vector3 (xCoord + (width/2.0f), yCoord, zDepth);
-		Vector3 midpoint = Camera.main.transform.position + vectorToAdd;
-		Vector3 startingXDiff = cameraRotation * new Vector3 (-(width/2.0f), 0.0f, 0.0f);
-		Vector3 endingXDiff = cameraRotation * new Vector3 ((width/2.0f), 0.0f, 0.0f);
-		Vector3 startingPos = midpoint + startingXDiff;
-		Vector3 endingPos = midpoint + endingXDiff;
-		StaticVariables.DrawLine (startingPos, endingPos, Color.red, Color.red, lineWidth, mat);
+		StaticVariables.DrawLine (lowerLeft, lowerRight, Color.red, Color.red, lineWidth, mat);
 
 		//vertical line
-		Vector3 vectorToAdd2 = cameraRotation * new Vector3 (xCoord, yCoord + (height/2.0f), zDepth);
-		Vector3 midpoint2 = Camera.main.transform.position + vectorToAdd2;
-		Vector3 startingYDiff = cameraRotation * new Vector3 (0.0f, height/2.0f, 0.0f);
-		Vector3 endingYDiff = cameraRotation * new Vector3 (0.0f, -(height/2.0f), 0.0f);
-		Vector3 startingPos2 = midpoint2 + startingYDiff;
-		Vector3 endingPos2 = midpoint2 + endingYDiff;
-		StaticVariables.DrawLine (startingPos2, endingPos2, Color.red, Color.red, lineWidth, mat);
+		StaticVariables.DrawLine (upperLeft, lowerLeft, Color.red, Color.red, lineWidth, mat);
 
 		object[] dataPointArray = dataPoints.ToArray ();
 		for (int i = 0; i < dataPointArray.Length - 1; i++) {
 			float firstPercentage = (float)dataPointArray[i] / (dataMaximum - dataMinimum);
 			float secondPercentage = (float)dataPointArray[i+1] / (dataMaximum - dataMinimum);
-			float firstYAddition = firstPercentage * height;
-			float secondYAddition = secondPercentage * height;
-			Vector3 diff1 = cameraRotation * new Vector3(xCoord + (i*spacing), yCoord + firstYAddition, zDepth);
-			Vector3 firstPoint3d = Camera.main.transform.position + diff1;
-			Vector3 diff2 = cameraRotation * new Vector3(xCoord + ((i+1)*spacing), yCoord + secondYAddition, zDepth);
-			Vector3 secondPoint3d = Camera.main.transform.position + diff2;
-			StaticVariables.DrawLine(firstPoint3d, secondPoint3d, Color.yellow, Color.yellow, lineWidth, mat);
+
+			float firstYAddition = firstPercentage * 184.0f;
+			float secondYAddition = secondPercentage * 184.0f;
+
+			Vector3 firstPoint = camera.ScreenToWorldPoint(new Vector3(Screen.width - 250 + (i*spacing), 70 + firstYAddition, 5.0f));
+			Vector3 secondPoint = camera.ScreenToWorldPoint(new Vector3(Screen.width - 250 + ((i+1)*spacing), 70 + secondYAddition, 5.0f));
+			StaticVariables.DrawLine(firstPoint, secondPoint, Color.yellow, Color.yellow, lineWidth, mat);
 		}
 
 	}
