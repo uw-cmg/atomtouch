@@ -70,7 +70,8 @@ public class Graph : MonoBehaviour {
 		lowerLeft += Camera.main.transform.position;
 		Vector3 lowerRight = cameraRotation * new Vector3 (xCoord+width, yCoord, zDepth);
 		lowerRight += Camera.main.transform.position;
-		StaticVariables.DrawQuad (upperLeft, upperRight, lowerLeft, lowerRight, Color.grey, mat);
+		Color customColor = new Color (1.0f, 1.0f, 1.0f, .2f);
+		StaticVariables.DrawQuad (upperLeft, upperRight, lowerLeft, lowerRight, customColor, mat);
 
 		//horizontal line
 		Vector3 vectorToAdd = cameraRotation * new Vector3 (xCoord + (width/2.0f), yCoord, zDepth);
