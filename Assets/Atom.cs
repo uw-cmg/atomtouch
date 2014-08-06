@@ -34,12 +34,12 @@ public abstract class Atom : MonoBehaviour
 
 	//variables that must be implemented because they are declared as abstract in the base class
 	public abstract float epsilon{ get; } // J
-	public abstract float sigma(GameObject otherAtom);
-	public abstract float sigma();
+	public abstract float sigma { get; }
 	protected abstract float massamu{ get; } //amu
 	protected abstract void SetSelected (bool selected);
 	public abstract Color color { get; }
 	public abstract void ChangeColor (Color color);
+	public abstract String atomName { get; }
 	
 	private Vector3 lastVelocity = Vector3.zero;
 	private Vector3 a_n = Vector3.zero;
@@ -59,7 +59,7 @@ public abstract class Atom : MonoBehaviour
 			
 			for(int i = 0; i < allMolecules.Length; i++){
 				double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
-				if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff * sigma(allMolecules[i]))){
+				if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff)){
 					molecules.Add(allMolecules[i]);
 				}
 			}
@@ -103,7 +103,7 @@ public abstract class Atom : MonoBehaviour
 				gameObject.rigidbody.velocity = newVelocity;
 			}
 
-			CheckVelocity();
+			//CheckVelocity();
 		}
 		else{
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
@@ -124,7 +124,8 @@ public abstract class Atom : MonoBehaviour
 			Vector3 direction = new Vector3(objectsInRange[i].transform.position.x - transform.position.x, objectsInRange[i].transform.position.y - transform.position.y, objectsInRange[i].transform.position.z - transform.position.z);
 			direction.Normalize();
 
-			float finalSigma = sigma(objectsInRange[i]);
+			Atom otherAtomScript = objectsInRange[i].GetComponent<Atom>();
+			float finalSigma = StaticVariables.sigmaValues[atomName+otherAtomScript.atomName];
 			//TTM add transition to smooth curve to constant, instead of asymptote to infinity
 			double r_min = StaticVariables.r_min_multiplier * finalSigma;
 
@@ -640,7 +641,8 @@ public abstract class Atom : MonoBehaviour
 	}
 
 	public float BondDistance(GameObject otherAtom){
-		return 1.225f * sigma(otherAtom);
+		Atom otherAtomScript = otherAtom.GetComponent<Atom> ();
+		return 1.225f * StaticVariables.sigmaValues [atomName+otherAtomScript.atomName];
 	}
 	
 	void HighlightAtoms(){

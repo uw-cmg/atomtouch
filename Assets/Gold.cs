@@ -8,21 +8,19 @@ public class Gold : Atom
 	private Color goldColor = new Color (1.0f, .8431f, 0.0f, 1.0f);
 	private float sigmaValue = 2.6367f;
 
+	public override String atomName 
+	{ 
+		get{ return "Gold"; } 
+	}
+	
 	public override float epsilon
 	{
 		get { return 5152.9f * 1.381f * (float)Math.Pow (10, -23); } // J
 	}
 	
-	public override float sigma(GameObject otherAtom = null){
-		if (otherAtom == null) return sigmaValue;
-		Atom otherAtomScript = otherAtom.GetComponent<Atom> ();
-		float otherSigma = otherAtomScript.sigma ();
-		if (otherSigma == sigmaValue) return sigmaValue;
-		return (float)Math.Pow(otherSigma + sigmaValue, .5f);
-	}
-
-	public override float sigma(){
-		return sigmaValue;
+	public override float sigma
+	{
+		get { return sigmaValue; }
 	}
 	
 	protected override float massamu

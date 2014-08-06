@@ -31,6 +31,21 @@ public class CreateEnvironment : MonoBehaviour {
 	
 	void Start () {
 	
+		StaticVariables.sigmaValues = new Dictionary<String, float> ();
+
+		for (int i = 0; i < molecules.Count; i++) {
+			Atom atomScript = molecules[i].GetComponent<Atom>();
+			StaticVariables.sigmaValues.Add(atomScript.atomName+atomScript.atomName, atomScript.sigma);
+		}
+
+		for (int i = 0; i < molecules.Count; i++) {
+			Atom firstAtomScript = molecules[i].GetComponent<Atom>();
+			for(int j = i+1; j < molecules.Count; j++){
+				Atom secondAtomScript = molecules[j].GetComponent<Atom>();
+				StaticVariables.sigmaValues.Add(firstAtomScript.atomName+secondAtomScript.atomName, Mathf.Sqrt(firstAtomScript.sigma+secondAtomScript.sigma));
+				StaticVariables.sigmaValues.Add(secondAtomScript.atomName+firstAtomScript.atomName, Mathf.Sqrt(firstAtomScript.sigma+secondAtomScript.sigma));
+			}
+		}
 
 		initialCenterPos = centerPos;
 		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();

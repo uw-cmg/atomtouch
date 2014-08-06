@@ -171,7 +171,7 @@ public class InstantiateMolecule : MonoBehaviour {
 		else{
 			//the gui temperature has been set, we can safely change the desired temperature
 			int temp = (int)TemperatureCalc.desiredTemperature;
-			int remainder = temp % 50;
+			int remainder = temp % 20;
 			temp -= remainder;
 			TemperatureCalc.desiredTemperature = temp;
 		}

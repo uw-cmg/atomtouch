@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 public class StaticVariables {
 
@@ -25,7 +26,7 @@ public class StaticVariables {
 
 	//Cutoff for "seeing" other atoms, in Angstroms
 	//multiplied by sigma for Lennard-Jones potential
-	public static float cutoff = 2.5f; //mutliplier for cutoff 
+	public static float cutoff = 5.0f; //mutliplier for cutoff 
 
 	//When r_ij is small, the Lennard-Jones potential is extremely large.
 	//At a certain r_min, we will substitute the L-J potential with a function that
@@ -55,6 +56,8 @@ public class StaticVariables {
 	public static int transparent = 3000;
 	public static int overlay = 4000;
 	public static float atomTransparency = .5f;
+	public static Dictionary<String, float> sigmaValues;
+
 
 	public static void DrawLine(Vector3 startingPos, Vector3 endingPos, Color atomColor1, Color atomColor2, float lineWidth, Material mat){
 		

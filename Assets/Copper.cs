@@ -8,21 +8,21 @@ public class Copper : Atom {
 	private Color copperColor = new Color (.7216f, .451f, 0.2f, 1.0f);
 	private float sigmaValue = 2.3374f;
 
+	public override String atomName 
+	{ 
+		get{ return "Copper"; } 
+	}
+
 	public override float epsilon
 	{
 		get { return ((float)(6.537 * Math.Pow(10, -20))); } // J
 	}
 		
-	public override float sigma(GameObject otherAtom){
-		if (otherAtom == null) return sigmaValue;
-		Atom otherAtomScript = otherAtom.GetComponent<Atom> ();
-		float otherSigma = otherAtomScript.sigma ();
-		if (otherSigma == sigmaValue) return sigmaValue;
-		return (float)Math.Pow(otherSigma + sigmaValue, .5f);
-	}
 
-	public override float sigma(){
-		return sigmaValue;
+
+	public override float sigma
+	{
+		get { return sigmaValue; }
 	}
 	
 	protected override float massamu
