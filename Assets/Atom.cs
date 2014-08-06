@@ -27,6 +27,7 @@ public abstract class Atom : MonoBehaviour
 	private Dictionary<String, Vector3> gameObjectScreenPoints;
 	private bool atomIsClicked = false;
 	private TextMesh angstromText;
+	private Vector3 velocityBeforeCollision;
 
 	public Material lineMaterial;
 	public TextMesh textMeshPrefab;
@@ -102,6 +103,8 @@ public abstract class Atom : MonoBehaviour
 			if (!rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && allMolecules.Length > 1) {
 				gameObject.rigidbody.velocity = newVelocity;
 			}
+
+			velocityBeforeCollision = gameObject.rigidbody.velocity;
 
 			//CheckVelocity();
 		}
@@ -752,6 +755,13 @@ public abstract class Atom : MonoBehaviour
 		                          Color.green, Color.green, .1f, lineMaterial);
 		StaticVariables.DrawLine (new Vector3 (currAtom.transform.position.x, bottomPlanePos.y + createEnvironment.height, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (currAtom.transform.position.x, bottomPlanePos.y + createEnvironment.height, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
 		                          Color.green, Color.green, .1f, lineMaterial);
+	}
+
+	void OnCollisionEnter(Collision other){
+		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		GameObject collidedPlane = other.transform.gameObject;
+		Vector3 newVelocity = Vector3.Reflect (velocityBeforeCollision, (createEnvironment.centerPos - collidedPlane.transform.position).normalized);
+		rigidbody.velocity = newVelocity;
 	}
 	
 	void CheckVelocity(){
