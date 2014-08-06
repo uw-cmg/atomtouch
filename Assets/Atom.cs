@@ -203,6 +203,7 @@ public abstract class Atom : MonoBehaviour
 			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 			cameraScript.setCameraCoordinates(transform);
 		}
+		CheckVelocity ();
 	}
 
 	void HandleTouchSelect(){
@@ -757,12 +758,12 @@ public abstract class Atom : MonoBehaviour
 		                          Color.green, Color.green, .1f, lineMaterial);
 	}
 
-	void OnCollisionEnter(Collision other){
-		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-		GameObject collidedPlane = other.transform.gameObject;
-		Vector3 newVelocity = Vector3.Reflect (velocityBeforeCollision, (createEnvironment.centerPos - collidedPlane.transform.position).normalized);
-		rigidbody.velocity = newVelocity;
-	}
+//	void OnCollisionEnter(Collision other){
+//		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+//		GameObject collidedPlane = other.transform.gameObject;
+//		Vector3 newVelocity = Vector3.Reflect (velocityBeforeCollision, (createEnvironment.centerPos - collidedPlane.transform.position).normalized);
+//		rigidbody.velocity = newVelocity;
+//	}
 	
 	void CheckVelocity(){
 
