@@ -31,7 +31,7 @@ public class CreateEnvironment : MonoBehaviour {
 	
 	void Start () {
 	
-		centerPos = new Vector3 (-5.0f, 0.0f, 0.0f);
+		centerPos = new Vector3 (0.0f, 0.0f, 0.0f);
 		StaticVariables.sigmaValues = new Dictionary<String, float> ();
 
 		for (int i = 0; i < molecules.Count; i++) {

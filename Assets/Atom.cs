@@ -658,15 +658,14 @@ public abstract class Atom : MonoBehaviour
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		for (int i = 0; i < allMolecules.Length; i++) {
 			GameObject currAtom = allMolecules[i];
-			if(currAtom == gameObject) continue;
+			Atom currAtomScript = currAtom.GetComponent<Atom>();
+			if(currAtom == gameObject && !currAtomScript.selected) continue;
 			if(Vector3.Distance(currAtom.transform.position, gameObject.transform.position) < 5.0f){
 				Color solidColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, 1.0f);
-				Atom currAtomScript = currAtom.GetComponent<Atom>();
 				currAtomScript.ChangeColor(solidColor);
 			}
 			else{
 				Color transparentColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, StaticVariables.atomTransparency);
-				Atom currAtomScript = currAtom.GetComponent<Atom>();
 				currAtomScript.ChangeColor(transparentColor);
 			}
 		}
@@ -678,23 +677,24 @@ public abstract class Atom : MonoBehaviour
 		if (gameObject.rigidbody.isKinematic) return;
 
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
 		Vector3 newVelocity = gameObject.rigidbody.velocity;
-		if (gameObject.transform.position.x > createEnvironment.centerPos.x + (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer) {
+		if (gameObject.transform.position.x > bottomPlanePos.x + (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer) {
 			newVelocity.x = Math.Abs(newVelocity.x) * -1;
 		}
-		if (gameObject.transform.position.x < createEnvironment.centerPos.x - (createEnvironment.width / 2.0f) + createEnvironment.errorBuffer) {
+		if (gameObject.transform.position.x < bottomPlanePos.x - (createEnvironment.width / 2.0f) + createEnvironment.errorBuffer) {
 			newVelocity.x = Math.Abs(newVelocity.x);
 		}
-		if (gameObject.transform.position.y > createEnvironment.centerPos.y + (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer) {
+		if (gameObject.transform.position.y > bottomPlanePos.y + (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer) {
 			newVelocity.y = Math.Abs(newVelocity.y) * -1;
 		}
-		if (gameObject.transform.position.y < createEnvironment.centerPos.y - (createEnvironment.height / 2.0f) + createEnvironment.errorBuffer) {
+		if (gameObject.transform.position.y < bottomPlanePos.y - (createEnvironment.height / 2.0f) + createEnvironment.errorBuffer) {
 			newVelocity.y = Math.Abs(newVelocity.y);
 		}
-		if (gameObject.transform.position.z > createEnvironment.centerPos.z + (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer) {
+		if (gameObject.transform.position.z > bottomPlanePos.z + (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer) {
 			newVelocity.z = Math.Abs(newVelocity.z) * -1;
 		}
-		if (gameObject.transform.position.z < createEnvironment.centerPos.z - (createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer) {
+		if (gameObject.transform.position.z < bottomPlanePos.z - (createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer) {
 			newVelocity.z = Math.Abs(newVelocity.z);
 		}
 		gameObject.rigidbody.velocity = newVelocity;
