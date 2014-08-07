@@ -88,14 +88,6 @@ public class InstantiateMolecule : MonoBehaviour {
 			Camera.main.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 		}
 
-		if (!StaticVariables.axisUI) {
-			GUI.color = Color.black;
-		}
-		if (GUI.Button (new Rect (Screen.width - 285, 20, 50, 50), axisTexture)) {
-			StaticVariables.axisUI = !StaticVariables.axisUI;
-		}
-		GUI.color = Color.white;
-
 		if (StaticVariables.pauseTime) {
 			GUI.color = Color.black;
 		}

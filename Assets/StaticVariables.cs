@@ -48,7 +48,6 @@ public class StaticVariables {
 	public static float timeScale = (1.0f/40.0f); //1.0f;
 
 	public static bool touchScreen = true;
-	public static bool axisUI = false;
 	public static Color selectedColor = new Color (.25f, .25f, .25f);
 	//public static float bondDistance = 5.0f;
 	public static bool drawBondLines = true;
@@ -56,6 +55,7 @@ public class StaticVariables {
 	public static int transparent = 3000;
 	public static int overlay = 4000;
 	public static float atomTransparency = .5f;
+	//access to sigma values by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
 	public static Dictionary<String, float> sigmaValues;
 
 

@@ -57,8 +57,7 @@ public class Graph : MonoBehaviour {
 
 	void OnGUI(){
 
-		//change this to be in terms of xCoord
-		GUI.Label (new Rect (Screen.width - 235, Screen.height - 280, 200, 20), "Temperature vs Time");
+		GUI.Label (new Rect (xCoord + width/2.0f - 60, Screen.height - 280, 200, 20), "Temperature vs Time");
 		GUI.Label (new Rect (xCoord - 40, Screen.height - 260, 100, 20), (StaticVariables.tempRangeHigh).ToString () + "K");
 		GUI.Label (new Rect (xCoord - 40, Screen.height - 85, 100, 20), (StaticVariables.tempRangeLow).ToString () + "K");
 		GUI.Label (new Rect (xCoord - 5, Screen.height - 70, 100, 20), (lowTime).ToString () + "s");

@@ -247,7 +247,6 @@ public abstract class Atom : MonoBehaviour
 					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
 					deltaTouch2 = deltaMagnitudeDiff / 10.0f;
 					if(moleculeToMove != null){
-						HighlightAtoms();
 						Quaternion cameraRotation = Camera.main.transform.rotation;
 						Vector3 projectPosition = moleculeToMove.transform.position;
 						projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
@@ -260,7 +259,6 @@ public abstract class Atom : MonoBehaviour
 					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
 					deltaTouch2 = deltaMagnitudeDiff / 10.0f;
 					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-					HighlightAtoms();
 					List<Vector3> atomPositions = new List<Vector3>();
 					bool moveAtoms = true;
 					for(int i = 0; i < allMolecules.Length; i++){
@@ -358,7 +356,6 @@ public abstract class Atom : MonoBehaviour
 			MoveAngstromText();
 			if(!selected){
 				if(moleculeToMove != null && !doubleTapped){
-					HighlightAtoms();
 					Vector3 curScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, screenPoint.z);
 					Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
 					lastMousePosition = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f);
@@ -368,7 +365,6 @@ public abstract class Atom : MonoBehaviour
 			}
 			else{
 				if (held){
-					HighlightAtoms();
 					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 					List<Vector3> atomPositions = new List<Vector3>();
 					bool moveAtoms = true;
@@ -520,7 +516,6 @@ public abstract class Atom : MonoBehaviour
 	void OnMouseDrag(){
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
 			atomIsClicked = true;
-			HighlightAtoms();
 			Quaternion cameraRotation = Camera.main.transform.rotation;
 			MoveAngstromText();
 
@@ -648,56 +643,8 @@ public abstract class Atom : MonoBehaviour
 		Atom otherAtomScript = otherAtom.GetComponent<Atom> ();
 		return 1.225f * StaticVariables.sigmaValues [atomName+otherAtomScript.atomName];
 	}
+		
 	
-	void HighlightAtoms(){
-
-		if (StaticVariables.axisUI) {
-			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-			CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-			for (int i = 0; i < allMolecules.Length; i++) {
-				GameObject currAtom = allMolecules[i];
-				if(currAtom == gameObject) continue;
-				Color finalColor = Color.black;
-				if(currAtom.transform.position.x < gameObject.transform.position.x + createEnvironment.errorBuffer
-				   && currAtom.transform.position.x > gameObject.transform.position.x - createEnvironment.errorBuffer){
-					//green
-					finalColor += Color.green;
-				}
-				if(currAtom.transform.position.y < gameObject.transform.position.y + createEnvironment.errorBuffer
-				   && currAtom.transform.position.y > gameObject.transform.position.y - createEnvironment.errorBuffer){
-					//blue
-					finalColor += Color.blue;
-				}
-				if(currAtom.transform.position.z < gameObject.transform.position.z + createEnvironment.errorBuffer
-				   && currAtom.transform.position.z > gameObject.transform.position.z - createEnvironment.errorBuffer){
-					//red
-					finalColor += Color.red;
-				}
-				Atom atomScript = currAtom.GetComponent<Atom>();
-				if(finalColor == Color.black){
-					if(atomScript.selected){
-						finalColor = StaticVariables.selectedColor;
-					}
-				}
-				atomScript.ChangeColor(finalColor);
-			}
-		}
-
-	}
-
-	void OnRenderObject(){
-		if (StaticVariables.axisUI) {
-			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-			for (int i = 0; i < allMolecules.Length; i++) {
-				GameObject currAtom = allMolecules[i];
-				Atom atomScript = currAtom.GetComponent<Atom>();
-				if(atomScript.atomIsClicked && atomScript.held && !atomScript.doubleTapped){
-					DrawLineBorders(currAtom);
-				}
-			}
-		}
-	}
-
 	void ApplyTransparency(float transparency){
 		ResetTransparency ();
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
@@ -721,50 +668,8 @@ public abstract class Atom : MonoBehaviour
 			currAtomScript.ChangeColor(transparentColor);
 		}
 	}
-
-	void DrawLineBorders(GameObject currAtom){
-
-		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
-
-		//x-y plane
-		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), bottomPlanePos.y, currAtom.transform.position.z), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), bottomPlanePos.y, currAtom.transform.position.z),
-		                         Color.red, Color.red, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), bottomPlanePos.y, currAtom.transform.position.z), new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), bottomPlanePos.y + createEnvironment.height, currAtom.transform.position.z),
-		                          Color.red, Color.red, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), bottomPlanePos.y, currAtom.transform.position.z), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), bottomPlanePos.y + createEnvironment.height, currAtom.transform.position.z),
-		                          Color.red, Color.red, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), bottomPlanePos.y + createEnvironment.height, currAtom.transform.position.z), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), bottomPlanePos.y + createEnvironment.height, currAtom.transform.position.z),
-		                          Color.red, Color.red, .1f, lineMaterial);
-
-		//x-z plane
-		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)),
-		                          Color.blue, Color.blue, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
-		                          Color.blue, Color.blue, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
-		                          Color.blue, Color.blue, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
-		                          Color.blue, Color.blue, .1f, lineMaterial);
-
-		//y-z plane
-		StaticVariables.DrawLine (new Vector3 (currAtom.transform.position.x, bottomPlanePos.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (currAtom.transform.position.x, bottomPlanePos.y + createEnvironment.height, bottomPlanePos.z - (createEnvironment.depth/2.0f)),
-		                          Color.green, Color.green, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (currAtom.transform.position.x, bottomPlanePos.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)), new Vector3 (currAtom.transform.position.x, bottomPlanePos.y + createEnvironment.height, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
-		                          Color.green, Color.green, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (currAtom.transform.position.x, bottomPlanePos.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (currAtom.transform.position.x, bottomPlanePos.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
-		                          Color.green, Color.green, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (currAtom.transform.position.x, bottomPlanePos.y + createEnvironment.height, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (currAtom.transform.position.x, bottomPlanePos.y + createEnvironment.height, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
-		                          Color.green, Color.green, .1f, lineMaterial);
-	}
-
-//	void OnCollisionEnter(Collision other){
-//		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-//		GameObject collidedPlane = other.transform.gameObject;
-//		Vector3 newVelocity = Vector3.Reflect (velocityBeforeCollision, (createEnvironment.centerPos - collidedPlane.transform.position).normalized);
-//		rigidbody.velocity = newVelocity;
-//	}
 	
+
 	void CheckVelocity(){
 
 		if (gameObject.rigidbody.isKinematic) return;
