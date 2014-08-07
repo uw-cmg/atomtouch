@@ -72,7 +72,7 @@ public class InstantiateMolecule : MonoBehaviour {
 		}
 		GUI.color = Color.white;
 
-		if(GUI.Button(new Rect(Screen.width - 225, 20, 50, 50), cameraTexture)){
+		if(GUI.Button(new Rect(Screen.width - 165, 20, 50, 50), cameraTexture)){
 			Camera.main.transform.position = new Vector3(0.0f, 0.0f, -26.0f);
 			Camera.main.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 		}
@@ -80,12 +80,12 @@ public class InstantiateMolecule : MonoBehaviour {
 		if (StaticVariables.pauseTime) {
 			GUI.color = Color.black;
 		}
-		if(GUI.Button(new Rect(Screen.width - 345, 20, 50, 50), timeTexture)){
+		if(GUI.Button(new Rect(Screen.width - 225, 20, 50, 50), timeTexture)){
 			StaticVariables.pauseTime = !StaticVariables.pauseTime;
 		}
 		GUI.color = Color.white;
 
-		if (GUI.Button (new Rect (Screen.width - 405, 20, 50, 50), velocityTexture)) {
+		if (GUI.Button (new Rect (Screen.width - 285, 20, 50, 50), velocityTexture)) {
 			for(int i = 0; i < allMolecules.Length; i++){
 				GameObject currAtom = allMolecules[i];
 				currAtom.rigidbody.velocity = new Vector3(UnityEngine.Random.Range(-5.0f, 5.0f), UnityEngine.Random.Range(-5.0f, 5.0f), UnityEngine.Random.Range(-5.0f, 5.0f));
