@@ -71,17 +71,6 @@ public class InstantiateMolecule : MonoBehaviour {
 			StaticVariables.drawBondLines = !StaticVariables.drawBondLines;
 		}
 		GUI.color = Color.white;
-		
-		if(StaticVariables.touchScreen){
-			if(GUI.Button(new Rect(Screen.width - 165, 20, 50, 50), touchIcon)){
-				StaticVariables.touchScreen = false;
-			}
-		}
-		else{
-			if(GUI.Button(new Rect(Screen.width - 165, 20, 50, 50), clickIcon)){
-				StaticVariables.touchScreen = true;
-			}
-		}
 
 		if(GUI.Button(new Rect(Screen.width - 225, 20, 50, 50), cameraTexture)){
 			Camera.main.transform.position = new Vector3(0.0f, 0.0f, -26.0f);
