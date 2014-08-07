@@ -139,8 +139,8 @@ public class InstantiateMolecule : MonoBehaviour {
 				createEnvironment.volume = 64000;
 				guiVolume = 64000;
 			}
-			CheckAtomVolumePositions();
 		}
+		CheckAtomVolumePositions();
 
 		
 		GUI.Label (new Rect (170, 25, 350, 20), "Temperature: " + TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 272.15, 2)).ToString() + "C)");

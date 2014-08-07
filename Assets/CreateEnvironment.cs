@@ -9,7 +9,7 @@ public class CreateEnvironment : MonoBehaviour {
 	public List<Rigidbody> molecules = new List<Rigidbody>();
 	public int moleculeToSpawn = 0;
 	public GameObject plane;
-	public Vector3 centerPos = new Vector3(0.0f, 0.0f, 0.0f);
+	public Vector3 centerPos;
 	public float errorBuffer = 0.5f;
 	public Material mat;
 	public float width;
@@ -27,10 +27,11 @@ public class CreateEnvironment : MonoBehaviour {
 	private GameObject frontPlane;
 	private GameObject rightPlane;
 	private GameObject leftPlane;
-	private Vector3 initialCenterPos;
+	public Vector3 initialCenterPos;
 	
 	void Start () {
 	
+		centerPos = new Vector3 (-5.0f, 0.0f, 0.0f);
 		StaticVariables.sigmaValues = new Dictionary<String, float> ();
 
 		for (int i = 0; i < molecules.Count; i++) {

@@ -53,6 +53,11 @@ public class Graph : MonoBehaviour {
 			startTime = Time.realtimeSinceStartup;
 		}
 
+		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		if (Input.GetKey (KeyCode.J)) {
+			print ("center pos: " + createEnvironment.centerPos);
+		}
+
 	}
 
 	void OnGUI(){
