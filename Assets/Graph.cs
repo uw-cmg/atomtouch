@@ -62,8 +62,6 @@ public class Graph : MonoBehaviour {
 		GUI.Label (new Rect (xCoord - 40, Screen.height - 85, 100, 20), (StaticVariables.tempRangeLow).ToString () + "K");
 		GUI.Label (new Rect (xCoord - 5, Screen.height - 70, 100, 20), (lowTime).ToString () + "s");
 		GUI.Label (new Rect (xCoord + width - 5, Screen.height - 70, 100, 20), (highTime).ToString() + "s");
-		//print ("lowTimePosition: " + new Rect (Screen.width - 265, Screen.height - 70, 100, 20));
-		//print ("screen height: " + Screen.height);
 	}
 	
 	void OnPostRender(){

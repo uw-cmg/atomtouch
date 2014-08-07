@@ -520,7 +520,7 @@ public abstract class Atom : MonoBehaviour
 			MoveAngstromText();
 
 			if(StaticVariables.touchScreen){
-
+				HighlightCloseAtoms();
 				if(!selected){
 					if((lastMousePosition - Input.mousePosition).magnitude > 0 && !doubleTapped){
 						Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
@@ -666,6 +666,24 @@ public abstract class Atom : MonoBehaviour
 			Color transparentColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, 1.0f);
 			Atom currAtomScript = currAtom.GetComponent<Atom>();
 			currAtomScript.ChangeColor(transparentColor);
+		}
+	}
+
+	void HighlightCloseAtoms(){
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			if(currAtom == gameObject) continue;
+			if(Vector3.Distance(currAtom.transform.position, gameObject.transform.position) < 5.0f){
+				Color solidColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, 1.0f);
+				Atom currAtomScript = currAtom.GetComponent<Atom>();
+				currAtomScript.ChangeColor(solidColor);
+			}
+			else{
+				Color transparentColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, StaticVariables.atomTransparency);
+				Atom currAtomScript = currAtom.GetComponent<Atom>();
+				currAtomScript.ChangeColor(transparentColor);
+			}
 		}
 	}
 	
