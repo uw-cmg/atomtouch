@@ -242,7 +242,6 @@ public class InstantiateMolecule : MonoBehaviour {
 			Atom atomScript = allMolecules[i].GetComponent<Atom>();
 			if(atomScript.doubleTapped){
 				if(GUI.Button(new Rect(455, Screen.height - 75, 75, 75), redXTexture)){
-					atomScript.ResetTransparency();
 					createEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
 					atomScript.doubleTapped = false;
 					Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));

@@ -42,7 +42,6 @@ public abstract class Atom : MonoBehaviour
 	protected abstract float massamu{ get; } //amu
 	protected abstract void SetSelected (bool selected);
 	public abstract Color color { get; }
-	public abstract void ChangeColor (Color color);
 	public abstract String atomName { get; }
 	
 	private Vector3 lastVelocity = Vector3.zero;
@@ -143,9 +142,8 @@ public abstract class Atom : MonoBehaviour
 
 
 	void Update(){
-		//print ("UpdateDelta: " + Time.deltaTime);
+		//print ("Color: " + color);
 		gameObject.renderer.material.color = color;
-		//gameObject.renderer.material.renderQueue = 3100;
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			HandleTouch ();
 		}
@@ -154,6 +152,7 @@ public abstract class Atom : MonoBehaviour
 				if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
 					ResetDoubleTapped();
 					doubleTapped = true;
+					RemoveAllBondText();
 				}
 				Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
 				RaycastHit hitInfo;
@@ -165,7 +164,6 @@ public abstract class Atom : MonoBehaviour
 			HandleRightClick();
 		}
 		if (doubleTapped) {
-			ApplyTransparency(StaticVariables.atomTransparency);
 			Time.timeScale = .05f;
 			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 			cameraScript.setCameraCoordinates(transform);
@@ -215,7 +213,6 @@ public abstract class Atom : MonoBehaviour
 					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
 					deltaTouch2 = deltaMagnitudeDiff / 10.0f;
 					if(moleculeToMove != null){
-						HighlightCloseAtoms();
 						Quaternion cameraRotation = Camera.main.transform.rotation;
 						Vector3 projectPosition = moleculeToMove.transform.position;
 						projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
@@ -284,6 +281,7 @@ public abstract class Atom : MonoBehaviour
 			if((Time.time - lastTapTime) < tapTime){
 				ResetDoubleTapped();
 				doubleTapped = true;
+				RemoveAllBondText();
 			}
 			Ray ray = Camera.main.ScreenPointToRay( Input.touches[0].position );
 			RaycastHit hitInfo;
@@ -293,7 +291,6 @@ public abstract class Atom : MonoBehaviour
 				dragStartTime = Time.realtimeSinceStartup;
 				dragCalled = false;
 				SpawnAngstromText();
-				ApplyTransparency(StaticVariables.atomTransparency);
 				if(!selected){
 					moleculeToMove = gameObject;
 					screenPoint = Camera.main.WorldToScreenPoint(transform.position);
@@ -332,7 +329,6 @@ public abstract class Atom : MonoBehaviour
 				MoveAngstromText();
 				if(!selected){
 					if(moleculeToMove != null && !doubleTapped){
-						HighlightCloseAtoms();
 						Vector3 curScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, screenPoint.z);
 						Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
 						lastMousePosition = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f);
@@ -461,8 +457,7 @@ public abstract class Atom : MonoBehaviour
 			dragStartTime = Time.realtimeSinceStartup;
 			dragCalled = false;
 			SpawnAngstromText();
-			ApplyTransparency(StaticVariables.atomTransparency);
-			
+
 			if(!selected){
 				rigidbody.isKinematic = true;
 				screenPoint = Camera.main.WorldToScreenPoint(transform.position);
@@ -500,8 +495,6 @@ public abstract class Atom : MonoBehaviour
 				atomIsClicked = true;
 				Quaternion cameraRotation = Camera.main.transform.rotation;
 				MoveAngstromText();
-				
-				HighlightCloseAtoms();
 
 				if(!selected){
 					if((lastMousePosition - Input.mousePosition).magnitude > 0 && !doubleTapped){
@@ -620,58 +613,29 @@ public abstract class Atom : MonoBehaviour
 		}
 	}
 
-	
-	void SetTransparency(float transparency){
-		Color newColor = new Color (color.r, color.g, color.b, transparency);
-		ChangeColor (newColor);
-	}
 
 	public float BondDistance(GameObject otherAtom){
 		Atom otherAtomScript = otherAtom.GetComponent<Atom> ();
 		return 1.225f * StaticVariables.sigmaValues [atomName+otherAtomScript.atomName];
 	}
 		
-	
-	void ApplyTransparency(float transparency){
-		ResetTransparency ();
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			if(currAtom == gameObject) continue;
-			Color transparentColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, transparency);
-			Atom currAtomScript = currAtom.GetComponent<Atom>();
-			if(!currAtomScript.selected){
-				currAtomScript.ChangeColor(transparentColor);
-			}
-		}
-	}
 
-	public void ResetTransparency(){
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			Color transparentColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, 1.0f);
-			Atom currAtomScript = currAtom.GetComponent<Atom>();
-			currAtomScript.ChangeColor(transparentColor);
-		}
-	}
-
-	void HighlightCloseAtoms(){
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			Atom currAtomScript = currAtom.GetComponent<Atom>();
-			if(currAtom == gameObject && !currAtomScript.selected) continue;
-			if(Vector3.Distance(currAtom.transform.position, gameObject.transform.position) < 5.0f){
-				Color solidColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, 1.0f);
-				currAtomScript.ChangeColor(solidColor);
-			}
-			else{
-				Color transparentColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, StaticVariables.atomTransparency);
-				currAtomScript.ChangeColor(transparentColor);
-			}
-		}
-	}
+//	void HighlightCloseAtoms(){
+//		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+//		for (int i = 0; i < allMolecules.Length; i++) {
+//			GameObject currAtom = allMolecules[i];
+//			Atom currAtomScript = currAtom.GetComponent<Atom>();
+//			if(currAtom == gameObject && !currAtomScript.selected) continue;
+//			if(Vector3.Distance(currAtom.transform.position, gameObject.transform.position) < 5.0f){
+//				Color solidColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, 1.0f);
+//				currAtomScript.ChangeColor(solidColor);
+//			}
+//			else{
+//				Color transparentColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, StaticVariables.atomTransparency);
+//				currAtomScript.ChangeColor(transparentColor);
+//			}
+//		}
+//	}
 	
 
 	void CheckVelocity(){
@@ -725,7 +689,7 @@ public abstract class Atom : MonoBehaviour
 		}
 		return position;
 	}
-	
+
 	void UpdateBondText(){
 		Quaternion cameraRotation = Camera.main.transform.rotation;
 		Vector3 left = cameraRotation * -Vector3.right;
@@ -783,6 +747,15 @@ public abstract class Atom : MonoBehaviour
 			Destroy(bondDistance);
 		}
 		bondDistanceText.Clear ();
+	}
+
+	void RemoveAllBondText(){
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			Atom atomScript = currAtom.GetComponent<Atom>();
+			atomScript.RemoveBondText();
+		}
 	}
 
 

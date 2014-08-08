@@ -5,7 +5,7 @@ using System;
 public class Gold : Atom
 {
 	private Color currentColor;
-	private Color goldColor = new Color (1.0f, .8431f, 0.0f, 1.0f);
+	private Color goldColor;
 	private float sigmaValue = 2.6367f;
 
 	public override String atomName 
@@ -43,20 +43,11 @@ public class Gold : Atom
 		}
 	}
 
-	public override void ChangeColor (Color color){
-		if (color == Color.black) {
-			currentColor = goldColor;
-		}
-		else{
-			currentColor = color;
-		}
-	}
-
 	void Start ()
 	{
+		goldColor = new Color (1.0f, .8431f, 0.0f, 1.0f);
 		SetSelected (false);
 		gameObject.transform.localScale = new Vector3(sigmaValue * .5f, sigmaValue * .5f, sigmaValue * .5f);
-		//gameObject.rigidbody.velocity = new Vector3(0.0f, 5.0f, 0.0f);
 	}
 }
 
