@@ -247,6 +247,7 @@ public class InstantiateMolecule : MonoBehaviour {
 					atomScript.doubleTapped = false;
 					Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
 					Time.timeScale = 1.0f;
+					atomScript.RemoveBondText();
 				}
 
 				DisplayAtomProperties(allMolecules[i]);
@@ -254,6 +255,7 @@ public class InstantiateMolecule : MonoBehaviour {
 			}
 		}
 
+		//remember to call remove bond distance text on the garbage texture too
 
 		if (GUI.Button (new Rect (360, Screen.height - 75, 75, 75), garbageTexture)) {
 			for(int i = 0; i < allMolecules.Length; i++){
@@ -367,20 +369,6 @@ public class InstantiateMolecule : MonoBehaviour {
 			}
 
 		}
-
-//		if (bonds.Count == 1) {
-//			if(createDistanceText){
-//				float distance = Vector3.Distance(bonds[0], currAtom.transform.position);
-//				Vector3 direction = (bonds[0] - currAtom.transform.position);
-//				direction.Normalize();
-//				float magnitude = (bonds[0] - currAtom.transform.position).magnitude;
-//				Vector3 position = direction * (magnitude * .5f);
-//				//Vector3 position = new Vector3(direction.x * (magnitude*.5f), direction.y * (magnitude*.5f), bonds[0].z);
-//				TextMesh bondText = Instantiate(textMeshPrefab, position, Quaternion.identity) as TextMesh;
-//				bondText.text = (Math.Round(distance, 2)).ToString();
-//				createDistanceText = false;
-//			}
-//		}
 
 	}
 

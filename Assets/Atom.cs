@@ -30,6 +30,7 @@ public abstract class Atom : MonoBehaviour
 	private Vector3 velocityBeforeCollision;
 	private float dragStartTime;
 	private bool dragCalled;
+	private Dictionary<String, TextMesh> bondDistanceText;
 
 	public Material lineMaterial;
 	public TextMesh textMeshPrefab;
@@ -51,7 +52,7 @@ public abstract class Atom : MonoBehaviour
 	void Awake(){
 
 		gameObject.rigidbody.velocity = new Vector3 (UnityEngine.Random.Range(-1.0f, 1.0f), UnityEngine.Random.Range(-1.0f, 1.0f), UnityEngine.Random.Range(-1.0f, 1.0f));
-
+		bondDistanceText = new Dictionary<String, TextMesh> ();
 	}
 
 	void FixedUpdate(){
@@ -168,6 +169,7 @@ public abstract class Atom : MonoBehaviour
 			Time.timeScale = .05f;
 			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 			cameraScript.setCameraCoordinates(transform);
+			UpdateBondText();
 		}
 		CheckVelocity ();
 	}
@@ -722,6 +724,65 @@ public abstract class Atom : MonoBehaviour
 			position.z = bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
 		}
 		return position;
+	}
+	
+	void UpdateBondText(){
+		Quaternion cameraRotation = Camera.main.transform.rotation;
+		Vector3 left = cameraRotation * -Vector3.right;
+		Vector3 right = cameraRotation * Vector3.right;
+
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject atomNeighbor = allMolecules[i];
+			if(atomNeighbor == gameObject) continue;
+			float distance = Vector3.Distance(gameObject.transform.position, atomNeighbor.transform.position);
+			if(distance < BondDistance(atomNeighbor)){
+
+				TextMesh bondDistance = null;
+
+				Vector3 midpoint = new Vector3((gameObject.transform.position.x + atomNeighbor.transform.position.x) / 2.0f, (gameObject.transform.position.y + atomNeighbor.transform.position.y) / 2.0f, (gameObject.transform.position.z + atomNeighbor.transform.position.z) / 2.0f);
+				
+				if(atomNeighbor.transform.position.x > gameObject.transform.position.x){
+					Vector3 direction = gameObject.transform.position - atomNeighbor.transform.position;
+					float angle = Vector3.Angle(direction, right);
+					float percentToChange = (angle - 90) / 90.0f;
+					midpoint += (direction * (.15f * percentToChange));
+				}
+				else{
+					Vector3 direction = atomNeighbor.transform.position - gameObject.transform.position;
+					float angle = Vector3.Angle(direction, right);
+					float percentToChange = (angle - 90) / 90.0f;
+					midpoint += (direction * (.15f * percentToChange));
+				}
+
+				try{
+					bondDistance = bondDistanceText[atomNeighbor.name];
+					bondDistance.transform.rotation = cameraRotation;
+					bondDistance.transform.position = midpoint;
+				}catch (KeyNotFoundException e){
+					bondDistance = Instantiate(textMeshPrefab, midpoint, cameraRotation) as TextMesh;
+					bondDistanceText.Add(atomNeighbor.name, bondDistance);
+				}
+				bondDistance.text = (Math.Round(distance, 1)).ToString();
+			}
+			else{
+				//we need to check if there is text and if there is, remove it. Otherwise dont do anything
+				try{
+					TextMesh bondDistance = bondDistanceText[atomNeighbor.name];
+					Destroy(bondDistance);
+					bondDistanceText.Remove(atomNeighbor.name);
+				}catch(KeyNotFoundException e){} //dont do anything with the caught exception
+			}
+		}
+
+	}
+	
+	public void RemoveBondText(){
+		foreach (KeyValuePair<String, TextMesh> keyValue in bondDistanceText) {
+			TextMesh bondDistance = keyValue.Value;
+			Destroy(bondDistance);
+		}
+		bondDistanceText.Clear ();
 	}
 
 
