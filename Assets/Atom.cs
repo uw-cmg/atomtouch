@@ -685,10 +685,10 @@ public abstract class Atom : MonoBehaviour
 		if (gameObject.transform.position.x < bottomPlanePos.x - (createEnvironment.width / 2.0f) + createEnvironment.errorBuffer) {
 			newVelocity.x = Math.Abs(newVelocity.x);
 		}
-		if (gameObject.transform.position.y > bottomPlanePos.y + (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer) {
+		if (gameObject.transform.position.y > bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer) {
 			newVelocity.y = Math.Abs(newVelocity.y) * -1;
 		}
-		if (gameObject.transform.position.y < bottomPlanePos.y - (createEnvironment.height / 2.0f) + createEnvironment.errorBuffer) {
+		if (gameObject.transform.position.y < bottomPlanePos.y + createEnvironment.errorBuffer) {
 			newVelocity.y = Math.Abs(newVelocity.y);
 		}
 		if (gameObject.transform.position.z > bottomPlanePos.z + (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer) {
