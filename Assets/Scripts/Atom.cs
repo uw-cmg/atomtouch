@@ -55,7 +55,6 @@ public abstract class Atom : MonoBehaviour
 	}
 
 	void FixedUpdate(){
-		//Time.timeScale = StaticVariables.timeScale;
 		if (!StaticVariables.pauseTime) {
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 			List<GameObject> molecules = new List<GameObject>();
@@ -66,8 +65,21 @@ public abstract class Atom : MonoBehaviour
 					molecules.Add(allMolecules[i]);
 				}
 			}
-			
-			Vector3 force = GetLennardJonesForce (molecules);
+
+			//Here is where the potentials will need to swapped out
+			//TODO add reset code here
+			Vector3 force = Vector3.zero;
+			if(StaticVariables.currentPotential == StaticVariables.Potential.LennardJones){
+				force = GetLennardJonesForce (molecules);
+			}
+			else if(StaticVariables.currentPotential == StaticVariables.Potential.Brenner){
+				force = GetLennardJonesForce (molecules);
+			}
+			else{
+				force = GetLennardJonesForce (molecules);
+			}
+
+
 
 			if(!gameObject.rigidbody.isKinematic) gameObject.rigidbody.angularVelocity = Vector3.zero;
 

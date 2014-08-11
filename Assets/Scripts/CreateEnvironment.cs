@@ -181,7 +181,7 @@ public class CreateEnvironment : MonoBehaviour {
 		frontPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
 		rightPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
 		leftPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
-
+		
 	}
 
 	String VerticalText(String text){
@@ -190,5 +190,25 @@ public class CreateEnvironment : MonoBehaviour {
 			verticalText.Append(text[i]).Append("\n");
 		}
 		return verticalText.ToString();
+	}
+
+	public void ResetAtoms(){
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			Destroy(currAtom);
+		}
+		for (int i = 0; i < numMolecules; i++) {
+			Vector3 position = new Vector3(centerPos.x + (UnityEngine.Random.Range(-(width/2.0f) + errorBuffer, (width/2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range(-(height/2.0f) + errorBuffer, (height/2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range(-(depth/2.0f) + errorBuffer, (depth/2.0f) - errorBuffer)));
+			Quaternion rotation = Quaternion.Euler(0, 0, 0);
+			Instantiate(molecules[moleculeToSpawn].rigidbody, position, rotation);
+		}
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			currAtom.name = i.ToString();
+		}
+		//change the volume and the temperature back to their defaults
+//		volume = 8000.0f;
+//		TemperatureCalc.desiredTemperature = 200.0f;
 	}
 }

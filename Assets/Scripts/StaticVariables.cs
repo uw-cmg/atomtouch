@@ -55,7 +55,14 @@ public class StaticVariables {
 	public static float atomTransparency = .5f;
 	//access to sigma values by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
 	public static Dictionary<String, float> sigmaValues;
+	public static Potential currentPotential = Potential.LennardJones;
 
+	public enum Potential{
+		LennardJones,
+		Brenner,
+		Buckingham
+	};
+	
 
 	public static void DrawLine(Vector3 startingPos, Vector3 endingPos, Color atomColor1, Color atomColor2, float lineWidth, Material mat){
 		
