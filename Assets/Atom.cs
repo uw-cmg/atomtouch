@@ -168,7 +168,7 @@ public abstract class Atom : MonoBehaviour
 
 	void Update(){
 		//print ("UpdateDelta: " + Time.deltaTime);
-		gameObject.renderer.material.color = color;
+		//gameObject.renderer.material.color = color;
 		//gameObject.renderer.material.renderQueue = 3100;
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			if(StaticVariables.touchScreen){
