@@ -122,9 +122,9 @@ public class CreateEnvironment : MonoBehaviour {
 		bottomLine.SetColors(lineColor, lineColor);
 		bottomLine.SetWidth(0.2F, 0.2F);
 		bottomLine.SetVertexCount(2);
-		
-		sideText = Instantiate(textMeshPrefab, new Vector3(bottomPlanePos.x + (width/2.0f) + 1.0f, bottomPlanePos.y + (height/2.0f), bottomPlanePos.z - (depth/2.0f)), Quaternion.identity) as TextMesh;
-		sideText.text = height.ToString() + " Angstroms";
+
+		sideText = Instantiate(textMeshPrefab, new Vector3(bottomPlanePos.x + (width/2.0f) + 1.0f, bottomPlanePos.y + (height*7/10.0f), bottomPlanePos.z - (depth/2.0f)), Quaternion.identity) as TextMesh;
+		sideText.text = VerticalText(height.ToString() + " Angstroms");
 		LineRenderer sideLine = sideText.transform.gameObject.AddComponent<LineRenderer> ();
 		sideLine.material = mat;
 		sideLine.SetColors(lineColor, lineColor);
@@ -162,9 +162,9 @@ public class CreateEnvironment : MonoBehaviour {
 		depthLine.SetPosition(1, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, bottomPlane.transform.position.z + (depth/2.0f)));
 
 		bottomText.text = width.ToString() + " Angstroms";
-		sideText.text = height.ToString() + " Angstroms";
+		sideText.text = VerticalText(height.ToString() + " Angstroms");
 		depthText.text = depth.ToString() + " Angstroms";
-		sideText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f) + 1.0f, bottomPlane.transform.position.y + (height / 2.0f), bottomPlane.transform.position.z - (depth / 2.0f));
+		sideText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f) + 1.0f, bottomPlane.transform.position.y + (height*7/10.0f), bottomPlane.transform.position.z - (depth / 2.0f));
 		depthText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f), bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - 2.0f);
 		bottomText.transform.position = new Vector3 (bottomPlane.transform.position.x - 2.0f, bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - (depth / 2.0f));
 
@@ -182,5 +182,13 @@ public class CreateEnvironment : MonoBehaviour {
 		rightPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
 		leftPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
 
+	}
+
+	String VerticalText(String text){
+		System.Text.StringBuilder verticalText = new System.Text.StringBuilder (text.Length * 2);
+		for (int i = 0; i < text.Length; i++) {
+			verticalText.Append(text[i]).Append("\n");
+		}
+		return verticalText.ToString();
 	}
 }

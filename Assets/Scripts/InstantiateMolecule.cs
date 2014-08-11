@@ -96,7 +96,7 @@ public class InstantiateMolecule : MonoBehaviour {
 
 
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-		GUI.Label (new Rect (25, 25, 350, 20), "Volume: " + guiVolume);
+		GUI.Label (new Rect (25, 25, 350, 20), "Volume: " + guiVolume + " Angstroms cubed");
 		float newVolume = GUI.VerticalSlider (new Rect (75, 55, 30, Screen.height - 135), guiVolume, 64000.0f, 1000.0f);
 		if (newVolume != guiVolume) {
 			guiVolume = newVolume;
