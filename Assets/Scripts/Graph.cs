@@ -4,6 +4,8 @@ using System.Collections;
 public class Graph : MonoBehaviour {
 
 	public Material mat;
+	public GameObject cube;
+	public Texture slider;
 	public TextMesh textMeshPrefab;
 	private Queue dataPoints;
 	private float startTime;
@@ -34,7 +36,6 @@ public class Graph : MonoBehaviour {
 		startTime = Time.realtimeSinceStartup;
 		lowTime = 0.0f;
 		highTime = maxDataPoints * refreshInterval;
-		
 	}
 
 	void Update(){
@@ -53,11 +54,6 @@ public class Graph : MonoBehaviour {
 			startTime = Time.realtimeSinceStartup;
 		}
 
-		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-		if (Input.GetKey (KeyCode.J)) {
-			print ("center pos: " + createEnvironment.centerPos);
-		}
-
 	}
 
 	void OnGUI(){
@@ -70,8 +66,6 @@ public class Graph : MonoBehaviour {
 	}
 	
 	void OnPostRender(){
-
-		Quaternion cameraRotation = Camera.main.transform.rotation;
 
 		Vector3 upperLeft = camera.ScreenToWorldPoint (new Vector3 (xCoord, (yCoord+height), zDepth));
 		Vector3 lowerLeft = camera.ScreenToWorldPoint (new Vector3(xCoord, yCoord, zDepth));
