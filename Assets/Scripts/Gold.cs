@@ -7,6 +7,7 @@ public class Gold : Atom
 	private float sigmaValue = 2.6367f;
 	public Material goldMaterial;
 	public Material selectedMaterial;
+	public Material transparentMaterial;
 
 	public override String atomName 
 	{ 
@@ -31,6 +32,15 @@ public class Gold : Atom
 	protected override void SetSelected (bool selected){
 		if (selected) {
 			gameObject.renderer.material = selectedMaterial;
+		}
+		else{
+			gameObject.renderer.material = goldMaterial;
+		}
+	}
+
+	public override void SetTransparent(bool transparent){
+		if (transparent) {
+			gameObject.renderer.material = transparentMaterial;
 		}
 		else{
 			gameObject.renderer.material = goldMaterial;

@@ -41,6 +41,7 @@ public abstract class Atom : MonoBehaviour
 	public abstract float sigma { get; }
 	protected abstract float massamu{ get; } //amu
 	protected abstract void SetSelected (bool selected);
+	public abstract void SetTransparent (bool transparent);
 	public abstract String atomName { get; }
 	
 	private Vector3 lastVelocity = Vector3.zero;
@@ -177,6 +178,7 @@ public abstract class Atom : MonoBehaviour
 			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 			cameraScript.setCameraCoordinates(transform);
 			UpdateBondText();
+			ApplyTransparency();
 		}
 		CheckVelocity ();
 	}
@@ -679,6 +681,24 @@ public abstract class Atom : MonoBehaviour
 			position.z = bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
 		}
 		return position;
+	}
+
+	void ApplyTransparency(){
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject neighbor = allMolecules[i];
+			if(neighbor == gameObject) continue;
+			Atom neighborScript = neighbor.GetComponent<Atom>();
+			if(neighborScript.selected){
+				neighborScript.SetSelected(neighborScript.selected);
+			}
+			else if(!neighborScript.selected && Vector3.Distance(gameObject.transform.position, neighbor.transform.position) > BondDistance(neighbor)){
+				neighborScript.SetTransparent(true);
+			}
+			else{
+				neighborScript.SetTransparent(false);
+			}
+		}
 	}
 
 	void UpdateBondText(){

@@ -181,7 +181,8 @@ public class CreateEnvironment : MonoBehaviour {
 		frontPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
 		rightPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
 		leftPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
-		
+
+
 	}
 
 	String VerticalText(String text){

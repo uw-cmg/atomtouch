@@ -7,6 +7,7 @@ public class Copper : Atom {
 	private float sigmaValue = 2.3374f;
 	public Material copperMaterial;
 	public Material selectedMaterial;
+	public Material transparentMaterial;
 		
 	public override String atomName 
 	{ 
@@ -31,6 +32,15 @@ public class Copper : Atom {
 	protected override void SetSelected (bool selected){
 		if (selected) {
 			gameObject.renderer.material = selectedMaterial;
+		}
+		else{
+			gameObject.renderer.material = copperMaterial;
+		}
+	}
+
+	public override void SetTransparent(bool transparent){
+		if (transparent) {
+			gameObject.renderer.material = transparentMaterial;
 		}
 		else{
 			gameObject.renderer.material = copperMaterial;
