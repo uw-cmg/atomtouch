@@ -71,40 +71,21 @@ public class InstantiateMolecule : MonoBehaviour {
 			StaticVariables.drawBondLines = !StaticVariables.drawBondLines;
 		}
 		GUI.color = Color.white;
-		
-		if(StaticVariables.touchScreen){
-			if(GUI.Button(new Rect(Screen.width - 165, 20, 50, 50), touchIcon)){
-				StaticVariables.touchScreen = false;
-			}
-		}
-		else{
-			if(GUI.Button(new Rect(Screen.width - 165, 20, 50, 50), clickIcon)){
-				StaticVariables.touchScreen = true;
-			}
-		}
 
-		if(GUI.Button(new Rect(Screen.width - 225, 20, 50, 50), cameraTexture)){
+		if(GUI.Button(new Rect(Screen.width - 165, 20, 50, 50), cameraTexture)){
 			Camera.main.transform.position = new Vector3(0.0f, 0.0f, -26.0f);
 			Camera.main.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 		}
 
-		if (!StaticVariables.axisUI) {
-			GUI.color = Color.black;
-		}
-		if (GUI.Button (new Rect (Screen.width - 285, 20, 50, 50), axisTexture)) {
-			StaticVariables.axisUI = !StaticVariables.axisUI;
-		}
-		GUI.color = Color.white;
-
 		if (StaticVariables.pauseTime) {
 			GUI.color = Color.black;
 		}
-		if(GUI.Button(new Rect(Screen.width - 345, 20, 50, 50), timeTexture)){
+		if(GUI.Button(new Rect(Screen.width - 225, 20, 50, 50), timeTexture)){
 			StaticVariables.pauseTime = !StaticVariables.pauseTime;
 		}
 		GUI.color = Color.white;
 
-		if (GUI.Button (new Rect (Screen.width - 405, 20, 50, 50), velocityTexture)) {
+		if (GUI.Button (new Rect (Screen.width - 285, 20, 50, 50), velocityTexture)) {
 			for(int i = 0; i < allMolecules.Length; i++){
 				GameObject currAtom = allMolecules[i];
 				currAtom.rigidbody.velocity = new Vector3(UnityEngine.Random.Range(-5.0f, 5.0f), UnityEngine.Random.Range(-5.0f, 5.0f), UnityEngine.Random.Range(-5.0f, 5.0f));
@@ -158,8 +139,8 @@ public class InstantiateMolecule : MonoBehaviour {
 				createEnvironment.volume = 64000;
 				guiVolume = 64000;
 			}
-			CheckAtomVolumePositions();
 		}
+		CheckAtomVolumePositions();
 
 		
 		GUI.Label (new Rect (170, 25, 350, 20), "Temperature: " + TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 272.15, 2)).ToString() + "C)");
@@ -171,7 +152,7 @@ public class InstantiateMolecule : MonoBehaviour {
 		else{
 			//the gui temperature has been set, we can safely change the desired temperature
 			int temp = (int)TemperatureCalc.desiredTemperature;
-			int remainder = temp % 50;
+			int remainder = temp % 20;
 			temp -= remainder;
 			TemperatureCalc.desiredTemperature = temp;
 		}
@@ -261,11 +242,11 @@ public class InstantiateMolecule : MonoBehaviour {
 			Atom atomScript = allMolecules[i].GetComponent<Atom>();
 			if(atomScript.doubleTapped){
 				if(GUI.Button(new Rect(455, Screen.height - 75, 75, 75), redXTexture)){
-					atomScript.ResetTransparency();
 					createEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
 					atomScript.doubleTapped = false;
 					Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
 					Time.timeScale = 1.0f;
+					atomScript.RemoveBondText();
 				}
 
 				DisplayAtomProperties(allMolecules[i]);
@@ -273,6 +254,7 @@ public class InstantiateMolecule : MonoBehaviour {
 			}
 		}
 
+		//remember to call remove bond distance text on the garbage texture too
 
 		if (GUI.Button (new Rect (360, Screen.height - 75, 75, 75), garbageTexture)) {
 			for(int i = 0; i < allMolecules.Length; i++){
@@ -386,20 +368,6 @@ public class InstantiateMolecule : MonoBehaviour {
 			}
 
 		}
-
-//		if (bonds.Count == 1) {
-//			if(createDistanceText){
-//				float distance = Vector3.Distance(bonds[0], currAtom.transform.position);
-//				Vector3 direction = (bonds[0] - currAtom.transform.position);
-//				direction.Normalize();
-//				float magnitude = (bonds[0] - currAtom.transform.position).magnitude;
-//				Vector3 position = direction * (magnitude * .5f);
-//				//Vector3 position = new Vector3(direction.x * (magnitude*.5f), direction.y * (magnitude*.5f), bonds[0].z);
-//				TextMesh bondText = Instantiate(textMeshPrefab, position, Quaternion.identity) as TextMesh;
-//				bondText.text = (Math.Round(distance, 2)).ToString();
-//				createDistanceText = false;
-//			}
-//		}
 
 	}
 

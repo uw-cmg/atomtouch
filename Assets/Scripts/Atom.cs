@@ -27,6 +27,10 @@ public abstract class Atom : MonoBehaviour
 	private Dictionary<String, Vector3> gameObjectScreenPoints;
 	private bool atomIsClicked = false;
 	private TextMesh angstromText;
+	private Vector3 velocityBeforeCollision;
+	private float dragStartTime;
+	private bool dragCalled;
+	private Dictionary<String, TextMesh> bondDistanceText;
 
 	public Material lineMaterial;
 	public TextMesh textMeshPrefab;
@@ -34,12 +38,11 @@ public abstract class Atom : MonoBehaviour
 
 	//variables that must be implemented because they are declared as abstract in the base class
 	public abstract float epsilon{ get; } // J
-	public abstract float sigma(GameObject otherAtom);
-	public abstract float sigma();
+	public abstract float sigma { get; }
 	protected abstract float massamu{ get; } //amu
 	protected abstract void SetSelected (bool selected);
 	public abstract Color color { get; }
-	public abstract void ChangeColor (Color color);
+	public abstract String atomName { get; }
 	
 	private Vector3 lastVelocity = Vector3.zero;
 	private Vector3 a_n = Vector3.zero;
@@ -48,7 +51,7 @@ public abstract class Atom : MonoBehaviour
 	void Awake(){
 
 		gameObject.rigidbody.velocity = new Vector3 (UnityEngine.Random.Range(-1.0f, 1.0f), UnityEngine.Random.Range(-1.0f, 1.0f), UnityEngine.Random.Range(-1.0f, 1.0f));
-
+		bondDistanceText = new Dictionary<String, TextMesh> ();
 	}
 
 	void FixedUpdate(){
@@ -59,51 +62,22 @@ public abstract class Atom : MonoBehaviour
 			
 			for(int i = 0; i < allMolecules.Length; i++){
 				double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
-				if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff * sigma(allMolecules[i]))){
+				if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff)){
 					molecules.Add(allMolecules[i]);
 				}
 			}
 			
 			Vector3 force = GetLennardJonesForce (molecules);
 
-			//TTM clear out old velocities - actually, this seems to NOT work
-			//gameObject.rigidbody.velocity = Vector3.zero;
 			if(!gameObject.rigidbody.isKinematic) gameObject.rigidbody.angularVelocity = Vector3.zero;
-			//gameObject.rigidbody.AddForce (force, mode:ForceMode.Force);
-			//gameObject.rigidbody.AddForce (force*StaticVariables.fixedUpdateIntervalToRealTime, mode:ForceMode.Impulse);
-			//gameObject.rigidbody.velocity= new Vector3 (0.5f, 0.5f, 0.5f);
 
-			//TTM velocity verlet: v_n+1 = v_n + 0.5*(a_n+1 + a_n)*delta_t
-			// we have v_n (current velocity before update)
-			//         a_n+1 (acceleration it should have after update)
-			//         x_n (current position)
-			//         delta_t (time step)
-			// we do not have a_n (current acceleration)
-			// we do not have v_n-1 (previous velocity), to calculate a_n
-			Vector3 v_n = gameObject.rigidbody.velocity;
-			//float mymass = massamu/100.0f;
-			//a_nplus1 = force/mymass; //force was already adjusted to 100 amu * Angstroms / unity time ^2
-			a_nplus1 = force/gameObject.rigidbody.mass; 
-			float delta_t = Time.fixedDeltaTime;
-			Vector3 v_verlet = Vector3.zero;
-			//TTM if no velocity to start out with, set a velocity
-			if (v_n.magnitude == 0){
-				v_verlet = a_nplus1 * delta_t;
-				//gameObject.rigidbody.AddForce (force, mode:ForceMode.Force);
-			}
-			else{
-				a_n = (v_n - lastVelocity) / delta_t;
-				v_verlet = v_n + 0.5f*(a_nplus1 + a_n)*delta_t;
-			}
-			lastVelocity = v_n;
-			Vector3 newVelocity = v_verlet * TemperatureCalc.squareRootAlpha;
-			//Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
-			//TTM only reset velocity if not zero
-			if (!rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && allMolecules.Length > 1) {
+			gameObject.rigidbody.AddForce (force, mode:ForceMode.Force);
+
+			Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
+			if ((rigidbody.velocity.magnitude != 0) && !rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && allMolecules.Length > 1) {
 				gameObject.rigidbody.velocity = newVelocity;
 			}
 
-			CheckVelocity();
 		}
 		else{
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
@@ -124,7 +98,8 @@ public abstract class Atom : MonoBehaviour
 			Vector3 direction = new Vector3(objectsInRange[i].transform.position.x - transform.position.x, objectsInRange[i].transform.position.y - transform.position.y, objectsInRange[i].transform.position.z - transform.position.z);
 			direction.Normalize();
 
-			float finalSigma = sigma(objectsInRange[i]);
+			Atom otherAtomScript = objectsInRange[i].GetComponent<Atom>();
+			float finalSigma = StaticVariables.sigmaValues[atomName+otherAtomScript.atomName];
 			//TTM add transition to smooth curve to constant, instead of asymptote to infinity
 			double r_min = StaticVariables.r_min_multiplier * finalSigma;
 
@@ -167,22 +142,17 @@ public abstract class Atom : MonoBehaviour
 
 
 	void Update(){
-		//print ("UpdateDelta: " + Time.deltaTime);
+		//print ("Color: " + color);
 		//gameObject.renderer.material.color = color;
-		//gameObject.renderer.material.renderQueue = 3100;
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
-			if(StaticVariables.touchScreen){
-				HandleTouch ();
-			}
-			else{
-				HandleTouchSelect();
-			}
+			HandleTouch ();
 		}
 		else{
 			if(Input.GetMouseButtonDown(0)){
 				if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
 					ResetDoubleTapped();
 					doubleTapped = true;
+					RemoveAllBondText();
 				}
 				Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
 				RaycastHit hitInfo;
@@ -194,11 +164,12 @@ public abstract class Atom : MonoBehaviour
 			HandleRightClick();
 		}
 		if (doubleTapped) {
-			ApplyTransparency(StaticVariables.atomTransparency);
 			Time.timeScale = .05f;
 			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 			cameraScript.setCameraCoordinates(transform);
+			UpdateBondText();
 		}
+		CheckVelocity ();
 	}
 
 	void HandleTouchSelect(){
@@ -242,7 +213,6 @@ public abstract class Atom : MonoBehaviour
 					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
 					deltaTouch2 = deltaMagnitudeDiff / 10.0f;
 					if(moleculeToMove != null){
-						HighlightAtoms();
 						Quaternion cameraRotation = Camera.main.transform.rotation;
 						Vector3 projectPosition = moleculeToMove.transform.position;
 						projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
@@ -255,7 +225,6 @@ public abstract class Atom : MonoBehaviour
 					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
 					deltaTouch2 = deltaMagnitudeDiff / 10.0f;
 					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-					HighlightAtoms();
 					List<Vector3> atomPositions = new List<Vector3>();
 					bool moveAtoms = true;
 					for(int i = 0; i < allMolecules.Length; i++){
@@ -307,18 +276,21 @@ public abstract class Atom : MonoBehaviour
 
 	void HandleMovingAtom(){
 		Touch touch = Input.GetTouch(0);
-		
+
 		if(touch.phase == TouchPhase.Began){
 			if((Time.time - lastTapTime) < tapTime){
 				ResetDoubleTapped();
 				doubleTapped = true;
+				RemoveAllBondText();
 			}
 			Ray ray = Camera.main.ScreenPointToRay( Input.touches[0].position );
 			RaycastHit hitInfo;
+			//this is the iOS equivalent to OnMouseUp
 			if (Physics.Raycast( ray, out hitInfo ) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject)
 			{
+				dragStartTime = Time.realtimeSinceStartup;
+				dragCalled = false;
 				SpawnAngstromText();
-				ApplyTransparency(StaticVariables.atomTransparency);
 				if(!selected){
 					moleculeToMove = gameObject;
 					screenPoint = Camera.main.WorldToScreenPoint(transform.position);
@@ -348,62 +320,72 @@ public abstract class Atom : MonoBehaviour
 				lastTapTime = Time.time;
 			}
 		}
+		//this is the iOS equivalent to OnMouseDrag
 		else if(touch.phase == TouchPhase.Moved){
-			atomIsClicked = true;
-			MoveAngstromText();
-			if(!selected){
-				if(moleculeToMove != null && !doubleTapped){
-					HighlightAtoms();
-					Vector3 curScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, screenPoint.z);
-					Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-					lastMousePosition = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f);
-					curPosition = CheckPosition(curPosition);
-					moleculeToMove.transform.position = curPosition;
-				}
-			}
-			else{
-				if (held){
-					HighlightAtoms();
-					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-					List<Vector3> atomPositions = new List<Vector3>();
-					bool moveAtoms = true;
-					for(int i = 0; i < allMolecules.Length; i++){
-						GameObject currAtom = allMolecules[i];
-						Atom atomScript = currAtom.GetComponent<Atom>();
-						if(atomScript.selected){
-							if(gameObjectOffsets != null && gameObjectScreenPoints != null){
-								Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
-								Vector3 currOffset = gameObjectOffsets[currAtom.name];
-								Vector3 objScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, currScreenPoint.z);
-								Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
-								Vector3 newAtomPosition = CheckPosition(curPosition);
-								if(newAtomPosition != curPosition){
-									moveAtoms = false;
-								}
-								atomPositions.Add(newAtomPosition);
-							}
-						}
-					}
 
-					if(atomPositions.Count > 0 && moveAtoms){
+			if(Time.realtimeSinceStartup - dragStartTime > 0.1f){
+				dragCalled = true;
+				atomIsClicked = true;
+				MoveAngstromText();
+				if(!selected){
+					if(moleculeToMove != null && !doubleTapped){
+						Vector3 curScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, screenPoint.z);
+						Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
+						lastMousePosition = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f);
+						curPosition = CheckPosition(curPosition);
+						moleculeToMove.transform.position = curPosition;
+					}
+				}
+				else{
+					if (held){
+						GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+						List<Vector3> atomPositions = new List<Vector3>();
+						bool moveAtoms = true;
 						for(int i = 0; i < allMolecules.Length; i++){
 							GameObject currAtom = allMolecules[i];
-							Vector3 newAtomPosition = atomPositions[i];
-							currAtom.transform.position = newAtomPosition;
+							Atom atomScript = currAtom.GetComponent<Atom>();
+							if(atomScript.selected){
+								if(gameObjectOffsets != null && gameObjectScreenPoints != null){
+									Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
+									Vector3 currOffset = gameObjectOffsets[currAtom.name];
+									Vector3 objScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, currScreenPoint.z);
+									Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
+									Vector3 newAtomPosition = CheckPosition(curPosition);
+									if(newAtomPosition != curPosition){
+										moveAtoms = false;
+									}
+									atomPositions.Add(newAtomPosition);
+								}
+							}
 						}
+						
+						if(atomPositions.Count > 0 && moveAtoms){
+							for(int i = 0; i < allMolecules.Length; i++){
+								GameObject currAtom = allMolecules[i];
+								Vector3 newAtomPosition = atomPositions[i];
+								currAtom.transform.position = newAtomPosition;
+							}
+						}
+						
+						
 					}
-
-
 				}
 			}
+
+
 		}
+		//this is the iOS equivalent to OnMouseUp
 		else if(touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled){
+			if(!dragCalled && moleculeToMove != null){
+				selected = !selected;
+				SetSelected(selected);
+			}
 			atomIsClicked = false;
 			DestroyAngstromText();
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+			moleculeToMove = null;
 			if(!selected){
 				if(moleculeToMove != null){
-					moleculeToMove = null;
 					//Quaternion cameraRotation = Camera.main.transform.rotation;
 					rigidbody.isKinematic = false;
 					//rigidbody.AddForce (cameraRotation * mouseDelta * 50.0f);
@@ -472,54 +454,47 @@ public abstract class Atom : MonoBehaviour
 	//controls for debugging on pc
 	void OnMouseDown (){
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
+			dragStartTime = Time.realtimeSinceStartup;
+			dragCalled = false;
+			SpawnAngstromText();
 
-			if(StaticVariables.touchScreen){
-
-				SpawnAngstromText();
-				ApplyTransparency(StaticVariables.atomTransparency);
-
-				if(!selected){
-					rigidbody.isKinematic = true;
-					screenPoint = Camera.main.WorldToScreenPoint(transform.position);
-					offset = transform.position - Camera.main.ScreenToWorldPoint(
-						new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, screenPoint.z));
-					held = true;
-				}
-				else{
-					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-					gameObjectOffsets = new Dictionary<String, Vector3>();
-					gameObjectScreenPoints = new Dictionary<String, Vector3>();
-					for(int i = 0; i < allMolecules.Length; i++){
-						GameObject currAtom = allMolecules[i];
-						Atom atomScript = currAtom.GetComponent<Atom>();
-						if(atomScript.selected){
-							currAtom.rigidbody.isKinematic = true;
-							Vector3 pointOnScreen = Camera.main.WorldToScreenPoint(currAtom.transform.position);
-							Vector3 atomOffset = currAtom.transform.position - Camera.main.ScreenToWorldPoint(
-								new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, pointOnScreen.z));
-							atomScript.held = true;
-							//print ("adding key: " + currAtom.name);
-							gameObjectOffsets.Add(currAtom.name, atomOffset);
-							gameObjectScreenPoints.Add(currAtom.name, pointOnScreen);
-						}
-					}
-				}
+			if(!selected){
+				rigidbody.isKinematic = true;
+				screenPoint = Camera.main.WorldToScreenPoint(transform.position);
+				offset = transform.position - Camera.main.ScreenToWorldPoint(
+					new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, screenPoint.z));
+				held = true;
 			}
 			else{
-				selected = !selected;
-				SetSelected(selected);
+				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+				gameObjectOffsets = new Dictionary<String, Vector3>();
+				gameObjectScreenPoints = new Dictionary<String, Vector3>();
+				for(int i = 0; i < allMolecules.Length; i++){
+					GameObject currAtom = allMolecules[i];
+					Atom atomScript = currAtom.GetComponent<Atom>();
+					if(atomScript.selected){
+						currAtom.rigidbody.isKinematic = true;
+						Vector3 pointOnScreen = Camera.main.WorldToScreenPoint(currAtom.transform.position);
+						Vector3 atomOffset = currAtom.transform.position - Camera.main.ScreenToWorldPoint(
+							new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, pointOnScreen.z));
+						atomScript.held = true;
+						//print ("adding key: " + currAtom.name);
+						gameObjectOffsets.Add(currAtom.name, atomOffset);
+						gameObjectScreenPoints.Add(currAtom.name, pointOnScreen);
+					}
+				}
 			}
 		}
 	}
 	
 	void OnMouseDrag(){
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
-			atomIsClicked = true;
-			HighlightAtoms();
-			Quaternion cameraRotation = Camera.main.transform.rotation;
-			MoveAngstromText();
 
-			if(StaticVariables.touchScreen){
+			if(Time.realtimeSinceStartup - dragStartTime > 0.1f){
+				dragCalled = true;
+				atomIsClicked = true;
+				Quaternion cameraRotation = Camera.main.transform.rotation;
+				MoveAngstromText();
 
 				if(!selected){
 					if((lastMousePosition - Input.mousePosition).magnitude > 0 && !doubleTapped){
@@ -543,7 +518,7 @@ public abstract class Atom : MonoBehaviour
 						Atom atomScript = currAtom.GetComponent<Atom>();
 						if(atomScript.doubleTapped && atomScript.selected) noneDoubleTapped = false;
 					}
-
+					
 					if(noneDoubleTapped){
 						List<Vector3> atomPositions = new List<Vector3>();
 						bool moveAtoms = true;
@@ -563,9 +538,9 @@ public abstract class Atom : MonoBehaviour
 								}
 								//currAtom.transform.position = newAtomPosition;
 							}
-
+							
 							Vector3 finalPosition = newAtomPosition;
-
+							
 							if(atomScript.selected){
 								float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
 								Vector3 projectPosition = newAtomPosition;
@@ -578,7 +553,7 @@ public abstract class Atom : MonoBehaviour
 							}
 							atomPositions.Add(finalPosition);
 						}
-
+						
 						if(atomPositions.Count > 0 && moveAtoms){
 							for(int i = 0; i < allMolecules.Length; i++){
 								Vector3 newAtomPosition = atomPositions[i];
@@ -589,39 +564,44 @@ public abstract class Atom : MonoBehaviour
 					}
 				}
 			}
+			
+			
 			lastMousePosition = Input.mousePosition;
 		}
-
+		
 	}
-
+	
 	void OnMouseUp (){
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
+			if(!dragCalled){
+				selected = !selected;
+				SetSelected(selected);
+			}
 			atomIsClicked = false;
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 			DestroyAngstromText();
-			if(StaticVariables.touchScreen){
-				if(!selected){
-					rigidbody.isKinematic = false;
-					held = false;
-				}
-				else{
-					for(int i = 0; i < allMolecules.Length; i++){
-						GameObject currAtom = allMolecules[i];
-						Atom atomScript = currAtom.GetComponent<Atom>();
-						if(atomScript.selected){
-							currAtom.rigidbody.isKinematic = false;
-							atomScript.held = false;
-						}
-					}
-				}
 
+			if(!selected){
+				rigidbody.isKinematic = false;
+				held = false;
+			}
+			else{
 				for(int i = 0; i < allMolecules.Length; i++){
 					GameObject currAtom = allMolecules[i];
 					Atom atomScript = currAtom.GetComponent<Atom>();
-					atomScript.SetSelected(atomScript.selected);
+					if(atomScript.selected){
+						currAtom.rigidbody.isKinematic = false;
+						atomScript.held = false;
+					}
 				}
 			}
-
+			
+			for(int i = 0; i < allMolecules.Length; i++){
+				GameObject currAtom = allMolecules[i];
+				Atom atomScript = currAtom.GetComponent<Atom>();
+				atomScript.SetSelected(atomScript.selected);
+			}
+			
 			Quaternion cameraRotation = Camera.main.transform.rotation;
 			Vector2 direction = (Input.mousePosition - lastMousePosition);
 			direction.Normalize();
@@ -633,147 +613,54 @@ public abstract class Atom : MonoBehaviour
 		}
 	}
 
-	
-	void SetTransparency(float transparency){
-		Color newColor = new Color (color.r, color.g, color.b, transparency);
-		ChangeColor (newColor);
-	}
 
 	public float BondDistance(GameObject otherAtom){
-		return 1.225f * sigma(otherAtom);
+		Atom otherAtomScript = otherAtom.GetComponent<Atom> ();
+		return 1.225f * StaticVariables.sigmaValues [atomName+otherAtomScript.atomName];
 	}
+		
+
+//	void HighlightCloseAtoms(){
+//		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+//		for (int i = 0; i < allMolecules.Length; i++) {
+//			GameObject currAtom = allMolecules[i];
+//			Atom currAtomScript = currAtom.GetComponent<Atom>();
+//			if(currAtom == gameObject && !currAtomScript.selected) continue;
+//			if(Vector3.Distance(currAtom.transform.position, gameObject.transform.position) < 5.0f){
+//				Color solidColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, 1.0f);
+//				currAtomScript.ChangeColor(solidColor);
+//			}
+//			else{
+//				Color transparentColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, StaticVariables.atomTransparency);
+//				currAtomScript.ChangeColor(transparentColor);
+//			}
+//		}
+//	}
 	
-	void HighlightAtoms(){
 
-		if (StaticVariables.axisUI) {
-			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-			CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-			for (int i = 0; i < allMolecules.Length; i++) {
-				GameObject currAtom = allMolecules[i];
-				if(currAtom == gameObject) continue;
-				Color finalColor = Color.black;
-				if(currAtom.transform.position.x < gameObject.transform.position.x + createEnvironment.errorBuffer
-				   && currAtom.transform.position.x > gameObject.transform.position.x - createEnvironment.errorBuffer){
-					//green
-					finalColor += Color.green;
-				}
-				if(currAtom.transform.position.y < gameObject.transform.position.y + createEnvironment.errorBuffer
-				   && currAtom.transform.position.y > gameObject.transform.position.y - createEnvironment.errorBuffer){
-					//blue
-					finalColor += Color.blue;
-				}
-				if(currAtom.transform.position.z < gameObject.transform.position.z + createEnvironment.errorBuffer
-				   && currAtom.transform.position.z > gameObject.transform.position.z - createEnvironment.errorBuffer){
-					//red
-					finalColor += Color.red;
-				}
-				Atom atomScript = currAtom.GetComponent<Atom>();
-				if(finalColor == Color.black){
-					if(atomScript.selected){
-						finalColor = StaticVariables.selectedColor;
-					}
-				}
-				atomScript.ChangeColor(finalColor);
-			}
-		}
-
-	}
-
-	void OnRenderObject(){
-		if (StaticVariables.axisUI) {
-			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-			for (int i = 0; i < allMolecules.Length; i++) {
-				GameObject currAtom = allMolecules[i];
-				Atom atomScript = currAtom.GetComponent<Atom>();
-				if(atomScript.atomIsClicked && atomScript.held && !atomScript.doubleTapped){
-					DrawLineBorders(currAtom);
-				}
-			}
-		}
-	}
-
-	void ApplyTransparency(float transparency){
-		ResetTransparency ();
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			if(currAtom == gameObject) continue;
-			Color transparentColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, transparency);
-			Atom currAtomScript = currAtom.GetComponent<Atom>();
-			if(!currAtomScript.selected){
-				currAtomScript.ChangeColor(transparentColor);
-			}
-		}
-	}
-
-	public void ResetTransparency(){
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			Color transparentColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, 1.0f);
-			Atom currAtomScript = currAtom.GetComponent<Atom>();
-			currAtomScript.ChangeColor(transparentColor);
-		}
-	}
-
-	void DrawLineBorders(GameObject currAtom){
-
-		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
-
-		//x-y plane
-		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), bottomPlanePos.y, currAtom.transform.position.z), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), bottomPlanePos.y, currAtom.transform.position.z),
-		                         Color.red, Color.red, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), bottomPlanePos.y, currAtom.transform.position.z), new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), bottomPlanePos.y + createEnvironment.height, currAtom.transform.position.z),
-		                          Color.red, Color.red, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), bottomPlanePos.y, currAtom.transform.position.z), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), bottomPlanePos.y + createEnvironment.height, currAtom.transform.position.z),
-		                          Color.red, Color.red, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), bottomPlanePos.y + createEnvironment.height, currAtom.transform.position.z), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), bottomPlanePos.y + createEnvironment.height, currAtom.transform.position.z),
-		                          Color.red, Color.red, .1f, lineMaterial);
-
-		//x-z plane
-		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)),
-		                          Color.blue, Color.blue, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
-		                          Color.blue, Color.blue, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (bottomPlanePos.x - (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
-		                          Color.blue, Color.blue, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (bottomPlanePos.x + (createEnvironment.width / 2.0f), currAtom.transform.position.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
-		                          Color.blue, Color.blue, .1f, lineMaterial);
-
-		//y-z plane
-		StaticVariables.DrawLine (new Vector3 (currAtom.transform.position.x, bottomPlanePos.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (currAtom.transform.position.x, bottomPlanePos.y + createEnvironment.height, bottomPlanePos.z - (createEnvironment.depth/2.0f)),
-		                          Color.green, Color.green, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (currAtom.transform.position.x, bottomPlanePos.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)), new Vector3 (currAtom.transform.position.x, bottomPlanePos.y + createEnvironment.height, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
-		                          Color.green, Color.green, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (currAtom.transform.position.x, bottomPlanePos.y, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (currAtom.transform.position.x, bottomPlanePos.y, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
-		                          Color.green, Color.green, .1f, lineMaterial);
-		StaticVariables.DrawLine (new Vector3 (currAtom.transform.position.x, bottomPlanePos.y + createEnvironment.height, bottomPlanePos.z - (createEnvironment.depth/2.0f)), new Vector3 (currAtom.transform.position.x, bottomPlanePos.y + createEnvironment.height, bottomPlanePos.z + (createEnvironment.depth/2.0f)),
-		                          Color.green, Color.green, .1f, lineMaterial);
-	}
-	
 	void CheckVelocity(){
 
 		if (gameObject.rigidbody.isKinematic) return;
 
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
 		Vector3 newVelocity = gameObject.rigidbody.velocity;
-		if (gameObject.transform.position.x > createEnvironment.centerPos.x + (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer) {
+		if (gameObject.transform.position.x > bottomPlanePos.x + (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer) {
 			newVelocity.x = Math.Abs(newVelocity.x) * -1;
 		}
-		if (gameObject.transform.position.x < createEnvironment.centerPos.x - (createEnvironment.width / 2.0f) + createEnvironment.errorBuffer) {
+		if (gameObject.transform.position.x < bottomPlanePos.x - (createEnvironment.width / 2.0f) + createEnvironment.errorBuffer) {
 			newVelocity.x = Math.Abs(newVelocity.x);
 		}
-		if (gameObject.transform.position.y > createEnvironment.centerPos.y + (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer) {
+		if (gameObject.transform.position.y > bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer) {
 			newVelocity.y = Math.Abs(newVelocity.y) * -1;
 		}
-		if (gameObject.transform.position.y < createEnvironment.centerPos.y - (createEnvironment.height / 2.0f) + createEnvironment.errorBuffer) {
+		if (gameObject.transform.position.y < bottomPlanePos.y + createEnvironment.errorBuffer) {
 			newVelocity.y = Math.Abs(newVelocity.y);
 		}
-		if (gameObject.transform.position.z > createEnvironment.centerPos.z + (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer) {
+		if (gameObject.transform.position.z > bottomPlanePos.z + (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer) {
 			newVelocity.z = Math.Abs(newVelocity.z) * -1;
 		}
-		if (gameObject.transform.position.z < createEnvironment.centerPos.z - (createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer) {
+		if (gameObject.transform.position.z < bottomPlanePos.z - (createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer) {
 			newVelocity.z = Math.Abs(newVelocity.z);
 		}
 		gameObject.rigidbody.velocity = newVelocity;
@@ -801,6 +688,74 @@ public abstract class Atom : MonoBehaviour
 			position.z = bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
 		}
 		return position;
+	}
+
+	void UpdateBondText(){
+		Quaternion cameraRotation = Camera.main.transform.rotation;
+		Vector3 left = cameraRotation * -Vector3.right;
+		Vector3 right = cameraRotation * Vector3.right;
+
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject atomNeighbor = allMolecules[i];
+			if(atomNeighbor == gameObject) continue;
+			float distance = Vector3.Distance(gameObject.transform.position, atomNeighbor.transform.position);
+			if(distance < BondDistance(atomNeighbor)){
+
+				TextMesh bondDistance = null;
+
+				Vector3 midpoint = new Vector3((gameObject.transform.position.x + atomNeighbor.transform.position.x) / 2.0f, (gameObject.transform.position.y + atomNeighbor.transform.position.y) / 2.0f, (gameObject.transform.position.z + atomNeighbor.transform.position.z) / 2.0f);
+				
+				if(atomNeighbor.transform.position.x > gameObject.transform.position.x){
+					Vector3 direction = gameObject.transform.position - atomNeighbor.transform.position;
+					float angle = Vector3.Angle(direction, right);
+					float percentToChange = (angle - 90) / 90.0f;
+					midpoint += (direction * (.15f * percentToChange));
+				}
+				else{
+					Vector3 direction = atomNeighbor.transform.position - gameObject.transform.position;
+					float angle = Vector3.Angle(direction, right);
+					float percentToChange = (angle - 90) / 90.0f;
+					midpoint += (direction * (.15f * percentToChange));
+				}
+
+				try{
+					bondDistance = bondDistanceText[atomNeighbor.name];
+					bondDistance.transform.rotation = cameraRotation;
+					bondDistance.transform.position = midpoint;
+				}catch (KeyNotFoundException e){
+					bondDistance = Instantiate(textMeshPrefab, midpoint, cameraRotation) as TextMesh;
+					bondDistanceText.Add(atomNeighbor.name, bondDistance);
+				}
+				bondDistance.text = (Math.Round(distance, 1)).ToString();
+			}
+			else{
+				//we need to check if there is text and if there is, remove it. Otherwise dont do anything
+				try{
+					TextMesh bondDistance = bondDistanceText[atomNeighbor.name];
+					Destroy(bondDistance);
+					bondDistanceText.Remove(atomNeighbor.name);
+				}catch(KeyNotFoundException e){} //dont do anything with the caught exception
+			}
+		}
+
+	}
+	
+	public void RemoveBondText(){
+		foreach (KeyValuePair<String, TextMesh> keyValue in bondDistanceText) {
+			TextMesh bondDistance = keyValue.Value;
+			Destroy(bondDistance);
+		}
+		bondDistanceText.Clear ();
+	}
+
+	void RemoveAllBondText(){
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			Atom atomScript = currAtom.GetComponent<Atom>();
+			atomScript.RemoveBondText();
+		}
 	}
 
 

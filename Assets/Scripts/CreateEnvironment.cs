@@ -9,7 +9,7 @@ public class CreateEnvironment : MonoBehaviour {
 	public List<Rigidbody> molecules = new List<Rigidbody>();
 	public int moleculeToSpawn = 0;
 	public GameObject plane;
-	public Vector3 centerPos = new Vector3(0.0f, 0.0f, 0.0f);
+	public Vector3 centerPos;
 	public float errorBuffer = 0.5f;
 	public Material mat;
 	public float width;
@@ -27,10 +27,26 @@ public class CreateEnvironment : MonoBehaviour {
 	private GameObject frontPlane;
 	private GameObject rightPlane;
 	private GameObject leftPlane;
-	private Vector3 initialCenterPos;
+	public Vector3 initialCenterPos;
 	
 	void Start () {
 	
+		centerPos = new Vector3 (0.0f, 0.0f, 0.0f);
+		StaticVariables.sigmaValues = new Dictionary<String, float> ();
+
+		for (int i = 0; i < molecules.Count; i++) {
+			Atom atomScript = molecules[i].GetComponent<Atom>();
+			StaticVariables.sigmaValues.Add(atomScript.atomName+atomScript.atomName, atomScript.sigma);
+		}
+
+		for (int i = 0; i < molecules.Count; i++) {
+			Atom firstAtomScript = molecules[i].GetComponent<Atom>();
+			for(int j = i+1; j < molecules.Count; j++){
+				Atom secondAtomScript = molecules[j].GetComponent<Atom>();
+				StaticVariables.sigmaValues.Add(firstAtomScript.atomName+secondAtomScript.atomName, Mathf.Sqrt(firstAtomScript.sigma+secondAtomScript.sigma));
+				StaticVariables.sigmaValues.Add(secondAtomScript.atomName+firstAtomScript.atomName, Mathf.Sqrt(firstAtomScript.sigma+secondAtomScript.sigma));
+			}
+		}
 
 		initialCenterPos = centerPos;
 		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();

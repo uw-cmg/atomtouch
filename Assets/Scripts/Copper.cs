@@ -5,24 +5,22 @@ using System;
 public class Copper : Atom {
 
 	private Color currentColor;
-	private Color copperColor = new Color (.7216f, .451f, 0.2f, 1.0f);
+	private Color copperColor;
 	private float sigmaValue = 2.3374f;
+		
+	public override String atomName 
+	{ 
+		get{ return "Copper"; } 
+	}
 
 	public override float epsilon
 	{
 		get { return ((float)(6.537 * Math.Pow(10, -20))); } // J
 	}
 		
-	public override float sigma(GameObject otherAtom){
-		if (otherAtom == null) return sigmaValue;
-		Atom otherAtomScript = otherAtom.GetComponent<Atom> ();
-		float otherSigma = otherAtomScript.sigma ();
-		if (otherSigma == sigmaValue) return sigmaValue;
-		return (float)Math.Pow(otherSigma + sigmaValue, .5f);
-	}
-
-	public override float sigma(){
-		return sigmaValue;
+	public override float sigma
+	{
+		get { return sigmaValue; }
 	}
 	
 	protected override float massamu
@@ -44,21 +42,11 @@ public class Copper : Atom {
 			currentColor = copperColor;
 		}
 	}
-
-	public override void ChangeColor (Color color){
-		if (color == Color.black) {
-			currentColor = copperColor;
-		}
-		else{
-			currentColor = color;
-		}
-	}
-
+		
 	void Start () {
+		copperColor = new Color (.7216f, .451f, 0.2f, 1.0f);
 		SetSelected (false);
 		gameObject.transform.localScale = new Vector3(sigmaValue * .5f, sigmaValue * .5f, sigmaValue * .5f);
-		//gameObject.rigidbody.AddForce(new Vector3(0.0f, 10.0f, 0.0f));
-		//gameObject.rigidbody.velocity = new Vector3(0.0f, 15.0f, 0.0f);
 	}
 
 }

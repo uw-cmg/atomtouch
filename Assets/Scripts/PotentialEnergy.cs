@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class PotentialEnergy : MonoBehaviour {
 
@@ -32,10 +33,10 @@ public class PotentialEnergy : MonoBehaviour {
 				GameObject atomNeighbor = allMolecules[j];
 				if(currAtom == atomNeighbor) continue;
 
-				float finalSigma = currAtomScript.sigma(atomNeighbor);
 				Atom atomNeighborScript = atomNeighbor.GetComponent<Atom>();
+				float finalSigma = StaticVariables.sigmaValues[currAtomScript.atomName+atomNeighborScript.atomName];
 				float distance = Vector3.Distance(currAtom.transform.position, atomNeighbor.transform.position);
-				if(distance < (StaticVariables.cutoff * currAtomScript.sigma(atomNeighbor))){
+				if(distance < (StaticVariables.cutoff)){
 					double potentialEnergy = 4 * currAtomScript.epsilon * (Mathf.Pow((finalSigma/distance), 12) - Mathf.Pow((finalSigma), 6));
 					potentialEnergyPerAtom += potentialEnergy;
 				}

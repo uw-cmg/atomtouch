@@ -5,24 +5,22 @@ using System;
 public class Platinum : Atom {
 
 	private Color currentColor;
-	private Color platinumColor = new Color (.898f, .8941f, 0.8863f, 1.0f);
+	private Color platinumColor;
 	private float sigmaValue = 2.5394f;
 
+	public override String atomName 
+	{ 
+		get{ return "Platinum"; } 
+	}
+	
 	public override float epsilon
 	{
 		get { return ((float)(1.0922 * Math.Pow(10, -19))); } // J
 	}
 		
-	public override float sigma(GameObject otherAtom = null){
-		if (otherAtom == null) return sigmaValue;
-		Atom otherAtomScript = otherAtom.GetComponent<Atom> ();
-		float otherSigma = otherAtomScript.sigma ();
-		if (otherSigma == sigmaValue) return sigmaValue;
-		return (float)Math.Pow(otherSigma + sigmaValue, .5f);
-	}
-
-	public override float sigma(){
-		return sigmaValue;
+	public override float sigma
+	{
+		get { return sigmaValue; }
 	}
 	
 	protected override float massamu
@@ -44,17 +42,10 @@ public class Platinum : Atom {
 			currentColor = platinumColor;
 		}
 	}
-
-	public override void ChangeColor (Color color){
-		if (color == Color.black) {
-			currentColor = platinumColor;
-		}
-		else{
-			currentColor = color;
-		}
-	}
+	
 
 	void Start () {
+		platinumColor = new Color (.898f, .8941f, 0.8863f, 1.0f);
 		SetSelected (false);
 		gameObject.transform.localScale = new Vector3(sigmaValue * .5f, sigmaValue * .5f, sigmaValue * .5f);
 	}

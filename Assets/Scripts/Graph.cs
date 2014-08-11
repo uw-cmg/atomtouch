@@ -4,25 +4,29 @@ using System.Collections;
 public class Graph : MonoBehaviour {
 
 	public Material mat;
-	public TextMesh textMeshPrefab;
 	private Queue dataPoints;
 	private float startTime;
 
 	//graph variables
-	private float xCoord;
-	private float yCoord;
-	private float width = 180.0f;
-	private float height = 184.0f;
-	private float lineWidth = .015f;
+	public float xCoord;
+	public float yCoord;
+	public float width = 180.0f;
+	public float height = 184.0f;
+	public float refreshInterval = 2.0f;
+	public float lineWidth = .015f;
 	private float zDepth = 5.0f;
-	private float refreshInterval = 2.0f;
-	private float spacing = 15.0f;
+	public float spacing = 15.0f;
 	private float maxDataPoints;
-	private float dataMaximum = StaticVariables.tempRangeHigh;
-	private float dataMinimum = StaticVariables.tempRangeLow;
+	public float dataMaximum = StaticVariables.tempRangeHigh;
+	public float dataMinimum = StaticVariables.tempRangeLow;
 	private float lowTime;
 	private float highTime;
 	private bool first;
+	public string yUnitLabel = "K";
+	public string xUnitLabel = "s";
+	public string graphLabel = "Temperature vs Time";
+	public Color axisColor = Color.red;
+	public Color lineColor = Color.yellow;
 
 	void Start () {
 	
@@ -34,7 +38,6 @@ public class Graph : MonoBehaviour {
 		startTime = Time.realtimeSinceStartup;
 		lowTime = 0.0f;
 		highTime = maxDataPoints * refreshInterval;
-		
 	}
 
 	void Update(){
@@ -57,18 +60,14 @@ public class Graph : MonoBehaviour {
 
 	void OnGUI(){
 
-		GUI.Label (new Rect (Screen.width - 235, Screen.height - 280, 200, 20), "Temperature vs Time");
-		GUI.Label (new Rect (xCoord - 40, Screen.height - 260, 100, 20), (StaticVariables.tempRangeHigh).ToString () + "K");
-		GUI.Label (new Rect (xCoord - 40, Screen.height - 85, 100, 20), (StaticVariables.tempRangeLow).ToString () + "K");
-		GUI.Label (new Rect (xCoord - 5, Screen.height - 70, 100, 20), (lowTime).ToString () + "s");
-		GUI.Label (new Rect (xCoord + width - 5, Screen.height - 70, 100, 20), (highTime).ToString() + "s");
-		//print ("lowTimePosition: " + new Rect (Screen.width - 265, Screen.height - 70, 100, 20));
-		//print ("screen height: " + Screen.height);
+		GUI.Label (new Rect (xCoord + width/2.0f - 60, Screen.height - 280, 200, 20), graphLabel);
+		GUI.Label (new Rect (xCoord - 40, Screen.height - 260, 100, 20), (StaticVariables.tempRangeHigh).ToString () + yUnitLabel);
+		GUI.Label (new Rect (xCoord - 40, Screen.height - 85, 100, 20), (StaticVariables.tempRangeLow).ToString () + yUnitLabel);
+		GUI.Label (new Rect (xCoord - 5, Screen.height - 70, 100, 20), (lowTime).ToString () + xUnitLabel);
+		GUI.Label (new Rect (xCoord + width - 5, Screen.height - 70, 100, 20), (highTime).ToString() + xUnitLabel);
 	}
 	
 	void OnPostRender(){
-
-		Quaternion cameraRotation = Camera.main.transform.rotation;
 
 		Vector3 upperLeft = camera.ScreenToWorldPoint (new Vector3 (xCoord, (yCoord+height), zDepth));
 		Vector3 lowerLeft = camera.ScreenToWorldPoint (new Vector3(xCoord, yCoord, zDepth));
@@ -78,10 +77,10 @@ public class Graph : MonoBehaviour {
 		StaticVariables.DrawQuad (upperLeft, upperRight, lowerLeft, lowerRight, customColor, mat);
 
 		//horizontal line
-		StaticVariables.DrawLine (lowerLeft, lowerRight, Color.red, Color.red, lineWidth, mat);
+		StaticVariables.DrawLine (lowerLeft, lowerRight, axisColor, axisColor, lineWidth, mat);
 
 		//vertical line
-		StaticVariables.DrawLine (upperLeft, lowerLeft, Color.red, Color.red, lineWidth, mat);
+		StaticVariables.DrawLine (upperLeft, lowerLeft, axisColor, axisColor, lineWidth, mat);
 
 		object[] dataPointArray = dataPoints.ToArray ();
 		for (int i = 0; i < dataPointArray.Length - 1; i++) {
@@ -93,7 +92,7 @@ public class Graph : MonoBehaviour {
 
 			Vector3 firstPoint = camera.ScreenToWorldPoint(new Vector3(xCoord + (i*spacing), yCoord + firstYAddition, zDepth));
 			Vector3 secondPoint = camera.ScreenToWorldPoint(new Vector3(xCoord + ((i+1)*spacing), yCoord + secondYAddition, zDepth));
-			StaticVariables.DrawLine(firstPoint, secondPoint, Color.yellow, Color.yellow, lineWidth, mat);
+			StaticVariables.DrawLine(firstPoint, secondPoint, lineColor, lineColor, lineWidth, mat);
 		}
 
 	}
