@@ -149,16 +149,16 @@ public class CreateEnvironment : MonoBehaviour {
 		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
 
 		LineRenderer bottomLine = bottomText.GetComponent<LineRenderer> ();
-		bottomLine.SetPosition(0, new Vector3(bottomPlane.transform.position.x - (width/2.0f), bottomText.transform.position.y + 0.5f, bottomText.transform.position.z));
-		bottomLine.SetPosition(1, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomText.transform.position.y + 0.5f, bottomText.transform.position.z));
+		bottomLine.SetPosition(0, new Vector3(bottomPlane.transform.position.x - (width/2.0f), bottomPlane.transform.position.y, bottomText.transform.position.z));
+		bottomLine.SetPosition(1, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, bottomText.transform.position.z));
 		
 		LineRenderer sideLine = sideText.GetComponent<LineRenderer> ();
-		sideLine.SetPosition (0, new Vector3 (bottomPlane.transform.position.x + (width/2.0f) + .5f, bottomPlane.transform.position.y, sideText.transform.position.z));
-		sideLine.SetPosition (1, new Vector3 (bottomPlane.transform.position.x + (width/2.0f) + .5f, bottomPlane.transform.position.y + height, sideText.transform.position.z));
+		sideLine.SetPosition (0, new Vector3 (bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, sideText.transform.position.z));
+		sideLine.SetPosition (1, new Vector3 (bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y + height, sideText.transform.position.z));
 
 		LineRenderer depthLine = depthText.GetComponent<LineRenderer> ();
-		depthLine.SetPosition(0, new Vector3(bottomPlane.transform.position.x + (width/2.0f), depthText.transform.position.y + .5f, bottomPlane.transform.position.z - (depth/2.0f)));
-		depthLine.SetPosition(1, new Vector3(bottomPlane.transform.position.x + (width/2.0f), depthText.transform.position.y + .5f, bottomPlane.transform.position.z + (depth/2.0f)));
+		depthLine.SetPosition(0, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, bottomPlane.transform.position.z - (depth/2.0f)));
+		depthLine.SetPosition(1, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, bottomPlane.transform.position.z + (depth/2.0f)));
 
 		bottomText.text = width.ToString() + " Angstroms";
 		sideText.text = height.ToString() + " Angstroms";
