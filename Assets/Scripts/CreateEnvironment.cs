@@ -113,12 +113,13 @@ public class CreateEnvironment : MonoBehaviour {
 			//currAtom.rigidbody.AddForce(new Vector3(0.0f, 5.0f, 0.0f), ForceMode.Impulse);
 		}
 
+		Color lineColor = new Color (Color.yellow.r, Color.yellow.g, Color.yellow.b, .6f);
 		//create the lines and the labels
 		bottomText = Instantiate(textMeshPrefab, new Vector3(bottomPlanePos.x - 2.0f, bottomPlanePos.y - 1.0f, bottomPlanePos.z - (depth/2.0f)), Quaternion.identity) as TextMesh;
 		bottomText.text = width.ToString() + " Angstroms";
 		LineRenderer bottomLine = bottomText.transform.gameObject.AddComponent<LineRenderer> ();
 		bottomLine.material = mat;
-		bottomLine.SetColors(Color.yellow, Color.yellow);
+		bottomLine.SetColors(lineColor, lineColor);
 		bottomLine.SetWidth(0.2F, 0.2F);
 		bottomLine.SetVertexCount(2);
 		
@@ -126,7 +127,7 @@ public class CreateEnvironment : MonoBehaviour {
 		sideText.text = height.ToString() + " Angstroms";
 		LineRenderer sideLine = sideText.transform.gameObject.AddComponent<LineRenderer> ();
 		sideLine.material = mat;
-		sideLine.SetColors(Color.yellow, Color.yellow);
+		sideLine.SetColors(lineColor, lineColor);
 		sideLine.SetWidth(0.2F, 0.2F);
 		sideLine.SetVertexCount(2);
 
@@ -135,7 +136,7 @@ public class CreateEnvironment : MonoBehaviour {
 		depthText.text = depth.ToString() + " Angstroms";
 		LineRenderer depthLine = depthText.transform.gameObject.AddComponent<LineRenderer> ();
 		depthLine.material = mat;
-		depthLine.SetColors(Color.yellow, Color.yellow);
+		depthLine.SetColors(lineColor, lineColor);
 		depthLine.SetWidth(0.2F, 0.2F);
 		depthLine.SetVertexCount(2);
 	}
