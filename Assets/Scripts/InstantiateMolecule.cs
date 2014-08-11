@@ -73,7 +73,7 @@ public class InstantiateMolecule : MonoBehaviour {
 		GUI.color = Color.white;
 
 		if(GUI.Button(new Rect(Screen.width - 165, 20, 50, 50), cameraTexture)){
-			Camera.main.transform.position = new Vector3(0.0f, 0.0f, -26.0f);
+			Camera.main.transform.position = new Vector3(0.0f, 0.0f, -35.0f);
 			Camera.main.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 		}
 

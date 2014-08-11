@@ -46,8 +46,7 @@ public class StaticVariables {
 
 	//Time scale
 	public static float timeScale = (1.0f/40.0f); //1.0f;
-	
-	public static Color selectedColor = new Color (.25f, .25f, .25f);
+
 	public static bool drawBondLines = true;
 	public static bool pauseTime = false;
 	public static int transparent = 3000;

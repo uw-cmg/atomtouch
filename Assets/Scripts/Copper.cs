@@ -3,10 +3,10 @@ using System.Collections;
 using System;
 
 public class Copper : Atom {
-
-	private Color currentColor;
-	private Color copperColor;
+	
 	private float sigmaValue = 2.3374f;
+	public Material copperMaterial;
+	public Material selectedMaterial;
 		
 	public override String atomName 
 	{ 
@@ -28,23 +28,16 @@ public class Copper : Atom {
 		get { return 63.546f; } //amu
 	}
 
-	public override Color color {
-		get {
-			return currentColor;
-		}
-	}
-
 	protected override void SetSelected (bool selected){
 		if (selected) {
-			currentColor = StaticVariables.selectedColor;
+			gameObject.renderer.material = selectedMaterial;
 		}
 		else{
-			currentColor = copperColor;
+			gameObject.renderer.material = copperMaterial;
 		}
 	}
 		
 	void Start () {
-		copperColor = new Color (.7216f, .451f, 0.2f, 1.0f);
 		SetSelected (false);
 		gameObject.transform.localScale = new Vector3(sigmaValue * .5f, sigmaValue * .5f, sigmaValue * .5f);
 	}

@@ -31,7 +31,7 @@ public abstract class Atom : MonoBehaviour
 	private float dragStartTime;
 	private bool dragCalled;
 	private Dictionary<String, TextMesh> bondDistanceText;
-
+	
 	public Material lineMaterial;
 	public TextMesh textMeshPrefab;
 	public bool held { get; set; }
@@ -41,7 +41,6 @@ public abstract class Atom : MonoBehaviour
 	public abstract float sigma { get; }
 	protected abstract float massamu{ get; } //amu
 	protected abstract void SetSelected (bool selected);
-	public abstract Color color { get; }
 	public abstract String atomName { get; }
 	
 	private Vector3 lastVelocity = Vector3.zero;
@@ -154,8 +153,6 @@ public abstract class Atom : MonoBehaviour
 
 
 	void Update(){
-		//print ("Color: " + color);
-		//gameObject.renderer.material.color = color;
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			HandleTouch ();
 		}
@@ -630,25 +627,7 @@ public abstract class Atom : MonoBehaviour
 		Atom otherAtomScript = otherAtom.GetComponent<Atom> ();
 		return 1.225f * StaticVariables.sigmaValues [atomName+otherAtomScript.atomName];
 	}
-		
 
-//	void HighlightCloseAtoms(){
-//		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-//		for (int i = 0; i < allMolecules.Length; i++) {
-//			GameObject currAtom = allMolecules[i];
-//			Atom currAtomScript = currAtom.GetComponent<Atom>();
-//			if(currAtom == gameObject && !currAtomScript.selected) continue;
-//			if(Vector3.Distance(currAtom.transform.position, gameObject.transform.position) < 5.0f){
-//				Color solidColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, 1.0f);
-//				currAtomScript.ChangeColor(solidColor);
-//			}
-//			else{
-//				Color transparentColor = new Color(currAtom.renderer.material.color.r, currAtom.renderer.material.color.g, currAtom.renderer.material.color.b, StaticVariables.atomTransparency);
-//				currAtomScript.ChangeColor(transparentColor);
-//			}
-//		}
-//	}
-	
 
 	void CheckVelocity(){
 

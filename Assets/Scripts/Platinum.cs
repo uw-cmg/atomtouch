@@ -3,10 +3,10 @@ using System.Collections;
 using System;
 
 public class Platinum : Atom {
-
-	private Color currentColor;
-	private Color platinumColor;
+	
 	private float sigmaValue = 2.5394f;
+	public Material platinumMaterial;
+	public Material selectedMaterial;
 
 	public override String atomName 
 	{ 
@@ -28,24 +28,18 @@ public class Platinum : Atom {
 		get { return 195.084f; } //amu
 	}
 
-	public override Color color {
-		get {
-			return currentColor;
-		}
-	}
 
 	protected override void SetSelected (bool selected){
 		if (selected) {
-			currentColor = StaticVariables.selectedColor;
+			gameObject.renderer.material = selectedMaterial;
 		}
 		else{
-			currentColor = platinumColor;
+			gameObject.renderer.material = platinumMaterial;
 		}
 	}
 	
 
 	void Start () {
-		platinumColor = new Color (.898f, .8941f, 0.8863f, 1.0f);
 		SetSelected (false);
 		gameObject.transform.localScale = new Vector3(sigmaValue * .5f, sigmaValue * .5f, sigmaValue * .5f);
 	}
