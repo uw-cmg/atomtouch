@@ -262,10 +262,6 @@ public abstract class Atom : MonoBehaviour
 							GameObject currAtom = allMolecules[i];
 							Atom atomScript = currAtom.GetComponent<Atom>();
 							if(!atomScript.selected) continue;
-//							print ("looking for key: " + currAtom.name);
-//							foreach(KeyValuePair<String, Vector3> keyValue in newAtomPositions){
-//								print ("key: " + keyValue.Key + " Value: " + keyValue.Value);
-//							}
 							Vector3 newAtomPosition = newAtomPositions[currAtom.name];
 							currAtom.transform.position = newAtomPosition;
 						}
