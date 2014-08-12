@@ -29,7 +29,7 @@ public class Graph : MonoBehaviour {
 	public Color lineColor = Color.yellow;
 
 	void Start () {
-	
+
 		xCoord = Screen.width - 250;
 		yCoord = 70;
 		first = true;

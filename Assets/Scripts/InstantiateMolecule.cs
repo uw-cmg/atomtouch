@@ -73,7 +73,7 @@ public class InstantiateMolecule : MonoBehaviour {
 		GUI.color = Color.white;
 
 		if(GUI.Button(new Rect(Screen.width - 165, 20, 50, 50), cameraTexture)){
-			Camera.main.transform.position = new Vector3(0.0f, 0.0f, -26.0f);
+			Camera.main.transform.position = new Vector3(0.0f, 0.0f, -35.0f);
 			Camera.main.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 		}
 
@@ -96,7 +96,7 @@ public class InstantiateMolecule : MonoBehaviour {
 
 
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-		GUI.Label (new Rect (25, 25, 350, 20), "Volume: " + guiVolume);
+		GUI.Label (new Rect (25, 25, 350, 20), "Volume: " + guiVolume + " Angstroms cubed");
 		float newVolume = GUI.VerticalSlider (new Rect (75, 55, 30, Screen.height - 135), guiVolume, 64000.0f, 1000.0f);
 		if (newVolume != guiVolume) {
 			guiVolume = newVolume;
@@ -247,6 +247,7 @@ public class InstantiateMolecule : MonoBehaviour {
 					Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
 					Time.timeScale = 1.0f;
 					atomScript.RemoveBondText();
+					atomScript.ResetTransparency();
 				}
 
 				DisplayAtomProperties(allMolecules[i]);
@@ -424,5 +425,5 @@ public class InstantiateMolecule : MonoBehaviour {
 		}
 
 	}
-	
+
 }

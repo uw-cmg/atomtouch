@@ -46,8 +46,7 @@ public class StaticVariables {
 
 	//Time scale
 	public static float timeScale = (1.0f/40.0f); //1.0f;
-	
-	public static Color selectedColor = new Color (.25f, .25f, .25f);
+
 	public static bool drawBondLines = true;
 	public static bool pauseTime = false;
 	public static int transparent = 3000;
@@ -55,7 +54,14 @@ public class StaticVariables {
 	public static float atomTransparency = .5f;
 	//access to sigma values by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
 	public static Dictionary<String, float> sigmaValues;
+	public static Potential currentPotential = Potential.LennardJones;
 
+	public enum Potential{
+		LennardJones,
+		Brenner,
+		Buckingham
+	};
+	
 
 	public static void DrawLine(Vector3 startingPos, Vector3 endingPos, Color atomColor1, Color atomColor2, float lineWidth, Material mat){
 		

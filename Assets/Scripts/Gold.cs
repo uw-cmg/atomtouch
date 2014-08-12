@@ -4,9 +4,10 @@ using System;
 
 public class Gold : Atom
 {
-	private Color currentColor;
-	private Color goldColor;
 	private float sigmaValue = 2.6367f;
+	public Material goldMaterial;
+	public Material selectedMaterial;
+	public Material transparentMaterial;
 
 	public override String atomName 
 	{ 
@@ -28,24 +29,26 @@ public class Gold : Atom
 		get { return 196.967f; } //amu
 	}
 
-	public override Color color {
-		get {
-			return currentColor;
+	protected override void SetSelected (bool selected){
+		if (selected) {
+			gameObject.renderer.material = selectedMaterial;
+		}
+		else{
+			gameObject.renderer.material = goldMaterial;
 		}
 	}
 
-	protected override void SetSelected (bool selected){
-		if (selected) {
-			currentColor = StaticVariables.selectedColor;
+	public override void SetTransparent(bool transparent){
+		if (transparent) {
+			gameObject.renderer.material = transparentMaterial;
 		}
 		else{
-			currentColor = goldColor;
+			gameObject.renderer.material = goldMaterial;
 		}
 	}
 
 	void Start ()
 	{
-		goldColor = new Color (1.0f, .8431f, 0.0f, 1.0f);
 		SetSelected (false);
 		gameObject.transform.localScale = new Vector3(sigmaValue * .5f, sigmaValue * .5f, sigmaValue * .5f);
 	}
