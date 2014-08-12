@@ -33,10 +33,14 @@ public class AtomTouchGUI : MonoBehaviour {
 	private float atomKickTime;
 
 	//time button
-	public Texture timeButton;
+	public Texture normalTimeButton;
+	public Texture slowTimeButton;
+	public Texture stoppedTimeButton;
 
 	//red x button
 	public Texture redXButton;
+
+	public static StaticVariables.TimeSpeed currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
 
 	void Start () {
 	
@@ -119,8 +123,34 @@ public class AtomTouchGUI : MonoBehaviour {
 				atomKickPressed = false;
 			}
 
-			if(GUI.Button(new Rect(toolbarRect.x + 4*(toolbarRect.width / 6.0f), toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), timeButton, buttonStyle)){
-				print ("time button pressed");
+			Texture timeTexture = normalTimeButton;
+			if(currentTimeSpeed == StaticVariables.TimeSpeed.Normal){
+				timeTexture = normalTimeButton;
+			}
+			else if(currentTimeSpeed == StaticVariables.TimeSpeed.SlowMotion){
+				timeTexture = slowTimeButton;
+			}
+			else if(currentTimeSpeed == StaticVariables.TimeSpeed.Stopped){
+				timeTexture = stoppedTimeButton;
+			}
+
+			if(GUI.Button(new Rect(toolbarRect.x + 4*(toolbarRect.width / 6.0f), toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), timeTexture, buttonStyle)){
+				if(currentTimeSpeed == StaticVariables.TimeSpeed.Normal){
+					print ("setting to stopped");
+					currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
+					StaticVariables.pauseTime = true;
+				}
+				else if(currentTimeSpeed == StaticVariables.TimeSpeed.Stopped){
+					print ("setting to slow");
+					currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
+					StaticVariables.pauseTime = false;
+					Time.timeScale = .05f;
+				}
+				else if(currentTimeSpeed == StaticVariables.TimeSpeed.SlowMotion){
+					print ("setting to normal");
+					currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
+					Time.timeScale = 1.0f;
+				}
 			}
 
 
@@ -132,6 +162,7 @@ public class AtomTouchGUI : MonoBehaviour {
 						atomScript.doubleTapped = false;
 						Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
 						Time.timeScale = 1.0f;
+						currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
 						atomScript.RemoveBondText();
 						atomScript.ResetTransparency();
 					}

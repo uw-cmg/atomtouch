@@ -61,6 +61,12 @@ public class StaticVariables {
 		Brenner,
 		Buckingham
 	};
+
+	public enum TimeSpeed{
+		Normal,
+		SlowMotion,
+		Stopped
+	};
 	
 
 	public static void DrawLine(Vector3 startingPos, Vector3 endingPos, Color atomColor1, Color atomColor2, float lineWidth, Material mat){

@@ -184,6 +184,8 @@ public abstract class Atom : MonoBehaviour
 					ResetDoubleTapped();
 					doubleTapped = true;
 					RemoveAllBondText();
+					Time.timeScale = .05f;
+					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
 				}
 				Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
 				RaycastHit hitInfo;
@@ -195,7 +197,7 @@ public abstract class Atom : MonoBehaviour
 			HandleRightClick();
 		}
 		if (doubleTapped) {
-			Time.timeScale = .05f;
+
 			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 			cameraScript.setCameraCoordinates(transform);
 			UpdateBondText();
@@ -290,139 +292,7 @@ public abstract class Atom : MonoBehaviour
 			atomScript.doubleTapped = false;
 		}
 	}
-
-	void HandleMovingAtom(){
-		Touch touch = Input.GetTouch(0);
-
-		if(touch.phase == TouchPhase.Began){
-			if((Time.time - lastTapTime) < tapTime){
-				ResetDoubleTapped();
-				doubleTapped = true;
-				RemoveAllBondText();
-			}
-			Ray ray = Camera.main.ScreenPointToRay( Input.touches[0].position );
-			RaycastHit hitInfo;
-			//this is the iOS equivalent to OnMouseUp
-			if (Physics.Raycast( ray, out hitInfo ) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject)
-			{
-				dragStartTime = Time.realtimeSinceStartup;
-				dragCalled = false;
-				if(!selected){
-					moleculeToMove = gameObject;
-					screenPoint = Camera.main.WorldToScreenPoint(transform.position);
-					offset = moleculeToMove.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y - 50, screenPoint.z));
-					held = true;
-					rigidbody.isKinematic = true;
-				}
-				else{
-					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-					gameObjectOffsets = new Dictionary<String, Vector3>();
-					gameObjectScreenPoints = new Dictionary<String, Vector3>();
-					for(int i = 0; i < allMolecules.Length; i++){
-						GameObject currAtom = allMolecules[i];
-						Atom atomScript = currAtom.GetComponent<Atom>();
-						if(atomScript.selected){
-							currAtom.rigidbody.isKinematic = true;
-							Vector3 pointOnScreen = Camera.main.WorldToScreenPoint(currAtom.transform.position);
-							Vector3 atomOffset = currAtom.transform.position - Camera.main.ScreenToWorldPoint(
-								new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y - 15.0f, pointOnScreen.z));
-							held = true;
-							//print ("adding key: " + currAtom.name);
-							gameObjectOffsets.Add(currAtom.name, atomOffset);
-							gameObjectScreenPoints.Add(currAtom.name, pointOnScreen);
-						}
-					}
-				}
-				lastTapTime = Time.time;
-			}
-		}
-		//this is the iOS equivalent to OnMouseDrag
-		else if(touch.phase == TouchPhase.Moved){
-
-			if(Time.realtimeSinceStartup - dragStartTime > 0.1f){
-
-				if(!selected){
-					if(moleculeToMove != null && !doubleTapped){
-						dragCalled = true;
-						Vector3 curScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, screenPoint.z);
-						Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-						lastMousePosition = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f);
-						curPosition = CheckPosition(curPosition);
-						moleculeToMove.transform.position = curPosition;
-						//ApplyTransparency();
-					}
-				}
-				else{
-//					if (held){
-//						GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-//						List<Vector3> atomPositions = new List<Vector3>();
-//						bool moveAtoms = true;
-//						for(int i = 0; i < allMolecules.Length; i++){
-//							GameObject currAtom = allMolecules[i];
-//							Atom atomScript = currAtom.GetComponent<Atom>();
-//							if(atomScript.selected){
-//								if(gameObjectOffsets != null && gameObjectScreenPoints != null){
-//									Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
-//									Vector3 currOffset = gameObjectOffsets[currAtom.name];
-//									Vector3 objScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, currScreenPoint.z);
-//									Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
-//									Vector3 newAtomPosition = CheckPosition(curPosition);
-//									if(newAtomPosition != curPosition){
-//										moveAtoms = false;
-//									}
-//									atomPositions.Add(newAtomPosition);
-//								}
-//							}
-//						}
-//						
-//						if(atomPositions.Count > 0 && moveAtoms){
-//							for(int i = 0; i < allMolecules.Length; i++){
-//								GameObject currAtom = allMolecules[i];
-//								Vector3 newAtomPosition = atomPositions[i];
-//								currAtom.transform.position = newAtomPosition;
-//							}
-//						}
-//					}
-				}
-			}
-
-
-		}
-		//this is the iOS equivalent to OnMouseUp
-		else if(touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled){
-			if(!dragCalled && held){
-				selected = !selected;
-				SetSelected(selected);
-			}
-			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-			moleculeToMove = null;
-			if(!selected){
-				if(moleculeToMove != null){
-					//Quaternion cameraRotation = Camera.main.transform.rotation;
-					rigidbody.isKinematic = false;
-					//rigidbody.AddForce (cameraRotation * mouseDelta * 50.0f);
-					held = false;
-				}
-			}
-			else{
-				for(int i = 0; i < allMolecules.Length; i++){
-					GameObject currAtom = allMolecules[i];
-					Atom atomScript = currAtom.GetComponent<Atom>();
-					if(atomScript.selected){
-						currAtom.rigidbody.isKinematic = false;
-						atomScript.held = false;
-					}
-				}
-			}
-
-			for(int i = 0; i < allMolecules.Length; i++){
-				GameObject currAtom = allMolecules[i];
-				Atom atomScript = currAtom.GetComponent<Atom>();
-				atomScript.SetSelected(atomScript.selected);
-			}
-		}
-	}
-
+		
 	void SpawnAngstromText(){
 		Quaternion cameraRotation = Camera.main.transform.rotation;
 		Vector3 up = cameraRotation * Vector3.up;
