@@ -234,34 +234,42 @@ public abstract class Atom : MonoBehaviour
 					screenPoint += new Vector3(0.0f, 0.0f, deltaTouch2);
 				}
 				else{
-//					Vector2 touchOnePrevPos = touch2.position - touch2.deltaPosition;
-//					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
-//					deltaTouch2 = deltaMagnitudeDiff / 10.0f;
-//					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-//					List<Vector3> atomPositions = new List<Vector3>();
-//					bool moveAtoms = true;
-//					for(int i = 0; i < allMolecules.Length; i++){
-//						GameObject currAtom = allMolecules[i];
-//						Quaternion cameraRotation = Camera.main.transform.rotation;
-//						Vector3 projectPosition = currAtom.transform.position;
-//						projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
-//						Vector3 newAtomPosition = CheckPosition(projectPosition);
-//						if(newAtomPosition != projectPosition){
-//							moveAtoms = false;
-//						}
-//						if(gameObjectScreenPoints != null){
-//							gameObjectScreenPoints[currAtom.name] += new Vector3(0.0f, 0.0f, deltaTouch2);
-//						}
-//						atomPositions.Add(newAtomPosition);
-//					}
-//
-//					if(atomPositions.Count > 0 && moveAtoms){
-//						for(int i = 0; i < allMolecules.Length; i++){
-//							GameObject currAtom = allMolecules[i];
-//							Vector3 newAtomPosition = atomPositions[i];
-//							currAtom.transform.position = newAtomPosition;
-//						}
-//					}
+					Vector2 touchOnePrevPos = touch2.position - touch2.deltaPosition;
+					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
+					deltaTouch2 = deltaMagnitudeDiff / 10.0f;
+					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+					Dictionary<String, Vector3> newAtomPositions = new Dictionary<String, Vector3>();
+					bool moveAtoms = true;
+					for(int i = 0; i < allMolecules.Length; i++){
+						GameObject currAtom = allMolecules[i];
+						Atom atomScript = currAtom.GetComponent<Atom>();
+						if(!atomScript.selected) continue;
+						Quaternion cameraRotation = Camera.main.transform.rotation;
+						Vector3 projectPosition = currAtom.transform.position;
+						projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
+						Vector3 newAtomPosition = CheckPosition(projectPosition);
+						if(newAtomPosition != projectPosition){
+							moveAtoms = false;
+						}
+						if(gameObjectScreenPoints != null){
+							gameObjectScreenPoints[currAtom.name] += new Vector3(0.0f, 0.0f, deltaTouch2);
+						}
+						newAtomPositions.Add(currAtom.name, newAtomPosition);
+					}
+
+					if(newAtomPositions.Count > 0 && moveAtoms){
+						for(int i = 0; i < allMolecules.Length; i++){
+							GameObject currAtom = allMolecules[i];
+							Atom atomScript = currAtom.GetComponent<Atom>();
+							if(!atomScript.selected) continue;
+//							print ("looking for key: " + currAtom.name);
+//							foreach(KeyValuePair<String, Vector3> keyValue in newAtomPositions){
+//								print ("key: " + keyValue.Key + " Value: " + keyValue.Value);
+//							}
+							Vector3 newAtomPosition = newAtomPositions[currAtom.name];
+							currAtom.transform.position = newAtomPosition;
+						}
+					}
 				}
 			}
 		}
