@@ -673,6 +673,7 @@ public abstract class Atom : MonoBehaviour
 		if (!dragCalled) {
 			selected = !selected;
 			SetSelected(selected);
+			rigidbody.isKinematic = false;
 		}
 		else{
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
@@ -722,6 +723,7 @@ public abstract class Atom : MonoBehaviour
 			if(!dragCalled){
 				selected = !selected;
 				SetSelected(selected);
+				rigidbody.isKinematic = false;
 			}
 			else{
 				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
