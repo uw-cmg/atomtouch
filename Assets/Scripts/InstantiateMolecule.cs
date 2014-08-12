@@ -247,6 +247,7 @@ public class InstantiateMolecule : MonoBehaviour {
 					Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
 					Time.timeScale = 1.0f;
 					atomScript.RemoveBondText();
+					atomScript.ResetTransparency();
 				}
 
 				DisplayAtomProperties(allMolecules[i]);

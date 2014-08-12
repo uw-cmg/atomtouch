@@ -335,51 +335,51 @@ public abstract class Atom : MonoBehaviour
 		else if(touch.phase == TouchPhase.Moved){
 
 			if(Time.realtimeSinceStartup - dragStartTime > 0.1f){
-				dragCalled = true;
-				atomIsClicked = true;
-				MoveAngstromText();
+
 				if(!selected){
 					if(moleculeToMove != null && !doubleTapped){
+						dragCalled = true;
+						atomIsClicked = true;
+						MoveAngstromText();
 						Vector3 curScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, screenPoint.z);
 						Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
 						lastMousePosition = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f);
 						curPosition = CheckPosition(curPosition);
 						moleculeToMove.transform.position = curPosition;
+						//ApplyTransparency();
 					}
 				}
 				else{
-					if (held){
-						GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-						List<Vector3> atomPositions = new List<Vector3>();
-						bool moveAtoms = true;
-						for(int i = 0; i < allMolecules.Length; i++){
-							GameObject currAtom = allMolecules[i];
-							Atom atomScript = currAtom.GetComponent<Atom>();
-							if(atomScript.selected){
-								if(gameObjectOffsets != null && gameObjectScreenPoints != null){
-									Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
-									Vector3 currOffset = gameObjectOffsets[currAtom.name];
-									Vector3 objScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, currScreenPoint.z);
-									Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
-									Vector3 newAtomPosition = CheckPosition(curPosition);
-									if(newAtomPosition != curPosition){
-										moveAtoms = false;
-									}
-									atomPositions.Add(newAtomPosition);
-								}
-							}
-						}
-						
-						if(atomPositions.Count > 0 && moveAtoms){
-							for(int i = 0; i < allMolecules.Length; i++){
-								GameObject currAtom = allMolecules[i];
-								Vector3 newAtomPosition = atomPositions[i];
-								currAtom.transform.position = newAtomPosition;
-							}
-						}
-						
-						
-					}
+//					if (held){
+//						GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+//						List<Vector3> atomPositions = new List<Vector3>();
+//						bool moveAtoms = true;
+//						for(int i = 0; i < allMolecules.Length; i++){
+//							GameObject currAtom = allMolecules[i];
+//							Atom atomScript = currAtom.GetComponent<Atom>();
+//							if(atomScript.selected){
+//								if(gameObjectOffsets != null && gameObjectScreenPoints != null){
+//									Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
+//									Vector3 currOffset = gameObjectOffsets[currAtom.name];
+//									Vector3 objScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, currScreenPoint.z);
+//									Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
+//									Vector3 newAtomPosition = CheckPosition(curPosition);
+//									if(newAtomPosition != curPosition){
+//										moveAtoms = false;
+//									}
+//									atomPositions.Add(newAtomPosition);
+//								}
+//							}
+//						}
+//						
+//						if(atomPositions.Count > 0 && moveAtoms){
+//							for(int i = 0; i < allMolecules.Length; i++){
+//								GameObject currAtom = allMolecules[i];
+//								Vector3 newAtomPosition = atomPositions[i];
+//								currAtom.transform.position = newAtomPosition;
+//							}
+//						}
+//					}
 				}
 			}
 
@@ -387,7 +387,7 @@ public abstract class Atom : MonoBehaviour
 		}
 		//this is the iOS equivalent to OnMouseUp
 		else if(touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled){
-			if(!dragCalled && moleculeToMove != null){
+			if(!dragCalled && held){
 				selected = !selected;
 				SetSelected(selected);
 			}
@@ -506,6 +506,7 @@ public abstract class Atom : MonoBehaviour
 				atomIsClicked = true;
 				Quaternion cameraRotation = Camera.main.transform.rotation;
 				MoveAngstromText();
+				ApplyTransparency();
 
 				if(!selected){
 					if((lastMousePosition - Input.mousePosition).magnitude > 0 && !doubleTapped){
@@ -697,6 +698,20 @@ public abstract class Atom : MonoBehaviour
 			}
 			else{
 				neighborScript.SetTransparent(false);
+			}
+		}
+	}
+
+	public void ResetTransparency(){
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			Atom atomScript = currAtom.GetComponent<Atom>();
+			if(atomScript.selected){
+				atomScript.SetSelected(atomScript.selected);
+			}
+			else{
+				atomScript.SetTransparent(false);
 			}
 		}
 	}
