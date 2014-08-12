@@ -160,11 +160,13 @@ public abstract class Atom : MonoBehaviour
 				RaycastHit hitInfo;
 				if(!held && Physics.Raycast(ray, out hitInfo) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
 					if(Input.GetTouch(0).phase == TouchPhase.Began){
+						print ("OnMouseDownIOS");
 						OnMouseDownIOS();
 					}
 				}
 				else if(held){
 					if(Input.GetTouch(0).phase == TouchPhase.Moved && Input.touchCount == 1){
+						print ("OnMouseDragIOS");
 						OnMouseDragIOS();
 					}
 					else if(Input.touchCount == 2){
@@ -172,6 +174,7 @@ public abstract class Atom : MonoBehaviour
 						HandleZAxisTouch();
 					}
 					else if(Input.GetTouch(0).phase == TouchPhase.Canceled || Input.GetTouch(0).phase == TouchPhase.Ended){
+						print ("OnMouseUpIOS");
 						OnMouseUpIOS();
 					}
 				}
@@ -460,12 +463,12 @@ public abstract class Atom : MonoBehaviour
 	void OnMouseDownIOS(){
 		dragStartTime = Time.realtimeSinceStartup;
 		dragCalled = false;
+		held = true;
 		if (!selected) {
 			rigidbody.isKinematic = true;
 			screenPoint = Camera.main.WorldToScreenPoint(transform.position);
 			offset = transform.position - Camera.main.ScreenToWorldPoint(
 				new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y - 15.0f, screenPoint.z));
-			held = true;
 		}
 		else{
 			//select code here
@@ -477,13 +480,14 @@ public abstract class Atom : MonoBehaviour
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
 			dragStartTime = Time.realtimeSinceStartup;
 			dragCalled = false;
+			held = true;
 
 			if(!selected){
 				rigidbody.isKinematic = true;
 				screenPoint = Camera.main.WorldToScreenPoint(transform.position);
 				offset = transform.position - Camera.main.ScreenToWorldPoint(
 					new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, screenPoint.z));
-				held = true;
+
 			}
 			else{
 				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
@@ -535,6 +539,7 @@ public abstract class Atom : MonoBehaviour
 				dragCalled = true;
 				Quaternion cameraRotation = Camera.main.transform.rotation;
 				ApplyTransparency();
+				//held = true;
 
 				if(!selected){
 					if((lastMousePosition - Input.mousePosition).magnitude > 0 && !doubleTapped){
@@ -614,6 +619,7 @@ public abstract class Atom : MonoBehaviour
 	void OnMouseUpIOS(){
 		if (!dragCalled) {
 			selected = !selected;
+			print ("Setting " + transform.name + " to " + selected);
 			SetSelected(selected);
 		}
 		else{
@@ -621,7 +627,6 @@ public abstract class Atom : MonoBehaviour
 
 			if(!selected){
 				rigidbody.isKinematic = false;
-				held = false;
 			}
 			else{
 				//selected code here
@@ -640,7 +645,7 @@ public abstract class Atom : MonoBehaviour
 			Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
 			gameObject.rigidbody.velocity = flingVector;
 		}
-
+		held = false;
 	}
 	
 	void OnMouseUp (){
@@ -654,7 +659,6 @@ public abstract class Atom : MonoBehaviour
 
 				if(!selected){
 					rigidbody.isKinematic = false;
-					held = false;
 				}
 				else{
 					for(int i = 0; i < allMolecules.Length; i++){
@@ -680,6 +684,7 @@ public abstract class Atom : MonoBehaviour
 				Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
 				gameObject.rigidbody.velocity = flingVector;
 			}
+			held = false;
 		}
 	}
 
