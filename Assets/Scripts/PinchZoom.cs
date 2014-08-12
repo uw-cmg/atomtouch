@@ -41,11 +41,11 @@ public class PinchZoom : MonoBehaviour {
 				Vector3 projectPosition = camera.transform.position;
 				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * pcPerspectiveZoomSpeed));
 				if(Vector3.Distance(projectPosition, doubleTappedAtom.transform.position) > 1.0f){
-					camera.transform.position -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * pcPerspectiveZoomSpeed));
+					camera.transform.position -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * touchPerspectiveZoomSpeed));
 				}
 			}
 			else{
-				camera.transform.position -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * pcPerspectiveZoomSpeed));
+				camera.transform.position -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * touchPerspectiveZoomSpeed));
 			}
 		}
 		else if(Application.platform != RuntimePlatform.IPhonePlayer && !beingHeld){
