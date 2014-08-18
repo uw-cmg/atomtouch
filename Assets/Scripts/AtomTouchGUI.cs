@@ -108,6 +108,11 @@ public class AtomTouchGUI : MonoBehaviour {
 			}
 		}
 
+		GUIStyle currStyle = GUI.skin.label;
+		currStyle.alignment = TextAnchor.MiddleCenter;
+		currStyle.fontSize = 25;
+		currStyle.normal.textColor = Color.white;
+
 		Rect arrowBackgroundRectToolbar = new Rect (Screen.width * .14f + 5.0f, 0.0f, Screen.width * .28f, Screen.height * .13f * .3f);
 		Texture toolbarArrow = toolbarActive ? upArrow : downArrow;
 		GUI.DrawTexture (arrowBackgroundRectToolbar, darkBackground);
