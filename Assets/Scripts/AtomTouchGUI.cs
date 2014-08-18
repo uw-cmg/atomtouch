@@ -52,6 +52,9 @@ public class AtomTouchGUI : MonoBehaviour {
 	public Texture copperTexture;
 	public Texture goldTexture;
 	public Texture platinumTexture;
+	public Texture copperTextureAdd;
+	public Texture goldTextureAdd;
+	public Texture platinumTextureAdd;
 	public Texture garbageTexture;
 	public Texture garbageTextureDown;
 	private bool garbagePressed;
@@ -229,7 +232,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		if (addAtomActive) {
 			GUI.DrawTexture(lightAddAtom, lightBackground);
 
-			if(GUI.RepeatButton(new Rect(lightAddAtom.x, lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), copperTexture, buttonStyle)){
+			if(GUI.RepeatButton(new Rect(lightAddAtom.x, lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), copperTextureAdd, buttonStyle)){
 				if(!clicked){
 					clicked = true;
 					startTime = Time.realtimeSinceStartup;
@@ -245,7 +248,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					}
 				}
 			}
-			if(GUI.RepeatButton(new Rect(lightAddAtom.x+(addAtomRect.width / 4.0f), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), goldTexture, buttonStyle)){
+			if(GUI.RepeatButton(new Rect(lightAddAtom.x+(addAtomRect.width / 4.0f), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), goldTextureAdd, buttonStyle)){
 				if(!clicked){
 					clicked = true;
 					startTime = Time.realtimeSinceStartup;
@@ -261,7 +264,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					}
 				}
 			}
-			if(GUI.RepeatButton(new Rect(lightAddAtom.x+(2*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), platinumTexture, buttonStyle)){
+			if(GUI.RepeatButton(new Rect(lightAddAtom.x+(2*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), platinumTextureAdd, buttonStyle)){
 				if(!clicked){
 					clicked = true;
 					startTime = Time.realtimeSinceStartup;
