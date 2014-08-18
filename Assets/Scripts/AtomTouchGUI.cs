@@ -51,12 +51,14 @@ public class AtomTouchGUI : MonoBehaviour {
 	public Texture platinumTexture;
 	public Texture garbageTexture;
 
-	[HideInInspector]public bool changingTemp = false;
+	[HideInInspector]public bool changingSlider = false;
+	private float guiVolume;
 
 	public static StaticVariables.TimeSpeed currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
 
 	void Start () {
-	
+		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		guiVolume = createEnvironment.volume;
 	}
 
 
@@ -112,7 +114,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			if(GUI.Button(new Rect(toolbarRect.x + (toolbarRect.width / 6.0f), toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), camera, buttonStyle)){
 				cameraPressed = true;
 				cameraTime = Time.realtimeSinceStartup;
-				Camera.main.transform.position = new Vector3(0.0f, 0.0f, -35.0f);
+				Camera.main.transform.position = new Vector3(0.0f, 0.0f, -45.0f);
 				Camera.main.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 			}
 			if(Time.realtimeSinceStartup - cameraTime > .05f){
@@ -254,7 +256,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			GUI.Label (new Rect (temperatureBackgroundRect.x + temperatureBackgroundRect.width - 120.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)) - 5.0f, 200.0f, 20), TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 272.15, 2)).ToString() + "C)", tempNumberText);
 			float newTemp = GUI.HorizontalSlider (new Rect (temperatureBackgroundRect.x + 25.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)), temperatureBackgroundRect.width - 150.0f, 200.0f), TemperatureCalc.desiredTemperature, StaticVariables.tempRangeLow, StaticVariables.tempRangeHigh);
 			if (newTemp != TemperatureCalc.desiredTemperature) {
-				changingTemp = true;
+				changingSlider = true;
 				TemperatureCalc.desiredTemperature = newTemp;
 			}
 			else{
@@ -283,7 +285,93 @@ public class AtomTouchGUI : MonoBehaviour {
 			volumeText.fontSize = 25;
 			volumeText.normal.textColor = new Color(32.0f / 255.0f, 70.0f / 255.0f, 119.0f / 255.0f, 1.0f);
 			GUI.Label (new Rect(volumeBackgroundRect.x, volumeBackgroundRect.y, volumeBackgroundRect.width, volumeBackgroundRect.height * .4f), "Volume", volumeText);
+
+			GUIStyle volNumberText = GUI.skin.label;
+			volNumberText.alignment = TextAnchor.UpperLeft;
+			volNumberText.fontSize = 14;
+			volNumberText.normal.textColor = Color.white;
+			GUI.Label (new Rect (volumeBackgroundRect.x + volumeBackgroundRect.width - 120.0f, (volumeBackgroundRect.y + (volumeBackgroundRect.height/2.0f)) - 5.0f, 200.0f, 80.0f), guiVolume + " Angstroms\n cubed", volNumberText);
+			float newVolume = GUI.HorizontalSlider (new Rect (volumeBackgroundRect.x + 25.0f, (volumeBackgroundRect.y + (volumeBackgroundRect.height/2.0f)), volumeBackgroundRect.width - 150.0f, 200.0f), guiVolume, 1000.0f, 64000.0f);
+
+			if (newVolume != guiVolume) {
+				guiVolume = newVolume;
+				changingSlider = true;
+			}
+			else{
+				int volume = (int)guiVolume;
+				int remainder10 = Math.Abs(1000 - volume);
+				int remainder15 = Math.Abs(3375 - volume);
+				int remainder20 = Math.Abs(8000 - volume);
+				int remainder25 = Math.Abs(15625 - volume);
+				int remainder30 = Math.Abs(27000 - volume);
+				int remainder35 = Math.Abs(42875 - volume);
+				int remainder40 = Math.Abs(64000 - volume);
+				if(remainder10 < remainder15 && remainder10 < remainder20 && remainder10 < remainder25 && remainder10 < remainder30 && remainder10 < remainder35 && remainder10 < remainder40){
+					createEnvironment.volume = 1000;
+					guiVolume = 1000;
+				}
+				else if(remainder15 < remainder10 && remainder15 < remainder20 && remainder15 < remainder25 && remainder15 < remainder30 && remainder15 < remainder35 && remainder15 < remainder40){
+					createEnvironment.volume = 3375;
+					guiVolume = 3375;
+				}
+				else if(remainder20 < remainder15 && remainder20 < remainder10 && remainder20 < remainder25 && remainder20 < remainder30 && remainder20 < remainder35 && remainder20 < remainder40){
+					createEnvironment.volume = 8000;
+					guiVolume = 8000;
+				}
+				else if(remainder25 < remainder10 && remainder25 < remainder15 && remainder25 < remainder20 && remainder25 < remainder30 && remainder25 < remainder35 && remainder25 < remainder40){
+					createEnvironment.volume = 15625;
+					guiVolume = 15625;
+				}
+				else if(remainder30 < remainder15 && remainder30 < remainder20 && remainder30 < remainder25 && remainder30 < remainder10 && remainder30 < remainder35 && remainder30 < remainder40){
+					createEnvironment.volume = 27000;
+					guiVolume = 27000;
+				}
+				else if(remainder35 < remainder10 && remainder35 < remainder15 && remainder35 < remainder20 && remainder35 < remainder25 && remainder35 < remainder30 && remainder35 < remainder40){
+					createEnvironment.volume = 42875;
+					guiVolume = 42875;
+				}
+				else if(remainder40 < remainder15 && remainder40 < remainder20 && remainder40 < remainder25 && remainder40 < remainder30 && remainder40 < remainder35 && remainder40 < remainder10){
+					createEnvironment.volume = 64000;
+					guiVolume = 64000;
+				}
+			}
 		}
+		CheckAtomVolumePositions();
 
 	}
+
+
+
+
+	void CheckAtomVolumePositions(){
+		
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			Vector3 newPosition = currAtom.transform.position;
+			if(currAtom.transform.position.x > createEnvironment.centerPos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer){
+				newPosition.x = createEnvironment.centerPos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
+			}
+			if(currAtom.transform.position.x < createEnvironment.centerPos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer){
+				newPosition.x = createEnvironment.centerPos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
+			}
+			if(currAtom.transform.position.y > createEnvironment.centerPos.y + (createEnvironment.height/2.0f) - createEnvironment.errorBuffer){
+				newPosition.y = createEnvironment.centerPos.y + (createEnvironment.height/2.0f) - createEnvironment.errorBuffer;
+			}
+			if(currAtom.transform.position.y < createEnvironment.centerPos.y - (createEnvironment.height/2.0f) + createEnvironment.errorBuffer){
+				newPosition.y = createEnvironment.centerPos.y - (createEnvironment.height/2.0f) + createEnvironment.errorBuffer;
+			}
+			if(currAtom.transform.position.z > createEnvironment.centerPos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer){
+				newPosition.z = createEnvironment.centerPos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
+			}
+			if(currAtom.transform.position.z < createEnvironment.centerPos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer){
+				newPosition.z = createEnvironment.centerPos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
+			}
+			currAtom.transform.position = newPosition;
+		}
+		
+	}
+
+
 }
