@@ -10,8 +10,12 @@ public class AtomTouchGUI : MonoBehaviour {
 	private bool addAtomActive = true;
 	private bool temperaturePanelActive = true;
 	private bool volumePanelActive = true;
+	private bool whiteCornerActive = false;
 	public Texture lightBackground;
 	public Texture darkBackground;
+	public Texture darkBlueBackground;
+	public Texture lightBlueBackground;
+	public Texture whiteCornerArrow;
 	public Texture downArrow;
 	public Texture upArrow;
 	public Rigidbody copperPrefab;
@@ -112,8 +116,8 @@ public class AtomTouchGUI : MonoBehaviour {
 			toolbarActive = !toolbarActive;
 		}
 
+		Rect toolbarRect = new Rect(arrowBackgroundRectToolbar.x, arrowBackgroundRectToolbar.height, arrowBackgroundRectToolbar.width, atomTouchRect.height);
 		if (toolbarActive) {
-			Rect toolbarRect = new Rect(arrowBackgroundRectToolbar.x, arrowBackgroundRectToolbar.height, arrowBackgroundRectToolbar.width, atomTouchRect.height);
 			GUI.DrawTexture(toolbarRect, lightBackground);
 
 			Texture reset = resetPressed ? resetButtonDown : resetButtonUp;
@@ -477,9 +481,70 @@ public class AtomTouchGUI : MonoBehaviour {
 			startTime = 0.0f;
 		}
 
+		int selectedAtoms = CountSelectedAtoms ();
+		if (selectedAtoms > 0) {
+			GUIStyle atomsSelectedText = GUI.skin.label;
+			atomsSelectedText.alignment = TextAnchor.MiddleCenter;
+			atomsSelectedText.fontSize = 22;
+			atomsSelectedText.normal.textColor = Color.white;
+			Rect darkBlueRect = new Rect(toolbarRect.x + toolbarRect.width + 5.0f, 0.0f, 200.0f, 65.0f);
+			GUI.DrawTexture(darkBlueRect, darkBlueBackground);
+			GUI.Label(darkBlueRect, selectedAtoms.ToString() + " Atoms Selected");
+
+			Rect lightBlueRect = new Rect(darkBlueRect.x + darkBlueRect.width, 0.0f, 15.0f, darkBlueRect.height);
+			GUI.DrawTexture(lightBlueRect, lightBlueBackground);
+			GUI.DrawTexture(new Rect(lightBlueRect.x, lightBlueRect.y + (lightBlueRect.height) - 15.0f, lightBlueRect.width, 15.0f), whiteCornerArrow);
+			if(GUI.Button(lightBlueRect, "", buttonStyle)){
+				whiteCornerActive = !whiteCornerActive;
+			}
+
+			if(whiteCornerActive){
+				Rect selectAllRect = new Rect(darkBlueRect.x, darkBlueRect.y + darkBlueRect.height, darkBlueRect.width + lightBlueRect.width, 45.0f);
+				GUI.DrawTexture(selectAllRect, darkBackground);
+				GUIStyle selectAllText = GUI.skin.label;
+				selectAllText.alignment = TextAnchor.MiddleCenter;
+				selectAllText.fontSize = 22;
+				selectAllText.normal.textColor = Color.white;
+				if(selectedAtoms == allMolecules.Length){
+					GUI.Label(selectAllRect, "Un-select All", selectAllText);
+					if(GUI.Button(selectAllRect, "", buttonStyle)){
+						DeselectAllAtoms();
+						whiteCornerActive = false;
+					}
+				}
+				else{
+					GUI.Label(selectAllRect, "Select All", selectAllText);
+					if(GUI.Button(selectAllRect, "", buttonStyle)){
+						SelectAllAtoms();
+						whiteCornerActive = false;
+					}
+				}
+
+			}
+		}
+
 
 	}
 
+	void SelectAllAtoms(){
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			Atom atomScript = currAtom.GetComponent<Atom>();
+			atomScript.selected = true;
+			atomScript.SetSelected(true);
+		}
+	}
+
+	void DeselectAllAtoms(){
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			Atom atomScript = currAtom.GetComponent<Atom>();
+			atomScript.selected = false;
+			atomScript.SetSelected(false);
+		}
+	}
 
 	Vector3 CheckPosition(Vector3 position){
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
@@ -503,6 +568,19 @@ public class AtomTouchGUI : MonoBehaviour {
 			position.z = bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
 		}
 		return position;
+	}
+
+	int CountSelectedAtoms(){
+		int selectedAtoms = 0;
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			Atom atomScript = currAtom.GetComponent<Atom>();
+			if(atomScript.selected){
+				selectedAtoms++;
+			}
+		}
+		return selectedAtoms;
 	}
 
 	void CheckAtomVolumePositions(){

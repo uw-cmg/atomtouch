@@ -40,7 +40,7 @@ public abstract class Atom : MonoBehaviour
 	public abstract float epsilon{ get; } // J
 	public abstract float sigma { get; }
 	protected abstract float massamu{ get; } //amu
-	protected abstract void SetSelected (bool selected);
+	public abstract void SetSelected (bool selected);
 	public abstract void SetTransparent (bool transparent);
 	public abstract String atomName { get; }
 	
