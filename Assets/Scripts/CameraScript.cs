@@ -35,10 +35,10 @@ public class CameraScript : MonoBehaviour {
 							break;
 						}
 					}
-					
-					InstantiateMolecule instan = Camera.main.GetComponent<InstantiateMolecule>();
 
-					if(!holdingAtom && !instan.addGraphicCopper && !instan.addGraphicGold && !instan.addGraphicPlatinum && !instan.changingTemp){
+					AtomTouchGUI atomGUI = Camera.main.GetComponent<AtomTouchGUI>();
+					InstantiateMolecule instan = Camera.main.GetComponent<InstantiateMolecule>();
+					if(!holdingAtom && !instan.addGraphicCopper && !instan.addGraphicGold && !instan.addGraphicPlatinum && !atomGUI.changingTemp){
 						Quaternion cameraRotation = Camera.main.transform.rotation;
 						Vector2 touchPrevPos = touch.position - touch.deltaPosition;
 						float deltaMagnitudeDiffX = touch.position.x - touchPrevPos.x;
@@ -82,9 +82,10 @@ public class CameraScript : MonoBehaviour {
 						break;
 					}
 				}
-				
+
+				AtomTouchGUI atomGUI = Camera.main.GetComponent<AtomTouchGUI>();
 				InstantiateMolecule instan = Camera.main.GetComponent<InstantiateMolecule>();
-				if(!holdingAtom && !instan.addGraphicCopper && !instan.addGraphicGold && !instan.addGraphicPlatinum && !instan.changingTemp){
+				if(!holdingAtom && !instan.addGraphicCopper && !instan.addGraphicGold && !instan.addGraphicPlatinum && !atomGUI.changingTemp){
 					Quaternion cameraRotation = Camera.main.transform.rotation;
 					float deltaMagnitudeDiffX = Input.mousePosition.x - touchPrevPos.x;
 					float deltaTouchX = deltaMagnitudeDiffX / 10.0f;
