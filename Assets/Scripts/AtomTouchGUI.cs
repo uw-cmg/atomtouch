@@ -14,6 +14,9 @@ public class AtomTouchGUI : MonoBehaviour {
 	public Texture darkBackground;
 	public Texture downArrow;
 	public Texture upArrow;
+	public Rigidbody copperPrefab;
+	public Rigidbody goldPrefab;
+	public Rigidbody platinumPrefab;
 
 	//reset button
 	public Texture resetButtonUp;
@@ -50,6 +53,13 @@ public class AtomTouchGUI : MonoBehaviour {
 	public Texture goldTexture;
 	public Texture platinumTexture;
 	public Texture garbageTexture;
+	private bool clicked = false;
+	private float startTime = 0.0f;
+	private bool first = true;
+	public float holdTime = 0.05f;
+	[HideInInspector]public bool addGraphicCopper;
+	[HideInInspector]public bool addGraphicGold;
+	[HideInInspector]public bool addGraphicPlatinum;
 
 	[HideInInspector]public bool changingSlider = false;
 	private float guiVolume;
@@ -114,7 +124,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			if(GUI.Button(new Rect(toolbarRect.x + (toolbarRect.width / 6.0f), toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), camera, buttonStyle)){
 				cameraPressed = true;
 				cameraTime = Time.realtimeSinceStartup;
-				Camera.main.transform.position = new Vector3(0.0f, 0.0f, -45.0f);
+				Camera.main.transform.position = new Vector3(0.0f, 0.0f, -40.0f);
 				Camera.main.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 			}
 			if(Time.realtimeSinceStartup - cameraTime > .05f){
@@ -217,17 +227,80 @@ public class AtomTouchGUI : MonoBehaviour {
 			GUI.DrawTexture(lightAddAtom, lightBackground);
 
 			if(GUI.RepeatButton(new Rect(lightAddAtom.x, lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), copperTexture, buttonStyle)){
-				print ("pressing copper");
+				if(!clicked){
+					clicked = true;
+					startTime = Time.realtimeSinceStartup;
+					first = true;
+				}
+				else{
+					float currTime = Time.realtimeSinceStartup - startTime;
+					if(currTime > holdTime){
+						if(first){
+							first = false;
+							addGraphicCopper = true;
+						}
+					}
+				}
 			}
 			if(GUI.RepeatButton(new Rect(lightAddAtom.x+(addAtomRect.width / 4.0f), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), goldTexture, buttonStyle)){
-				print ("pressing gold");
+				if(!clicked){
+					clicked = true;
+					startTime = Time.realtimeSinceStartup;
+					first = true;
+				}
+				else{
+					float currTime = Time.realtimeSinceStartup - startTime;
+					if(currTime > holdTime){
+						if(first){
+							first = false;
+							addGraphicGold = true;
+						}
+					}
+				}
 			}
 			if(GUI.RepeatButton(new Rect(lightAddAtom.x+(2*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), platinumTexture, buttonStyle)){
-				print ("pressing platinum");
+				if(!clicked){
+					clicked = true;
+					startTime = Time.realtimeSinceStartup;
+					first = true;
+				}
+				else{
+					float currTime = Time.realtimeSinceStartup - startTime;
+					if(currTime > holdTime){
+						if(first){
+							first = false;
+							addGraphicPlatinum = true;
+						}
+					}
+				}
 			}
 			if(GUI.RepeatButton(new Rect(lightAddAtom.x+(3*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), garbageTexture, buttonStyle)){
 				print ("pressing garbage");
 			}
+		}
+
+		if (addGraphicCopper) {
+			Color guiColor = Color.white;
+			guiColor.a = 0.25f;
+			GUI.color = guiColor;
+			GUI.DrawTexture(new Rect((Input.mousePosition.x - 25.0f), (Screen.height - Input.mousePosition.y) - 25.0f, 50.0f, 50.0f), copperTexture);
+			GUI.color = Color.white;
+		}
+		
+		if (addGraphicGold) {
+			Color guiColor = Color.white;
+			guiColor.a = 0.25f;
+			GUI.color = guiColor;
+			GUI.DrawTexture(new Rect((Input.mousePosition.x - 25.0f), (Screen.height - Input.mousePosition.y) - 25.0f, 50.0f, 50.0f), goldTexture);
+			GUI.color = Color.white;
+		}
+		
+		if (addGraphicPlatinum) {
+			Color guiColor = Color.white;
+			guiColor.a = 0.25f;
+			GUI.color = guiColor;
+			GUI.DrawTexture(new Rect((Input.mousePosition.x - 25.0f), (Screen.height - Input.mousePosition.y) - 25.0f, 50.0f, 50.0f), platinumTexture);
+			GUI.color = Color.white;
 		}
 
 		Rect temperatureArrowBackgroundRect = new Rect(addAtomRect.x + addAtomRect.width + 10.0f, addAtomRect.y, (Screen.width - (addAtomRect.width+20)) / 2.0f, addAtomRect.height);
@@ -338,10 +411,68 @@ public class AtomTouchGUI : MonoBehaviour {
 		}
 		CheckAtomVolumePositions();
 
+		if (Input.GetMouseButtonUp (0)) {
+		
+			if(addGraphicCopper && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
+				Vector3 curPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 40.0f));
+				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+				curPosition = CheckPosition(curPosition);
+				Instantiate(copperPrefab, curPosition, curRotation);
+				print ("spawning copper");
+			}
+		
+			if(addGraphicGold && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
+				Vector3 curPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 40.0f));
+				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+				curPosition = CheckPosition(curPosition);
+				Instantiate(goldPrefab, curPosition, curRotation);
+				print ("spawning gold");
+			}
+		
+			if(addGraphicPlatinum && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
+				Vector3 curPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 40.0f));
+				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+				curPosition = CheckPosition(curPosition);
+				Instantiate(platinumPrefab, curPosition, curRotation);
+				print ("spawning platinum");
+			}
+					
+			addGraphicCopper = false;
+			addGraphicGold = false;
+			addGraphicPlatinum = false;
+			changingSlider = false;
+			first = true;
+			clicked = false;
+			startTime = 0.0f;
+		}
+
+
 	}
 
 
-
+	Vector3 CheckPosition(Vector3 position){
+		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
+		if (position.y > bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer) {
+			position.y = bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer;
+		}
+		if (position.y < bottomPlanePos.y + createEnvironment.errorBuffer) {
+			position.y = bottomPlanePos.y + createEnvironment.errorBuffer;
+		}
+		if (position.x > bottomPlanePos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer) {
+			position.x = bottomPlanePos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
+		}
+		if (position.x < bottomPlanePos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer) {
+			position.x = bottomPlanePos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
+		}
+		if (position.z > bottomPlanePos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer) {
+			position.z = bottomPlanePos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
+		}
+		if (position.z < bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer) {
+			position.z = bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
+		}
+		return position;
+	}
 
 	void CheckAtomVolumePositions(){
 		
