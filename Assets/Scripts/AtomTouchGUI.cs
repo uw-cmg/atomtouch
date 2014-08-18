@@ -6,7 +6,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	
 	private bool atomTouchActive = true;
 	private bool toolbarActive = true;
-	private bool dataPanelActive = false;
+	public bool dataPanelActive = true;
 	private bool addAtomActive = true;
 	private bool temperaturePanelActive = true;
 	private bool volumePanelActive = true;
@@ -215,10 +215,24 @@ public class AtomTouchGUI : MonoBehaviour {
 		Rect panelArrowRect = new Rect (Screen.width * .5f, Screen.height - (Screen.height * .13f * .3f), 20.0f, Screen.height * .13f * .3f);
 		if (dataPanelActive) {
 			panelRect = new Rect (0.0f, Screen.height - (Screen.height * .27f), Screen.width, (Screen.height * .27f));
-			GUI.DrawTexture(panelRect, lightBackground);
+			Rect openPanelRect = new Rect(0.0f, panelRect.y, (Screen.width * .6f) + 10.0f, panelRect.height);
+			Rect bottomRect = new Rect(panelRect.x + openPanelRect.width, panelArrowRect.y, Screen.width - openPanelRect.width, panelArrowRect.height);
+			GUI.DrawTexture(openPanelRect, lightBackground);
 			GUI.DrawTexture(panelArrowRect, downArrow);
+			GUI.DrawTexture(bottomRect, lightBackground);
+			if(GUI.Button(bottomRect, "", buttonStyle)){
+				dataPanelActive = !dataPanelActive;
+			}
 			float buffer = 10.0f;
-			GUI.DrawTexture (new Rect (panelRect.x + buffer, panelRect.y + buffer, panelRect.width - (buffer*2), panelRect.height - panelArrowRect.height - buffer), darkBackground);
+
+
+			Graph graph = Camera.main.GetComponent<Graph>();
+			graph.xCoord = bottomRect.x;
+			graph.yCoord = Screen.height - bottomRect.y;
+			graph.width = bottomRect.width;
+			graph.height = openPanelRect.height - bottomRect.height;
+
+			//GUI.DrawTexture (new Rect (panelRect.x + buffer, panelRect.y + buffer, panelRect.width - (buffer*2), panelRect.height - panelArrowRect.height - buffer), darkBackground);
 		}
 		else{
 			panelRect = new Rect(0.0f, panelArrowRect.y, Screen.width, panelArrowRect.height);
