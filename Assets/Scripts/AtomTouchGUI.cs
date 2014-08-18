@@ -53,6 +53,9 @@ public class AtomTouchGUI : MonoBehaviour {
 	public Texture goldTexture;
 	public Texture platinumTexture;
 	public Texture garbageTexture;
+	public Texture garbageTextureDown;
+	private bool garbagePressed;
+	private float garbageTime;
 	private bool clicked = false;
 	private float startTime = 0.0f;
 	private bool first = true;
@@ -274,8 +277,32 @@ public class AtomTouchGUI : MonoBehaviour {
 					}
 				}
 			}
-			if(GUI.RepeatButton(new Rect(lightAddAtom.x+(3*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), garbageTexture, buttonStyle)){
-				print ("pressing garbage");
+
+			Texture garbage = garbagePressed ? garbageTextureDown : garbageTexture;
+			if(GUI.Button(new Rect(lightAddAtom.x+(3*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), garbage, buttonStyle)){
+				for(int i = 0; i < allMolecules.Length; i++){
+					GameObject currAtom = allMolecules[i];
+					Atom atomScript = currAtom.GetComponent<Atom>();
+					if(atomScript.doubleTapped){
+						createEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
+						Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
+					}
+					if(atomScript.selected){
+						Destroy(currAtom);
+					}
+					if(atomScript.selected && atomScript.doubleTapped){
+						currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
+						Time.timeScale = 1.0f;
+						atomScript.RemoveBondText();
+						atomScript.ResetTransparency();
+					}
+				}
+				garbagePressed = true;
+				garbageTime = Time.realtimeSinceStartup;
+			}
+
+			if(Time.realtimeSinceStartup - garbageTime > .05f){
+				garbagePressed = false;
 			}
 		}
 
@@ -413,6 +440,7 @@ public class AtomTouchGUI : MonoBehaviour {
 
 		if (Input.GetMouseButtonUp (0)) {
 		
+			//possibly adjust the z value here depending on the position of the camera
 			if(addGraphicCopper && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
 				Vector3 curPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 40.0f));
 				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
