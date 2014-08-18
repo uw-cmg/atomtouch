@@ -361,7 +361,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			tempNumberText.normal.textColor = Color.white;
 
 			GUI.Label (new Rect (temperatureBackgroundRect.x + temperatureBackgroundRect.width - 120.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)) - 5.0f, 200.0f, 20), TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 272.15, 2)).ToString() + "C)", tempNumberText);
-			float newTemp = GUI.HorizontalSlider (new Rect (temperatureBackgroundRect.x + 25.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)), temperatureBackgroundRect.width - 150.0f, 200.0f), TemperatureCalc.desiredTemperature, StaticVariables.tempRangeLow, StaticVariables.tempRangeHigh);
+			float newTemp = GUI.HorizontalSlider (new Rect (temperatureBackgroundRect.x + 25.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)), temperatureBackgroundRect.width - 150.0f, 20.0f), TemperatureCalc.desiredTemperature, StaticVariables.tempRangeLow, StaticVariables.tempRangeHigh);
 			if (newTemp != TemperatureCalc.desiredTemperature) {
 				changingSlider = true;
 				TemperatureCalc.desiredTemperature = newTemp;
@@ -398,7 +398,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			volNumberText.fontSize = 14;
 			volNumberText.normal.textColor = Color.white;
 			GUI.Label (new Rect (volumeBackgroundRect.x + volumeBackgroundRect.width - 120.0f, (volumeBackgroundRect.y + (volumeBackgroundRect.height/2.0f)) - 5.0f, 200.0f, 80.0f), guiVolume + " Angstroms\n cubed", volNumberText);
-			float newVolume = GUI.HorizontalSlider (new Rect (volumeBackgroundRect.x + 25.0f, (volumeBackgroundRect.y + (volumeBackgroundRect.height/2.0f)), volumeBackgroundRect.width - 150.0f, 200.0f), guiVolume, 1000.0f, 64000.0f);
+			float newVolume = GUI.HorizontalSlider (new Rect (volumeBackgroundRect.x + 25.0f, (volumeBackgroundRect.y + (volumeBackgroundRect.height/2.0f)), volumeBackgroundRect.width - 150.0f, 20.0f), guiVolume, 1000.0f, 64000.0f);
 
 			if (newVolume != guiVolume) {
 				guiVolume = newVolume;
