@@ -508,7 +508,8 @@ public class AtomTouchGUI : MonoBehaviour {
 			atomsSelectedText.normal.textColor = Color.white;
 			Rect darkBlueRect = new Rect(toolbarRect.x + toolbarRect.width + 5.0f, 0.0f, 200.0f, 65.0f);
 			GUI.DrawTexture(darkBlueRect, darkBlueBackground);
-			GUI.Label(darkBlueRect, selectedAtoms.ToString() + " Atoms Selected");
+			String atomSelectedString = selectedAtoms == 1 ? " Atom Selected" : " Atoms Selected";
+			GUI.Label(darkBlueRect, selectedAtoms.ToString() + atomSelectedString);
 
 			Rect lightBlueRect = new Rect(darkBlueRect.x + darkBlueRect.width, 0.0f, 15.0f, darkBlueRect.height);
 			GUI.DrawTexture(lightBlueRect, lightBlueBackground);
