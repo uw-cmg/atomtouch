@@ -774,23 +774,23 @@ public class AtomTouchGUI : MonoBehaviour {
 		for (int i = 0; i < allMolecules.Length; i++) {
 			GameObject currAtom = allMolecules[i];
 			Vector3 newPosition = currAtom.transform.position;
-			if(currAtom.transform.position.x > createEnvironment.centerPos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer){
-				newPosition.x = createEnvironment.centerPos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
+			if(currAtom.transform.position.x > createEnvironment.bottomPlane.transform.position.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer){
+				newPosition.x = createEnvironment.bottomPlane.transform.position.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
 			}
-			if(currAtom.transform.position.x < createEnvironment.centerPos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer){
-				newPosition.x = createEnvironment.centerPos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
+			if(currAtom.transform.position.x < createEnvironment.bottomPlane.transform.position.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer){
+				newPosition.x = createEnvironment.bottomPlane.transform.position.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
 			}
-			if(currAtom.transform.position.y > createEnvironment.centerPos.y + (createEnvironment.height/2.0f) - createEnvironment.errorBuffer){
-				newPosition.y = createEnvironment.centerPos.y + (createEnvironment.height/2.0f) - createEnvironment.errorBuffer;
+			if(currAtom.transform.position.y > createEnvironment.bottomPlane.transform.position.y + (createEnvironment.height) - createEnvironment.errorBuffer){
+				newPosition.y = createEnvironment.bottomPlane.transform.position.y + (createEnvironment.height) - createEnvironment.errorBuffer;
 			}
-			if(currAtom.transform.position.y < createEnvironment.centerPos.y - (createEnvironment.height/2.0f) + createEnvironment.errorBuffer){
-				newPosition.y = createEnvironment.centerPos.y - (createEnvironment.height/2.0f) + createEnvironment.errorBuffer;
+			if(currAtom.transform.position.y < createEnvironment.bottomPlane.transform.position.y + createEnvironment.errorBuffer){
+				newPosition.y = createEnvironment.bottomPlane.transform.position.y + createEnvironment.errorBuffer;
 			}
-			if(currAtom.transform.position.z > createEnvironment.centerPos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer){
-				newPosition.z = createEnvironment.centerPos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
+			if(currAtom.transform.position.z > createEnvironment.bottomPlane.transform.position.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer){
+				newPosition.z = createEnvironment.bottomPlane.transform.position.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
 			}
-			if(currAtom.transform.position.z < createEnvironment.centerPos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer){
-				newPosition.z = createEnvironment.centerPos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
+			if(currAtom.transform.position.z < createEnvironment.bottomPlane.transform.position.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer){
+				newPosition.z = createEnvironment.bottomPlane.transform.position.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
 			}
 			currAtom.transform.position = newPosition;
 		}
