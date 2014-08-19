@@ -47,7 +47,6 @@ public class Graph : MonoBehaviour {
 			StaticVariables.currentTime += Time.deltaTime;
 		}
 
-		print ("MaxDataPoints: " + maxDataPoints);
 		if ((Time.time - startTime > refreshInterval && !StaticVariables.pauseTime) || first) {
 			if(dataPoints.Count < maxDataPoints){
 				dataPoints.Enqueue(PotentialEnergy.finalPotentialEnergy);
