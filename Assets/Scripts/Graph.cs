@@ -47,8 +47,7 @@ public class Graph : MonoBehaviour {
 			StaticVariables.currentTime += Time.deltaTime;
 		}
 
-		maxDataPoints = (width / spacing) + 1;
-		highTime = maxDataPoints * refreshInterval;
+		print ("MaxDataPoints: " + maxDataPoints);
 		if ((Time.time - startTime > refreshInterval && !StaticVariables.pauseTime) || first) {
 			if(dataPoints.Count < maxDataPoints){
 				dataPoints.Enqueue(PotentialEnergy.finalPotentialEnergy);
@@ -60,9 +59,14 @@ public class Graph : MonoBehaviour {
 				highTime += 2.0f;
 			}
 			first = false;
-			startTime = Time.realtimeSinceStartup;
+			startTime = Time.time;
 		}
 
+	}
+
+	public void RecomputeMaxDataPoints(){
+		maxDataPoints = (width / spacing) + 1;
+		highTime = maxDataPoints * refreshInterval;
 	}
 
 	void OnGUI(){

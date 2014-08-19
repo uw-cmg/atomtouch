@@ -73,6 +73,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	[HideInInspector]public bool addGraphicGold;
 	[HideInInspector]public bool addGraphicPlatinum;
 	public GUISkin sliderControls;
+	private bool firstPass = true;
 
 	[HideInInspector]public bool changingSlider = false;
 	private float guiVolume;
@@ -159,12 +160,21 @@ public class AtomTouchGUI : MonoBehaviour {
 		}
 
 		Rect panelArrowRect = new Rect (Screen.width * .5f, Screen.height - (Screen.height * .13f * .3f), 20.0f, Screen.height * .13f * .3f);
-		Rect panelRect;
-		Rect openPanelRect;
+		Rect panelRect = new Rect (0.0f, Screen.height - (Screen.height * .27f), Screen.width, (Screen.height * .27f));
+		Rect openPanelRect = new Rect(0.0f, panelRect.y, (Screen.width * .6f) + 10.0f, panelRect.height);
+		Rect bottomRect = new Rect(panelRect.x + openPanelRect.width, panelArrowRect.y, Screen.width - openPanelRect.width, panelArrowRect.height);
+
+		Graph graph = Camera.main.GetComponent<Graph>();
+		graph.xCoord = bottomRect.x;
+		graph.yCoord = Screen.height - bottomRect.y;
+		graph.width = bottomRect.width;
+		graph.height = openPanelRect.height - bottomRect.height;
+		if (firstPass) {
+			graph.RecomputeMaxDataPoints();
+			firstPass = false;
+		}
+		
 		if (dataPanelActive) {
-			panelRect = new Rect (0.0f, Screen.height - (Screen.height * .27f), Screen.width, (Screen.height * .27f));
-			openPanelRect = new Rect(0.0f, panelRect.y, (Screen.width * .6f) + 10.0f, panelRect.height);
-			Rect bottomRect = new Rect(panelRect.x + openPanelRect.width, panelArrowRect.y, Screen.width - openPanelRect.width, panelArrowRect.height);
 			GUI.DrawTexture(openPanelRect, lightBackground);
 			GUI.DrawTexture(panelArrowRect, downArrow);
 			GUI.DrawTexture(bottomRect, lightBackground);
@@ -172,13 +182,6 @@ public class AtomTouchGUI : MonoBehaviour {
 				dataPanelActive = !dataPanelActive;
 			}
 			float buffer = 10.0f;
-			
-			
-			Graph graph = Camera.main.GetComponent<Graph>();
-			graph.xCoord = bottomRect.x;
-			graph.yCoord = Screen.height - bottomRect.y;
-			graph.width = bottomRect.width;
-			graph.height = openPanelRect.height - bottomRect.height;
 
 			bool doubleTapped = false;
 			for(int i = 0; i < allMolecules.Length; i++){
