@@ -72,6 +72,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	[HideInInspector]public bool addGraphicCopper;
 	[HideInInspector]public bool addGraphicGold;
 	[HideInInspector]public bool addGraphicPlatinum;
+	public GUISkin sliderControls;
 
 	[HideInInspector]public bool changingSlider = false;
 	private float guiVolume;
@@ -88,6 +89,10 @@ public class AtomTouchGUI : MonoBehaviour {
 
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+
+		if (sliderControls != null) {
+			GUI.skin = sliderControls;
+		}
 
 		GUIStyle buttonStyle = GUI.skin.label;
 		Rect arrowBackgroundRect = new Rect (0.0f, 0.0f, Screen.width * .14f, Screen.height * .13f * .3f);
@@ -430,7 +435,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			tempNumberText.fontSize = 14;
 			tempNumberText.normal.textColor = Color.white;
 
-			GUI.Label (new Rect (temperatureBackgroundRect.x + temperatureBackgroundRect.width - 120.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)) - 5.0f, 200.0f, 20), TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 272.15, 2)).ToString() + "C)", tempNumberText);
+			GUI.Label (new Rect (temperatureBackgroundRect.x + temperatureBackgroundRect.width - 120.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)), 200.0f, 20), TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 272.15, 2)).ToString() + "C)", tempNumberText);
 			float newTemp = GUI.HorizontalSlider (new Rect (temperatureBackgroundRect.x + 25.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)), temperatureBackgroundRect.width - 150.0f, 20.0f), TemperatureCalc.desiredTemperature, StaticVariables.tempRangeLow, StaticVariables.tempRangeHigh);
 			if (newTemp != TemperatureCalc.desiredTemperature) {
 				changingSlider = true;
