@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class Graph : MonoBehaviour {
 
@@ -23,7 +24,7 @@ public class Graph : MonoBehaviour {
 	private float highTime;
 	private bool first;
 	public string yUnitLabel = "J";
-	public string xUnitLabel = "s";
+	public string xUnitLabel = "ps";
 	public string graphLabel = "Potential Energy vs Time";
 	public Color axisColor = Color.red;
 	public Color lineColor = Color.yellow;
@@ -42,7 +43,12 @@ public class Graph : MonoBehaviour {
 
 	void Update(){
 
+		if (AtomTouchGUI.currentTimeSpeed != StaticVariables.TimeSpeed.Stopped) {
+			StaticVariables.currentTime += Time.deltaTime;
+		}
+
 		maxDataPoints = (width / spacing) + 1;
+		highTime = maxDataPoints * refreshInterval;
 		if ((Time.realtimeSinceStartup - startTime > refreshInterval && !StaticVariables.pauseTime) || first) {
 			if(dataPoints.Count < maxDataPoints){
 				dataPoints.Enqueue(PotentialEnergy.finalPotentialEnergy);
@@ -71,7 +77,7 @@ public class Graph : MonoBehaviour {
 			GUI.Label (new Rect (xCoord - 53, Screen.height - yCoord - 165, 100, 20), (dataMaximum).ToString () + yUnitLabel);
 			GUI.Label (new Rect (xCoord - 53, Screen.height - yCoord - 15, 100, 20), (dataMinimum).ToString () + yUnitLabel);
 			GUI.Label (new Rect (xCoord - 5, Screen.height - yCoord, 100, 20), (lowTime).ToString () + xUnitLabel);
-			GUI.Label (new Rect (xCoord + width - 25.0f, Screen.height - yCoord, 100, 20), (highTime).ToString() + xUnitLabel);
+			GUI.Label (new Rect (xCoord + width - 35.0f, Screen.height - yCoord, 100, 20), (Math.Round(highTime)).ToString() + xUnitLabel);
 		}
 
 	}

@@ -600,7 +600,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		timeText.alignment = TextAnchor.MiddleLeft;
 		timeText.fontSize = 18;
 		timeText.normal.textColor = Color.white;
-		GUI.Label (new Rect (Screen.width - 75.0f, 10.0f, 70.0f, 40.0f), Math.Round(Time.time, 1) + "ps");
+		GUI.Label (new Rect (Screen.width - 75.0f, 10.0f, 70.0f, 40.0f), Math.Round(StaticVariables.currentTime, 1) + "ps");
 
 		//print ("Potential energy: " + PotentialEnergy.finalPotentialEnergy);
 
