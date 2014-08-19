@@ -12,6 +12,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	private bool temperaturePanelActive = true;
 	private bool volumePanelActive = true;
 	private bool whiteCornerActive = false;
+	private bool potentialsActive = false;
 	public Texture lightBackground;
 	public Texture darkBackground;
 	public Texture darkBlueBackground;
@@ -105,8 +106,38 @@ public class AtomTouchGUI : MonoBehaviour {
 			textStyle.normal.textColor = Color.white;
 			GUI.DrawTexture (atomTouchRect, lightBackground);
 			if (GUI.Button (atomTouchRect, "Atom Touch", textStyle)) {
-				print ("atomTouchPressed");
+				potentialsActive = !potentialsActive;
 			}
+			GUI.DrawTexture(new Rect(atomTouchRect.x + atomTouchRect.width - 20.0f, atomTouchRect.y + atomTouchRect.height - 20.0f, 20.0f, 20.0f), whiteCornerArrow);
+
+			if(potentialsActive){
+				GUIStyle potentialText = GUI.skin.label;
+				potentialText.alignment = TextAnchor.MiddleCenter;
+				potentialText.fontSize = 20;
+				potentialText.normal.textColor = Color.white;
+				Rect lennardJonesRect = new Rect(atomTouchRect.x, atomTouchRect.y + atomTouchRect.height, atomTouchRect.width, atomTouchRect.height * .75f);
+				GUI.DrawTexture(lennardJonesRect, darkBackground);
+				if(GUI.Button(lennardJonesRect, "Lennard-Jones", buttonStyle)){
+					potentialsActive = false;
+					createEnvironment.ResetAtoms();
+					StaticVariables.currentPotential = StaticVariables.Potential.LennardJones;
+				}
+				Rect buckinghamRect = new Rect(lennardJonesRect.x, lennardJonesRect.y + lennardJonesRect.height, lennardJonesRect.width, lennardJonesRect.height);
+				GUI.DrawTexture(buckinghamRect, lightBackground);
+				if(GUI.Button(buckinghamRect, "Buckingham", buttonStyle)){
+					potentialsActive = false;
+					createEnvironment.ResetAtoms();
+					StaticVariables.currentPotential = StaticVariables.Potential.Buckingham;
+				}
+				Rect brennerRect = new Rect(buckinghamRect.x, buckinghamRect.y + buckinghamRect.height, buckinghamRect.width, buckinghamRect.height);
+				GUI.DrawTexture(brennerRect, darkBackground);
+				if(GUI.Button(brennerRect, "Brenner", buttonStyle)){
+					potentialsActive = false;
+					createEnvironment.ResetAtoms();
+					StaticVariables.currentPotential = StaticVariables.Potential.Brenner;
+				}
+			}
+
 		}
 
 		GUIStyle currStyle = GUI.skin.label;
