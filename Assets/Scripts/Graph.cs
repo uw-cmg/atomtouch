@@ -97,6 +97,18 @@ public class Graph : MonoBehaviour {
 			for (int i = 0; i < dataPointArray.Length - 1; i++) {
 				float firstPercentage = (float)dataPointArray[i] / (dataMaximum - dataMinimum);
 				float secondPercentage = (float)dataPointArray[i+1] / (dataMaximum - dataMinimum);
+				if(firstPercentage > 1.0f){
+					firstPercentage = 1.0f;
+				}
+				else if(firstPercentage < 0.0f){
+					firstPercentage = 0.0f;
+				}
+				if(secondPercentage > 1.0f){
+					secondPercentage = 1.0f;
+				}
+				else if(secondPercentage < 0.0f){
+					secondPercentage = 0.0f;
+				}
 						
 				float firstYAddition = firstPercentage * height;
 				float secondYAddition = secondPercentage * height;

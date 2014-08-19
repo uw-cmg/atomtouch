@@ -422,7 +422,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			GUIStyle tempertureText = GUI.skin.label;
 			tempertureText.alignment = TextAnchor.MiddleCenter;
 			tempertureText.fontSize = 25;
-			tempertureText.normal.textColor = new Color(32.0f / 255.0f, 70.0f / 255.0f, 119.0f / 255.0f, 1.0f);
+			tempertureText.normal.textColor = Color.white;
 			GUI.Label (new Rect(temperatureArrowBackgroundRect.x, temperatureBackgroundRect.y, temperatureBackgroundRect.width, temperatureBackgroundRect.height * .4f), "Temperature", tempertureText);
 
 			GUIStyle tempNumberText = GUI.skin.label;
@@ -460,7 +460,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			GUIStyle volumeText = GUI.skin.label;
 			volumeText.alignment = TextAnchor.MiddleCenter;
 			volumeText.fontSize = 25;
-			volumeText.normal.textColor = new Color(32.0f / 255.0f, 70.0f / 255.0f, 119.0f / 255.0f, 1.0f);
+			volumeText.normal.textColor = Color.white;
 			GUI.Label (new Rect(volumeBackgroundRect.x, volumeBackgroundRect.y, volumeBackgroundRect.width, volumeBackgroundRect.height * .4f), "Volume", volumeText);
 
 			GUIStyle volNumberText = GUI.skin.label;
@@ -628,7 +628,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		GUI.Label (new Rect(displayRect.x + 10.0f, displayRect.y + 10.0f, 225, 30), "Total Atoms: " + totalAtoms);
 		GUI.Label (new Rect(displayRect.x + 10.0f, displayRect.y + 40.0f, 225, 30), "Copper Atoms: " + copperAtoms);
 		GUI.Label (new Rect(displayRect.x + 10.0f, displayRect.y + 70.0f, 225, 30), "Gold Atoms: " + goldAtoms);
-		GUI.Label (new Rect(displayRect.x + 10.0f, displayRect.y + 110.0f, 225, 30), "Platinum Atoms: " + platinumAtoms);
+		GUI.Label (new Rect(displayRect.x + 10.0f, displayRect.y + 100.0f, 225, 30), "Platinum Atoms: " + platinumAtoms);
 	}
 
 	void DisplayAtomProperties(GameObject currAtom, Rect displayRect){
