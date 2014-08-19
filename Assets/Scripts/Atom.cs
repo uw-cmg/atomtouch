@@ -66,8 +66,10 @@ public abstract class Atom : MonoBehaviour
 				}
 			}
 
-			//Here is where the potentials will need to swapped out
-			//when changing the currentPotential variable, make sure you reset the system
+			/**
+			 * TODO Here is where the code with be replaced with a different function
+			 *      for each of the different potentials
+			 **/
 			Vector3 force = Vector3.zero;
 			if(StaticVariables.currentPotential == StaticVariables.Potential.LennardJones){
 				force = GetLennardJonesForce (molecules);
