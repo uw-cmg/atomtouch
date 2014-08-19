@@ -190,6 +190,8 @@ public abstract class Atom : MonoBehaviour
 		else{
 			if(Input.GetMouseButtonDown(0)){
 				if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
+					AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
+					atomTouchGUI.SetDoubleClicked();
 					ResetDoubleTapped();
 					doubleTapped = true;
 					RemoveAllBondText();

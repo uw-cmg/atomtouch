@@ -17,14 +17,14 @@ public class Graph : MonoBehaviour {
 	private float zDepth = 5.0f;
 	public float spacing = 15.0f;
 	private float maxDataPoints;
-	public float dataMaximum = StaticVariables.tempRangeHigh;
-	public float dataMinimum = StaticVariables.tempRangeLow;
+	private float dataMaximum = -1 * Mathf.Pow(10, -14);
+	private float dataMinimum = -1 * Mathf.Pow(10, -16);
 	private float lowTime;
 	private float highTime;
 	private bool first;
-	public string yUnitLabel = "K";
+	public string yUnitLabel = "J";
 	public string xUnitLabel = "s";
-	public string graphLabel = "Temperature vs Time";
+	public string graphLabel = "Potential Energy vs Time";
 	public Color axisColor = Color.red;
 	public Color lineColor = Color.yellow;
 
@@ -45,11 +45,11 @@ public class Graph : MonoBehaviour {
 		maxDataPoints = (width / spacing) + 1;
 		if ((Time.realtimeSinceStartup - startTime > refreshInterval && !StaticVariables.pauseTime) || first) {
 			if(dataPoints.Count < maxDataPoints){
-				dataPoints.Enqueue(TemperatureCalc.desiredTemperature);
+				dataPoints.Enqueue(PotentialEnergy.finalPotentialEnergy);
 			}
 			else{
 				dataPoints.Dequeue ();
-				dataPoints.Enqueue(TemperatureCalc.desiredTemperature);
+				dataPoints.Enqueue(PotentialEnergy.finalPotentialEnergy);
 				lowTime += 2.0f;
 				highTime += 2.0f;
 			}
@@ -68,8 +68,8 @@ public class Graph : MonoBehaviour {
 		AtomTouchGUI atomGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		if (atomGUI.dataPanelActive) {
 			GUI.Label (new Rect (xCoord + width/2.0f - 60, Screen.height - yCoord, 200, 20), graphLabel);
-			GUI.Label (new Rect (xCoord - 47, Screen.height - yCoord - 165, 100, 20), (StaticVariables.tempRangeHigh).ToString () + yUnitLabel);
-			GUI.Label (new Rect (xCoord - 47, Screen.height - yCoord - 15, 100, 20), (StaticVariables.tempRangeLow).ToString () + yUnitLabel);
+			GUI.Label (new Rect (xCoord - 53, Screen.height - yCoord - 165, 100, 20), (dataMaximum).ToString () + yUnitLabel);
+			GUI.Label (new Rect (xCoord - 53, Screen.height - yCoord - 15, 100, 20), (dataMinimum).ToString () + yUnitLabel);
 			GUI.Label (new Rect (xCoord - 5, Screen.height - yCoord, 100, 20), (lowTime).ToString () + xUnitLabel);
 			GUI.Label (new Rect (xCoord + width - 25.0f, Screen.height - yCoord, 100, 20), (highTime).ToString() + xUnitLabel);
 		}
@@ -97,7 +97,7 @@ public class Graph : MonoBehaviour {
 			for (int i = 0; i < dataPointArray.Length - 1; i++) {
 				float firstPercentage = (float)dataPointArray[i] / (dataMaximum - dataMinimum);
 				float secondPercentage = (float)dataPointArray[i+1] / (dataMaximum - dataMinimum);
-				
+						
 				float firstYAddition = firstPercentage * height;
 				float secondYAddition = secondPercentage * height;
 				

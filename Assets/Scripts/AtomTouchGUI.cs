@@ -203,6 +203,7 @@ public class AtomTouchGUI : MonoBehaviour {
 						currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
 						atomScript.RemoveBondText();
 						atomScript.ResetTransparency();
+						RedXClicked();
 					}
 			
 					//DisplayAtomProperties(allMolecules[i]);
@@ -544,6 +545,14 @@ public class AtomTouchGUI : MonoBehaviour {
 			}
 		}
 
+		GUIStyle timeText = GUI.skin.label;
+		timeText.alignment = TextAnchor.MiddleLeft;
+		timeText.fontSize = 18;
+		timeText.normal.textColor = Color.white;
+		GUI.Label (new Rect (Screen.width - 75.0f, 10.0f, 70.0f, 40.0f), Math.Round(Time.time) + "ps");
+
+		//print ("Potential energy: " + PotentialEnergy.finalPotentialEnergy);
+
 
 	}
 
@@ -632,6 +641,24 @@ public class AtomTouchGUI : MonoBehaviour {
 			currAtom.transform.position = newPosition;
 		}
 		
+	}
+
+	public void SetDoubleClicked(){
+		dataPanelActive = true;
+		atomTouchActive = false;
+		toolbarActive = true;
+		addAtomActive = false;
+		temperaturePanelActive = false;
+		volumePanelActive = false;
+	}
+
+	void RedXClicked(){
+		dataPanelActive = false;
+		atomTouchActive = true;
+		toolbarActive = true;
+		addAtomActive = true;
+		temperaturePanelActive = true;
+		volumePanelActive = true;
 	}
 
 
