@@ -121,6 +121,40 @@ public class AtomTouchGUI : MonoBehaviour {
 			toolbarActive = !toolbarActive;
 		}
 
+		Rect panelArrowRect = new Rect (Screen.width * .5f, Screen.height - (Screen.height * .13f * .3f), 20.0f, Screen.height * .13f * .3f);
+		Rect panelRect;
+		Rect openPanelRect;
+		if (dataPanelActive) {
+			panelRect = new Rect (0.0f, Screen.height - (Screen.height * .27f), Screen.width, (Screen.height * .27f));
+			openPanelRect = new Rect(0.0f, panelRect.y, (Screen.width * .6f) + 10.0f, panelRect.height);
+			Rect bottomRect = new Rect(panelRect.x + openPanelRect.width, panelArrowRect.y, Screen.width - openPanelRect.width, panelArrowRect.height);
+			GUI.DrawTexture(openPanelRect, lightBackground);
+			GUI.DrawTexture(panelArrowRect, downArrow);
+			GUI.DrawTexture(bottomRect, lightBackground);
+			if(GUI.Button(bottomRect, "", buttonStyle)){
+				dataPanelActive = !dataPanelActive;
+			}
+			float buffer = 10.0f;
+			
+			
+			Graph graph = Camera.main.GetComponent<Graph>();
+			graph.xCoord = bottomRect.x;
+			graph.yCoord = Screen.height - bottomRect.y;
+			graph.width = bottomRect.width;
+			graph.height = openPanelRect.height - bottomRect.height;
+			
+			//GUI.DrawTexture (new Rect (panelRect.x + buffer, panelRect.y + buffer, panelRect.width - (buffer*2), panelRect.height - panelArrowRect.height - buffer), darkBackground);
+		}
+		else{
+			panelRect = new Rect(0.0f, panelArrowRect.y, Screen.width, panelArrowRect.height);
+			openPanelRect = new Rect(0.0f, panelRect.y, (Screen.width * .6f) + 10.0f, panelRect.height);
+			GUI.DrawTexture(panelRect, lightBackground);
+			GUI.DrawTexture(panelArrowRect, upArrow);
+		}
+		if (GUI.Button (new Rect (0.0f, panelArrowRect.y, Screen.width, panelArrowRect.height), "", buttonStyle)) {
+			dataPanelActive = !dataPanelActive;
+		}
+
 		Rect toolbarRect = new Rect(arrowBackgroundRectToolbar.x, arrowBackgroundRectToolbar.height, arrowBackgroundRectToolbar.width, atomTouchRect.height);
 		if (toolbarActive) {
 			GUI.DrawTexture(toolbarRect, lightBackground);
@@ -206,44 +240,14 @@ public class AtomTouchGUI : MonoBehaviour {
 						RedXClicked();
 					}
 			
-					//DisplayAtomProperties(allMolecules[i]);
+					DisplayAtomProperties(allMolecules[i], openPanelRect);
 			
 				}
 			}
 		}
 
 
-		Rect panelArrowRect = new Rect (Screen.width * .5f, Screen.height - (Screen.height * .13f * .3f), 20.0f, Screen.height * .13f * .3f);
-		Rect panelRect;
-		if (dataPanelActive) {
-			panelRect = new Rect (0.0f, Screen.height - (Screen.height * .27f), Screen.width, (Screen.height * .27f));
-			Rect openPanelRect = new Rect(0.0f, panelRect.y, (Screen.width * .6f) + 10.0f, panelRect.height);
-			Rect bottomRect = new Rect(panelRect.x + openPanelRect.width, panelArrowRect.y, Screen.width - openPanelRect.width, panelArrowRect.height);
-			GUI.DrawTexture(openPanelRect, lightBackground);
-			GUI.DrawTexture(panelArrowRect, downArrow);
-			GUI.DrawTexture(bottomRect, lightBackground);
-			if(GUI.Button(bottomRect, "", buttonStyle)){
-				dataPanelActive = !dataPanelActive;
-			}
-			float buffer = 10.0f;
 
-
-			Graph graph = Camera.main.GetComponent<Graph>();
-			graph.xCoord = bottomRect.x;
-			graph.yCoord = Screen.height - bottomRect.y;
-			graph.width = bottomRect.width;
-			graph.height = openPanelRect.height - bottomRect.height;
-
-			//GUI.DrawTexture (new Rect (panelRect.x + buffer, panelRect.y + buffer, panelRect.width - (buffer*2), panelRect.height - panelArrowRect.height - buffer), darkBackground);
-		}
-		else{
-			panelRect = new Rect(0.0f, panelArrowRect.y, Screen.width, panelArrowRect.height);
-			GUI.DrawTexture(panelRect, lightBackground);
-			GUI.DrawTexture(panelArrowRect, upArrow);
-		}
-		if (GUI.Button (new Rect (0.0f, panelArrowRect.y, Screen.width, panelArrowRect.height), "", buttonStyle)) {
-			dataPanelActive = !dataPanelActive;
-		}
 
 		Rect addAtomRect = new Rect (panelRect.x, panelRect.y - panelArrowRect.height, Screen.width * .2f, panelArrowRect.height);
 		GUI.DrawTexture (addAtomRect, darkBackground);
@@ -549,11 +553,44 @@ public class AtomTouchGUI : MonoBehaviour {
 		timeText.alignment = TextAnchor.MiddleLeft;
 		timeText.fontSize = 18;
 		timeText.normal.textColor = Color.white;
-		GUI.Label (new Rect (Screen.width - 75.0f, 10.0f, 70.0f, 40.0f), Math.Round(Time.time) + "ps");
+		GUI.Label (new Rect (Screen.width - 75.0f, 10.0f, 70.0f, 40.0f), Math.Round(Time.time, 1) + "ps");
 
 		//print ("Potential energy: " + PotentialEnergy.finalPotentialEnergy);
 
 
+	}
+
+	void DisplayAtomProperties(GameObject currAtom, Rect displayRect){
+
+		GUIStyle timeText = GUI.skin.label;
+		timeText.alignment = TextAnchor.MiddleLeft;
+		timeText.fontSize = 14;
+		timeText.normal.textColor = Color.white;
+
+		String elementName = "";
+		String elementSymbol = "";
+		
+		//probably a better way to do this via polymorphism
+		if (currAtom.GetComponent<Copper> () != null) {
+			elementName = "Copper";
+			elementSymbol = "Cu";
+		}
+		else if (currAtom.GetComponent<Gold> () != null) {
+			elementName = "Gold";
+			elementSymbol = "Au";
+		}
+		else if (currAtom.GetComponent<Platinum> () != null) {
+			elementName = "Platinum";
+			elementSymbol = "Pt";
+		}
+		
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 10.0f, 225, 30), "Element Name: " + elementName);
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 40.0f, 225, 30), "Element Symbol: " + elementSymbol);
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 70.0f, 225, 50), "Position: " + currAtom.transform.position.ToString("E0"));
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 120.0f, 225, 50), "Velocity: " + currAtom.transform.rigidbody.velocity.ToString("E0"));
+		
+		//DisplayBondProperties (currAtom);
+		
 	}
 
 	void SelectAllAtoms(){
