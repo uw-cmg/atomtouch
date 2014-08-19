@@ -174,7 +174,8 @@ public class AtomTouchGUI : MonoBehaviour {
 			graph.yCoord = Screen.height - bottomRect.y;
 			graph.width = bottomRect.width;
 			graph.height = openPanelRect.height - bottomRect.height;
-			
+
+			DisplaySystemProperties(openPanelRect);
 			//GUI.DrawTexture (new Rect (panelRect.x + buffer, panelRect.y + buffer, panelRect.width - (buffer*2), panelRect.height - panelArrowRect.height - buffer), darkBackground);
 		}
 		else{
@@ -590,6 +591,35 @@ public class AtomTouchGUI : MonoBehaviour {
 		//print ("Potential energy: " + PotentialEnergy.finalPotentialEnergy);
 
 
+	}
+
+	void DisplaySystemProperties(Rect displayRect){
+		GUIStyle timeText = GUI.skin.label;
+		timeText.alignment = TextAnchor.MiddleLeft;
+		timeText.fontSize = 14;
+		timeText.normal.textColor = Color.white;
+
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		int totalAtoms = allMolecules.Length;
+		int copperAtoms = 0;
+		int goldAtoms = 0;
+		int platinumAtoms = 0;
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject currAtom = allMolecules[i];
+			if (currAtom.GetComponent<Copper> () != null) {
+				copperAtoms++;
+			}
+			else if (currAtom.GetComponent<Gold> () != null) {
+				goldAtoms++;
+			}
+			else if (currAtom.GetComponent<Platinum> () != null) {
+				platinumAtoms++;
+			}
+		}
+		GUI.Label (new Rect(displayRect.x + 10.0f, displayRect.y + 10.0f, 225, 30), "Total Atoms: " + totalAtoms);
+		GUI.Label (new Rect(displayRect.x + 10.0f, displayRect.y + 40.0f, 225, 30), "Copper Atoms: " + copperAtoms);
+		GUI.Label (new Rect(displayRect.x + 10.0f, displayRect.y + 70.0f, 225, 30), "Gold Atoms: " + goldAtoms);
+		GUI.Label (new Rect(displayRect.x + 10.0f, displayRect.y + 110.0f, 225, 30), "Platinum Atoms: " + platinumAtoms);
 	}
 
 	void DisplayAtomProperties(GameObject currAtom, Rect displayRect){
