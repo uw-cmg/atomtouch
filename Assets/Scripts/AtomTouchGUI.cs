@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 public class AtomTouchGUI : MonoBehaviour {
 	
@@ -589,7 +590,53 @@ public class AtomTouchGUI : MonoBehaviour {
 		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 70.0f, 225, 50), "Position: " + currAtom.transform.position.ToString("E0"));
 		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 120.0f, 225, 50), "Velocity: " + currAtom.transform.rigidbody.velocity.ToString("E0"));
 		
-		//DisplayBondProperties (currAtom);
+		DisplayBondProperties (currAtom, displayRect);
+		
+	}
+
+	void DisplayBondProperties(GameObject currAtom, Rect displayRect){
+		
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		List<Vector3> bonds = new List<Vector3>();
+		for (int i = 0; i < allMolecules.Length; i++) {
+			GameObject atomNeighbor = allMolecules[i];
+			if(atomNeighbor == currAtom) continue;
+			Atom atomScript = currAtom.GetComponent<Atom>();
+			if(Vector3.Distance(currAtom.transform.position, atomNeighbor.transform.position) < atomScript.BondDistance(atomNeighbor)){
+				bonds.Add(atomNeighbor.transform.position);
+			}
+		}
+
+		//need more than 1 bond to form an angle
+		if (bonds.Count > 1) {
+			int angleNumber = 1;
+			//to display the angles, we must compute the angles between every pair of bonds
+			float displayWidth = 200.0f;
+			for(int i = 0; i < bonds.Count; i++){
+				for(int j = i+1; j < bonds.Count; j++){
+					float xCoord;
+					if(angleNumber < 7){
+						xCoord = displayRect.x + displayWidth;
+					}
+					else if (angleNumber >= 7 && angleNumber < 13){
+						xCoord = displayRect.x + (2*displayWidth);
+					}
+					else{
+						xCoord = displayRect.x + (3*displayWidth);
+					}
+					if(angleNumber > 18){
+						break;
+					}
+					Vector3 vector1 = (bonds[i] - currAtom.transform.position);
+					Vector3 vector2 = (bonds[j] - currAtom.transform.position);
+					float angle = (float)Math.Round(Vector3.Angle(vector1, vector2), 3);
+					float angleNum = (angleNumber-1) % 6;
+					//GUI.Label(new Rect(Screen.width - 285, 230 + (bonds.Count * 30) + ((angleNumber-1)*30), 225, 30), "Angle " + angleNumber + ": " + angle + " degrees");
+					GUI.Label(new Rect(xCoord, displayRect.y + 10.0f + (angleNum*30.0f), displayWidth, 30), "Angle " + angleNumber + ": " + Math.Round(angle,1) + " degrees");
+					angleNumber++;
+				}
+			}
+		}
 		
 	}
 
