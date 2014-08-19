@@ -205,6 +205,11 @@ public class AtomTouchGUI : MonoBehaviour {
 			dataPanelActive = !dataPanelActive;
 		}
 
+		GUIStyle toolBarButtonStyle = GUI.skin.label;
+		toolBarButtonStyle.alignment = TextAnchor.MiddleCenter;
+		toolBarButtonStyle.fontSize = 25;
+		toolBarButtonStyle.normal.textColor = Color.white;
+		
 		Rect toolbarRect = new Rect(arrowBackgroundRectToolbar.x, arrowBackgroundRectToolbar.height, arrowBackgroundRectToolbar.width, atomTouchRect.height);
 		if (toolbarActive) {
 			GUI.DrawTexture(toolbarRect, lightBackground);

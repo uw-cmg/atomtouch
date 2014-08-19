@@ -49,7 +49,7 @@ public class Graph : MonoBehaviour {
 
 		maxDataPoints = (width / spacing) + 1;
 		highTime = maxDataPoints * refreshInterval;
-		if ((Time.realtimeSinceStartup - startTime > refreshInterval && !StaticVariables.pauseTime) || first) {
+		if ((Time.time - startTime > refreshInterval && !StaticVariables.pauseTime) || first) {
 			if(dataPoints.Count < maxDataPoints){
 				dataPoints.Enqueue(PotentialEnergy.finalPotentialEnergy);
 			}
