@@ -84,7 +84,7 @@ public class Graph : MonoBehaviour {
 			Vector3 lowerLeft = camera.ScreenToWorldPoint (new Vector3(xCoord, yCoord, zDepth));
 			Vector3 upperRight = camera.ScreenToWorldPoint (new Vector3 (xCoord + width, (yCoord+height), zDepth));
 			Vector3 lowerRight = camera.ScreenToWorldPoint (new Vector3(xCoord + width, yCoord, zDepth));
-			Color customColor = new Color (1.0f, 1.0f, 1.0f, .2f);
+			Color customColor = new Color (0.5f, 0.5f, 0.5f, 1.0f);
 			StaticVariables.DrawQuad (upperLeft, upperRight, lowerLeft, lowerRight, customColor, mat);
 			
 			//horizontal line

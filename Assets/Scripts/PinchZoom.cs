@@ -45,7 +45,13 @@ public class PinchZoom : MonoBehaviour {
 				}
 			}
 			else{
-				camera.transform.position -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * touchPerspectiveZoomSpeed));
+				Vector3 projectPosition = camera.transform.position;
+				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * touchPerspectiveZoomSpeed));
+				CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
+				Vector3 centerPos = new Vector3(createEnvironment.bottomPlane.transform.position.x, createEnvironment.bottomPlane.transform.position.y + (createEnvironment.height/2.0f), createEnvironment.bottomPlane.transform.position.z);
+				if(Vector3.Distance(projectPosition, centerPos) < 70.0f && Vector3.Distance(projectPosition, centerPos) > 2.0f){
+					camera.transform.position = projectPosition;
+				}
 			}
 		}
 		else if(Application.platform != RuntimePlatform.IPhonePlayer && !beingHeld){
@@ -59,7 +65,13 @@ public class PinchZoom : MonoBehaviour {
 				}
 			}
 			else{
-				camera.transform.position -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * pcPerspectiveZoomSpeed));
+				Vector3 projectPosition = camera.transform.position;
+				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * pcPerspectiveZoomSpeed));
+				CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
+				Vector3 centerPos = new Vector3(createEnvironment.bottomPlane.transform.position.x, createEnvironment.bottomPlane.transform.position.y + (createEnvironment.height/2.0f), createEnvironment.bottomPlane.transform.position.z);
+				if(Vector3.Distance(projectPosition, centerPos) < 70.0f && Vector3.Distance(projectPosition, centerPos) > 2.0f){
+					camera.transform.position = projectPosition;
+				}
 			}
 		}
 	}
