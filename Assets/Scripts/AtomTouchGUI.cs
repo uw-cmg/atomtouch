@@ -6,7 +6,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	
 	private bool atomTouchActive = true;
 	private bool toolbarActive = true;
-	public bool dataPanelActive = true;
+	[HideInInspector]public bool dataPanelActive = false;
 	private bool addAtomActive = true;
 	private bool temperaturePanelActive = true;
 	private bool volumePanelActive = true;
@@ -211,8 +211,9 @@ public class AtomTouchGUI : MonoBehaviour {
 			}
 		}
 
-		Rect panelRect;
+
 		Rect panelArrowRect = new Rect (Screen.width * .5f, Screen.height - (Screen.height * .13f * .3f), 20.0f, Screen.height * .13f * .3f);
+		Rect panelRect;
 		if (dataPanelActive) {
 			panelRect = new Rect (0.0f, Screen.height - (Screen.height * .27f), Screen.width, (Screen.height * .27f));
 			Rect openPanelRect = new Rect(0.0f, panelRect.y, (Screen.width * .6f) + 10.0f, panelRect.height);
