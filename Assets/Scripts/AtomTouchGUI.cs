@@ -175,7 +175,19 @@ public class AtomTouchGUI : MonoBehaviour {
 			graph.width = bottomRect.width;
 			graph.height = openPanelRect.height - bottomRect.height;
 
-			DisplaySystemProperties(openPanelRect);
+			bool doubleTapped = false;
+			for(int i = 0; i < allMolecules.Length; i++){
+				GameObject currAtom = allMolecules[i];
+				Atom atomScript = currAtom.GetComponent<Atom>();
+				if(atomScript.doubleTapped){
+					doubleTapped = true;
+				}
+			}
+
+			if(!doubleTapped){
+				DisplaySystemProperties(openPanelRect);
+			}
+
 			//GUI.DrawTexture (new Rect (panelRect.x + buffer, panelRect.y + buffer, panelRect.width - (buffer*2), panelRect.height - panelArrowRect.height - buffer), darkBackground);
 		}
 		else{
@@ -511,7 +523,6 @@ public class AtomTouchGUI : MonoBehaviour {
 				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
 				curPosition = CheckPosition(curPosition);
 				Instantiate(copperPrefab, curPosition, curRotation);
-				print ("spawning copper");
 			}
 		
 			if(addGraphicGold && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
@@ -519,7 +530,6 @@ public class AtomTouchGUI : MonoBehaviour {
 				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
 				curPosition = CheckPosition(curPosition);
 				Instantiate(goldPrefab, curPosition, curRotation);
-				print ("spawning gold");
 			}
 		
 			if(addGraphicPlatinum && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
@@ -527,7 +537,6 @@ public class AtomTouchGUI : MonoBehaviour {
 				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
 				curPosition = CheckPosition(curPosition);
 				Instantiate(platinumPrefab, curPosition, curRotation);
-				print ("spawning platinum");
 			}
 					
 			addGraphicCopper = false;
