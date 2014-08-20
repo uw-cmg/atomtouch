@@ -28,6 +28,7 @@ public class Graph : MonoBehaviour {
 	public string graphLabel = "Potential Energy vs Time";
 	public Color axisColor = Color.red;
 	public Color lineColor = Color.yellow;
+	private bool updateTime = false;
 
 	void Start () {
 
@@ -54,13 +55,17 @@ public class Graph : MonoBehaviour {
 			else{
 				dataPoints.Dequeue ();
 				dataPoints.Enqueue(PotentialEnergy.finalPotentialEnergy);
-				lowTime += refreshInterval;
-				highTime += refreshInterval;
+
+				updateTime = true;
 			}
 			first = false;
 			startTime = Time.time;
 		}
-
+		if (updateTime) {
+			lowTime += Time.deltaTime;
+			highTime += Time.deltaTime;
+		}
+		
 	}
 
 	public void RecomputeMaxDataPoints(){
@@ -103,10 +108,11 @@ public class Graph : MonoBehaviour {
 			StaticVariables.DrawLine (upperLeft, lowerLeft, axisColor, axisColor, lineWidth, mat);
 
 			//tick mark
-			int numTicks = (int)(width / maxDataPoints) + 1;
-			for(int i = 0; i < numTicks; i++){
-				Vector3 top = camera.ScreenToWorldPoint(new Vector3(xCoord + (i*maxDataPoints), yCoord + 10.0f, zDepth));
-				Vector3 bottom = camera.ScreenToWorldPoint(new Vector3(xCoord + (i*maxDataPoints), yCoord - 10.0f, zDepth));
+			int numTicks = (int)(highTime - lowTime) + 1;
+			float tickSpacing = (float)((width-10.0f) / numTicks);
+			for(int i = 0; i < numTicks+1; i++){
+				Vector3 top = camera.ScreenToWorldPoint(new Vector3(xCoord + (i*tickSpacing), yCoord + 10.0f, zDepth));
+				Vector3 bottom = camera.ScreenToWorldPoint(new Vector3(xCoord + (i*tickSpacing), yCoord - 10.0f, zDepth));
 				StaticVariables.DrawLine(top, bottom, Color.black, Color.black, lineWidth, mat);
 			}
 
