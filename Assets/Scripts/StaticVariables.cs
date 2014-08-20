@@ -55,11 +55,18 @@ public class StaticVariables {
 	//access to sigma values by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
 	public static Dictionary<String, float> sigmaValues;
 	public static Potential currentPotential = Potential.LennardJones;
+	public static float currentTime = 0.0f;
 
 	public enum Potential{
 		LennardJones,
 		Brenner,
 		Buckingham
+	};
+
+	public enum TimeSpeed{
+		Normal,
+		SlowMotion,
+		Stopped
 	};
 	
 

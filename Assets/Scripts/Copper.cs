@@ -29,7 +29,7 @@ public class Copper : Atom {
 		get { return 63.546f; } //amu
 	}
 
-	protected override void SetSelected (bool selected){
+	public override void SetSelected (bool selected){
 		if (selected) {
 			gameObject.renderer.material = selectedMaterial;
 		}
