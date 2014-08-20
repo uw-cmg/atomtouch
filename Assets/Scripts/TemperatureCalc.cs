@@ -6,7 +6,7 @@ using System;
 public class TemperatureCalc : MonoBehaviour {
 	
 	public static float squareRootAlpha = 1.0f;
-	public static float desiredTemperature = 200.0f; //K
+	public static float desiredTemperature = 300.0f; //K
 	public static double totalKineticEnergyJ;
 	public double instantTemp;
 	private int moleculeCount;
