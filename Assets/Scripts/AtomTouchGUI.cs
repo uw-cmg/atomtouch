@@ -668,10 +668,10 @@ public class AtomTouchGUI : MonoBehaviour {
 			elementSymbol = "Pt";
 		}
 		
-		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 10.0f, 200, 30), "Element Name: " + elementName);
-		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 40.0f, 200, 30), "Element Symbol: " + elementSymbol);
-		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 70.0f, 200, 50), "Position: " + currAtom.transform.position.ToString("E0"));
-		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 120.0f, 200, 50), "Velocity: " + currAtom.transform.rigidbody.velocity.ToString("E0"));
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 20.0f, 200, 30), "Element Name: " + elementName);
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 50.0f, 200, 30), "Element Symbol: " + elementSymbol);
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 80.0f, 200, 50), "Position: " + currAtom.transform.position.ToString("E0"));
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 130.0f, 200, 50), "Velocity: " + currAtom.transform.rigidbody.velocity.ToString("E0"));
 		
 		DisplayBondProperties (currAtom, displayRect);
 		
