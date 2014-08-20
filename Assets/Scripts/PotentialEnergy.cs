@@ -8,7 +8,7 @@ public class PotentialEnergy : MonoBehaviour {
 	private double totalPotentialEnergyJ;
 	//public double totalKineticEnergyJ;
 	private float startTime = 0.0f;
-	private float timeToUpdate = 1.0f;
+	private float timeToUpdate = .05f;
 	private int updateCalls;
 	public static float finalPotentialEnergy = 0.0f;
 	private bool first = true;
