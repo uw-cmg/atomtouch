@@ -110,7 +110,25 @@ public class CameraScript : MonoBehaviour {
 
 			touchPrevPos = Input.mousePosition;
 		}
-		
+
+//		float colorChangeRate = .0005f;
+//		float redValue = 0.0f;
+//		float greenValue = 0.0f;
+//		float blueValue = 0.0f;
+//		if (UnityEngine.Random.Range (0.0f, 1.0f) > .5f) {
+//
+//		}
+
+		//camera.backgroundColor = new Color(camera.backgroundColor.r + .001f, camera.backgroundColor.g + .001f, camera.backgroundColor.b);
+		if (camera.backgroundColor.r > .5f) {
+			camera.backgroundColor = new Color(.5f, camera.backgroundColor.g, camera.backgroundColor.b);
+		}
+		if (camera.backgroundColor.g > .5f) {
+			camera.backgroundColor = new Color(camera.backgroundColor.r, .5f, camera.backgroundColor.b);
+		}
+		if (camera.backgroundColor.b > .5f) {
+			camera.backgroundColor = new Color(camera.backgroundColor.r, camera.backgroundColor.g, .5f);
+		}
 	}
 
 	public void setCameraCoordinates(Transform objTransform){

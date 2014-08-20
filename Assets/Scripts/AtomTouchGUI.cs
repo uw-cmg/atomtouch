@@ -222,7 +222,6 @@ public class AtomTouchGUI : MonoBehaviour {
 				resetPressed = true;
 				resetTime = Time.realtimeSinceStartup;
 				createEnvironment.ResetAtoms();
-				AtomKick();
 			}
 			if(Time.realtimeSinceStartup - resetTime > .05f){
 				resetPressed = false;
@@ -257,9 +256,11 @@ public class AtomTouchGUI : MonoBehaviour {
 			Texture timeTexture = normalTimeButton;
 			if(currentTimeSpeed == StaticVariables.TimeSpeed.Normal){
 				timeTexture = normalTimeButton;
+				Time.timeScale = 1.0f;
 			}
 			else if(currentTimeSpeed == StaticVariables.TimeSpeed.SlowMotion){
 				timeTexture = slowTimeButton;
+				Time.timeScale = .05f;
 			}
 			else if(currentTimeSpeed == StaticVariables.TimeSpeed.Stopped){
 				timeTexture = stoppedTimeButton;
@@ -273,11 +274,9 @@ public class AtomTouchGUI : MonoBehaviour {
 				else if(currentTimeSpeed == StaticVariables.TimeSpeed.Stopped){
 					currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
 					StaticVariables.pauseTime = false;
-					Time.timeScale = .05f;
 				}
 				else if(currentTimeSpeed == StaticVariables.TimeSpeed.SlowMotion){
 					currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
-					Time.timeScale = 1.0f;
 				}
 			}
 
@@ -289,7 +288,6 @@ public class AtomTouchGUI : MonoBehaviour {
 						createEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
 						atomScript.doubleTapped = false;
 						Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
-						Time.timeScale = 1.0f;
 						currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
 						atomScript.RemoveBondText();
 						atomScript.ResetTransparency();
@@ -380,7 +378,6 @@ public class AtomTouchGUI : MonoBehaviour {
 					}
 					if(atomScript.selected && atomScript.doubleTapped){
 						currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
-						Time.timeScale = 1.0f;
 						atomScript.RemoveBondText();
 						atomScript.ResetTransparency();
 					}
@@ -585,7 +582,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				selectAllText.fontSize = 22;
 				selectAllText.normal.textColor = Color.white;
 				if(selectedAtoms == allMolecules.Length){
-					GUI.Label(selectAllRect, "Un-select All", selectAllText);
+					GUI.Label(selectAllRect, "Deselect All", selectAllText);
 					if(GUI.Button(selectAllRect, "", buttonStyle)){
 						DeselectAllAtoms();
 						whiteCornerActive = false;

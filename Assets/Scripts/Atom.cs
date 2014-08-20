@@ -162,7 +162,6 @@ public abstract class Atom : MonoBehaviour
 					ResetDoubleTapped();
 					doubleTapped = true;
 					RemoveAllBondText();
-					Time.timeScale = .05f;
 					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
 				}
 
@@ -197,7 +196,6 @@ public abstract class Atom : MonoBehaviour
 					ResetDoubleTapped();
 					doubleTapped = true;
 					RemoveAllBondText();
-					Time.timeScale = .05f;
 					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
 				}
 				Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
