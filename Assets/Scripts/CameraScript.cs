@@ -180,7 +180,6 @@ public class CameraScript : MonoBehaviour {
 		else if (camera.backgroundColor.b < colorMinimum) {
 			camera.backgroundColor = new Color(camera.backgroundColor.r, camera.backgroundColor.g, colorMinimum);
 		}
-		print ("Color: " + camera.backgroundColor);
 	}
 
 	public void setCameraCoordinates(Transform objTransform){
