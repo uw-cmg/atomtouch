@@ -158,17 +158,18 @@ public abstract class Atom : MonoBehaviour
 	void Update(){
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			if(Input.touchCount > 0){
-				if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
-					ResetDoubleTapped();
-					doubleTapped = true;
-					RemoveAllBondText();
-					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
-				}
-
 				Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
 				RaycastHit hitInfo;
 				if(!held && Physics.Raycast(ray, out hitInfo) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
 					if(Input.GetTouch(0).phase == TouchPhase.Began){
+						if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
+							AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
+							atomTouchGUI.SetDoubleClicked();
+							ResetDoubleTapped();
+							doubleTapped = true;
+							RemoveAllBondText();
+							AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
+						}
 						OnMouseDownIOS();
 						lastTapTime = Time.realtimeSinceStartup;
 					}
