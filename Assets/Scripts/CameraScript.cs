@@ -121,7 +121,7 @@ public class CameraScript : MonoBehaviour {
 		}
 
 
-		if (Time.realtimeSinceStartup - colorStartTime > 5.0f) {
+		if (Time.realtimeSinceStartup - colorStartTime > 10.0f) {
 			if (UnityEngine.Random.Range (0.0f, 1.0f) > .5f) {
 				if(UnityEngine.Random.Range (0.0f, 1.0f) > .5f){
 					redValue = -colorChangeRate;
@@ -159,7 +159,7 @@ public class CameraScript : MonoBehaviour {
 		}
 
 
-		float colorMaximum = .45f;
+		float colorMaximum = .37f;
 		float colorMinimum = 0.1f;
 		camera.backgroundColor = new Color(camera.backgroundColor.r + redValue, camera.backgroundColor.g + greenValue, camera.backgroundColor.b + blueValue);
 		if (camera.backgroundColor.r > colorMaximum) {
