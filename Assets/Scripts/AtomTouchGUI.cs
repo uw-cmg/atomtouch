@@ -320,7 +320,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		if (addAtomActive) {
 			GUI.DrawTexture(lightAddAtom, lightBackground);
 
-			if(GUI.RepeatButton(new Rect(lightAddAtom.x, lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), copperTextureAdd, buttonStyle)){
+			if(GUI.RepeatButton(new Rect(lightAddAtom.x + 5.0f, lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), copperTextureAdd, buttonStyle)){
 				if(!clicked){
 					clicked = true;
 					startTime = Time.realtimeSinceStartup;
@@ -336,7 +336,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					}
 				}
 			}
-			if(GUI.RepeatButton(new Rect(lightAddAtom.x+(addAtomRect.width / 4.0f), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), goldTextureAdd, buttonStyle)){
+			if(GUI.RepeatButton(new Rect(lightAddAtom.x + 5.0f+(addAtomRect.width / 4.0f), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), goldTextureAdd, buttonStyle)){
 				if(!clicked){
 					clicked = true;
 					startTime = Time.realtimeSinceStartup;
@@ -352,7 +352,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					}
 				}
 			}
-			if(GUI.RepeatButton(new Rect(lightAddAtom.x+(2*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), platinumTextureAdd, buttonStyle)){
+			if(GUI.RepeatButton(new Rect(lightAddAtom.x + 5.0f+(2*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), platinumTextureAdd, buttonStyle)){
 				if(!clicked){
 					clicked = true;
 					startTime = Time.realtimeSinceStartup;
@@ -370,7 +370,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			}
 
 			Texture garbage = garbagePressed ? garbageTextureDown : garbageTexture;
-			if(GUI.Button(new Rect(lightAddAtom.x+(3*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), garbage, buttonStyle)){
+			if(GUI.Button(new Rect(lightAddAtom.x + 5.0f+(3*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), garbage, buttonStyle)){
 				for(int i = 0; i < allMolecules.Length; i++){
 					GameObject currAtom = allMolecules[i];
 					Atom atomScript = currAtom.GetComponent<Atom>();
@@ -668,10 +668,10 @@ public class AtomTouchGUI : MonoBehaviour {
 			elementSymbol = "Pt";
 		}
 		
-		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 10.0f, 225, 30), "Element Name: " + elementName);
-		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 40.0f, 225, 30), "Element Symbol: " + elementSymbol);
-		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 70.0f, 225, 50), "Position: " + currAtom.transform.position.ToString("E0"));
-		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 120.0f, 225, 50), "Velocity: " + currAtom.transform.rigidbody.velocity.ToString("E0"));
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 10.0f, 200, 30), "Element Name: " + elementName);
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 40.0f, 200, 30), "Element Symbol: " + elementSymbol);
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 70.0f, 200, 50), "Position: " + currAtom.transform.position.ToString("E0"));
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 120.0f, 200, 50), "Velocity: " + currAtom.transform.rigidbody.velocity.ToString("E0"));
 		
 		DisplayBondProperties (currAtom, displayRect);
 		
