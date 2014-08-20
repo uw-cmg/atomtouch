@@ -98,9 +98,18 @@ public class Graph : MonoBehaviour {
 			
 			//horizontal line
 			StaticVariables.DrawLine (lowerLeft, lowerRight, axisColor, axisColor, lineWidth, mat);
-			
+
 			//vertical line
 			StaticVariables.DrawLine (upperLeft, lowerLeft, axisColor, axisColor, lineWidth, mat);
+
+			//tick mark
+			int numTicks = (int)(width / maxDataPoints) + 1;
+			for(int i = 0; i < numTicks; i++){
+				Vector3 top = camera.ScreenToWorldPoint(new Vector3(xCoord + (i*maxDataPoints), yCoord + 10.0f, zDepth));
+				Vector3 bottom = camera.ScreenToWorldPoint(new Vector3(xCoord + (i*maxDataPoints), yCoord - 10.0f, zDepth));
+				StaticVariables.DrawLine(top, bottom, Color.black, Color.black, lineWidth, mat);
+			}
+
 			
 			object[] dataPointArray = dataPoints.ToArray ();
 			for (int i = 0; i < dataPointArray.Length - 1; i++) {

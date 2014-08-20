@@ -120,7 +120,18 @@ public class CameraScript : MonoBehaviour {
 			touchPrevPos = Input.mousePosition;
 		}
 
+		//ChangeBackgroundColor ();
 
+	}
+
+	public void setCameraCoordinates(Transform objTransform){
+		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		//transform.position = new Vector3 (objTransform.position.x, objTransform.position.y, objTransform.position.z - 10.0f);
+		createEnvironment.centerPos = objTransform.position;
+		transform.LookAt (objTransform);
+	}
+
+	void ChangeBackgroundColor(){
 		if (Time.realtimeSinceStartup - colorStartTime > 10.0f) {
 			if (UnityEngine.Random.Range (0.0f, 1.0f) > .5f) {
 				if(UnityEngine.Random.Range (0.0f, 1.0f) > .5f){
@@ -157,8 +168,8 @@ public class CameraScript : MonoBehaviour {
 			}
 			colorStartTime = Time.realtimeSinceStartup;
 		}
-
-
+		
+		
 		float colorMaximum = .37f;
 		float colorMinimum = 0.1f;
 		camera.backgroundColor = new Color(camera.backgroundColor.r + redValue, camera.backgroundColor.g + greenValue, camera.backgroundColor.b + blueValue);
@@ -180,13 +191,6 @@ public class CameraScript : MonoBehaviour {
 		else if (camera.backgroundColor.b < colorMinimum) {
 			camera.backgroundColor = new Color(camera.backgroundColor.r, camera.backgroundColor.g, colorMinimum);
 		}
-	}
-
-	public void setCameraCoordinates(Transform objTransform){
-		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-		//transform.position = new Vector3 (objTransform.position.x, objTransform.position.y, objTransform.position.z - 10.0f);
-		createEnvironment.centerPos = objTransform.position;
-		transform.LookAt (objTransform);
 	}
 
 }
