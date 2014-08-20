@@ -348,7 +348,6 @@ public abstract class Atom : MonoBehaviour
 		dragCalled = false;
 		held = true;
 		if (!selected) {
-			rigidbody.isKinematic = true;
 			screenPoint = Camera.main.WorldToScreenPoint(transform.position);
 			offset = transform.position - Camera.main.ScreenToWorldPoint(
 				new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y - 15.0f, screenPoint.z));
@@ -381,7 +380,6 @@ public abstract class Atom : MonoBehaviour
 			held = true;
 
 			if(!selected){
-				rigidbody.isKinematic = true;
 				screenPoint = Camera.main.WorldToScreenPoint(transform.position);
 				offset = transform.position - Camera.main.ScreenToWorldPoint(
 					new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, screenPoint.z));
@@ -414,6 +412,7 @@ public abstract class Atom : MonoBehaviour
 			dragCalled = true;
 			Quaternion cameraRotation = Camera.main.transform.rotation;
 			ApplyTransparency();
+			rigidbody.isKinematic = true;
 			if(!selected){
 				Vector3 diffVector = new Vector3(lastTouchPosition.x, lastTouchPosition.y) - new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y);
 				if(diffVector.magnitude > 0 && !doubleTapped && Input.touchCount == 1){
@@ -474,6 +473,7 @@ public abstract class Atom : MonoBehaviour
 				dragCalled = true;
 				Quaternion cameraRotation = Camera.main.transform.rotation;
 				ApplyTransparency();
+				rigidbody.isKinematic = true;
 				//held = true;
 
 				if(!selected){
