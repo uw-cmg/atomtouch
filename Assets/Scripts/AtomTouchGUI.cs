@@ -832,7 +832,28 @@ public class AtomTouchGUI : MonoBehaviour {
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		for(int i = 0; i < allMolecules.Length; i++){
 			GameObject currAtom = allMolecules[i];
-			currAtom.rigidbody.velocity = new Vector3(UnityEngine.Random.Range(-5.0f, 5.0f), UnityEngine.Random.Range(-5.0f, 5.0f), UnityEngine.Random.Range(-5.0f, 5.0f));
+			float xVelocity = 0.0f;
+			float yVelocity = 0.0f;
+			float zVelocity = 0.0f;
+			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
+				xVelocity = UnityEngine.Random.Range(1.0f, 5.0f);
+			}
+			else{
+				xVelocity = UnityEngine.Random.Range(-5.0f, -1.0f);
+			}
+			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
+				yVelocity = UnityEngine.Random.Range(1.0f, 5.0f);
+			}
+			else{
+				yVelocity = UnityEngine.Random.Range(-5.0f, -1.0f);
+			}
+			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
+				zVelocity = UnityEngine.Random.Range(1.0f, 5.0f);
+			}
+			else{
+				zVelocity = UnityEngine.Random.Range(-5.0f, -1.0f);
+			}
+			currAtom.rigidbody.velocity = new Vector3(xVelocity, yVelocity, zVelocity);
 		}
 	}
 	
