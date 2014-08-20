@@ -158,18 +158,18 @@ public abstract class Atom : MonoBehaviour
 	void Update(){
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			if(Input.touchCount > 0){
-				if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
-					ResetDoubleTapped();
-					doubleTapped = true;
-					RemoveAllBondText();
-					Time.timeScale = .05f;
-					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
-				}
-
 				Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
 				RaycastHit hitInfo;
 				if(!held && Physics.Raycast(ray, out hitInfo) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
 					if(Input.GetTouch(0).phase == TouchPhase.Began){
+						if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
+							AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
+							atomTouchGUI.SetDoubleClicked();
+							ResetDoubleTapped();
+							doubleTapped = true;
+							RemoveAllBondText();
+							AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
+						}
 						OnMouseDownIOS();
 						lastTapTime = Time.realtimeSinceStartup;
 					}
@@ -197,7 +197,6 @@ public abstract class Atom : MonoBehaviour
 					ResetDoubleTapped();
 					doubleTapped = true;
 					RemoveAllBondText();
-					Time.timeScale = .05f;
 					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
 				}
 				Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
@@ -350,7 +349,6 @@ public abstract class Atom : MonoBehaviour
 		dragCalled = false;
 		held = true;
 		if (!selected) {
-			rigidbody.isKinematic = true;
 			screenPoint = Camera.main.WorldToScreenPoint(transform.position);
 			offset = transform.position - Camera.main.ScreenToWorldPoint(
 				new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y - 15.0f, screenPoint.z));
@@ -383,7 +381,6 @@ public abstract class Atom : MonoBehaviour
 			held = true;
 
 			if(!selected){
-				rigidbody.isKinematic = true;
 				screenPoint = Camera.main.WorldToScreenPoint(transform.position);
 				offset = transform.position - Camera.main.ScreenToWorldPoint(
 					new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, screenPoint.z));
@@ -416,6 +413,7 @@ public abstract class Atom : MonoBehaviour
 			dragCalled = true;
 			Quaternion cameraRotation = Camera.main.transform.rotation;
 			ApplyTransparency();
+			rigidbody.isKinematic = true;
 			if(!selected){
 				Vector3 diffVector = new Vector3(lastTouchPosition.x, lastTouchPosition.y) - new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y);
 				if(diffVector.magnitude > 0 && !doubleTapped && Input.touchCount == 1){
@@ -476,6 +474,7 @@ public abstract class Atom : MonoBehaviour
 				dragCalled = true;
 				Quaternion cameraRotation = Camera.main.transform.rotation;
 				ApplyTransparency();
+				rigidbody.isKinematic = true;
 				//held = true;
 
 				if(!selected){

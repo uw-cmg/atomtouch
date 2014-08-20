@@ -247,10 +247,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			if(GUI.Button(new Rect(toolbarRect.x + 3*(toolbarRect.width / 6.0f), toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), atomKick, buttonStyle)){
 				atomKickPressed = true;
 				atomKickTime = Time.realtimeSinceStartup;
-				for(int i = 0; i < allMolecules.Length; i++){
-					GameObject currAtom = allMolecules[i];
-					currAtom.rigidbody.velocity = new Vector3(UnityEngine.Random.Range(-5.0f, 5.0f), UnityEngine.Random.Range(-5.0f, 5.0f), UnityEngine.Random.Range(-5.0f, 5.0f));
-				}
+				AtomKick();
 			}
 			if(Time.realtimeSinceStartup - atomKickTime > .05f){
 				atomKickPressed = false;
@@ -259,9 +256,16 @@ public class AtomTouchGUI : MonoBehaviour {
 			Texture timeTexture = normalTimeButton;
 			if(currentTimeSpeed == StaticVariables.TimeSpeed.Normal){
 				timeTexture = normalTimeButton;
+				Time.timeScale = 1.0f;
+				MotionBlur blur = Camera.main.GetComponent<MotionBlur>();
+				blur.blurAmount = 0.0f;
 			}
 			else if(currentTimeSpeed == StaticVariables.TimeSpeed.SlowMotion){
 				timeTexture = slowTimeButton;
+				Time.timeScale = .05f;
+				MotionBlur blur = Camera.main.GetComponent<MotionBlur>();
+				blur.blurAmount = 0.73f;
+
 			}
 			else if(currentTimeSpeed == StaticVariables.TimeSpeed.Stopped){
 				timeTexture = stoppedTimeButton;
@@ -275,11 +279,9 @@ public class AtomTouchGUI : MonoBehaviour {
 				else if(currentTimeSpeed == StaticVariables.TimeSpeed.Stopped){
 					currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
 					StaticVariables.pauseTime = false;
-					Time.timeScale = .05f;
 				}
 				else if(currentTimeSpeed == StaticVariables.TimeSpeed.SlowMotion){
 					currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
-					Time.timeScale = 1.0f;
 				}
 			}
 
@@ -291,7 +293,6 @@ public class AtomTouchGUI : MonoBehaviour {
 						createEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
 						atomScript.doubleTapped = false;
 						Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
-						Time.timeScale = 1.0f;
 						currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
 						atomScript.RemoveBondText();
 						atomScript.ResetTransparency();
@@ -319,7 +320,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		if (addAtomActive) {
 			GUI.DrawTexture(lightAddAtom, lightBackground);
 
-			if(GUI.RepeatButton(new Rect(lightAddAtom.x, lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), copperTextureAdd, buttonStyle)){
+			if(GUI.RepeatButton(new Rect(lightAddAtom.x + 5.0f, lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), copperTextureAdd, buttonStyle)){
 				if(!clicked){
 					clicked = true;
 					startTime = Time.realtimeSinceStartup;
@@ -335,7 +336,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					}
 				}
 			}
-			if(GUI.RepeatButton(new Rect(lightAddAtom.x+(addAtomRect.width / 4.0f), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), goldTextureAdd, buttonStyle)){
+			if(GUI.RepeatButton(new Rect(lightAddAtom.x + 5.0f+(addAtomRect.width / 4.0f), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), goldTextureAdd, buttonStyle)){
 				if(!clicked){
 					clicked = true;
 					startTime = Time.realtimeSinceStartup;
@@ -351,7 +352,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					}
 				}
 			}
-			if(GUI.RepeatButton(new Rect(lightAddAtom.x+(2*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), platinumTextureAdd, buttonStyle)){
+			if(GUI.RepeatButton(new Rect(lightAddAtom.x + 5.0f+(2*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), platinumTextureAdd, buttonStyle)){
 				if(!clicked){
 					clicked = true;
 					startTime = Time.realtimeSinceStartup;
@@ -369,7 +370,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			}
 
 			Texture garbage = garbagePressed ? garbageTextureDown : garbageTexture;
-			if(GUI.Button(new Rect(lightAddAtom.x+(3*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), garbage, buttonStyle)){
+			if(GUI.Button(new Rect(lightAddAtom.x + 5.0f+(3*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), garbage, buttonStyle)){
 				for(int i = 0; i < allMolecules.Length; i++){
 					GameObject currAtom = allMolecules[i];
 					Atom atomScript = currAtom.GetComponent<Atom>();
@@ -382,7 +383,6 @@ public class AtomTouchGUI : MonoBehaviour {
 					}
 					if(atomScript.selected && atomScript.doubleTapped){
 						currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
-						Time.timeScale = 1.0f;
 						atomScript.RemoveBondText();
 						atomScript.ResetTransparency();
 					}
@@ -587,7 +587,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				selectAllText.fontSize = 22;
 				selectAllText.normal.textColor = Color.white;
 				if(selectedAtoms == allMolecules.Length){
-					GUI.Label(selectAllRect, "Un-select All", selectAllText);
+					GUI.Label(selectAllRect, "Deselect All", selectAllText);
 					if(GUI.Button(selectAllRect, "", buttonStyle)){
 						DeselectAllAtoms();
 						whiteCornerActive = false;
@@ -668,10 +668,10 @@ public class AtomTouchGUI : MonoBehaviour {
 			elementSymbol = "Pt";
 		}
 		
-		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 10.0f, 225, 30), "Element Name: " + elementName);
-		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 40.0f, 225, 30), "Element Symbol: " + elementSymbol);
-		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 70.0f, 225, 50), "Position: " + currAtom.transform.position.ToString("E0"));
-		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 120.0f, 225, 50), "Velocity: " + currAtom.transform.rigidbody.velocity.ToString("E0"));
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 20.0f, 200, 30), "Element Name: " + elementName);
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 50.0f, 200, 30), "Element Symbol: " + elementSymbol);
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 80.0f, 200, 50), "Position: " + currAtom.transform.position.ToString("E0"));
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 130.0f, 200, 50), "Velocity: " + currAtom.transform.rigidbody.velocity.ToString("E0"));
 		
 		DisplayBondProperties (currAtom, displayRect);
 		
@@ -828,5 +828,34 @@ public class AtomTouchGUI : MonoBehaviour {
 		volumePanelActive = true;
 	}
 
-
+	public void AtomKick(){
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for(int i = 0; i < allMolecules.Length; i++){
+			GameObject currAtom = allMolecules[i];
+			float xVelocity = 0.0f;
+			float yVelocity = 0.0f;
+			float zVelocity = 0.0f;
+			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
+				xVelocity = UnityEngine.Random.Range(1.0f, 5.0f);
+			}
+			else{
+				xVelocity = UnityEngine.Random.Range(-5.0f, -1.0f);
+			}
+			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
+				yVelocity = UnityEngine.Random.Range(1.0f, 5.0f);
+			}
+			else{
+				yVelocity = UnityEngine.Random.Range(-5.0f, -1.0f);
+			}
+			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
+				zVelocity = UnityEngine.Random.Range(1.0f, 5.0f);
+			}
+			else{
+				zVelocity = UnityEngine.Random.Range(-5.0f, -1.0f);
+			}
+			currAtom.rigidbody.velocity = new Vector3(xVelocity, yVelocity, zVelocity);
+		}
+	}
+	
+	
 }

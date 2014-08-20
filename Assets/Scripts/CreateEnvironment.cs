@@ -139,6 +139,9 @@ public class CreateEnvironment : MonoBehaviour {
 		depthLine.SetColors(lineColor, lineColor);
 		depthLine.SetWidth(0.2F, 0.2F);
 		depthLine.SetVertexCount(2);
+
+		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
+		atomTouchGUI.AtomKick ();
 	}
 
 	void Update () {
@@ -208,6 +211,8 @@ public class CreateEnvironment : MonoBehaviour {
 			GameObject currAtom = allMolecules[i];
 			currAtom.name = i.ToString();
 		}
+		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
+		atomTouchGUI.AtomKick();
 		//change the volume and the temperature back to their defaults
 //		volume = 8000.0f;
 //		TemperatureCalc.desiredTemperature = 200.0f;

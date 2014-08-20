@@ -13,7 +13,7 @@ public class Graph : MonoBehaviour {
 	public float yCoord;
 	public float width = 180.0f;
 	public float height = 184.0f;
-	public float refreshInterval = 2.0f;
+	public float refreshInterval = .1f;
 	public float lineWidth = .015f;
 	private float zDepth = 5.0f;
 	public float spacing = 15.0f;
@@ -28,6 +28,7 @@ public class Graph : MonoBehaviour {
 	public string graphLabel = "Potential Energy vs Time";
 	public Color axisColor = Color.red;
 	public Color lineColor = Color.yellow;
+	private bool updateTime = false;
 
 	void Start () {
 
@@ -54,13 +55,17 @@ public class Graph : MonoBehaviour {
 			else{
 				dataPoints.Dequeue ();
 				dataPoints.Enqueue(PotentialEnergy.finalPotentialEnergy);
-				lowTime += 2.0f;
-				highTime += 2.0f;
+
+				updateTime = true;
 			}
 			first = false;
 			startTime = Time.time;
 		}
-
+		if (updateTime) {
+			lowTime += Time.deltaTime;
+			highTime += Time.deltaTime;
+		}
+		
 	}
 
 	public void RecomputeMaxDataPoints(){
@@ -79,7 +84,7 @@ public class Graph : MonoBehaviour {
 			GUI.Label (new Rect (xCoord + width/2.0f - 60, Screen.height - yCoord, 200, 20), graphLabel);
 			GUI.Label (new Rect (xCoord - 53, Screen.height - yCoord - 165, 100, 20), (dataMaximum).ToString () + yUnitLabel);
 			GUI.Label (new Rect (xCoord - 53, Screen.height - yCoord - 15, 100, 20), (dataMinimum).ToString () + yUnitLabel);
-			GUI.Label (new Rect (xCoord - 5, Screen.height - yCoord, 100, 20), (lowTime).ToString () + xUnitLabel);
+			GUI.Label (new Rect (xCoord - 5, Screen.height - yCoord, 100, 20), (Math.Round (lowTime)).ToString () + xUnitLabel);
 			GUI.Label (new Rect (xCoord + width - 35.0f, Screen.height - yCoord, 100, 20), (Math.Round(highTime)).ToString() + xUnitLabel);
 		}
 
@@ -98,9 +103,19 @@ public class Graph : MonoBehaviour {
 			
 			//horizontal line
 			StaticVariables.DrawLine (lowerLeft, lowerRight, axisColor, axisColor, lineWidth, mat);
-			
+
 			//vertical line
 			StaticVariables.DrawLine (upperLeft, lowerLeft, axisColor, axisColor, lineWidth, mat);
+
+			//tick mark
+			int numTicks = (int)(highTime - lowTime) + 1;
+			float tickSpacing = (float)((width-10.0f) / numTicks);
+			for(int i = 0; i < numTicks+1; i++){
+				Vector3 top = camera.ScreenToWorldPoint(new Vector3(xCoord + (i*tickSpacing), yCoord + 10.0f, zDepth));
+				Vector3 bottom = camera.ScreenToWorldPoint(new Vector3(xCoord + (i*tickSpacing), yCoord - 10.0f, zDepth));
+				StaticVariables.DrawLine(top, bottom, Color.black, Color.black, lineWidth, mat);
+			}
+
 			
 			object[] dataPointArray = dataPoints.ToArray ();
 			for (int i = 0; i < dataPointArray.Length - 1; i++) {

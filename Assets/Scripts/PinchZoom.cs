@@ -39,14 +39,28 @@ public class PinchZoom : MonoBehaviour {
 
 			if(doubleTappedAtom != null){
 				Vector3 projectPosition = camera.transform.position;
-				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * pcPerspectiveZoomSpeed));
+				float zChange = deltaMagnitudeDiff * touchPerspectiveZoomSpeed;
+				if(zChange > 3.0f){
+					zChange = 3.0f;
+				}
+				else if(zChange < -3.0f){
+					zChange = -3.0f;
+				}
+				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, zChange));
 				if(Vector3.Distance(projectPosition, doubleTappedAtom.transform.position) > 1.0f){
-					camera.transform.position -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * touchPerspectiveZoomSpeed));
+					camera.transform.position = projectPosition;
 				}
 			}
 			else{
 				Vector3 projectPosition = camera.transform.position;
-				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * touchPerspectiveZoomSpeed));
+				float zChange = deltaMagnitudeDiff * touchPerspectiveZoomSpeed;
+				if(zChange > 3.0f){
+					zChange = 3.0f;
+				}
+				else if(zChange < -3.0f){
+					zChange = -3.0f;
+				}
+				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, zChange));
 				CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
 				Vector3 centerPos = new Vector3(createEnvironment.bottomPlane.transform.position.x, createEnvironment.bottomPlane.transform.position.y + (createEnvironment.height/2.0f), createEnvironment.bottomPlane.transform.position.z);
 				if(Vector3.Distance(projectPosition, centerPos) < 70.0f && Vector3.Distance(projectPosition, centerPos) > 10.0f){
@@ -59,14 +73,28 @@ public class PinchZoom : MonoBehaviour {
 			Quaternion cameraRotation = camera.transform.rotation;
 			if(doubleTappedAtom != null){
 				Vector3 projectPosition = camera.transform.position;
-				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * pcPerspectiveZoomSpeed));
+				float zChange = deltaMagnitudeDiff * pcPerspectiveZoomSpeed;
+				if(zChange > 3.0f){
+					zChange = 3.0f;
+				}
+				else if(zChange < -3.0f){
+					zChange = -3.0f;
+				}
+				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, zChange));
 				if(Vector3.Distance(projectPosition, doubleTappedAtom.transform.position) > 1.0f){
-					camera.transform.position -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * pcPerspectiveZoomSpeed));
+					camera.transform.position = projectPosition;
 				}
 			}
 			else{
 				Vector3 projectPosition = camera.transform.position;
-				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, deltaMagnitudeDiff * pcPerspectiveZoomSpeed));
+				float zChange = deltaMagnitudeDiff * pcPerspectiveZoomSpeed;
+				if(zChange > 3.0f){
+					zChange = 3.0f;
+				}
+				else if(zChange < -3.0f){
+					zChange = -3.0f;
+				}
+				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, zChange));
 				CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
 				Vector3 centerPos = new Vector3(createEnvironment.bottomPlane.transform.position.x, createEnvironment.bottomPlane.transform.position.y + (createEnvironment.height/2.0f), createEnvironment.bottomPlane.transform.position.z);
 				if(Vector3.Distance(projectPosition, centerPos) < 70.0f && Vector3.Distance(projectPosition, centerPos) > 10.0f){
