@@ -160,24 +160,25 @@ public class CameraScript : MonoBehaviour {
 
 
 		float colorMaximum = .45f;
+		float colorMinimum = 0.1f;
 		camera.backgroundColor = new Color(camera.backgroundColor.r + redValue, camera.backgroundColor.g + greenValue, camera.backgroundColor.b + blueValue);
 		if (camera.backgroundColor.r > colorMaximum) {
 			camera.backgroundColor = new Color(colorMaximum, camera.backgroundColor.g, camera.backgroundColor.b);
 		}
-		else if (camera.backgroundColor.r < 0.0f) {
-			camera.backgroundColor = new Color(0.0f, camera.backgroundColor.g, camera.backgroundColor.b);
+		else if (camera.backgroundColor.r < colorMinimum) {
+			camera.backgroundColor = new Color(colorMinimum, camera.backgroundColor.g, camera.backgroundColor.b);
 		}
 		if (camera.backgroundColor.g > colorMaximum) {
 			camera.backgroundColor = new Color(camera.backgroundColor.r, colorMaximum, camera.backgroundColor.b);
 		}
-		else if (camera.backgroundColor.g < 0.0f) {
-			camera.backgroundColor = new Color(camera.backgroundColor.r, 0.0f, camera.backgroundColor.b);
+		else if (camera.backgroundColor.g < colorMinimum) {
+			camera.backgroundColor = new Color(camera.backgroundColor.r, colorMinimum, camera.backgroundColor.b);
 		}
 		if (camera.backgroundColor.b > colorMaximum) {
 			camera.backgroundColor = new Color(camera.backgroundColor.r, camera.backgroundColor.g, colorMaximum);
 		}
-		else if (camera.backgroundColor.b < 0.0f) {
-			camera.backgroundColor = new Color(camera.backgroundColor.r, camera.backgroundColor.g, 0.0f);
+		else if (camera.backgroundColor.b < colorMinimum) {
+			camera.backgroundColor = new Color(camera.backgroundColor.r, camera.backgroundColor.g, colorMinimum);
 		}
 		print ("Color: " + camera.backgroundColor);
 	}
