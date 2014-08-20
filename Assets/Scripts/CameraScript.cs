@@ -11,9 +11,6 @@ public class CameraScript : MonoBehaviour {
 	private Vector2 touchPrevPos;
 	private bool rotateAroundY = false;
 	private bool first = true;
-
-
-	public Material mat;
 	
 	void Update () {
 
