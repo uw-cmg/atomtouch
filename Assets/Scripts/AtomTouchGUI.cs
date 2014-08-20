@@ -222,6 +222,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				resetPressed = true;
 				resetTime = Time.realtimeSinceStartup;
 				createEnvironment.ResetAtoms();
+				AtomKick();
 			}
 			if(Time.realtimeSinceStartup - resetTime > .05f){
 				resetPressed = false;
@@ -247,10 +248,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			if(GUI.Button(new Rect(toolbarRect.x + 3*(toolbarRect.width / 6.0f), toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), atomKick, buttonStyle)){
 				atomKickPressed = true;
 				atomKickTime = Time.realtimeSinceStartup;
-				for(int i = 0; i < allMolecules.Length; i++){
-					GameObject currAtom = allMolecules[i];
-					currAtom.rigidbody.velocity = new Vector3(UnityEngine.Random.Range(-5.0f, 5.0f), UnityEngine.Random.Range(-5.0f, 5.0f), UnityEngine.Random.Range(-5.0f, 5.0f));
-				}
+				AtomKick();
 			}
 			if(Time.realtimeSinceStartup - atomKickTime > .05f){
 				atomKickPressed = false;
@@ -828,5 +826,13 @@ public class AtomTouchGUI : MonoBehaviour {
 		volumePanelActive = true;
 	}
 
-
+	public void AtomKick(){
+		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		for(int i = 0; i < allMolecules.Length; i++){
+			GameObject currAtom = allMolecules[i];
+			currAtom.rigidbody.velocity = new Vector3(UnityEngine.Random.Range(-5.0f, 5.0f), UnityEngine.Random.Range(-5.0f, 5.0f), UnityEngine.Random.Range(-5.0f, 5.0f));
+		}
+	}
+	
+	
 }

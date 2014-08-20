@@ -139,6 +139,9 @@ public class CreateEnvironment : MonoBehaviour {
 		depthLine.SetColors(lineColor, lineColor);
 		depthLine.SetWidth(0.2F, 0.2F);
 		depthLine.SetVertexCount(2);
+
+		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
+		atomTouchGUI.AtomKick ();
 	}
 
 	void Update () {
