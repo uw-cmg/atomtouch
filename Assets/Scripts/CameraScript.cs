@@ -11,7 +11,16 @@ public class CameraScript : MonoBehaviour {
 	private Vector2 touchPrevPos;
 	private bool rotateAroundY = false;
 	private bool first = true;
+	private float colorStartTime;
+	private float colorChangeRate = .001f;
+	private float redValue = 0.0f;
+	private float greenValue = 0.0f;
+	private float blueValue = 0.0f;
 	
+	void Start(){
+		colorStartTime = Time.realtimeSinceStartup;
+	}
+
 	void Update () {
 
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
@@ -111,24 +120,66 @@ public class CameraScript : MonoBehaviour {
 			touchPrevPos = Input.mousePosition;
 		}
 
-//		float colorChangeRate = .0005f;
-//		float redValue = 0.0f;
-//		float greenValue = 0.0f;
-//		float blueValue = 0.0f;
-//		if (UnityEngine.Random.Range (0.0f, 1.0f) > .5f) {
-//
-//		}
 
-		//camera.backgroundColor = new Color(camera.backgroundColor.r + .001f, camera.backgroundColor.g + .001f, camera.backgroundColor.b);
-		if (camera.backgroundColor.r > .5f) {
-			camera.backgroundColor = new Color(.5f, camera.backgroundColor.g, camera.backgroundColor.b);
+		if (Time.realtimeSinceStartup - colorStartTime > 5.0f) {
+			if (UnityEngine.Random.Range (0.0f, 1.0f) > .5f) {
+				if(UnityEngine.Random.Range (0.0f, 1.0f) > .5f){
+					redValue = -colorChangeRate;
+				}
+				else{
+					redValue = colorChangeRate;
+				}
+			}
+			else{
+				redValue = 0.0f;
+			}
+			if (UnityEngine.Random.Range (0.0f, 1.0f) > .5f) {
+				if (UnityEngine.Random.Range (0.0f, 1.0f) > .5f){
+					greenValue = -colorChangeRate;
+				}
+				else{
+					greenValue = colorChangeRate;
+				}
+			}
+			else{
+				greenValue = 0.0f;
+			}
+			if (UnityEngine.Random.Range (0.0f, 1.0f) > .5f) {
+				if (UnityEngine.Random.Range (0.0f, 1.0f) > .5f){
+					blueValue = -colorChangeRate;
+				}
+				else{
+					blueValue = colorChangeRate;
+				}
+			}
+			else{
+				blueValue = 0.0f;
+			}
+			colorStartTime = Time.realtimeSinceStartup;
 		}
-		if (camera.backgroundColor.g > .5f) {
-			camera.backgroundColor = new Color(camera.backgroundColor.r, .5f, camera.backgroundColor.b);
+
+
+		float colorMaximum = .45f;
+		camera.backgroundColor = new Color(camera.backgroundColor.r + redValue, camera.backgroundColor.g + greenValue, camera.backgroundColor.b + blueValue);
+		if (camera.backgroundColor.r > colorMaximum) {
+			camera.backgroundColor = new Color(colorMaximum, camera.backgroundColor.g, camera.backgroundColor.b);
 		}
-		if (camera.backgroundColor.b > .5f) {
-			camera.backgroundColor = new Color(camera.backgroundColor.r, camera.backgroundColor.g, .5f);
+		else if (camera.backgroundColor.r < 0.0f) {
+			camera.backgroundColor = new Color(0.0f, camera.backgroundColor.g, camera.backgroundColor.b);
 		}
+		if (camera.backgroundColor.g > colorMaximum) {
+			camera.backgroundColor = new Color(camera.backgroundColor.r, colorMaximum, camera.backgroundColor.b);
+		}
+		else if (camera.backgroundColor.g < 0.0f) {
+			camera.backgroundColor = new Color(camera.backgroundColor.r, 0.0f, camera.backgroundColor.b);
+		}
+		if (camera.backgroundColor.b > colorMaximum) {
+			camera.backgroundColor = new Color(camera.backgroundColor.r, camera.backgroundColor.g, colorMaximum);
+		}
+		else if (camera.backgroundColor.b < 0.0f) {
+			camera.backgroundColor = new Color(camera.backgroundColor.r, camera.backgroundColor.g, 0.0f);
+		}
+		print ("Color: " + camera.backgroundColor);
 	}
 
 	public void setCameraCoordinates(Transform objTransform){
