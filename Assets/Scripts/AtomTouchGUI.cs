@@ -257,10 +257,15 @@ public class AtomTouchGUI : MonoBehaviour {
 			if(currentTimeSpeed == StaticVariables.TimeSpeed.Normal){
 				timeTexture = normalTimeButton;
 				Time.timeScale = 1.0f;
+				MotionBlur blur = Camera.main.GetComponent<MotionBlur>();
+				blur.blurAmount = 0.0f;
 			}
 			else if(currentTimeSpeed == StaticVariables.TimeSpeed.SlowMotion){
 				timeTexture = slowTimeButton;
 				Time.timeScale = .05f;
+				MotionBlur blur = Camera.main.GetComponent<MotionBlur>();
+				blur.blurAmount = 0.73f;
+
 			}
 			else if(currentTimeSpeed == StaticVariables.TimeSpeed.Stopped){
 				timeTexture = stoppedTimeButton;
