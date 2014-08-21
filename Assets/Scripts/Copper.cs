@@ -1,4 +1,16 @@
-﻿using UnityEngine;
+﻿/**
+ * Class: Copper.cs
+ * Created by: Justin Moeller
+ * Description: This class defines anything that is copper specific, and NOT related to all of
+ * the atoms. This class is derived from the base class of Atom.cs, and takes on all of its behavior.
+ * It must override all of the abstract variables and functions that are defined in Atom.cs, such as
+ * atomName, epsilon, sigma, massamu, SetSelected(), and SetTransparent().
+ * 
+ * 
+ **/ 
+
+
+using UnityEngine;
 using System.Collections;
 using System;
 
