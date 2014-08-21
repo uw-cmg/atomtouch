@@ -1,4 +1,22 @@
-﻿using UnityEngine;
+﻿/**
+ * Class: AtomTouchGUI.cs
+ * Created by: Justin Moeller
+ * Description: The sole purpose of this class is to define the GUI of the game. Because of this,
+ * most of the global variables are declared public to easily swap out the graphics of the UI.
+ * There are a couple of weird quirks with the creation of the UI. The first is that the graph
+ * is NOT defined in this class, it has its own class. This is because the function responsible
+ * for creating the UI, OnGUI(), draws over OnPostRender, meaning it draws over the graph. To solve
+ * this problem, the UI simply draws around the graph and the graph draws in the blank space. (sort of
+ * like a cookie cutter) The second quirk is that, in order to get around Unity's restrictions of drawing
+ * buttons, most of the buttons are drawn with a texture behind them and a blank button (with no text)
+ * over the top of it. This is to provide the same functionality of the button, but get around Unity's
+ * restrictions of drawing buttons
+ * 
+ * 
+ **/ 
+
+
+using UnityEngine;
 using System.Collections;
 using System;
 using System.Collections.Generic;
@@ -195,8 +213,6 @@ public class AtomTouchGUI : MonoBehaviour {
 			if(!doubleTapped){
 				DisplaySystemProperties(openPanelRect);
 			}
-
-			//GUI.DrawTexture (new Rect (panelRect.x + buffer, panelRect.y + buffer, panelRect.width - (buffer*2), panelRect.height - panelArrowRect.height - buffer), darkBackground);
 		}
 		else{
 			panelRect = new Rect(0.0f, panelArrowRect.y, Screen.width, panelArrowRect.height);

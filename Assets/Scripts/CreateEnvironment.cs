@@ -1,4 +1,19 @@
-﻿using UnityEngine;
+﻿/**
+ * Class: CreateEnvironment.cs
+ * Created by: Justin Moeller
+ * Description: This class handles anything that has to do with the creation of the environment.
+ * (i.e the atoms, the box, the lines, and the width/height/depth text). Most of the functionality 
+ * of this class happens when the game begins, however, the box, the lines, and the text all must be 
+ * scaled when the user changes the volume of the box. Additionally, to cut down on some computation,
+ * all of the sigma values are pre-computed and then stored in a dictionary. The key to the dictionary
+ * is a String made up of the two atoms for which you want the sigma value for. (i.e "CopperCopper" or
+ * "CopperGold" or "GoldPlatinum") All of the atoms are also named (given a number 0-numAtoms) for easier 
+ * access and debugging. 
+ * 
+ * 
+ **/ 
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
