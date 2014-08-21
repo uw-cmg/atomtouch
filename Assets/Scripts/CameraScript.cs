@@ -16,12 +16,26 @@ public class CameraScript : MonoBehaviour {
 	private float redValue = 0.0f;
 	private float greenValue = 0.0f;
 	private float blueValue = 0.0f;
+	private float fpsStartTime;
+	private float fpsRefreshRate = .5f;
 	
 	void Start(){
 		colorStartTime = Time.realtimeSinceStartup;
+		fpsStartTime = Time.realtimeSinceStartup;
 	}
 
 	void Update () {
+
+		//attempt at changing time scale to increase framerate
+//		if (Time.realtimeSinceStartup - fpsStartTime < fpsRefreshRate) {
+//			print ("FPS: " + 1.0f / Time.deltaTime);
+////			if((int)(1.0f / Time.deltaTime) == 20){
+////				Time.timeScale = .5f;
+////			}
+//			fpsStartTime = Time.realtimeSinceStartup;
+//		}
+
+
 
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 

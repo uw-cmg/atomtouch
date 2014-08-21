@@ -58,6 +58,7 @@ public class Graph : MonoBehaviour {
 
 				updateTime = true;
 			}
+
 			first = false;
 			startTime = Time.time;
 		}
@@ -82,7 +83,7 @@ public class Graph : MonoBehaviour {
 		AtomTouchGUI atomGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		if (atomGUI.dataPanelActive) {
 			GUI.Label (new Rect (xCoord + width/2.0f - 60, Screen.height - yCoord, 200, 20), graphLabel);
-			GUI.Label (new Rect (xCoord - 32, Screen.height - yCoord - 165, 100, 20), (dataMaximum).ToString () + yUnitLabel);
+			GUI.Label (new Rect (xCoord - 32, Screen.height - (Screen.height * .27f), 100, 20), (dataMaximum).ToString () + yUnitLabel);
 			GUI.Label (new Rect (xCoord - 53, Screen.height - yCoord - 15, 100, 20), (dataMinimum).ToString () + yUnitLabel);
 			GUI.Label (new Rect (xCoord - 5, Screen.height - yCoord, 100, 20), (Math.Round (lowTime)).ToString () + xUnitLabel);
 			GUI.Label (new Rect (xCoord + width - 35.0f, Screen.height - yCoord, 100, 20), (Math.Round(highTime)).ToString() + xUnitLabel);

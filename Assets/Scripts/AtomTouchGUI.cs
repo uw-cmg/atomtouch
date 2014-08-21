@@ -264,7 +264,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				timeTexture = slowTimeButton;
 				Time.timeScale = .05f;
 				MotionBlur blur = Camera.main.GetComponent<MotionBlur>();
-				blur.blurAmount = 0.73f;
+				blur.blurAmount = 0.68f;
 
 			}
 			else if(currentTimeSpeed == StaticVariables.TimeSpeed.Stopped){
