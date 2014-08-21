@@ -1,4 +1,20 @@
-﻿using UnityEngine;
+﻿/**
+ * Class: Graph.cs
+ * Created by: Justin Moeller
+ * Description: This class handles the positioning and the drawing of the graph on the UI. The graph
+ * is actually drawn is 3D space, but its coordinates are translated such that the lines are always 
+ * facing the camera and the lines are always the same distance from the camera. The x-axis is time
+ * and the y-axis is potential energy. Neither scale is a logarithm scale. The points are drawn based
+ * on what percentage of the graph the current potential energy is compared to the range the it could
+ * be. (i.e. from dataMinimum to dataMaximum) The graph also has its own OnGUI function to define the 
+ * labels for the graph. 
+ * 
+ * 
+ * 
+ **/ 
+
+
+using UnityEngine;
 using System.Collections;
 using System;
 

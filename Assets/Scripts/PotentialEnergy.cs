@@ -1,4 +1,14 @@
-﻿using UnityEngine;
+﻿/**
+ * Class: PotentialEnergy.cs
+ * Created by: Justin Moeller
+ * Description: The class computes the potential energy of the system. It computes the potential energy
+ * as an average over .05 seconds. The static variable finalPotentialEnergy is the final potential energy
+ * and its updated every .05 seconds. This is the value that is being graphed in Graph.cs, and this value
+ * can be accessed from any script. 
+ * 
+ **/ 
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -6,7 +16,6 @@ using System;
 public class PotentialEnergy : MonoBehaviour {
 
 	private double totalPotentialEnergyJ;
-	//public double totalKineticEnergyJ;
 	private float startTime = 0.0f;
 	private float timeToUpdate = .05f;
 	private int updateCalls;
