@@ -40,10 +40,6 @@ public class Graph : MonoBehaviour {
 		startTime = Time.realtimeSinceStartup;
 		lowTime = 0.0f;
 		highTime = maxDataPoints * refreshInterval;
-
-//		if (dataMaximum > dataMinimum) {
-//			print ("data max is greater than data min");
-//		}
 	}
 
 	void Update(){
@@ -123,8 +119,8 @@ public class Graph : MonoBehaviour {
 			
 			object[] dataPointArray = dataPoints.ToArray ();
 			for (int i = 0; i < dataPointArray.Length - 1; i++) {
-				float firstPercentage = (float)dataPointArray[i] / (dataMinimum - dataMaximum);
-				float secondPercentage = (float)dataPointArray[i+1] / (dataMinimum - dataMaximum);
+				float firstPercentage = 1 - ((float)dataPointArray[i] / (dataMinimum - dataMaximum));
+				float secondPercentage = 1 - ((float)dataPointArray[i+1] / (dataMinimum - dataMaximum));
 				if(firstPercentage > 1.0f){
 					firstPercentage = 1.0f;
 				}
