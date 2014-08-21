@@ -1,7 +1,23 @@
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
+/**
+ * Class: Atom.cs
+ * Created by: Justin Moeller
+ * Description: This is the main class for dealing with anything related to the atoms.
+ * The atoms' forces are calculated in FixedUpdate, then their velocities are scaled based
+ * on the temperature of the system. FixedUpdate is currently called every .0005 seconds,
+ * which is Time.fixedDeltaTime. In the FixedUpdate function, it is clearly marked where the
+ * code for the new potentials should go. The rest of the class handles the user interactions with 
+ * the atoms, such as double tapping or moving an atom. Because OnMouseDown, OnMouseDrag, and
+ * OnMouseUp are not supported for iOS, the code that handles dragging an atom had to be implemented
+ * twice, once for iOS and once for PC. This class is the base class for copper, gold, and platinum
+ * and every atom runs this script. The abstract variables and functions that are declared must be 
+ * defined by the children of this class because they are probably different per child. (i.e sigma and epsilon)
+ * The collision detection for each atom is NOT handled by Unity, but rather in the Update function.
+ * It simply checks if the atom is within the box, and if its not, it reverses its velocity to go back
+ * inside the box. Transparency and selection are handled by passing the call to their child, then
+ * changing the material of the atom.
+ * 
+ * 
+ **/
 
 //L-J potentials from Zhen and Davies, Phys. Stat. Sol. a, 78, 595 (1983)
 //Symbol, epsilon/k_Boltzmann (K) n-m version, 12-6 version, sigma (Angstroms),
@@ -11,13 +27,17 @@ using System;
 //Cu: 3401.1, 4733.5, 2.3374,  63.546, 3.177, 3.610, 2.55
 //Pt: 7184.2, 7908.7, 2.5394, 165.084, 8.254, 3.920, 2.77
 
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using System;
+
 public abstract class Atom : MonoBehaviour
 {
 	private Vector3 offset;
 	private Vector3 screenPoint;
 	private Vector3 lastMousePosition;
 	private Vector3 lastTouchPosition;
-	private GameObject moleculeToMove = null;
 	private float deltaTouch2 = 0.0f;
 	private bool moveZDirection = false;
 	private float lastTapTime;
@@ -26,13 +46,10 @@ public abstract class Atom : MonoBehaviour
 	[HideInInspector]public bool doubleTapped = false;
 	private Dictionary<String, Vector3> gameObjectOffsets;
 	private Dictionary<String, Vector3> gameObjectScreenPoints;
-	private TextMesh angstromText;
-	private Vector3 velocityBeforeCollision;
 	private float dragStartTime;
 	private bool dragCalled;
 	private Dictionary<String, TextMesh> bondDistanceText;
-	
-	public Material lineMaterial;
+
 	public TextMesh textMeshPrefab;
 	public bool held { get; set; }
 
@@ -285,7 +302,6 @@ public abstract class Atom : MonoBehaviour
 		}
 		else if(Input.touchCount == 0 && moveZDirection){
 			moveZDirection = false;
-			moleculeToMove = null;
 			held = false;
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 			for(int i = 0; i < allMolecules.Length; i++){
@@ -305,45 +321,7 @@ public abstract class Atom : MonoBehaviour
 		}
 	}
 		
-	void SpawnAngstromText(){
-		Quaternion cameraRotation = Camera.main.transform.rotation;
-		Vector3 up = cameraRotation * Vector3.up;
-		Vector3 left = cameraRotation * -Vector3.right;
-		angstromText = Instantiate(textMeshPrefab, new Vector3(0.0f, 0.0f, 0.0f), cameraRotation) as TextMesh;
-		angstromText.renderer.material.renderQueue = StaticVariables.overlay;
-		Vector3 newPosition = transform.position + (left * 1.0f) + (up * 2.0f);
-		angstromText.transform.position = newPosition;
-		angstromText.text = "1 Angstrom";
-		LineRenderer angstromLine = angstromText.transform.gameObject.AddComponent<LineRenderer> ();
-		angstromLine.material = lineMaterial;
-		angstromLine.SetColors(Color.yellow, Color.yellow);
-		angstromLine.SetWidth(0.2F, 0.2F);
-		angstromLine.SetVertexCount(2);
-	}
-
-	void MoveAngstromText(){
-		Quaternion cameraRotation = Camera.main.transform.rotation;
-		Vector3 up = cameraRotation * Vector3.up;
-		Vector3 left = cameraRotation * -Vector3.right;
-		Vector3 newPosition = transform.position + (left * 1.0f) + (up * 2.0f);
-		if (angstromText != null) {
-			angstromText.transform.position = newPosition;
-			LineRenderer angstromLine = angstromText.GetComponent<LineRenderer> ();
-			Vector3 position1 = transform.position + (left * .5f) + (up);
-			Vector3 position2 = transform.position + (left * -.5f) + (up);
-			angstromLine.SetPosition(0, position1);
-			angstromLine.SetPosition(1, position2);
-		}
-	}
-
-	void DestroyAngstromText(){
-		if (angstromText != null) {
-			LineRenderer angstromLine = angstromText.GetComponent<LineRenderer> ();
-			Destroy(angstromLine);
-			Destroy(angstromText);
-		}
-	}
-
+	
 	void OnMouseDownIOS(){
 		dragStartTime = Time.realtimeSinceStartup;
 		dragCalled = false;
