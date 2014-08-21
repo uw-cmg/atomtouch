@@ -1,4 +1,18 @@
-﻿using UnityEngine;
+﻿/**
+ * Class: CameraScript.cs
+ * Created by: Justin Moeller
+ * Description: This class handles any movement that is related to the camera. Its main function
+ * is to rotate the camera when the user swipes/drags the screen. Because there is a touch API
+ * for iOS and the scroll rate is different on iOS, the scrolling function has been implemented
+ * twice, once for iOS and once for PC. The class also handles (optionally) dynamically changing
+ * the background of the simulation as well as changing the camera so it looks at an atom when 
+ * it is double tapped.
+ * 
+ * 
+ **/ 
+
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -16,12 +30,9 @@ public class CameraScript : MonoBehaviour {
 	private float redValue = 0.0f;
 	private float greenValue = 0.0f;
 	private float blueValue = 0.0f;
-	private float fpsStartTime;
-	private float fpsRefreshRate = .5f;
 	
 	void Start(){
 		colorStartTime = Time.realtimeSinceStartup;
-		fpsStartTime = Time.realtimeSinceStartup;
 	}
 
 	void Update () {
