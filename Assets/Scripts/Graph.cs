@@ -18,8 +18,8 @@ public class Graph : MonoBehaviour {
 	private float zDepth = 5.0f;
 	public float spacing = 15.0f;
 	private float maxDataPoints;
-	private float dataMaximum = -1 * Mathf.Pow(10, -14);
-	private float dataMinimum = -1 * Mathf.Pow(10, -16);
+	private float dataMaximum = 0.0f;
+	private float dataMinimum = -1 * Mathf.Pow(10, -14);
 	private float lowTime;
 	private float highTime;
 	private bool first;
@@ -40,6 +40,10 @@ public class Graph : MonoBehaviour {
 		startTime = Time.realtimeSinceStartup;
 		lowTime = 0.0f;
 		highTime = maxDataPoints * refreshInterval;
+
+//		if (dataMaximum > dataMinimum) {
+//			print ("data max is greater than data min");
+//		}
 	}
 
 	void Update(){
@@ -82,7 +86,7 @@ public class Graph : MonoBehaviour {
 		AtomTouchGUI atomGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		if (atomGUI.dataPanelActive) {
 			GUI.Label (new Rect (xCoord + width/2.0f - 60, Screen.height - yCoord, 200, 20), graphLabel);
-			GUI.Label (new Rect (xCoord - 53, Screen.height - yCoord - 165, 100, 20), (dataMaximum).ToString () + yUnitLabel);
+			GUI.Label (new Rect (xCoord - 32, Screen.height - yCoord - 165, 100, 20), (dataMaximum).ToString () + yUnitLabel);
 			GUI.Label (new Rect (xCoord - 53, Screen.height - yCoord - 15, 100, 20), (dataMinimum).ToString () + yUnitLabel);
 			GUI.Label (new Rect (xCoord - 5, Screen.height - yCoord, 100, 20), (Math.Round (lowTime)).ToString () + xUnitLabel);
 			GUI.Label (new Rect (xCoord + width - 35.0f, Screen.height - yCoord, 100, 20), (Math.Round(highTime)).ToString() + xUnitLabel);
@@ -119,8 +123,8 @@ public class Graph : MonoBehaviour {
 			
 			object[] dataPointArray = dataPoints.ToArray ();
 			for (int i = 0; i < dataPointArray.Length - 1; i++) {
-				float firstPercentage = (float)dataPointArray[i] / (dataMaximum - dataMinimum);
-				float secondPercentage = (float)dataPointArray[i+1] / (dataMaximum - dataMinimum);
+				float firstPercentage = (float)dataPointArray[i] / (dataMinimum - dataMaximum);
+				float secondPercentage = (float)dataPointArray[i+1] / (dataMinimum - dataMaximum);
 				if(firstPercentage > 1.0f){
 					firstPercentage = 1.0f;
 				}
