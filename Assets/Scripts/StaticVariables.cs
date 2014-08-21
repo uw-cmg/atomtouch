@@ -1,4 +1,19 @@
-﻿using UnityEngine;
+﻿/**
+ * Class: StaticVariables.cs
+ * Created By: Justin Moeller
+ * Description: This class is simply a list of static variables and static functions
+ * that can be called from any class. The static variables in this list are either
+ * constants or variables that can be controlled from across the entire system of
+ * atom (i.e currentPotential). There are two functions in this class, DrawLine and
+ * DrawQuad. DrawLine draw a line in 3D space and DrawQuad draws a quad in 3D space.
+ * To use these functions in 2D space, the coordinates given to the function must be
+ * translated such that they are rotated based on the rotation of the camera. 
+ * 
+ * 
+ **/ 
+
+
+using UnityEngine;
 using System.Collections;
 using System;
 using System.Collections.Generic;
@@ -20,10 +35,7 @@ public class StaticVariables {
 
 	//Convert units of Angstroms to meters
 	public static float angstromsToMeters = (float) Math.Pow (10,-10);
-
-	//Delay before any temperature effects are applied
-	public static float tempDelay = 5.0f;
-
+		
 	//Cutoff for "seeing" other atoms, in Angstroms
 	//multiplied by sigma for Lennard-Jones potential
 	public static float cutoff = 5.0f; //mutliplier for cutoff 
@@ -35,28 +47,20 @@ public class StaticVariables {
 	//Multiplier for transition between actual L-J potential and curve to constant
 	//    This number will be multiplied by sigma to find the transition distance
 	public static float r_min_multiplier = 0.75f;
-
-	//melting temperatures
-	//Copper, 1358 K
-
+		
 	//Temperature slider bounds in K
-	//public static float tempRangeLow = 0.0000001f; 
 	public static float tempRangeLow = 0.01f;
 	public static float tempRangeHigh = 5000.0f; 
 
-	//Time scale
-	public static float timeScale = (1.0f/40.0f); //1.0f;
-
 	public static bool drawBondLines = true;
 	public static bool pauseTime = false;
-	public static int transparent = 3000;
-	public static int overlay = 4000;
-	public static float atomTransparency = .5f;
 	//access to sigma values by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
 	public static Dictionary<String, float> sigmaValues;
 	public static Potential currentPotential = Potential.LennardJones;
 	public static float currentTime = 0.0f;
 
+	//There are three potentials, but currently Lennard-Jones is the only one that is implemented so changing
+	//between these potentials doesnt do anything
 	public enum Potential{
 		LennardJones,
 		Brenner,

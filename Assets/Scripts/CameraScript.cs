@@ -26,17 +26,6 @@ public class CameraScript : MonoBehaviour {
 
 	void Update () {
 
-		//attempt at changing time scale to increase framerate
-//		if (Time.realtimeSinceStartup - fpsStartTime < fpsRefreshRate) {
-//			print ("FPS: " + 1.0f / Time.deltaTime);
-////			if((int)(1.0f / Time.deltaTime) == 20){
-////				Time.timeScale = .5f;
-////			}
-//			fpsStartTime = Time.realtimeSinceStartup;
-//		}
-
-
-
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
@@ -140,7 +129,6 @@ public class CameraScript : MonoBehaviour {
 
 	public void setCameraCoordinates(Transform objTransform){
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-		//transform.position = new Vector3 (objTransform.position.x, objTransform.position.y, objTransform.position.z - 10.0f);
 		createEnvironment.centerPos = objTransform.position;
 		transform.LookAt (objTransform);
 	}
