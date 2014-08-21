@@ -1,4 +1,17 @@
-﻿using UnityEngine;
+﻿/**
+ * Class: PinchZoom.cs
+ * Created by: Justin Moeller
+ * Description: This class handles the zooming of the camera on both iOS and PC. The camera actually doesn't
+ * zoom, its z position simply changes. Because of the different scroll rates on iOS and PC there are two different
+ * speeds at which the camera can zoom. There is also a limit on how far away or how close the camera can move to the 
+ * box. There is also a limit on how far the camera can move in a single frame. This is to prevent the user from moving
+ * the camera really far in one frame, and going "through" the minimum boundary for the box.
+ * 
+ * 
+ **/ 
+
+
+using UnityEngine;
 using System.Collections;
 
 public class PinchZoom : MonoBehaviour {
@@ -7,8 +20,7 @@ public class PinchZoom : MonoBehaviour {
 	public float pcPerspectiveZoomSpeed = 5.0f;
 	public float orthoZoomSpeed = 0.5f;
 	private GameObject doubleTappedAtom;
-	
-	// Update is called once per frame
+
 	void Update () {
 
 		bool beingHeld = false;
