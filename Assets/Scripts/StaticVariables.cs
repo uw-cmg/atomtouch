@@ -52,11 +52,15 @@ public class StaticVariables {
 	public static float tempRangeLow = 0.01f;
 	public static float tempRangeHigh = 5000.0f; 
 
+	//this variable causes the bond lines to either draw or not draw
 	public static bool drawBondLines = true;
+	//the variable pauses the simulation of physics
 	public static bool pauseTime = false;
 	//access to sigma values by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
 	public static Dictionary<String, float> sigmaValues;
+	//this varaible keeps track of the current potential that is being used. (Note: only Lennard-Jones is currently implemented)
 	public static Potential currentPotential = Potential.LennardJones;
+	//this variable keeps track of the amount of simulation time that has passed
 	public static float currentTime = 0.0f;
 
 	//There are three potentials, but currently Lennard-Jones is the only one that is implemented so changing
@@ -67,13 +71,15 @@ public class StaticVariables {
 		Buckingham
 	};
 
+	//this is an enum of the different states that time can pass
 	public enum TimeSpeed{
 		Normal,
 		SlowMotion,
 		Stopped
 	};
 	
-
+	//this function will draw a line from startinPos to endingPos. The atom colors will color each side of the line.
+	//Note: this function can only be called within OnPostRender(). It will not display if called from a different function
 	public static void DrawLine(Vector3 startingPos, Vector3 endingPos, Color atomColor1, Color atomColor2, float lineWidth, Material mat){
 		
 		Vector3 startingPos2 = (startingPos - endingPos);
@@ -146,6 +152,8 @@ public class StaticVariables {
 		GL.PopMatrix();
 	}
 
+	//this function will draw a quad in 3D space given four coordinates and a color
+	//Note: this function must be called from within OnPostRender(). It will not display if called from another function
 	public static void DrawQuad(Vector3 upperLeft, Vector3 upperRight, Vector3 lowerLeft, Vector3 lowerRight, Color color, Material mat){
 
 		if (!mat) {
