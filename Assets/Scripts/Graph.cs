@@ -48,6 +48,7 @@ public class Graph : MonoBehaviour {
 
 	void Start () {
 
+		//these coorindates will be over written in AtomtouchGUI
 		xCoord = Screen.width - 250;
 		yCoord = 70;
 		first = true;
@@ -60,6 +61,8 @@ public class Graph : MonoBehaviour {
 
 	void Update(){
 
+		//this function enqueues the data points of potential energy every .1s
+		//it only dequeues values when the graph has reached the edge of the screen
 		if (AtomTouchGUI.currentTimeSpeed != StaticVariables.TimeSpeed.Stopped) {
 			StaticVariables.currentTime += Time.deltaTime;
 		}
@@ -92,6 +95,7 @@ public class Graph : MonoBehaviour {
 
 	void OnGUI(){
 
+		//this function puts the labels of the graph on screen
 		GUIStyle graphText = GUI.skin.label;
 		graphText.alignment = TextAnchor.MiddleLeft;
 		graphText.fontSize = 14;
@@ -106,11 +110,13 @@ public class Graph : MonoBehaviour {
 		}
 
 	}
-	
+
+	//OnGUI will draw over this function, so the graph cannot be behind any GUI elements
 	void OnPostRender(){
 
 		AtomTouchGUI atomGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		if (atomGUI.dataPanelActive) {
+			//draw the background for the graph
 			Vector3 upperLeft = camera.ScreenToWorldPoint (new Vector3 (xCoord, (yCoord+height), zDepth));
 			Vector3 lowerLeft = camera.ScreenToWorldPoint (new Vector3(xCoord, yCoord, zDepth));
 			Vector3 upperRight = camera.ScreenToWorldPoint (new Vector3 (xCoord + width, (yCoord+height), zDepth));
@@ -118,13 +124,13 @@ public class Graph : MonoBehaviour {
 			Color customColor = new Color (0.5f, 0.5f, 0.5f, 1.0f);
 			StaticVariables.DrawQuad (upperLeft, upperRight, lowerLeft, lowerRight, customColor, mat);
 			
-			//horizontal line
+			//horizontal axis
 			StaticVariables.DrawLine (lowerLeft, lowerRight, axisColor, axisColor, lineWidth, mat);
 
-			//vertical line
+			//vertical axis
 			StaticVariables.DrawLine (upperLeft, lowerLeft, axisColor, axisColor, lineWidth, mat);
 
-			//tick mark
+			//tick marks
 			int numTicks = (int)(highTime - lowTime) + 1;
 			float tickSpacing = (float)((width-10.0f) / numTicks);
 			for(int i = 0; i < numTicks+1; i++){
@@ -133,7 +139,7 @@ public class Graph : MonoBehaviour {
 				StaticVariables.DrawLine(top, bottom, Color.black, Color.black, lineWidth, mat);
 			}
 
-			
+			//draw the lines on the graph
 			object[] dataPointArray = dataPoints.ToArray ();
 			for (int i = 0; i < dataPointArray.Length - 1; i++) {
 				float firstPercentage = 1 - ((float)dataPointArray[i] / (dataMinimum - dataMaximum));

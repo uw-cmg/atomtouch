@@ -21,6 +21,7 @@ public class PinchZoom : MonoBehaviour {
 	public float orthoZoomSpeed = 0.5f;
 	private GameObject doubleTappedAtom;
 
+	//this function handles the zooming in and out of the camera. the camera actually doesnt zoom, its z-coorindate simply changes
 	void Update () {
 
 		bool beingHeld = false;
@@ -52,6 +53,8 @@ public class PinchZoom : MonoBehaviour {
 			if(doubleTappedAtom != null){
 				Vector3 projectPosition = camera.transform.position;
 				float zChange = deltaMagnitudeDiff * touchPerspectiveZoomSpeed;
+				//enforce a maximum value that the camera can move in one frame
+				//this is to avoid going "through" the minimum and maximum distances of the box
 				if(zChange > 3.0f){
 					zChange = 3.0f;
 				}
@@ -59,6 +62,7 @@ public class PinchZoom : MonoBehaviour {
 					zChange = -3.0f;
 				}
 				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, zChange));
+				//enforce a minimum and maximum distance from the center of the box that the user can scroll
 				if(Vector3.Distance(projectPosition, doubleTappedAtom.transform.position) > 1.0f){
 					camera.transform.position = projectPosition;
 				}
@@ -66,6 +70,8 @@ public class PinchZoom : MonoBehaviour {
 			else{
 				Vector3 projectPosition = camera.transform.position;
 				float zChange = deltaMagnitudeDiff * touchPerspectiveZoomSpeed;
+				//enforce a maximum value that the camera can move in one frame
+				//this is to avoid going "through" the minimum and maximum distances of the box
 				if(zChange > 3.0f){
 					zChange = 3.0f;
 				}
@@ -75,6 +81,7 @@ public class PinchZoom : MonoBehaviour {
 				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, zChange));
 				CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
 				Vector3 centerPos = new Vector3(createEnvironment.bottomPlane.transform.position.x, createEnvironment.bottomPlane.transform.position.y + (createEnvironment.height/2.0f), createEnvironment.bottomPlane.transform.position.z);
+				//enforce a minimum and maximum distance from the center of the box that the user can scroll
 				if(Vector3.Distance(projectPosition, centerPos) < 70.0f && Vector3.Distance(projectPosition, centerPos) > 10.0f){
 					camera.transform.position = projectPosition;
 				}
@@ -86,6 +93,8 @@ public class PinchZoom : MonoBehaviour {
 			if(doubleTappedAtom != null){
 				Vector3 projectPosition = camera.transform.position;
 				float zChange = deltaMagnitudeDiff * pcPerspectiveZoomSpeed;
+				//enforce a maximum value that the camera can move in one frame
+				//this is to avoid going "through" the minimum and maximum distances of the box
 				if(zChange > 3.0f){
 					zChange = 3.0f;
 				}
@@ -93,6 +102,7 @@ public class PinchZoom : MonoBehaviour {
 					zChange = -3.0f;
 				}
 				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, zChange));
+				//enforce a minimum and maximum distance from the center of the box that the user can scroll
 				if(Vector3.Distance(projectPosition, doubleTappedAtom.transform.position) > 1.0f){
 					camera.transform.position = projectPosition;
 				}
@@ -100,6 +110,8 @@ public class PinchZoom : MonoBehaviour {
 			else{
 				Vector3 projectPosition = camera.transform.position;
 				float zChange = deltaMagnitudeDiff * pcPerspectiveZoomSpeed;
+				//enforce a maximum value that the camera can move in one frame
+				//this is to avoid going "through" the minimum and maximum distances of the box
 				if(zChange > 3.0f){
 					zChange = 3.0f;
 				}
@@ -109,6 +121,7 @@ public class PinchZoom : MonoBehaviour {
 				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, zChange));
 				CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
 				Vector3 centerPos = new Vector3(createEnvironment.bottomPlane.transform.position.x, createEnvironment.bottomPlane.transform.position.y + (createEnvironment.height/2.0f), createEnvironment.bottomPlane.transform.position.z);
+				//enforce a minimum and maximum distance from the center of the box that the user can scroll
 				if(Vector3.Distance(projectPosition, centerPos) < 70.0f && Vector3.Distance(projectPosition, centerPos) > 10.0f){
 					camera.transform.position = projectPosition;
 				}

@@ -31,7 +31,8 @@ public class PotentialEnergy : MonoBehaviour {
 
 	void Update () {
 	
-
+		//this function computes the potential energy of the system every frame
+		//we only are interested in the average though, so we take the average potential energy over .05s 
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 
 		for (int i = 0; i < allMolecules.Length; i++) {
@@ -54,6 +55,7 @@ public class PotentialEnergy : MonoBehaviour {
 		}
 		updateCalls++;
 
+		//update the potential energy every .05s
 		if (Time.realtimeSinceStartup - startTime > timeToUpdate || first) {
 			first = false;
 			finalPotentialEnergy = (float) (totalPotentialEnergyJ / updateCalls); //take the average of the potential energy
