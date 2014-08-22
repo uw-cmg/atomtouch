@@ -579,7 +579,7 @@ public abstract class Atom : MonoBehaviour
 				rigidbody.isKinematic = false;
 
 				Quaternion cameraRotation = Camera.main.transform.rotation;
-				Vector3 direction = (new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - new Vector3(lastTouchPosition.x, lastTouchPosition.y, 0.0f));
+				Vector3 direction = cameraRotation * (new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - new Vector3(lastTouchPosition.x, lastTouchPosition.y, 0.0f));
 				float directionMagnitude = direction.magnitude;
 				direction.Normalize();
 				float magnitude = 2.0f * directionMagnitude;
@@ -596,7 +596,7 @@ public abstract class Atom : MonoBehaviour
 						atomScript.held = false;
 
 						Quaternion cameraRotation = Camera.main.transform.rotation;
-						Vector3 direction = (new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - new Vector3(lastTouchPosition.x, lastTouchPosition.y, 0.0f));
+						Vector3 direction = cameraRotation * (new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - new Vector3(lastTouchPosition.x, lastTouchPosition.y, 0.0f));
 						float directionMagnitude = direction.magnitude;
 						direction.Normalize();
 						float magnitude = 2.0f * directionMagnitude;
@@ -633,7 +633,7 @@ public abstract class Atom : MonoBehaviour
 					rigidbody.isKinematic = false;
 
 					Quaternion cameraRotation = Camera.main.transform.rotation;
-					Vector2 direction = (Input.mousePosition - lastMousePosition);
+					Vector2 direction = cameraRotation * (Input.mousePosition - lastMousePosition);
 					direction.Normalize();
 					float magnitude = 10.0f;
 					Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
@@ -649,7 +649,7 @@ public abstract class Atom : MonoBehaviour
 							atomScript.held = false;
 
 							Quaternion cameraRotation = Camera.main.transform.rotation;
-							Vector3 direction = (Input.mousePosition - lastMousePosition);
+							Vector3 direction = cameraRotation * (Input.mousePosition - lastMousePosition);
 							direction.Normalize();
 							float magnitude = 10.0f;
 							Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
