@@ -35,11 +35,14 @@ public class CameraScript : MonoBehaviour {
 		colorStartTime = Time.realtimeSinceStartup;
 	}
 
+	//this function handles the rotation of the camera
 	void Update () {
 
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			//the rotation of the camera is calculated by determining the difference in position of the touches on screen, and
+			//computing a magnitude based on the displacement
 			if(Input.touchCount == 1){
 				Touch touch = Input.GetTouch (0);
 				if(touch.phase == TouchPhase.Canceled || touch.phase == TouchPhase.Ended){
@@ -67,6 +70,7 @@ public class CameraScript : MonoBehaviour {
 						float deltaMagnitudeDiffY = touch.position.y - touchPrevPos.y;
 						float deltaTouchY = deltaMagnitudeDiffY / -10.0f;
 
+						//this code is neccesary because we only want to rotate around one axis at once
 						if(first && (Math.Abs(deltaTouchX) > .5f || Math.Abs(deltaTouchY) > .5f)){
 							if(Math.Abs(deltaTouchX) > Math.Abs(deltaTouchY)){
 								rotateAroundY = true;
@@ -88,6 +92,8 @@ public class CameraScript : MonoBehaviour {
 			}
 		}
 		else{
+			//the rotation of the camera is calculated by determining the difference in position of the touches on screen, and
+			//computing a magnitude based on the displacement
 			if(Input.GetMouseButtonUp(0)){
 				first = true;
 			}
@@ -112,6 +118,7 @@ public class CameraScript : MonoBehaviour {
 					float deltaMagnitudeDiffY = Input.mousePosition.y - touchPrevPos.y;
 					float deltaTouchY = deltaMagnitudeDiffY / -10.0f;
 
+					//this code is neccesary because we only want to rotate around one axis at once
 					if(first && (Math.Abs(deltaTouchX) > .5f || Math.Abs(deltaTouchY) > .5f)){
 						if(Math.Abs(deltaTouchX) > Math.Abs(deltaTouchY)){
 							rotateAroundY = true;
@@ -138,12 +145,14 @@ public class CameraScript : MonoBehaviour {
 
 	}
 
+	//this function is called when the user double taps an atom
 	public void setCameraCoordinates(Transform objTransform){
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 		createEnvironment.centerPos = objTransform.position;
 		transform.LookAt (objTransform);
 	}
 
+	//this function will change the background color of the system randomly and dynamically
 	void ChangeBackgroundColor(){
 		if (Time.realtimeSinceStartup - colorStartTime > 10.0f) {
 			if (UnityEngine.Random.Range (0.0f, 1.0f) > .5f) {
