@@ -22,7 +22,8 @@ using System;
 using System.Collections.Generic;
 
 public class AtomTouchGUI : MonoBehaviour {
-	
+
+	//state of the UI
 	private bool atomTouchActive = true;
 	private bool toolbarActive = true;
 	[HideInInspector]public bool dataPanelActive = false;
@@ -31,6 +32,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	private bool volumePanelActive = true;
 	private bool whiteCornerActive = false;
 	private bool potentialsActive = false;
+
+	//textures for the UI
 	public Texture lightBackground;
 	public Texture darkBackground;
 	public Texture darkBlueBackground;
@@ -38,6 +41,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	public Texture whiteCornerArrow;
 	public Texture downArrow;
 	public Texture upArrow;
+
+	//prefabs to spawn
 	public Rigidbody copperPrefab;
 	public Rigidbody goldPrefab;
 	public Rigidbody platinumPrefab;
@@ -103,7 +108,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		guiVolume = createEnvironment.volume;
 	}
 
-
+	//this function creates all UI elements in the game EXCEPT for the graph
 	void OnGUI(){
 
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
