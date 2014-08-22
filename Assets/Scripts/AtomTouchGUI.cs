@@ -1,10 +1,29 @@
-﻿using UnityEngine;
+﻿/**
+ * Class: AtomTouchGUI.cs
+ * Created by: Justin Moeller
+ * Description: The sole purpose of this class is to define the GUI of the game. Because of this,
+ * most of the global variables are declared public to easily swap out the graphics of the UI.
+ * There are a couple of weird quirks with the creation of the UI. The first is that the graph
+ * is NOT defined in this class, it has its own class. This is because the function responsible
+ * for creating the UI, OnGUI(), draws over OnPostRender, meaning it draws over the graph. To solve
+ * this problem, the UI simply draws around the graph and the graph draws in the blank space. (sort of
+ * like a cookie cutter) The second quirk is that, in order to get around Unity's restrictions of drawing
+ * buttons, most of the buttons are drawn with a texture behind them and a blank button (with no text)
+ * over the top of it. This is to provide the same functionality of the button, but get around Unity's
+ * restrictions of drawing buttons
+ * 
+ * 
+ **/ 
+
+
+using UnityEngine;
 using System.Collections;
 using System;
 using System.Collections.Generic;
 
 public class AtomTouchGUI : MonoBehaviour {
-	
+
+	//state of the UI
 	private bool atomTouchActive = true;
 	private bool toolbarActive = true;
 	[HideInInspector]public bool dataPanelActive = false;
@@ -13,6 +32,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	private bool volumePanelActive = true;
 	private bool whiteCornerActive = false;
 	private bool potentialsActive = false;
+
+	//textures for the UI
 	public Texture lightBackground;
 	public Texture darkBackground;
 	public Texture darkBlueBackground;
@@ -20,6 +41,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	public Texture whiteCornerArrow;
 	public Texture downArrow;
 	public Texture upArrow;
+
+	//prefabs to spawn
 	public Rigidbody copperPrefab;
 	public Rigidbody goldPrefab;
 	public Rigidbody platinumPrefab;
@@ -85,7 +108,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		guiVolume = createEnvironment.volume;
 	}
 
-
+	//this function creates all UI elements in the game EXCEPT for the graph
 	void OnGUI(){
 
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
@@ -95,6 +118,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			GUI.skin = sliderControls;
 		}
 
+		//create the "Atomtouch" menu
 		GUIStyle buttonStyle = GUI.skin.label;
 		Rect arrowBackgroundRect = new Rect (0.0f, 0.0f, Screen.width * .14f, Screen.height * .13f * .3f);
 		Texture atomTouchArrow = atomTouchActive ? upArrow : downArrow;
@@ -116,6 +140,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			}
 			GUI.DrawTexture(new Rect(atomTouchRect.x + atomTouchRect.width - 20.0f, atomTouchRect.y + atomTouchRect.height - 20.0f, 20.0f, 20.0f), whiteCornerArrow);
 
+			//create the dropdown of different potentials
 			if(potentialsActive){
 				GUIStyle potentialText = GUI.skin.label;
 				potentialText.alignment = TextAnchor.MiddleCenter;
@@ -164,6 +189,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		Rect openPanelRect = new Rect(0.0f, panelRect.y, (Screen.width * .6f) + 10.0f, panelRect.height);
 		Rect bottomRect = new Rect(panelRect.x + openPanelRect.width, panelArrowRect.y, Screen.width - openPanelRect.width, panelArrowRect.height);
 
+		//specify the graph's coordinates
 		Graph graph = Camera.main.GetComponent<Graph>();
 		graph.xCoord = bottomRect.x;
 		graph.yCoord = Screen.height - bottomRect.y;
@@ -173,7 +199,8 @@ public class AtomTouchGUI : MonoBehaviour {
 			graph.RecomputeMaxDataPoints();
 			firstPass = false;
 		}
-		
+
+		//create the data panel
 		if (dataPanelActive) {
 			GUI.DrawTexture(openPanelRect, lightBackground);
 			GUI.DrawTexture(panelArrowRect, downArrow);
@@ -195,8 +222,6 @@ public class AtomTouchGUI : MonoBehaviour {
 			if(!doubleTapped){
 				DisplaySystemProperties(openPanelRect);
 			}
-
-			//GUI.DrawTexture (new Rect (panelRect.x + buffer, panelRect.y + buffer, panelRect.width - (buffer*2), panelRect.height - panelArrowRect.height - buffer), darkBackground);
 		}
 		else{
 			panelRect = new Rect(0.0f, panelArrowRect.y, Screen.width, panelArrowRect.height);
@@ -208,6 +233,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			dataPanelActive = !dataPanelActive;
 		}
 
+		//create the toolbar options menu (i.e atomkick, reset camera, etc)
 		GUIStyle toolBarButtonStyle = GUI.skin.label;
 		toolBarButtonStyle.alignment = TextAnchor.MiddleCenter;
 		toolBarButtonStyle.fontSize = 25;
@@ -217,6 +243,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		if (toolbarActive) {
 			GUI.DrawTexture(toolbarRect, lightBackground);
 
+			//create reset button
 			Texture reset = resetPressed ? resetButtonDown : resetButtonUp;
 			if(GUI.Button(new Rect(toolbarRect.x, toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), reset, buttonStyle)){
 				resetPressed = true;
@@ -227,6 +254,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				resetPressed = false;
 			}
 
+			//create camera button
 			Texture camera = cameraPressed ? cameraButtonDown : cameraButtonUp;
 			if(GUI.Button(new Rect(toolbarRect.x + (toolbarRect.width / 6.0f), toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), camera, buttonStyle)){
 				cameraPressed = true;
@@ -238,11 +266,13 @@ public class AtomTouchGUI : MonoBehaviour {
 				cameraPressed = false;
 			}
 
+			//create bond line button
 			Texture bondLine = StaticVariables.drawBondLines ? bondLineUp : bondLineDown;
 			if(GUI.Button(new Rect(toolbarRect.x + 2*(toolbarRect.width / 6.0f), toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), bondLine, buttonStyle)){
 				StaticVariables.drawBondLines = !StaticVariables.drawBondLines;
 			}
 
+			//create atom kick button
 			Texture atomKick = atomKickPressed ? atomKickDown : atomKickUp;
 			if(GUI.Button(new Rect(toolbarRect.x + 3*(toolbarRect.width / 6.0f), toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), atomKick, buttonStyle)){
 				atomKickPressed = true;
@@ -253,6 +283,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				atomKickPressed = false;
 			}
 
+			//create the current time button
 			Texture timeTexture = normalTimeButton;
 			if(currentTimeSpeed == StaticVariables.TimeSpeed.Normal){
 				timeTexture = normalTimeButton;
@@ -264,7 +295,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				timeTexture = slowTimeButton;
 				Time.timeScale = .05f;
 				MotionBlur blur = Camera.main.GetComponent<MotionBlur>();
-				blur.blurAmount = 0.73f;
+				blur.blurAmount = 0.68f;
 
 			}
 			else if(currentTimeSpeed == StaticVariables.TimeSpeed.Stopped){
@@ -285,7 +316,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				}
 			}
 
-
+			//create the red x if the user double tapped an atom
 			for (int i = 0; i < allMolecules.Length; i++) {
 				Atom atomScript = allMolecules[i].GetComponent<Atom>();
 				if(atomScript.doubleTapped){
@@ -307,7 +338,7 @@ public class AtomTouchGUI : MonoBehaviour {
 
 
 
-
+		//create the add atom toolbar
 		Rect addAtomRect = new Rect (panelRect.x, panelRect.y - panelArrowRect.height, Screen.width * .2f, panelArrowRect.height);
 		GUI.DrawTexture (addAtomRect, darkBackground);
 		Texture addAtom = addAtomActive ? downArrow : upArrow;
@@ -320,6 +351,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		if (addAtomActive) {
 			GUI.DrawTexture(lightAddAtom, lightBackground);
 
+			//create the copper button
 			if(GUI.RepeatButton(new Rect(lightAddAtom.x + 5.0f, lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), copperTextureAdd, buttonStyle)){
 				if(!clicked){
 					clicked = true;
@@ -336,6 +368,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					}
 				}
 			}
+			//create the gold button
 			if(GUI.RepeatButton(new Rect(lightAddAtom.x + 5.0f+(addAtomRect.width / 4.0f), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), goldTextureAdd, buttonStyle)){
 				if(!clicked){
 					clicked = true;
@@ -352,6 +385,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					}
 				}
 			}
+			//create the platinum button
 			if(GUI.RepeatButton(new Rect(lightAddAtom.x + 5.0f+(2*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), platinumTextureAdd, buttonStyle)){
 				if(!clicked){
 					clicked = true;
@@ -369,6 +403,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				}
 			}
 
+			//create the garbage button for deleting atoms
 			Texture garbage = garbagePressed ? garbageTextureDown : garbageTexture;
 			if(GUI.Button(new Rect(lightAddAtom.x + 5.0f+(3*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), garbage, buttonStyle)){
 				for(int i = 0; i < allMolecules.Length; i++){
@@ -420,6 +455,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			GUI.color = Color.white;
 		}
 
+		//create the temperature panel and the temperature slider
 		Rect temperatureArrowBackgroundRect = new Rect(addAtomRect.x + addAtomRect.width + 10.0f, addAtomRect.y, (Screen.width - (addAtomRect.width+20)) / 2.0f, addAtomRect.height);
 		GUI.DrawTexture(temperatureArrowBackgroundRect, darkBackground);
 		Texture tempTexture = temperaturePanelActive ? downArrow : upArrow;
@@ -458,6 +494,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			}
 		}
 
+		//create the volume panel and the volume slider
 		Rect volumeArrowBackgroundRect = new Rect (temperatureArrowBackgroundRect.x + temperatureArrowBackgroundRect.width + 10.0f, addAtomRect.y, temperatureArrowBackgroundRect.width, temperatureArrowBackgroundRect.height);
 		GUI.DrawTexture (volumeArrowBackgroundRect, darkBackground);
 		Texture volumeArrow = volumePanelActive ? downArrow : upArrow;
@@ -561,6 +598,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			startTime = 0.0f;
 		}
 
+		//create the atom selected graphic if the user has select 1 or more atoms
 		int selectedAtoms = CountSelectedAtoms ();
 		if (selectedAtoms > 0) {
 			GUIStyle atomsSelectedText = GUI.skin.label;
@@ -615,6 +653,7 @@ public class AtomTouchGUI : MonoBehaviour {
 
 	}
 
+	//this function displays properties that are apart of the system as a whole, such as the number of atoms
 	void DisplaySystemProperties(Rect displayRect){
 		GUIStyle timeText = GUI.skin.label;
 		timeText.alignment = TextAnchor.MiddleLeft;
@@ -644,6 +683,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		GUI.Label (new Rect(displayRect.x + 10.0f, displayRect.y + 100.0f, 225, 30), "Platinum Atoms: " + platinumAtoms);
 	}
 
+	//this function display the properties that are specific to one specific atom such as its position, velocity, and type
 	void DisplayAtomProperties(GameObject currAtom, Rect displayRect){
 
 		GUIStyle timeText = GUI.skin.label;
@@ -677,6 +717,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		
 	}
 
+	//this function displays the angles of the bonds to other atoms
 	void DisplayBondProperties(GameObject currAtom, Rect displayRect){
 		
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
@@ -723,6 +764,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		
 	}
 
+	//this function selects all of the atoms in the scene
 	void SelectAllAtoms(){
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		for (int i = 0; i < allMolecules.Length; i++) {
@@ -733,6 +775,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		}
 	}
 
+	//this function deselects all of the atoms in the scene
 	void DeselectAllAtoms(){
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		for (int i = 0; i < allMolecules.Length; i++) {
@@ -743,6 +786,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		}
 	}
 
+	//when an atom is added to the scene, its position must be checked to make sure it is inside of the box
 	Vector3 CheckPosition(Vector3 position){
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
@@ -767,6 +811,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		return position;
 	}
 
+	//this function returns the number of atoms that are selected
 	int CountSelectedAtoms(){
 		int selectedAtoms = 0;
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
@@ -780,6 +825,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		return selectedAtoms;
 	}
 
+	//this function checks the position of all of the atoms to make sure they are inside of the box
 	void CheckAtomVolumePositions(){
 		
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
@@ -810,6 +856,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		
 	}
 
+	//this function changes the panels so they are in double clicked mode
 	public void SetDoubleClicked(){
 		dataPanelActive = true;
 		atomTouchActive = false;
@@ -819,6 +866,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		volumePanelActive = false;
 	}
 
+	//this function disables the panels so it goes back to the default mode
 	void RedXClicked(){
 		dataPanelActive = false;
 		atomTouchActive = true;
@@ -828,6 +876,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		volumePanelActive = true;
 	}
 
+	//this function give all atoms in the scene a random velocity
 	public void AtomKick(){
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		for(int i = 0; i < allMolecules.Length; i++){

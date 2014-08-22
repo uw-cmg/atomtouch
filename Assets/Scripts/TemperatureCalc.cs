@@ -1,4 +1,20 @@
-﻿using UnityEngine;
+﻿/**
+ * Class: TemperatureCalc.cs
+ * Created by: Justin Moeller
+ * Description: This class handles the computation of the scalar that the atoms' velocities are multiplied by.
+ * The desiredTemperature variable is the temperature that the user desires the system to be at, and if the
+ * system is not at that temperature, a scalar is calculated that will either speed up or slow down the atoms
+ * so that they are the appropriate velocities that correspond to the desiredTemperature. This scalar value
+ * is smoothed over a couple of frames so the atoms' velocities don't change drastically in one frame, but rather
+ * gradually over a couple of frames. This is so the atoms look like they gain/lose speed naturally rather than 
+ * instantly. The squareRootAlpha variable is the scalar that the atoms' velocities are scaled by.
+ * 
+ * 
+ * 
+ **/ 
+
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;

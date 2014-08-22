@@ -1,4 +1,19 @@
-﻿using UnityEngine;
+﻿/**
+ * Class: StaticVariables.cs
+ * Created By: Justin Moeller
+ * Description: This class is simply a list of static variables and static functions
+ * that can be called from any class. The static variables in this list are either
+ * constants or variables that can be controlled from across the entire system of
+ * atom (i.e currentPotential). There are two functions in this class, DrawLine and
+ * DrawQuad. DrawLine draw a line in 3D space and DrawQuad draws a quad in 3D space.
+ * To use these functions in 2D space, the coordinates given to the function must be
+ * translated such that they are rotated based on the rotation of the camera. 
+ * 
+ * 
+ **/ 
+
+
+using UnityEngine;
 using System.Collections;
 using System;
 using System.Collections.Generic;
@@ -20,10 +35,7 @@ public class StaticVariables {
 
 	//Convert units of Angstroms to meters
 	public static float angstromsToMeters = (float) Math.Pow (10,-10);
-
-	//Delay before any temperature effects are applied
-	public static float tempDelay = 5.0f;
-
+		
 	//Cutoff for "seeing" other atoms, in Angstroms
 	//multiplied by sigma for Lennard-Jones potential
 	public static float cutoff = 5.0f; //mutliplier for cutoff 
@@ -35,41 +47,39 @@ public class StaticVariables {
 	//Multiplier for transition between actual L-J potential and curve to constant
 	//    This number will be multiplied by sigma to find the transition distance
 	public static float r_min_multiplier = 0.75f;
-
-	//melting temperatures
-	//Copper, 1358 K
-
+		
 	//Temperature slider bounds in K
-	//public static float tempRangeLow = 0.0000001f; 
 	public static float tempRangeLow = 0.01f;
 	public static float tempRangeHigh = 5000.0f; 
 
-	//Time scale
-	public static float timeScale = (1.0f/40.0f); //1.0f;
-
+	//this variable causes the bond lines to either draw or not draw
 	public static bool drawBondLines = true;
+	//the variable pauses the simulation of physics
 	public static bool pauseTime = false;
-	public static int transparent = 3000;
-	public static int overlay = 4000;
-	public static float atomTransparency = .5f;
 	//access to sigma values by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
 	public static Dictionary<String, float> sigmaValues;
+	//this varaible keeps track of the current potential that is being used. (Note: only Lennard-Jones is currently implemented)
 	public static Potential currentPotential = Potential.LennardJones;
+	//this variable keeps track of the amount of simulation time that has passed
 	public static float currentTime = 0.0f;
 
+	//There are three potentials, but currently Lennard-Jones is the only one that is implemented so changing
+	//between these potentials doesnt do anything
 	public enum Potential{
 		LennardJones,
 		Brenner,
 		Buckingham
 	};
 
+	//this is an enum of the different states that time can pass
 	public enum TimeSpeed{
 		Normal,
 		SlowMotion,
 		Stopped
 	};
 	
-
+	//this function will draw a line from startinPos to endingPos. The atom colors will color each side of the line.
+	//Note: this function can only be called within OnPostRender(). It will not display if called from a different function
 	public static void DrawLine(Vector3 startingPos, Vector3 endingPos, Color atomColor1, Color atomColor2, float lineWidth, Material mat){
 		
 		Vector3 startingPos2 = (startingPos - endingPos);
@@ -142,6 +152,8 @@ public class StaticVariables {
 		GL.PopMatrix();
 	}
 
+	//this function will draw a quad in 3D space given four coordinates and a color
+	//Note: this function must be called from within OnPostRender(). It will not display if called from another function
 	public static void DrawQuad(Vector3 upperLeft, Vector3 upperRight, Vector3 lowerLeft, Vector3 lowerRight, Color color, Material mat){
 
 		if (!mat) {

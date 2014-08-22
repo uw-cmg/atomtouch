@@ -1,7 +1,23 @@
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
+/**
+ * Class: Atom.cs
+ * Created by: Justin Moeller
+ * Description: This is the main class for dealing with anything related to the atoms.
+ * The atoms' forces are calculated in FixedUpdate, then their velocities are scaled based
+ * on the temperature of the system. FixedUpdate is currently called every .0005 seconds,
+ * which is Time.fixedDeltaTime. In the FixedUpdate function, it is clearly marked where the
+ * code for the new potentials should go. The rest of the class handles the user interactions with 
+ * the atoms, such as double tapping or moving an atom. Because OnMouseDown, OnMouseDrag, and
+ * OnMouseUp are not supported for iOS, the code that handles dragging an atom had to be implemented
+ * twice, once for iOS and once for PC. This class is the base class for copper, gold, and platinum
+ * and every atom runs this script. The abstract variables and functions that are declared must be 
+ * defined by the children of this class because they are probably different per child. (i.e sigma and epsilon)
+ * The collision detection for each atom is NOT handled by Unity, but rather in the Update function.
+ * It simply checks if the atom is within the box, and if its not, it reverses its velocity to go back
+ * inside the box. Transparency and selection are handled by passing the call to their child, then
+ * changing the material of the atom.
+ * 
+ * 
+ **/
 
 //L-J potentials from Zhen and Davies, Phys. Stat. Sol. a, 78, 595 (1983)
 //Symbol, epsilon/k_Boltzmann (K) n-m version, 12-6 version, sigma (Angstroms),
@@ -11,28 +27,32 @@ using System;
 //Cu: 3401.1, 4733.5, 2.3374,  63.546, 3.177, 3.610, 2.55
 //Pt: 7184.2, 7908.7, 2.5394, 165.084, 8.254, 3.920, 2.77
 
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using System;
+
 public abstract class Atom : MonoBehaviour
 {
+	//variables for computing where the atom goes when touched
 	private Vector3 offset;
 	private Vector3 screenPoint;
 	private Vector3 lastMousePosition;
 	private Vector3 lastTouchPosition;
-	private GameObject moleculeToMove = null;
 	private float deltaTouch2 = 0.0f;
 	private bool moveZDirection = false;
 	private float lastTapTime;
 	private float tapTime = .35f;
 	[HideInInspector]public bool selected = false;
 	[HideInInspector]public bool doubleTapped = false;
+	//these dictionaries are used when moving groups of atoms. The key is the atom's name: (i.e "0" or "1")
 	private Dictionary<String, Vector3> gameObjectOffsets;
 	private Dictionary<String, Vector3> gameObjectScreenPoints;
-	private TextMesh angstromText;
-	private Vector3 velocityBeforeCollision;
 	private float dragStartTime;
 	private bool dragCalled;
+	//dictionary for holding the TextMeshes of distances between atoms
 	private Dictionary<String, TextMesh> bondDistanceText;
-	
-	public Material lineMaterial;
+
 	public TextMesh textMeshPrefab;
 	public bool held { get; set; }
 
@@ -43,7 +63,8 @@ public abstract class Atom : MonoBehaviour
 	public abstract void SetSelected (bool selected);
 	public abstract void SetTransparent (bool transparent);
 	public abstract String atomName { get; }
-	
+
+	//variables for computing the forces on atoms
 	private Vector3 lastVelocity = Vector3.zero;
 	private Vector3 a_n = Vector3.zero;
 	private Vector3 a_nplus1 = Vector3.zero;
@@ -58,7 +79,8 @@ public abstract class Atom : MonoBehaviour
 		if (!StaticVariables.pauseTime) {
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 			List<GameObject> molecules = new List<GameObject>();
-			
+
+			//only get the forces of the atoms that are within the cutoff range
 			for(int i = 0; i < allMolecules.Length; i++){
 				double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
 				if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff)){
@@ -82,11 +104,12 @@ public abstract class Atom : MonoBehaviour
 			}
 
 
-
+			//zero out any angular velocity
 			if(!gameObject.rigidbody.isKinematic) gameObject.rigidbody.angularVelocity = Vector3.zero;
 
 			gameObject.rigidbody.AddForce (force, mode:ForceMode.Force);
 
+			//scale the velocity based on the temperature of the system
 			Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
 			if ((rigidbody.velocity.magnitude != 0) && !rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && allMolecules.Length > 1) {
 				gameObject.rigidbody.velocity = newVelocity;
@@ -94,6 +117,7 @@ public abstract class Atom : MonoBehaviour
 
 		}
 		else{
+			//zero out all of the velocities of all of the atoms when time is stopped
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 			for(int i = 0; i < allMolecules.Length; i++){
 				GameObject currAtom = allMolecules[i];
@@ -105,6 +129,7 @@ public abstract class Atom : MonoBehaviour
 
 	}
 
+	//the function returns the force on the atom given the list of the atoms that are within range of it
 	Vector3 GetLennardJonesForce(List<GameObject> objectsInRange){
 		//double startTime = Time.realtimeSinceStartup;
 		Vector3 finalForce = new Vector3 (0.000f, 0.000f, 0.000f);
@@ -154,7 +179,7 @@ public abstract class Atom : MonoBehaviour
 	}
 
 
-
+	//this function takes care of double tapping, collision detection, and detecting OnMouseDown, OnMouseDrag, and OnMouseUp on iOS
 	void Update(){
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			if(Input.touchCount > 0){
@@ -163,6 +188,7 @@ public abstract class Atom : MonoBehaviour
 				if(!held && Physics.Raycast(ray, out hitInfo) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
 					if(Input.GetTouch(0).phase == TouchPhase.Began){
 						if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
+							//user double tapped an atom on iOS
 							AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
 							atomTouchGUI.SetDoubleClicked();
 							ResetDoubleTapped();
@@ -170,12 +196,14 @@ public abstract class Atom : MonoBehaviour
 							RemoveAllBondText();
 							AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
 						}
+						//user touch an atom at this point
 						OnMouseDownIOS();
 						lastTapTime = Time.realtimeSinceStartup;
 					}
 				}
 				else if(held){
 					if(Input.GetTouch(0).phase == TouchPhase.Moved && Input.touchCount == 1){
+						//user is now dragging an atom
 						OnMouseDragIOS();
 					}
 					else if(Input.touchCount == 2){
@@ -183,6 +211,7 @@ public abstract class Atom : MonoBehaviour
 						HandleZAxisTouch();
 					}
 					else if(Input.GetTouch(0).phase == TouchPhase.Canceled || Input.GetTouch(0).phase == TouchPhase.Ended){
+						//user let go of the atom
 						OnMouseUpIOS();
 					}
 					lastTouchPosition = Input.GetTouch(0).position;
@@ -192,6 +221,7 @@ public abstract class Atom : MonoBehaviour
 		else{
 			if(Input.GetMouseButtonDown(0)){
 				if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
+					//user double tapped an atom on PC
 					AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
 					atomTouchGUI.SetDoubleClicked();
 					ResetDoubleTapped();
@@ -209,7 +239,7 @@ public abstract class Atom : MonoBehaviour
 			HandleRightClick();
 		}
 		if (doubleTapped) {
-
+			//this is what happens when double tapped is true
 			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
 			cameraScript.setCameraCoordinates(transform);
 			UpdateBondText();
@@ -218,6 +248,7 @@ public abstract class Atom : MonoBehaviour
 		CheckVelocity ();
 	}
 
+	//another method for selecting atoms
 	void HandleRightClick(){
 		if (Input.GetMouseButtonDown (1)) {
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -229,7 +260,7 @@ public abstract class Atom : MonoBehaviour
 		}
 	}
 
-	//controls for touch devices
+	//this function gives the user the ability to control the z-axis of the atom on iOS
 	void HandleZAxisTouch(){
 		if(Input.touchCount == 2){
 			Touch touch2 = Input.GetTouch(1);
@@ -238,6 +269,7 @@ public abstract class Atom : MonoBehaviour
 			}
 			else if(touch2.phase == TouchPhase.Moved){
 				if(!selected){
+					//this is for one atom
 					Vector2 touchOnePrevPos = touch2.position - touch2.deltaPosition;
 					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
 					deltaTouch2 = deltaMagnitudeDiff / 10.0f;
@@ -248,6 +280,7 @@ public abstract class Atom : MonoBehaviour
 					screenPoint += new Vector3(0.0f, 0.0f, deltaTouch2);
 				}
 				else{
+					//this is for a group of atoms
 					Vector2 touchOnePrevPos = touch2.position - touch2.deltaPosition;
 					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
 					deltaTouch2 = deltaMagnitudeDiff / 10.0f;
@@ -284,8 +317,8 @@ public abstract class Atom : MonoBehaviour
 			}
 		}
 		else if(Input.touchCount == 0 && moveZDirection){
+			//this resets the neccesary variables so the atom can move in two dimensions again. It also resets the atom's material
 			moveZDirection = false;
-			moleculeToMove = null;
 			held = false;
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 			for(int i = 0; i < allMolecules.Length; i++){
@@ -297,6 +330,7 @@ public abstract class Atom : MonoBehaviour
 		}
 	}
 
+	//reset all of the atoms double tapped to false
 	void ResetDoubleTapped(){
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		for (int i = 0; i < allMolecules.Length; i++) {
@@ -305,55 +339,20 @@ public abstract class Atom : MonoBehaviour
 		}
 	}
 		
-	void SpawnAngstromText(){
-		Quaternion cameraRotation = Camera.main.transform.rotation;
-		Vector3 up = cameraRotation * Vector3.up;
-		Vector3 left = cameraRotation * -Vector3.right;
-		angstromText = Instantiate(textMeshPrefab, new Vector3(0.0f, 0.0f, 0.0f), cameraRotation) as TextMesh;
-		angstromText.renderer.material.renderQueue = StaticVariables.overlay;
-		Vector3 newPosition = transform.position + (left * 1.0f) + (up * 2.0f);
-		angstromText.transform.position = newPosition;
-		angstromText.text = "1 Angstrom";
-		LineRenderer angstromLine = angstromText.transform.gameObject.AddComponent<LineRenderer> ();
-		angstromLine.material = lineMaterial;
-		angstromLine.SetColors(Color.yellow, Color.yellow);
-		angstromLine.SetWidth(0.2F, 0.2F);
-		angstromLine.SetVertexCount(2);
-	}
-
-	void MoveAngstromText(){
-		Quaternion cameraRotation = Camera.main.transform.rotation;
-		Vector3 up = cameraRotation * Vector3.up;
-		Vector3 left = cameraRotation * -Vector3.right;
-		Vector3 newPosition = transform.position + (left * 1.0f) + (up * 2.0f);
-		if (angstromText != null) {
-			angstromText.transform.position = newPosition;
-			LineRenderer angstromLine = angstromText.GetComponent<LineRenderer> ();
-			Vector3 position1 = transform.position + (left * .5f) + (up);
-			Vector3 position2 = transform.position + (left * -.5f) + (up);
-			angstromLine.SetPosition(0, position1);
-			angstromLine.SetPosition(1, position2);
-		}
-	}
-
-	void DestroyAngstromText(){
-		if (angstromText != null) {
-			LineRenderer angstromLine = angstromText.GetComponent<LineRenderer> ();
-			Destroy(angstromLine);
-			Destroy(angstromText);
-		}
-	}
-
+	//this is the equivalent of OnMouseDown, but for iOS
 	void OnMouseDownIOS(){
 		dragStartTime = Time.realtimeSinceStartup;
 		dragCalled = false;
 		held = true;
 		if (!selected) {
+			//this is for one atom
 			screenPoint = Camera.main.WorldToScreenPoint(transform.position);
+			//the -15.0f here is for moving the atom above your finger
 			offset = transform.position - Camera.main.ScreenToWorldPoint(
 				new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y - 15.0f, screenPoint.z));
 		}
 		else{
+			//this is for a group of atoms
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 			gameObjectOffsets = new Dictionary<String, Vector3>();
 			gameObjectScreenPoints = new Dictionary<String, Vector3>();
@@ -363,6 +362,7 @@ public abstract class Atom : MonoBehaviour
 				if(atomScript.selected){
 					currAtom.rigidbody.isKinematic = true;
 					Vector3 pointOnScreen = Camera.main.WorldToScreenPoint(currAtom.transform.position);
+					//the -15.0f here is for moving the atom above your finger
 					Vector3 atomOffset = currAtom.transform.position - Camera.main.ScreenToWorldPoint(
 						new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y - 15.0f, pointOnScreen.z));
 					atomScript.held = true;
@@ -381,12 +381,15 @@ public abstract class Atom : MonoBehaviour
 			held = true;
 
 			if(!selected){
+				//this is for one atom
 				screenPoint = Camera.main.WorldToScreenPoint(transform.position);
+				//the -15.0 here is for moving the atom above your mouse
 				offset = transform.position - Camera.main.ScreenToWorldPoint(
 					new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, screenPoint.z));
 
 			}
 			else{
+				//this is for a group of atoms
 				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 				gameObjectOffsets = new Dictionary<String, Vector3>();
 				gameObjectScreenPoints = new Dictionary<String, Vector3>();
@@ -396,10 +399,10 @@ public abstract class Atom : MonoBehaviour
 					if(atomScript.selected){
 						currAtom.rigidbody.isKinematic = true;
 						Vector3 pointOnScreen = Camera.main.WorldToScreenPoint(currAtom.transform.position);
+						//the -15.0 here is for moving the atom above your mouse
 						Vector3 atomOffset = currAtom.transform.position - Camera.main.ScreenToWorldPoint(
 							new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, pointOnScreen.z));
 						atomScript.held = true;
-						//print ("adding key: " + currAtom.name);
 						gameObjectOffsets.Add(currAtom.name, atomOffset);
 						gameObjectScreenPoints.Add(currAtom.name, pointOnScreen);
 					}
@@ -408,6 +411,7 @@ public abstract class Atom : MonoBehaviour
 		}
 	}
 
+	//this is the equivalent of OnMouseDrag for iOS
 	void OnMouseDragIOS(){
 		if (Time.realtimeSinceStartup - dragStartTime > 0.1f) {
 			dragCalled = true;
@@ -415,6 +419,7 @@ public abstract class Atom : MonoBehaviour
 			ApplyTransparency();
 			rigidbody.isKinematic = true;
 			if(!selected){
+				//this is for one atom
 				Vector3 diffVector = new Vector3(lastTouchPosition.x, lastTouchPosition.y) - new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y);
 				if(diffVector.magnitude > 0 && !doubleTapped && Input.touchCount == 1){
 					Vector3 curScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, screenPoint.z);
@@ -424,6 +429,7 @@ public abstract class Atom : MonoBehaviour
 				}
 			}
 			else{
+				//this is for a group of atoms
 				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 				bool noneDoubleTapped = true;
 				for(int i = 0; i < allMolecules.Length; i++){
@@ -432,6 +438,7 @@ public abstract class Atom : MonoBehaviour
 					if(atomScript.doubleTapped && atomScript.selected) noneDoubleTapped = false;
 				}
 
+				//only move the atoms if none of them have been double tapped
 				if(noneDoubleTapped){
 					List<Vector3> atomPositions = new List<Vector3>();
 					bool moveAtoms = true;
@@ -455,6 +462,7 @@ public abstract class Atom : MonoBehaviour
 						Vector3 finalPosition = newAtomPosition;
 						atomPositions.Add(finalPosition);
 					}
+					//only move the atoms if none of them have hit the wall of the box
 					if(atomPositions.Count > 0 && moveAtoms){
 						for(int i = 0; i < allMolecules.Length; i++){
 							Vector3 newAtomPosition = atomPositions[i];
@@ -475,16 +483,17 @@ public abstract class Atom : MonoBehaviour
 				Quaternion cameraRotation = Camera.main.transform.rotation;
 				ApplyTransparency();
 				rigidbody.isKinematic = true;
-				//held = true;
 
 				if(!selected){
+					//this is for one atom
 					if((lastMousePosition - Input.mousePosition).magnitude > 0 && !doubleTapped){
 						Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
 						Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
 						curPosition = CheckPosition(curPosition);
 						transform.position = curPosition;
 					}
-					
+
+					//this is the implementation of moving the atom in the z-direction
 					float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
 					Vector3 projectPosition = transform.position;
 					projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
@@ -492,6 +501,7 @@ public abstract class Atom : MonoBehaviour
 					screenPoint += new Vector3(0.0f, 0.0f, deltaZ);
 				}
 				else{
+					//this is for a group of atoms
 					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 					bool noneDoubleTapped = true;
 					for(int i = 0; i < allMolecules.Length; i++){
@@ -499,7 +509,8 @@ public abstract class Atom : MonoBehaviour
 						Atom atomScript = currAtom.GetComponent<Atom>();
 						if(atomScript.doubleTapped && atomScript.selected) noneDoubleTapped = false;
 					}
-					
+
+					//only move the atoms if none of them have been double tapped
 					if(noneDoubleTapped){
 						List<Vector3> atomPositions = new List<Vector3>();
 						bool moveAtoms = true;
@@ -533,7 +544,8 @@ public abstract class Atom : MonoBehaviour
 							}
 							atomPositions.Add(finalPosition);
 						}
-						
+
+						//only move the atoms if none of them have hit the walls of the box
 						if(atomPositions.Count > 0 && moveAtoms){
 							for(int i = 0; i < allMolecules.Length; i++){
 								Vector3 newAtomPosition = atomPositions[i];
@@ -545,14 +557,16 @@ public abstract class Atom : MonoBehaviour
 				}
 			}
 			
-			
+			//always keep track of the last mouse position for the next frame for flinging atoms
 			lastMousePosition = Input.mousePosition;
 		}
 		
 	}
 
+	//this function is the equivalent of OnMouseUp for iOS
 	void OnMouseUpIOS(){
 		if (!dragCalled) {
+			//if the user only tapped the atom, this is executed
 			selected = !selected;
 			SetSelected(selected);
 			rigidbody.isKinematic = false;
@@ -561,10 +575,11 @@ public abstract class Atom : MonoBehaviour
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 
 			if(!selected){
+				//this is for one atom
 				rigidbody.isKinematic = false;
 
 				Quaternion cameraRotation = Camera.main.transform.rotation;
-				Vector3 direction = (new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - new Vector3(lastTouchPosition.x, lastTouchPosition.y, 0.0f));
+				Vector3 direction = cameraRotation * (new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - new Vector3(lastTouchPosition.x, lastTouchPosition.y, 0.0f));
 				float directionMagnitude = direction.magnitude;
 				direction.Normalize();
 				float magnitude = 2.0f * directionMagnitude;
@@ -572,6 +587,7 @@ public abstract class Atom : MonoBehaviour
 				gameObject.rigidbody.velocity = flingVector;
 			}
 			else{
+				//this is for a group of atoms
 				for(int i = 0; i < allMolecules.Length; i++){
 					GameObject currAtom = allMolecules[i];
 					Atom atomScript = currAtom.GetComponent<Atom>();
@@ -580,7 +596,7 @@ public abstract class Atom : MonoBehaviour
 						atomScript.held = false;
 
 						Quaternion cameraRotation = Camera.main.transform.rotation;
-						Vector3 direction = (new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - new Vector3(lastTouchPosition.x, lastTouchPosition.y, 0.0f));
+						Vector3 direction = cameraRotation * (new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - new Vector3(lastTouchPosition.x, lastTouchPosition.y, 0.0f));
 						float directionMagnitude = direction.magnitude;
 						direction.Normalize();
 						float magnitude = 2.0f * directionMagnitude;
@@ -589,7 +605,8 @@ public abstract class Atom : MonoBehaviour
 					}
 				}
 			}
-			
+
+			//reset the selection status of all the atoms
 			for(int i = 0; i < allMolecules.Length; i++){
 				GameObject currAtom = allMolecules[i];
 				Atom atomScript = currAtom.GetComponent<Atom>();
@@ -603,6 +620,7 @@ public abstract class Atom : MonoBehaviour
 	void OnMouseUp (){
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
 			if(!dragCalled){
+				//this is executed if an atom is only tapped
 				selected = !selected;
 				SetSelected(selected);
 				rigidbody.isKinematic = false;
@@ -611,16 +629,18 @@ public abstract class Atom : MonoBehaviour
 				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 
 				if(!selected){
+					//this is for one atom
 					rigidbody.isKinematic = false;
 
 					Quaternion cameraRotation = Camera.main.transform.rotation;
-					Vector2 direction = (Input.mousePosition - lastMousePosition);
+					Vector2 direction = cameraRotation * (Input.mousePosition - lastMousePosition);
 					direction.Normalize();
 					float magnitude = 10.0f;
 					Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
 					gameObject.rigidbody.velocity = flingVector;
 				}
 				else{
+					//this is for a group of atoms
 					for(int i = 0; i < allMolecules.Length; i++){
 						GameObject currAtom = allMolecules[i];
 						Atom atomScript = currAtom.GetComponent<Atom>();
@@ -629,7 +649,7 @@ public abstract class Atom : MonoBehaviour
 							atomScript.held = false;
 
 							Quaternion cameraRotation = Camera.main.transform.rotation;
-							Vector3 direction = (Input.mousePosition - lastMousePosition);
+							Vector3 direction = cameraRotation * (Input.mousePosition - lastMousePosition);
 							direction.Normalize();
 							float magnitude = 10.0f;
 							Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
@@ -637,7 +657,8 @@ public abstract class Atom : MonoBehaviour
 						}
 					}
 				}
-				
+
+				//reset the selection status of all of the atoms
 				for(int i = 0; i < allMolecules.Length; i++){
 					GameObject currAtom = allMolecules[i];
 					Atom atomScript = currAtom.GetComponent<Atom>();
@@ -648,13 +669,13 @@ public abstract class Atom : MonoBehaviour
 		}
 	}
 
-
+	//this functions returns the appropriate bond distance, given two atoms
 	public float BondDistance(GameObject otherAtom){
 		Atom otherAtomScript = otherAtom.GetComponent<Atom> ();
 		return 1.225f * StaticVariables.sigmaValues [atomName+otherAtomScript.atomName];
 	}
 
-
+	//this functions checks the position of the atoms, and if its outside of the box, it reverses the atoms velocity to go back inside the box
 	void CheckVelocity(){
 
 		if (gameObject.rigidbody.isKinematic) return;
@@ -683,6 +704,7 @@ public abstract class Atom : MonoBehaviour
 		gameObject.rigidbody.velocity = newVelocity;
 	}
 
+	//this function checks the position of an atom, and if its outside of the box, simply place the atom back inside the box
 	Vector3 CheckPosition(Vector3 position){
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
@@ -707,6 +729,7 @@ public abstract class Atom : MonoBehaviour
 		return position;
 	}
 
+	//makes all atoms transparency except for the current atom and all atoms that are "close" to it
 	void ApplyTransparency(){
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		for (int i = 0; i < allMolecules.Length; i++) {
@@ -725,6 +748,7 @@ public abstract class Atom : MonoBehaviour
 		}
 	}
 
+	//resets all atoms transparency back to normal or to selected depending on its status
 	public void ResetTransparency(){
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		for (int i = 0; i < allMolecules.Length; i++) {
@@ -739,6 +763,7 @@ public abstract class Atom : MonoBehaviour
 		}
 	}
 
+	//this functions creates, moves, and destroys bond distance text depending on the distance to other atoms in the system
 	void UpdateBondText(){
 		Quaternion cameraRotation = Camera.main.transform.rotation;
 		Vector3 left = cameraRotation * -Vector3.right;
@@ -798,6 +823,7 @@ public abstract class Atom : MonoBehaviour
 		bondDistanceText.Clear ();
 	}
 
+	//this function destroys all bond distance text in the scene
 	void RemoveAllBondText(){
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		for (int i = 0; i < allMolecules.Length; i++) {
