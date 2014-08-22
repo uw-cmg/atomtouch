@@ -61,7 +61,9 @@ public class Gold : Atom
 
 	void Start ()
 	{
+		//make the atom its original color to start
 		SetSelected (false);
+		//scale the atom according to sigma
 		gameObject.transform.localScale = new Vector3(sigmaValue * .5f, sigmaValue * .5f, sigmaValue * .5f);
 	}
 }
