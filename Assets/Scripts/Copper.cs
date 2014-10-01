@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Class: Copper.cs
  * Created by: Justin Moeller
  * Description: This class defines anything that is copper specific, and NOT related to all of
@@ -21,24 +21,41 @@ public class Copper : Atom {
 	public Material selectedMaterial;
 	public Material transparentMaterial;
 		
-	public override String atomName 
-	{ 
+	public override String atomName { 
 		get{ return "Copper"; } 
 	}
 
-	public override float epsilon
-	{
+	public override float epsilon{
 		get { return ((float)(6.537 * Math.Pow(10, -20))); } // J
 	}
 		
-	public override float sigma
-	{
+	public override float sigma {
 		get { return sigmaValue; }
 	}
 	
-	protected override float massamu
-	{
+	protected override float massamu {
 		get { return 63.546f; } //amu
+	}
+
+	// We assume copper to play the role of sodium
+	public override float buck_A {
+		get { return 487.0f*1.6f*Mathf.Pow(10,-19); } //units of [J]
+	}
+
+	public override float buck_B {
+		get { return 4.207408f; } //units of [1/Angstrom]
+	}
+
+	public override float buck_C {
+		get { return 1.048f*1.6f*Mathf.Pow(10,-19); } //units of [J.Anstrom^6]
+	}
+
+	public override float buck_D {
+		get { return 0.499f*1.6f*Mathf.Pow(10,-19); } //units of [J.Angstrom^8]
+	}
+
+	public override float Q_eff {
+		get { return 1.0f*1.6f*Mathf.Pow(10,-19); } //units of Coulomb
 	}
 
 	public override void SetSelected (bool selected){

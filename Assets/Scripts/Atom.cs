@@ -64,6 +64,13 @@ public abstract class Atom : MonoBehaviour
 	public abstract void SetTransparent (bool transparent);
 	public abstract String atomName { get; }
 
+	public abstract float buck_A { get; } // Buckingham potential coefficient
+	public abstract float buck_B { get; } // Buckingham potential coefficient
+	public abstract float buck_C { get; } // Buckingham potential coefficient
+	public abstract float buck_D { get; } // Buckingham potential coefficient
+	public abstract float Q_eff { get; } // Ion effective charge for use in Buckingham potential
+
+
 	//variables for computing the forces on atoms
 	private Vector3 lastVelocity = Vector3.zero;
 	private Vector3 a_n = Vector3.zero;
@@ -73,20 +80,12 @@ public abstract class Atom : MonoBehaviour
 
 		gameObject.rigidbody.velocity = new Vector3 (UnityEngine.Random.Range(-1.0f, 1.0f), UnityEngine.Random.Range(-1.0f, 1.0f), UnityEngine.Random.Range(-1.0f, 1.0f));
 		bondDistanceText = new Dictionary<String, TextMesh> ();
+		//Debug.Log ("cutoff = ", StaticVariables.cutoff);
 	}
 
 	void FixedUpdate(){
 		if (!StaticVariables.pauseTime) {
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-			List<GameObject> molecules = new List<GameObject>();
-
-			//only get the forces of the atoms that are within the cutoff range
-			for(int i = 0; i < allMolecules.Length; i++){
-				double distance = Vector3.Distance(transform.position, allMolecules[i].transform.position);
-				if(allMolecules[i] != gameObject && distance < (StaticVariables.cutoff)){
-					molecules.Add(allMolecules[i]);
-				}
-			}
 
 			/**
 			 * TODO Here is where the code with be replaced with a different function
@@ -94,15 +93,15 @@ public abstract class Atom : MonoBehaviour
 			 **/
 			Vector3 force = Vector3.zero;
 			if(StaticVariables.currentPotential == StaticVariables.Potential.LennardJones){
-				force = GetLennardJonesForce (molecules);
+				//force = GetLennardJonesForce (allMolecules);
+				force = GetBuckinghamForce (allMolecules);
 			}
 			else if(StaticVariables.currentPotential == StaticVariables.Potential.Brenner){
-				force = GetLennardJonesForce (molecules);
+				force = GetLennardJonesForce (allMolecules);
 			}
 			else{
-				force = GetLennardJonesForce (molecules);
+				force = GetLennardJonesForce (allMolecules);
 			}
-
 
 			//zero out any angular velocity
 			if(!gameObject.rigidbody.isKinematic) gameObject.rigidbody.angularVelocity = Vector3.zero;
@@ -110,8 +109,8 @@ public abstract class Atom : MonoBehaviour
 			gameObject.rigidbody.AddForce (force, mode:ForceMode.Force);
 
 			//scale the velocity based on the temperature of the system
-			Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
 			if ((rigidbody.velocity.magnitude != 0) && !rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && allMolecules.Length > 1) {
+				Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
 				gameObject.rigidbody.velocity = newVelocity;
 			}
 
@@ -129,55 +128,90 @@ public abstract class Atom : MonoBehaviour
 
 	}
 
-	//the function returns the force on the atom given the list of the atoms that are within range of it
-	Vector3 GetLennardJonesForce(List<GameObject> objectsInRange){
-		//double startTime = Time.realtimeSinceStartup;
+	
+	//the function returns the Lennard-Jones force on the atom given the list of all the atoms in the simulation
+	Vector3 GetLennardJonesForce(GameObject[] objectsInRange){
 		Vector3 finalForce = new Vector3 (0.000f, 0.000f, 0.000f);
-		for (int i = 0; i < objectsInRange.Count; i++) {
-			Vector3 direction = new Vector3(objectsInRange[i].transform.position.x - transform.position.x, objectsInRange[i].transform.position.y - transform.position.y, objectsInRange[i].transform.position.z - transform.position.z);
-			direction.Normalize();
+		float cutoff2 = StaticVariables.cutoff * StaticVariables.cutoff;
 
-			Atom otherAtomScript = objectsInRange[i].GetComponent<Atom>();
-			float finalSigma = StaticVariables.sigmaValues[atomName+otherAtomScript.atomName];
-			//TTM add transition to smooth curve to constant, instead of asymptote to infinity
-			double r_min = StaticVariables.r_min_multiplier * finalSigma;
+		for (int i = 0; i < objectsInRange.Length; i++) {
+			float dx = transform.position.x - objectsInRange [i].transform.position.x;
+			float dy = transform.position.y - objectsInRange [i].transform.position.y;
+			float dz = transform.position.z - objectsInRange [i].transform.position.z;
+			
+			float r2 = dx * dx + dy * dy + dz * dz;
 
-			double distance = Vector3.Distance(transform.position, objectsInRange[i].transform.position);
-			double distanceMeters = distance * StaticVariables.angstromsToMeters; //distance in meters, though viewed in Angstroms
-			double magnitude = 0.0;
+			//only get the forces of the atoms that are within the cutoff range
+			if (objectsInRange [i] != gameObject && (r2 < cutoff2)) {
 
-			if(distance > r_min){
-				double part1 = ((-48 * epsilon) / Math.Pow(distanceMeters, 2));
-				double part2 = (Math.Pow ((finalSigma / distance), 12) - (.5f * Math.Pow ((finalSigma / distance), 6)));
-				magnitude = (part1 * part2 * distanceMeters);
+				Atom otherAtomScript = objectsInRange [i].GetComponent<Atom> ();
+				float finalSigma = StaticVariables.sigmaValues [atomName + otherAtomScript.atomName];
+
+				int iR = (int)((Mathf.Sqrt(r2)/finalSigma)/(StaticVariables.deltaR/StaticVariables.sigmaValueMax))+2;
+				float magnitude = StaticVariables.preLennardJones[iR];
+				magnitude = magnitude * 48.0f * epsilon / StaticVariables.angstromsToMeters/ finalSigma / finalSigma;
+			
+				finalForce.x += dx * magnitude;
+				finalForce.y += dy * magnitude;
+				finalForce.z += dz * magnitude;
 			}
-			else{
-				double r_min_meters = r_min * StaticVariables.angstromsToMeters;
-				double V_rmin_part1 = ((-48 * epsilon) / Math.Pow(r_min_meters, 2));
-				double V_rmin_part2 = (Math.Pow ((finalSigma / r_min), 12) - (.5f * Math.Pow ((finalSigma / r_min), 6)));
-				double V_rmin_magnitude = (V_rmin_part1 * V_rmin_part2 * r_min_meters);
-
-				double r_Vmax = StaticVariables.r_min_multiplier * finalSigma/1.5;
-				double r_Vmax_meters = r_Vmax * StaticVariables.angstromsToMeters;
-				double Vmax_part1 = ((-48 * epsilon) / Math.Pow(r_Vmax_meters, 2));
-				double Vmax_part2 = (Math.Pow ((finalSigma / r_Vmax), 12) - (.5f * Math.Pow ((finalSigma / r_Vmax), 6)));
-				double Vmax_magnitude = (Vmax_part1 * Vmax_part2 * r_Vmax_meters);
-
-				double part1 = (distance/r_min)*(Math.Exp (distance)/Math.Exp (r_min));
-				double part2 = Vmax_magnitude - V_rmin_magnitude;
-				magnitude = Vmax_magnitude - (part1* part2);
-			}
-			finalForce += (direction * (float)magnitude);
-			//double endTime = Time.realtimeSinceStartup;
-			//print ("elapsedTime: " + (endTime - startTime));
 		}
-
+		
 		Vector3 adjustedForce = finalForce / StaticVariables.mass100amuToKg;
 		adjustedForce = adjustedForce / StaticVariables.angstromsToMeters;
 		adjustedForce = adjustedForce * StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime;
 		return adjustedForce;
 	}
 
+	//the function returns the Buckingham force on the atom given the list of all the atoms in the simulation
+	Vector3 GetBuckinghamForce(GameObject[] objectsInRange){
+		Vector3 finalForce = new Vector3 (0.000f, 0.000f, 0.000f);
+		
+		for (int i = 0; i < objectsInRange.Length; i++) {
+						float dx = transform.position.x - objectsInRange [i].transform.position.x;
+						float dy = transform.position.y - objectsInRange [i].transform.position.y;
+						float dz = transform.position.z - objectsInRange [i].transform.position.z;
+			
+						float r2 = dx * dx + dy * dy + dz * dz;
+						float r1 = Mathf.Sqrt (r2);
+
+						Atom otherAtomScript = objectsInRange [i].GetComponent<Atom> ();
+						float magnitude = 0.0f;
+			
+						//only get the forces of the atoms that are within the cutoff range
+						if (objectsInRange [i] != gameObject) {
+								if (objectsInRange [i] != gameObject && (r1 < StaticVariables.cutoff)) {
+
+
+										float final_A = StaticVariables.coeff_A [atomName + otherAtomScript.atomName];
+										float final_B = StaticVariables.coeff_B [atomName + otherAtomScript.atomName];
+										float final_C = StaticVariables.coeff_C [atomName + otherAtomScript.atomName];
+										float final_D = StaticVariables.coeff_D [atomName + otherAtomScript.atomName];
+
+										magnitude = final_A * final_B * Mathf.Exp (-final_B * r1) / r1;
+										magnitude = magnitude - 6.0f * final_C / Mathf.Pow (r2, 4);
+										magnitude = magnitude - 8.0f * final_D / Mathf.Pow (r2, 5);
+										magnitude = magnitude / StaticVariables.angstromsToMeters;
+										magnitude = magnitude + Q_eff * otherAtomScript.Q_eff / (4.0f * Mathf.PI * StaticVariables.epsilon0 * r2 * r1 * StaticVariables.angstromsToMeters * StaticVariables.angstromsToMeters);
+
+										finalForce.x += dx * magnitude;
+										finalForce.y += dy * magnitude;
+										finalForce.z += dz * magnitude;
+								}
+
+
+								// magnitude = Q_eff * otherAtomScript.Q_eff / (4.0f * Mathf.PI * StaticVariables.epsilon0 * r2 * r1 * StaticVariables.angstromsToMeters * StaticVariables.angstromsToMeters);
+								// finalForce.x += dx * magnitude;
+								// finalForce.y += dy * magnitude;
+								// finalForce.z += dz * magnitude;
+						}
+				}
+		
+		Vector3 adjustedForce = finalForce / StaticVariables.mass100amuToKg;
+		adjustedForce = adjustedForce / StaticVariables.angstromsToMeters;
+		adjustedForce = adjustedForce * StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime;
+		return adjustedForce;
+	}
 
 	//this function takes care of double tapping, collision detection, and detecting OnMouseDown, OnMouseDrag, and OnMouseUp on iOS
 	void Update(){
@@ -835,4 +869,3 @@ public abstract class Atom : MonoBehaviour
 
 
 }
-

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Class: StaticVariables.cs
  * Created By: Justin Moeller
  * Description: This class is simply a list of static variables and static functions
@@ -30,6 +30,9 @@ public class StaticVariables {
 	//Boltzmann constant in J/K
 	public static float kB = 1.381f * (float) Math.Pow(10,-23);
 
+	//Permittivity of free space
+	public static float epsilon0 = 8.85f * Mathf.Pow (10, -12);
+
 	//Convert units of 100 amu to kg
 	public static float mass100amuToKg = 100f * 1.6605f * (float) Math.Pow(10,-27); 
 
@@ -38,7 +41,15 @@ public class StaticVariables {
 		
 	//Cutoff for "seeing" other atoms, in Angstroms
 	//multiplied by sigma for Lennard-Jones potential
-	public static float cutoff = 5.0f; //mutliplier for cutoff 
+	public static float cutoff = 17.0f; //mutliplier for cutoff 
+
+	//Forces are precomputed for a number of discrete separation points and then used as a look up table.
+	//The following is the step size in precalculated forces. It is in the same units as cutoff variable
+	public static float deltaR = 0.05f;
+	public static float sigmaValueMax = 0.0f;
+	public static float sigmaValueMin = 0.0f;
+	//This array holds the pre-calculated value of LennardJones potential for some sample points.
+	public static float[] preLennardJones;
 
 	//When r_ij is small, the Lennard-Jones potential is extremely large.
 	//At a certain r_min, we will substitute the L-J potential with a function that
@@ -57,7 +68,14 @@ public class StaticVariables {
 	//the variable pauses the simulation of physics
 	public static bool pauseTime = false;
 	//access to sigma values by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
-	public static Dictionary<String, float> sigmaValues;
+	public static Dictionary<String, float> sigmaValues = new Dictionary<String, float> ();
+
+	//access to coefficients in Buckingham potential by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
+	public static Dictionary<String, float> coeff_A = new Dictionary<String, float> ();
+	public static Dictionary<String, float> coeff_B = new Dictionary<String, float> ();
+	public static Dictionary<String, float> coeff_C = new Dictionary<String, float> ();
+	public static Dictionary<String, float> coeff_D = new Dictionary<String, float> ();
+
 	//this varaible keeps track of the current potential that is being used. (Note: only Lennard-Jones is currently implemented)
 	public static Potential currentPotential = Potential.LennardJones;
 	//this variable keeps track of the amount of simulation time that has passed

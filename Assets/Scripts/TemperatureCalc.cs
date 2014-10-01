@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Class: TemperatureCalc.cs
  * Created by: Justin Moeller
  * Description: This class handles the computation of the scalar that the atoms' velocities are multiplied by.
@@ -90,7 +90,7 @@ public class TemperatureCalc : MonoBehaviour {
 				}
 			}
 			*/
-						draggedAlpha = 1.0; //allow time for system to develop velocities based on forces;
+			draggedAlpha = 1.0; //allow time for system to develop velocities based on forces;
 		} 
 		else if (instantTemp > 5000) {
 			//adjust to damp very high temperatures quickly
