@@ -87,20 +87,15 @@ public abstract class Atom : MonoBehaviour
 		if (!StaticVariables.pauseTime) {
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 
-			/**
-			 * TODO Here is where the code with be replaced with a different function
-			 *      for each of the different potentials
-			 **/
 			Vector3 force = Vector3.zero;
 			if(StaticVariables.currentPotential == StaticVariables.Potential.LennardJones){
-				//force = GetLennardJonesForce (allMolecules);
-				force = GetBuckinghamForce (allMolecules);
+				force = GetLennardJonesForce (allMolecules);
 			}
 			else if(StaticVariables.currentPotential == StaticVariables.Potential.Brenner){
 				force = GetLennardJonesForce (allMolecules);
 			}
 			else{
-				force = GetLennardJonesForce (allMolecules);
+				force = GetBuckinghamForce (allMolecules);
 			}
 
 			//zero out any angular velocity

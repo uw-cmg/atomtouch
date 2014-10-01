@@ -150,22 +150,22 @@ public class AtomTouchGUI : MonoBehaviour {
 				GUI.DrawTexture(lennardJonesRect, darkBackground);
 				if(GUI.Button(lennardJonesRect, "Lennard-Jones", buttonStyle)){
 					potentialsActive = false;
-					createEnvironment.ResetAtoms();
 					StaticVariables.currentPotential = StaticVariables.Potential.LennardJones;
+					createEnvironment.InitAtoms();
 				}
 				Rect buckinghamRect = new Rect(lennardJonesRect.x, lennardJonesRect.y + lennardJonesRect.height, lennardJonesRect.width, lennardJonesRect.height);
 				GUI.DrawTexture(buckinghamRect, lightBackground);
 				if(GUI.Button(buckinghamRect, "Buckingham", buttonStyle)){
 					potentialsActive = false;
-					createEnvironment.ResetAtoms();
 					StaticVariables.currentPotential = StaticVariables.Potential.Buckingham;
+					createEnvironment.InitAtoms();
 				}
 				Rect brennerRect = new Rect(buckinghamRect.x, buckinghamRect.y + buckinghamRect.height, buckinghamRect.width, buckinghamRect.height);
 				GUI.DrawTexture(brennerRect, darkBackground);
 				if(GUI.Button(brennerRect, "Brenner", buttonStyle)){
 					potentialsActive = false;
-					createEnvironment.ResetAtoms();
 					StaticVariables.currentPotential = StaticVariables.Potential.Brenner;
+					createEnvironment.InitAtoms();
 				}
 			}
 
@@ -248,7 +248,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			if(GUI.Button(new Rect(toolbarRect.x, toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), reset, buttonStyle)){
 				resetPressed = true;
 				resetTime = Time.realtimeSinceStartup;
-				createEnvironment.ResetAtoms();
+				createEnvironment.InitAtoms();
 			}
 			if(Time.realtimeSinceStartup - resetTime > .05f){
 				resetPressed = false;

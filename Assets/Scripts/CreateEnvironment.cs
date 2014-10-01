@@ -120,18 +120,7 @@ public class CreateEnvironment : MonoBehaviour {
 		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
 
 		//create the atoms
-
-		for (int i = 0; i < (int)(numMolecules/2); i++) {
-			Vector3 position = new Vector3(centerPos.x + (UnityEngine.Random.Range(-(width/2.0f) + errorBuffer, (width/2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range(-(height/2.0f) + errorBuffer, (height/2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range(-(depth/2.0f) + errorBuffer, (depth/2.0f) - errorBuffer)));
-			Quaternion rotation = Quaternion.Euler(0, 0, 0);
-			Instantiate(molecules[0].rigidbody, position, rotation);
-		}
-
-		for (int i = (int)(numMolecules/2); i < numMolecules; i++) {
-			Vector3 position = new Vector3(centerPos.x + (UnityEngine.Random.Range(-(width/2.0f) + errorBuffer, (width/2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range(-(height/2.0f) + errorBuffer, (height/2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range(-(depth/2.0f) + errorBuffer, (depth/2.0f) - errorBuffer)));
-			Quaternion rotation = Quaternion.Euler(0, 0, 0);
-			Instantiate(molecules[1].rigidbody, position, rotation);
-		}
+		InitAtoms ();
 
 		//figure out the dimensions of the box based on the volume
 		width = (float)Math.Pow (volume, (1.0f / 3.0f));
@@ -287,18 +276,33 @@ public class CreateEnvironment : MonoBehaviour {
 		return verticalText.ToString();
 	}
 
-	//resets the atoms to a random position and to the original number of atoms
-	public void ResetAtoms(){
+	//initialize the atoms to a random position and to the original number of atoms
+	public void InitAtoms(){
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		for (int i = 0; i < allMolecules.Length; i++) {
 			GameObject currAtom = allMolecules[i];
 			Destroy(currAtom);
 		}
-		for (int i = 0; i < numMolecules; i++) {
-			Vector3 position = new Vector3(centerPos.x + (UnityEngine.Random.Range(-(width/2.0f) + errorBuffer, (width/2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range(-(height/2.0f) + errorBuffer, (height/2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range(-(depth/2.0f) + errorBuffer, (depth/2.0f) - errorBuffer)));
-			Quaternion rotation = Quaternion.Euler(0, 0, 0);
-			Instantiate(molecules[moleculeToSpawn].rigidbody, position, rotation);
+
+		if (StaticVariables.currentPotential == StaticVariables.Potential.Buckingham) {
+			for (int i = 0; i < (int)(numMolecules/2); i++) {
+				Vector3 position = new Vector3 (centerPos.x + (UnityEngine.Random.Range (-(width / 2.0f) + errorBuffer, (width / 2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range (-(height / 2.0f) + errorBuffer, (height / 2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range (-(depth / 2.0f) + errorBuffer, (depth / 2.0f) - errorBuffer)));
+				Quaternion rotation = Quaternion.Euler (0, 0, 0);
+				Instantiate (molecules [0].rigidbody, position, rotation);
+			}
+			for (int i = (int)(numMolecules/2); i < numMolecules; i++) {
+				Vector3 position = new Vector3 (centerPos.x + (UnityEngine.Random.Range (-(width / 2.0f) + errorBuffer, (width / 2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range (-(height / 2.0f) + errorBuffer, (height / 2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range (-(depth / 2.0f) + errorBuffer, (depth / 2.0f) - errorBuffer)));
+				Quaternion rotation = Quaternion.Euler (0, 0, 0);
+				Instantiate (molecules [1].rigidbody, position, rotation);
+			}
+		} else {
+			for (int i = 0; i < numMolecules; i++) {
+				Vector3 position = new Vector3 (centerPos.x + (UnityEngine.Random.Range (-(width / 2.0f) + errorBuffer, (width / 2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range (-(height / 2.0f) + errorBuffer, (height / 2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range (-(depth / 2.0f) + errorBuffer, (depth / 2.0f) - errorBuffer)));
+				Quaternion rotation = Quaternion.Euler (0, 0, 0);
+				Instantiate (molecules [moleculeToSpawn].rigidbody, position, rotation);
+			}
 		}
+
 		for (int i = 0; i < allMolecules.Length; i++) {
 			GameObject currAtom = allMolecules[i];
 			currAtom.name = i.ToString();
