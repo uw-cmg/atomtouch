@@ -84,42 +84,7 @@ public abstract class Atom : MonoBehaviour
 	}
 
 	void FixedUpdate(){
-		if (!StaticVariables.pauseTime) {
-			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 
-			Vector3 force = Vector3.zero;
-			if(StaticVariables.currentPotential == StaticVariables.Potential.LennardJones){
-				force = GetLennardJonesForce (allMolecules);
-			}
-			else if(StaticVariables.currentPotential == StaticVariables.Potential.Brenner){
-				force = GetLennardJonesForce (allMolecules);
-			}
-			else{
-				force = GetBuckinghamForce (allMolecules);
-			}
-
-			//zero out any angular velocity
-			if(!gameObject.rigidbody.isKinematic) gameObject.rigidbody.angularVelocity = Vector3.zero;
-
-			gameObject.rigidbody.AddForce (force, mode:ForceMode.Force);
-
-			//scale the velocity based on the temperature of the system
-			if ((rigidbody.velocity.magnitude != 0) && !rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && allMolecules.Length > 1) {
-				Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
-				gameObject.rigidbody.velocity = newVelocity;
-			}
-
-		}
-		else{
-			//zero out all of the velocities of all of the atoms when time is stopped
-			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-			for(int i = 0; i < allMolecules.Length; i++){
-				GameObject currAtom = allMolecules[i];
-				if(!currAtom.rigidbody.isKinematic){
-					currAtom.rigidbody.velocity = new Vector3(0.0f, 0.0f, 0.0f);
-				}
-			}
-		}
 
 	}
 
@@ -210,6 +175,45 @@ public abstract class Atom : MonoBehaviour
 
 	//this function takes care of double tapping, collision detection, and detecting OnMouseDown, OnMouseDrag, and OnMouseUp on iOS
 	void Update(){
+
+		if (!StaticVariables.pauseTime) {
+			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+			
+			Vector3 force = Vector3.zero;
+			if(StaticVariables.currentPotential == StaticVariables.Potential.LennardJones){
+				force = GetLennardJonesForce (allMolecules);
+			}
+			else if(StaticVariables.currentPotential == StaticVariables.Potential.Brenner){
+				force = GetLennardJonesForce (allMolecules);
+			}
+			else{
+				force = GetBuckinghamForce (allMolecules);
+			}
+			
+			//zero out any angular velocity
+			if(!gameObject.rigidbody.isKinematic) gameObject.rigidbody.angularVelocity = Vector3.zero;
+			
+			gameObject.rigidbody.AddForce (force, mode:ForceMode.Force);
+			
+			//scale the velocity based on the temperature of the system
+			if ((rigidbody.velocity.magnitude != 0) && !rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && allMolecules.Length > 1) {
+				Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
+				gameObject.rigidbody.velocity = newVelocity;
+			}
+			
+		}
+		else{
+			//zero out all of the velocities of all of the atoms when time is stopped
+			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+			for(int i = 0; i < allMolecules.Length; i++){
+				GameObject currAtom = allMolecules[i];
+				if(!currAtom.rigidbody.isKinematic){
+					currAtom.rigidbody.velocity = new Vector3(0.0f, 0.0f, 0.0f);
+				}
+			}
+		}
+
+
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			if(Input.touchCount > 0){
 				Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
