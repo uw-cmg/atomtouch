@@ -55,7 +55,8 @@ public class CreateEnvironment : MonoBehaviour {
 		for (int i = 0; i < molecules.Count; i++) {
 			atomScript = molecules[i].GetComponent<Atom>();
 			float currentSigma = atomScript.sigma;
-			StaticVariables.sigmaValues.Add(atomScript.atomName+atomScript.atomName, currentSigma);
+			StaticVariables.sigmaValues[atomScript.atomID*atomScript.atomID] = atomScript.sigma;
+
 			if (currentSigma > StaticVariables.sigmaValueMax) {
 				StaticVariables.sigmaValueMax = currentSigma;
 			}
@@ -75,15 +76,17 @@ public class CreateEnvironment : MonoBehaviour {
 			Atom firstAtomScript = molecules[i].GetComponent<Atom>();
 			for(int j = i+1; j < molecules.Count; j++){
 				Atom secondAtomScript = molecules[j].GetComponent<Atom>();
+
 				float currentSigma = Mathf.Sqrt(firstAtomScript.sigma+secondAtomScript.sigma);
-				StaticVariables.sigmaValues.Add(firstAtomScript.atomName+secondAtomScript.atomName, currentSigma);
-				StaticVariables.sigmaValues.Add(secondAtomScript.atomName+firstAtomScript.atomName, currentSigma);
+				StaticVariables.sigmaValues[firstAtomScript.atomID*secondAtomScript.atomID] = currentSigma;
+
 				if (currentSigma > StaticVariables.sigmaValueMax) {
 					StaticVariables.sigmaValueMax = currentSigma;
 				}
 				if (currentSigma < StaticVariables.sigmaValueMin) {
 					StaticVariables.sigmaValueMin = currentSigma;
 				}
+
 
 				float currentA = Mathf.Sqrt(firstAtomScript.buck_A*secondAtomScript.buck_A);
 				StaticVariables.coeff_A.Add(firstAtomScript.atomName+secondAtomScript.atomName, currentA);
@@ -278,11 +281,17 @@ public class CreateEnvironment : MonoBehaviour {
 
 	//initialize the atoms to a random position and to the original number of atoms
 	public void InitAtoms(){
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			Destroy(currAtom);
+		//GameObject[] oldAllMolecules = GameObject.FindGameObjectsWithTag ("Molecule");
+		//for (int i = 0; i < oldAllMolecules.Length; i++) {
+		//	GameObject currAtom = oldAllMolecules [i];
+		//	Destroy (currAtom);
+		//}
+
+		for (int i = Atom.AllMolecules.Count-1; i >= 0; i--) {
+			Atom currAtom = Atom.AllMolecules [i];
+			Destroy (currAtom.gameObject);
 		}
+		//Debug.Log ("Atom.AllMolecules.Count" + Atom.AllMolecules.Count);
 
 		if (StaticVariables.currentPotential == StaticVariables.Potential.Buckingham) {
 			for (int i = 0; i < (int)(numMolecules/2); i++) {
@@ -303,8 +312,8 @@ public class CreateEnvironment : MonoBehaviour {
 			}
 		}
 
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
+		for (int i = 0; i < Atom.AllMolecules.Count; i++) {
+			Atom currAtom = Atom.AllMolecules[i];
 			currAtom.name = i.ToString();
 		}
 		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();

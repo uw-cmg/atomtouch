@@ -24,6 +24,11 @@ public class StaticVariables {
 	//Suppose every FixedUpdate physics interval (e.g. 0.02 seconds) is the
 	//Molecular Dynamics timestep of 0.5 * 10^-15 seconds
 	public static float fixedUpdateIntervalToRealTime = MDTimestep / Time.fixedDeltaTime;
+
+	//Suppose every Update physics interval (e.g. 0.02 seconds) is the
+	//Molecular Dynamics timestep of 0.5 * 10^-15 seconds
+	public static float updateIntervalToRealTime = MDTimestep;
+
 	//do not scale temperature all at once
 	public static float alphaDrag = 1.0f * Time.fixedDeltaTime;
 
@@ -41,7 +46,8 @@ public class StaticVariables {
 		
 	//Cutoff for "seeing" other atoms, in Angstroms
 	//multiplied by sigma for Lennard-Jones potential
-	public static float cutoff = 17.0f; //mutliplier for cutoff 
+	public static float cutoff = 10.0f; //mutliplier for cutoff
+	public static float cutoffSqr = cutoff * cutoff;
 
 	//Forces are precomputed for a number of discrete separation points and then used as a look up table.
 	//The following is the step size in precalculated forces. It is in the same units as cutoff variable
@@ -68,7 +74,8 @@ public class StaticVariables {
 	//the variable pauses the simulation of physics
 	public static bool pauseTime = false;
 	//access to sigma values by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
-	public static Dictionary<String, float> sigmaValues = new Dictionary<String, float> ();
+	//public static Dictionary<String, float> sigmaValues = new Dictionary<String, float> ();
+	public static float[] sigmaValues = new float[10];
 
 	//access to coefficients in Buckingham potential by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
 	public static Dictionary<String, float> coeff_A = new Dictionary<String, float> ();

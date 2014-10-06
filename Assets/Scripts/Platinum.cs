@@ -24,6 +24,10 @@ public class Platinum : Atom {
 	public override String atomName { 
 		get{ return "Platinum"; } 
 	}
+
+	public override int atomID {
+		get{ return 3;}
+	}
 	
 	public override float epsilon {
 		get { return ((float)(1.0922 * Math.Pow(10, -19))); } // J

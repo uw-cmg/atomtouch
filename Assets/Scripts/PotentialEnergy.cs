@@ -33,21 +33,18 @@ public class PotentialEnergy : MonoBehaviour {
 	
 		//this function computes the potential energy of the system every frame
 		//we only are interested in the average though, so we take the average potential energy over .05s 
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			Atom currAtomScript = currAtom.GetComponent<Atom>();
+		for (int i = 0; i < Atom.AllMolecules.Count; i++) {
+			Atom currAtom = Atom.AllMolecules[i];
 			double potentialEnergyPerAtom = 0.0f;
-			for(int j = 0; j < allMolecules.Length; j++){
-				GameObject atomNeighbor = allMolecules[j];
-				if(currAtom == atomNeighbor) continue;
+			for(int j = 0; j < Atom.AllMolecules.Count; j++){
+				Atom neighborAtom = Atom.AllMolecules[j];
+				if(currAtom.gameObject == neighborAtom.gameObject) continue;
 
-				Atom atomNeighborScript = atomNeighbor.GetComponent<Atom>();
-				float finalSigma = StaticVariables.sigmaValues[currAtomScript.atomName+atomNeighborScript.atomName];
-				float distance = Vector3.Distance(currAtom.transform.position, atomNeighbor.transform.position);
-				if(distance < (StaticVariables.cutoff)){
-					double potentialEnergy = 4 * currAtomScript.epsilon * (Mathf.Pow((finalSigma/distance), 12) - Mathf.Pow((finalSigma), 6));
+				float finalSigma = StaticVariables.sigmaValues[currAtom.atomID*neighborAtom.atomID];
+				float distanceSqr = (currAtom.transform.position-neighborAtom.transform.position).sqrMagnitude;
+				if(distanceSqr < (StaticVariables.cutoffSqr)){
+					double potentialEnergy = 4 * currAtom.epsilon * (Mathf.Pow((finalSigma*finalSigma/distanceSqr), 6) - Mathf.Pow((finalSigma*finalSigma/distanceSqr), 3));
 					potentialEnergyPerAtom += potentialEnergy;
 				}
 			}

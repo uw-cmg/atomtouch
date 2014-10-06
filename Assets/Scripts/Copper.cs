@@ -25,6 +25,10 @@ public class Copper : Atom {
 		get{ return "Copper"; } 
 	}
 
+	public override int atomID {
+		get{ return 1;}
+	}
+	
 	public override float epsilon{
 		get { return ((float)(6.537 * Math.Pow(10, -20))); } // J
 	}
