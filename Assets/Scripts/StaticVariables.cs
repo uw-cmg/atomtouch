@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 public class StaticVariables {
 
-	public static float MDTimestep = 0.5f * (float) Math.Pow (10, -15);
+	public static float MDTimestep = 3.0f * (float) Math.Pow (10, -15);
 	//Suppose every FixedUpdate physics interval (e.g. 0.02 seconds) is the
 	//Molecular Dynamics timestep of 0.5 * 10^-15 seconds
 	public static float fixedUpdateIntervalToRealTime = MDTimestep / Time.fixedDeltaTime;
