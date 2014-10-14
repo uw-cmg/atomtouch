@@ -69,13 +69,13 @@ public class CreateEnvironment : MonoBehaviour {
 			}
 
 			float currentA = atomScript.buck_A;
-			StaticVariables.coeff_A.Add(atomScript.atomName+atomScript.atomName, currentA);
+			StaticVariables.coeff_A[atomScript.atomID,atomScript.atomID] = currentA;
 			float currentB = atomScript.buck_B;
-			StaticVariables.coeff_B.Add(atomScript.atomName+atomScript.atomName, currentB);
+			StaticVariables.coeff_B[atomScript.atomID,atomScript.atomID] = currentB;
 			float currentC = atomScript.buck_C;
-			StaticVariables.coeff_C.Add(atomScript.atomName+atomScript.atomName, currentC);
+			StaticVariables.coeff_C[atomScript.atomID,atomScript.atomID] = currentC;
 			float currentD = atomScript.buck_D;
-			StaticVariables.coeff_D.Add(atomScript.atomName+atomScript.atomName, currentD);
+			StaticVariables.coeff_D[atomScript.atomID,atomScript.atomID] = currentD;
 
 			StaticVariables.forceCoeffLJ[atomScript.atomID,atomScript.atomID] = 48.0f * atomScript.epsilon / StaticVariables.angstromsToMeters / currentSigma / currentSigma / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters * StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime;
 		}
@@ -96,20 +96,20 @@ public class CreateEnvironment : MonoBehaviour {
 
 
 				float currentA = Mathf.Sqrt(firstAtomScript.buck_A*secondAtomScript.buck_A);
-				StaticVariables.coeff_A.Add(firstAtomScript.atomName+secondAtomScript.atomName, currentA);
-				StaticVariables.coeff_A.Add(secondAtomScript.atomName+firstAtomScript.atomName, currentA);
+				StaticVariables.coeff_A[firstAtomScript.atomID,secondAtomScript.atomID] = currentA;
+				StaticVariables.coeff_A[secondAtomScript.atomID,firstAtomScript.atomID] = currentA;
 
 				float currentB = Mathf.Sqrt(firstAtomScript.buck_B*secondAtomScript.buck_B);
-				StaticVariables.coeff_B.Add(firstAtomScript.atomName+secondAtomScript.atomName, currentB);
-				StaticVariables.coeff_B.Add(secondAtomScript.atomName+firstAtomScript.atomName, currentB);
+				StaticVariables.coeff_B[firstAtomScript.atomID,secondAtomScript.atomID] = currentB;
+				StaticVariables.coeff_B[secondAtomScript.atomID,firstAtomScript.atomID] = currentB;
 
 				float currentC = Mathf.Sqrt(firstAtomScript.buck_C*secondAtomScript.buck_C);
-				StaticVariables.coeff_C.Add(firstAtomScript.atomName+secondAtomScript.atomName, currentC);
-				StaticVariables.coeff_C.Add(secondAtomScript.atomName+firstAtomScript.atomName, currentC);
+				StaticVariables.coeff_C[firstAtomScript.atomID,secondAtomScript.atomID] = currentC;
+				StaticVariables.coeff_C[secondAtomScript.atomID,firstAtomScript.atomID] = currentC;
 
 				float currentD = Mathf.Sqrt(firstAtomScript.buck_D*secondAtomScript.buck_D);
-				StaticVariables.coeff_D.Add(firstAtomScript.atomName+secondAtomScript.atomName, currentD);
-				StaticVariables.coeff_D.Add(secondAtomScript.atomName+firstAtomScript.atomName, currentD);
+				StaticVariables.coeff_D[firstAtomScript.atomID,secondAtomScript.atomID] = currentD;
+				StaticVariables.coeff_D[secondAtomScript.atomID,firstAtomScript.atomID] = currentD;
 
 				StaticVariables.forceCoeffLJ[firstAtomScript.atomID,secondAtomScript.atomID] = 48.0f * firstAtomScript.epsilon / StaticVariables.angstromsToMeters / currentSigma / currentSigma / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters * StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime;
 			}

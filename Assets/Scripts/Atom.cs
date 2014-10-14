@@ -101,14 +101,16 @@ public abstract class Atom : MonoBehaviour
 	// method to register an added atom to the list of allMolecules
 	protected static void RegisterAtom( Atom atom ) {
 		m_AllMolecules.Add (atom);
+		CalculateForces.allForces.Add (atom, Vector3.zero);
 	}
 
 	// method to unregister a removed atom from the list of allMolecules
 	protected static void UnregisterAtom( Atom atom ) { 
+		CalculateForces.allForces.Remove (atom);
 		m_AllMolecules.Remove( atom );
 	}
 
-
+	/*
 	void FixedUpdate(){
 
 		if (!StaticVariables.pauseTime) {
@@ -206,6 +208,7 @@ public abstract class Atom : MonoBehaviour
 		adjustedForce = adjustedForce * StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime;
 		return adjustedForce;
 	}
+	*/
 
 	//this function takes care of double tapping, collision detection, and detecting OnMouseDown, OnMouseDrag, and OnMouseUp on iOS
 	void Update(){

@@ -81,10 +81,10 @@ public class StaticVariables {
 	public static float[,] forceCoeffLJ = new float[3,3];
 
 	//access to coefficients in Buckingham potential by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
-	public static Dictionary<String, float> coeff_A = new Dictionary<String, float> ();
-	public static Dictionary<String, float> coeff_B = new Dictionary<String, float> ();
-	public static Dictionary<String, float> coeff_C = new Dictionary<String, float> ();
-	public static Dictionary<String, float> coeff_D = new Dictionary<String, float> ();
+	public static float[,] coeff_A = new float[3,3];
+	public static float[,] coeff_B = new float[3,3];
+	public static float[,] coeff_C = new float[3,3];
+	public static float[,] coeff_D = new float[3,3];
 
 	//this varaible keeps track of the current potential that is being used. (Note: only Lennard-Jones is currently implemented)
 	public static Potential currentPotential = Potential.LennardJones;
