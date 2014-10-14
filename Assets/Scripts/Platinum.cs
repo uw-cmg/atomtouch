@@ -26,7 +26,7 @@ public class Platinum : Atom {
 	}
 
 	public override int atomID {
-		get{ return 3;}
+		get{ return 2;}
 	}
 	
 	public override float epsilon {

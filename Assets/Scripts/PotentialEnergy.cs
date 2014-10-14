@@ -41,7 +41,7 @@ public class PotentialEnergy : MonoBehaviour {
 				Atom neighborAtom = Atom.AllMolecules[j];
 				if(currAtom.gameObject == neighborAtom.gameObject) continue;
 
-				float finalSigma = StaticVariables.sigmaValues[currAtom.atomID*neighborAtom.atomID];
+				float finalSigma = StaticVariables.sigmaValues[currAtom.atomID,neighborAtom.atomID];
 				float distanceSqr = (currAtom.transform.position-neighborAtom.transform.position).sqrMagnitude;
 				if(distanceSqr < (StaticVariables.cutoffSqr)){
 					double potentialEnergy = 4 * currAtom.epsilon * (Mathf.Pow((finalSigma*finalSigma/distanceSqr), 6) - Mathf.Pow((finalSigma*finalSigma/distanceSqr), 3));

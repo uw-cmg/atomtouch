@@ -26,7 +26,7 @@ public class Copper : Atom {
 	}
 
 	public override int atomID {
-		get{ return 1;}
+		get{ return 0;}
 	}
 	
 	public override float epsilon{
