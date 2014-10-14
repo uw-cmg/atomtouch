@@ -177,13 +177,6 @@ public class CreateEnvironment : MonoBehaviour {
 		leftPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
 		leftPlane.name = "LeftPlane";
 		leftPlane.tag = "Plane";
-		
-		//name the atoms, simply make their name a number (i.e "0" or "1")
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			currAtom.name = i.ToString();
-		}
 
 		//create the lines that border the box and the text of width, height, and depth
 		//bottom line and text
@@ -281,17 +274,11 @@ public class CreateEnvironment : MonoBehaviour {
 
 	//initialize the atoms to a random position and to the original number of atoms
 	public void InitAtoms(){
-		//GameObject[] oldAllMolecules = GameObject.FindGameObjectsWithTag ("Molecule");
-		//for (int i = 0; i < oldAllMolecules.Length; i++) {
-		//	GameObject currAtom = oldAllMolecules [i];
-		//	Destroy (currAtom);
-		//}
-
+		
 		for (int i = Atom.AllMolecules.Count-1; i >= 0; i--) {
 			Atom currAtom = Atom.AllMolecules [i];
 			Destroy (currAtom.gameObject);
 		}
-		//Debug.Log ("Atom.AllMolecules.Count" + Atom.AllMolecules.Count);
 
 		if (StaticVariables.currentPotential == StaticVariables.Potential.Buckingham) {
 			for (int i = 0; i < (int)(numMolecules/2); i++) {
@@ -312,10 +299,12 @@ public class CreateEnvironment : MonoBehaviour {
 			}
 		}
 
+		/*
 		for (int i = 0; i < Atom.AllMolecules.Count; i++) {
 			Atom currAtom = Atom.AllMolecules[i];
-			currAtom.name = i.ToString();
+			currAtom.name = (i).ToString();
 		}
+		*/
 		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		atomTouchGUI.AtomKick();
 	}
