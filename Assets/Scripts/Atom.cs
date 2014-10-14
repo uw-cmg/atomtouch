@@ -153,27 +153,23 @@ public abstract class Atom : MonoBehaviour
 	//the function returns the Lennard-Jones force on the atom given the list of all the atoms in the simulation
 	Vector3 GetLennardJonesForce(List<Atom> objectsInRange){
 		Vector3 finalForce = Vector3.zero;
-
+		
 		for (int i = 0; i < objectsInRange.Count; i++) {
 			Vector3 deltaR = transform.position - objectsInRange [i].transform.position;
 			float distanceSqr = deltaR.sqrMagnitude;
-
+			
 			//only get the forces of the atoms that are within the cutoff range
 			if (objectsInRange[i].gameObject != gameObject && (distanceSqr < StaticVariables.cutoffSqr)) {
-
-				float finalSigma = StaticVariables.sigmaValues[atomID * objectsInRange[i].atomID];
-
+				
+				float finalSigma = StaticVariables.sigmaValues[atomID,objectsInRange[i].atomID];
+				
 				int iR = (int) ((Mathf.Sqrt(distanceSqr)/finalSigma)/(StaticVariables.deltaR/StaticVariables.sigmaValueMax))+2;
 				float magnitude = StaticVariables.preLennardJones[iR];
-				magnitude = magnitude * 48.0f * epsilon / StaticVariables.angstromsToMeters/ finalSigma / finalSigma;
-				finalForce += deltaR * magnitude;
+				finalForce += deltaR * magnitude * StaticVariables.forceCoeffLJ[atomID,objectsInRange[i].atomID];
 			}
 		}
 		
-		Vector3 adjustedForce = finalForce / StaticVariables.mass100amuToKg;
-		adjustedForce = adjustedForce / StaticVariables.angstromsToMeters;
-		adjustedForce = adjustedForce * StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime;
-		return adjustedForce;
+		return finalForce;
 	}
 
 	//the function returns the Buckingham force on the atom given the list of all the atoms in the simulation
@@ -705,7 +701,7 @@ public abstract class Atom : MonoBehaviour
 	//this functions returns the appropriate bond distance, given two atoms
 	public float BondDistance(GameObject otherAtom){
 		Atom otherAtomScript = otherAtom.GetComponent<Atom> ();
-		return 1.225f * StaticVariables.sigmaValues [atomID*otherAtomScript.atomID];
+		return 1.225f * StaticVariables.sigmaValues [atomID,otherAtomScript.atomID];
 	}
 
 	//this functions checks the position of the atoms, and if its outside of the box, it reverses the atoms velocity to go back inside the box
@@ -713,7 +709,7 @@ public abstract class Atom : MonoBehaviour
 
 		if (gameObject.rigidbody.isKinematic) return;
 
-		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		CreateEnvironment createEnvironment = StaticVariables.createEnvironment;
 		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
 		Vector3 newVelocity = gameObject.rigidbody.velocity;
 		if (gameObject.transform.position.x > bottomPlanePos.x + (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer) {
@@ -739,7 +735,7 @@ public abstract class Atom : MonoBehaviour
 
 	//this function checks the position of an atom, and if its outside of the box, simply place the atom back inside the box
 	Vector3 CheckPosition(Vector3 position){
-		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		CreateEnvironment createEnvironment = StaticVariables.createEnvironment;
 		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
 		if (position.y > bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer) {
 			position.y = bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer;

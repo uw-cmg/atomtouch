@@ -43,7 +43,11 @@ public class CreateEnvironment : MonoBehaviour {
 	private GameObject rightPlane;
 	private GameObject leftPlane;
 	public Vector3 initialCenterPos;
-	
+
+	void Awake(){
+		StaticVariables.createEnvironment = this;
+	}
+
 	void Start () {
 
 		//the min sigma value and max sigma value are used for precalculating LJ forces.
@@ -55,7 +59,7 @@ public class CreateEnvironment : MonoBehaviour {
 		for (int i = 0; i < molecules.Count; i++) {
 			atomScript = molecules[i].GetComponent<Atom>();
 			float currentSigma = atomScript.sigma;
-			StaticVariables.sigmaValues[atomScript.atomID*atomScript.atomID] = atomScript.sigma;
+			StaticVariables.sigmaValues[atomScript.atomID,atomScript.atomID] = currentSigma;
 
 			if (currentSigma > StaticVariables.sigmaValueMax) {
 				StaticVariables.sigmaValueMax = currentSigma;
@@ -63,6 +67,7 @@ public class CreateEnvironment : MonoBehaviour {
 			if (currentSigma < StaticVariables.sigmaValueMin) {
 				StaticVariables.sigmaValueMin = currentSigma;
 			}
+
 			float currentA = atomScript.buck_A;
 			StaticVariables.coeff_A.Add(atomScript.atomName+atomScript.atomName, currentA);
 			float currentB = atomScript.buck_B;
@@ -71,6 +76,8 @@ public class CreateEnvironment : MonoBehaviour {
 			StaticVariables.coeff_C.Add(atomScript.atomName+atomScript.atomName, currentC);
 			float currentD = atomScript.buck_D;
 			StaticVariables.coeff_D.Add(atomScript.atomName+atomScript.atomName, currentD);
+
+			StaticVariables.forceCoeffLJ[atomScript.atomID,atomScript.atomID] = 48.0f * atomScript.epsilon / StaticVariables.angstromsToMeters / currentSigma / currentSigma / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters * StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime;
 		}
 		for (int i = 0; i < molecules.Count; i++) {
 			Atom firstAtomScript = molecules[i].GetComponent<Atom>();
@@ -78,7 +85,7 @@ public class CreateEnvironment : MonoBehaviour {
 				Atom secondAtomScript = molecules[j].GetComponent<Atom>();
 
 				float currentSigma = Mathf.Sqrt(firstAtomScript.sigma+secondAtomScript.sigma);
-				StaticVariables.sigmaValues[firstAtomScript.atomID*secondAtomScript.atomID] = currentSigma;
+				StaticVariables.sigmaValues[firstAtomScript.atomID,secondAtomScript.atomID] = currentSigma;
 
 				if (currentSigma > StaticVariables.sigmaValueMax) {
 					StaticVariables.sigmaValueMax = currentSigma;
@@ -103,6 +110,8 @@ public class CreateEnvironment : MonoBehaviour {
 				float currentD = Mathf.Sqrt(firstAtomScript.buck_D*secondAtomScript.buck_D);
 				StaticVariables.coeff_D.Add(firstAtomScript.atomName+secondAtomScript.atomName, currentD);
 				StaticVariables.coeff_D.Add(secondAtomScript.atomName+firstAtomScript.atomName, currentD);
+
+				StaticVariables.forceCoeffLJ[firstAtomScript.atomID,secondAtomScript.atomID] = 48.0f * firstAtomScript.epsilon / StaticVariables.angstromsToMeters / currentSigma / currentSigma / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters * StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime;
 			}
 		}
 

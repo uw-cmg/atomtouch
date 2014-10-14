@@ -73,9 +73,12 @@ public class StaticVariables {
 	public static bool drawBondLines = true;
 	//the variable pauses the simulation of physics
 	public static bool pauseTime = false;
-	//access to sigma values by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
-	//public static Dictionary<String, float> sigmaValues = new Dictionary<String, float> ();
-	public static float[] sigmaValues = new float[10];
+
+	// each atom has an integer number as an ID that is used to access the related element for the atom pair
+	public static float[,] sigmaValues = new float[3,3];
+
+	// this coefficient adjusts the raw calculated force so that it has correct units.
+	public static float[,] forceCoeffLJ = new float[3,3];
 
 	//access to coefficients in Buckingham potential by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
 	public static Dictionary<String, float> coeff_A = new Dictionary<String, float> ();
@@ -87,6 +90,9 @@ public class StaticVariables {
 	public static Potential currentPotential = Potential.LennardJones;
 	//this variable keeps track of the amount of simulation time that has passed
 	public static float currentTime = 0.0f;
+
+	//this variables points to the instance of the create environment
+	public static CreateEnvironment createEnvironment;
 
 	//There are three potentials, but currently Lennard-Jones is the only one that is implemented so changing
 	//between these potentials doesnt do anything
