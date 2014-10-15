@@ -101,6 +101,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	[HideInInspector]public bool changingSlider = false;
 	private float guiVolume;
 
+	private int slowMotionFrames;
+
 	public static StaticVariables.TimeSpeed currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
 
 	void Start () {
@@ -152,6 +154,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					potentialsActive = false;
 					StaticVariables.currentPotential = StaticVariables.Potential.LennardJones;
 					createEnvironment.InitAtoms();
+					slowMotionFrames = 10;
 				}
 				Rect buckinghamRect = new Rect(lennardJonesRect.x, lennardJonesRect.y + lennardJonesRect.height, lennardJonesRect.width, lennardJonesRect.height);
 				GUI.DrawTexture(buckinghamRect, lightBackground);
@@ -159,6 +162,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					potentialsActive = false;
 					StaticVariables.currentPotential = StaticVariables.Potential.Buckingham;
 					createEnvironment.InitAtoms();
+					slowMotionFrames = 10;
 				}
 				Rect brennerRect = new Rect(buckinghamRect.x, buckinghamRect.y + buckinghamRect.height, buckinghamRect.width, buckinghamRect.height);
 				GUI.DrawTexture(brennerRect, darkBackground);
@@ -166,6 +170,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					potentialsActive = false;
 					StaticVariables.currentPotential = StaticVariables.Potential.Brenner;
 					createEnvironment.InitAtoms();
+					slowMotionFrames = 10;
 				}
 			}
 
@@ -523,6 +528,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			if (newVolume != guiVolume) {
 				guiVolume = newVolume;
 				changingSlider = true;
+				slowMotionFrames = 10;
 			}
 			else{
 				int volume = (int)guiVolume;
@@ -562,16 +568,18 @@ public class AtomTouchGUI : MonoBehaviour {
 					guiVolume = 64000;
 				}
 			}
+
+				
 		}
 		//CheckAtomVolumePositions();
 
 		if (Input.GetMouseButtonUp (0)) {
 		
 			//possibly adjust the z value here depending on the position of the camera
+
 			if(addGraphicCopper && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
 				Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
 				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-
 				Instantiate(copperPrefab, curPosition, curRotation);
 			}
 		
@@ -647,6 +655,20 @@ public class AtomTouchGUI : MonoBehaviour {
 		GUI.Label (new Rect (Screen.width - 75.0f, 10.0f, 70.0f, 40.0f), Math.Round(StaticVariables.currentTime, 1) + "ps");
 
 		//print ("Potential energy: " + PotentialEnergy.finalPotentialEnergy);
+
+		if (slowMotionFrames > 0){
+			StaticVariables.MDTimestep = 0.5f * (float) Math.Pow (10, -15);
+			StaticVariables.fixedUpdateIntervalToRealTime = StaticVariables.MDTimestep / Time.fixedDeltaTime;
+			StaticVariables.updateIntervalToRealTime = StaticVariables.MDTimestep;
+			createEnvironment.preComputeCoeff();
+			slowMotionFrames --;
+		}else if (slowMotionFrames == 0){
+			StaticVariables.MDTimestep = 3.0f * (float) Math.Pow (10, -15);
+			StaticVariables.fixedUpdateIntervalToRealTime = StaticVariables.MDTimestep / Time.fixedDeltaTime;
+			StaticVariables.updateIntervalToRealTime = StaticVariables.MDTimestep;
+			createEnvironment.preComputeCoeff();
+			slowMotionFrames = -1;
+		}
 
 
 	}
