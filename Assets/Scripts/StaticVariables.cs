@@ -77,8 +77,11 @@ public class StaticVariables {
 	// each atom has an integer number as an ID that is used to access the related element for the atom pair
 	public static float[,] sigmaValues = new float[3,3];
 
-	// this coefficient adjusts the raw calculated force so that it has correct units.
+	// this coefficient adjusts the raw calculated Lennar-Jones force so that it has correct units.
 	public static float[,] forceCoeffLJ = new float[3,3];
+
+	// this coefficient adjusts the raw calculated Buckingham force so that it has correct units.
+	public static float[,] forceCoeffBK = new float[3,3];
 
 	//access to coefficients in Buckingham potential by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
 	public static float[,] coeff_A = new float[3,3];

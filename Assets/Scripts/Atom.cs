@@ -110,107 +110,8 @@ public abstract class Atom : MonoBehaviour
 		m_AllMolecules.Remove( atom );
 	}
 
-	/*
-	void FixedUpdate(){
-
-		if (!StaticVariables.pauseTime) {
-			Vector3 force = Vector3.zero;
-
-			if(StaticVariables.currentPotential == StaticVariables.Potential.LennardJones){
-				force = GetLennardJonesForce (m_AllMolecules);
-			}
-			else if(StaticVariables.currentPotential == StaticVariables.Potential.Brenner){
-				force = GetLennardJonesForce (m_AllMolecules);
-			}
-			else{
-				force = GetBuckinghamForce (m_AllMolecules);
-			}
-
-			//zero out any angular velocity
-			if(!gameObject.rigidbody.isKinematic) gameObject.rigidbody.angularVelocity = Vector3.zero;
-			gameObject.rigidbody.AddForce (force, mode:ForceMode.Force);
-
-			//scale the velocity based on the temperature of the system
-			if ((rigidbody.velocity.magnitude != 0) && !rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && m_AllMolecules.Count > 1) {
-				Vector3 newVelocity = gameObject.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
-				gameObject.rigidbody.velocity = newVelocity;
-			}
-
-		}
-		else{
-			//zero out all of the velocities of all of the atoms when time is stopped
-			for(int i = 0; i < m_AllMolecules.Count; i++){
-				Atom currAtom = m_AllMolecules[i];
-				if(!currAtom.rigidbody.isKinematic){
-					currAtom.rigidbody.velocity = Vector3.zero;
-				}
-			}
-		}
-
-
-
-	}
-
-
-	//the function returns the Lennard-Jones force on the atom given the list of all the atoms in the simulation
-	Vector3 GetLennardJonesForce(List<Atom> objectsInRange){
-		Vector3 finalForce = Vector3.zero;
-		
-		for (int i = 0; i < objectsInRange.Count; i++) {
-			Vector3 deltaR = transform.position - objectsInRange [i].transform.position;
-			float distanceSqr = deltaR.sqrMagnitude;
-			
-			//only get the forces of the atoms that are within the cutoff range
-			if (objectsInRange[i].gameObject != gameObject && (distanceSqr < StaticVariables.cutoffSqr)) {
-				
-				float finalSigma = StaticVariables.sigmaValues[atomID,objectsInRange[i].atomID];
-				
-				int iR = (int) ((Mathf.Sqrt(distanceSqr)/finalSigma)/(StaticVariables.deltaR/StaticVariables.sigmaValueMax))+2;
-				float magnitude = StaticVariables.preLennardJones[iR];
-				finalForce += deltaR * magnitude * StaticVariables.forceCoeffLJ[atomID,objectsInRange[i].atomID];
-			}
-		}
-		
-		return finalForce;
-	}
-
-	//the function returns the Buckingham force on the atom given the list of all the atoms in the simulation
-	Vector3 GetBuckinghamForce(List<Atom> objectsInRange){
-		Vector3 finalForce = Vector3.zero;
-		
-		for (int i = 0; i < objectsInRange.Count; i++) {
-			Vector3 deltaR = transform.position - objectsInRange [i].transform.position;
-			float distanceSqr = deltaR.sqrMagnitude;
-			float magnitude = 0.0f;
-			
-			//only get the forces of the atoms that are within the cutoff range
-			if ((objectsInRange[i].gameObject != gameObject) && (distanceSqr < StaticVariables.cutoffSqr)) {
-				float distance = Mathf.Sqrt(distanceSqr);
-
-				float final_A = StaticVariables.coeff_A [atomName + objectsInRange[i].atomName];
-				float final_B = StaticVariables.coeff_B [atomName + objectsInRange[i].atomName];
-				float final_C = StaticVariables.coeff_C [atomName + objectsInRange[i].atomName];
-				float final_D = StaticVariables.coeff_D [atomName + objectsInRange[i].atomName];
-
-				magnitude = final_A * final_B * Mathf.Exp (-final_B * distance) / distance;
-				magnitude = magnitude - 6.0f * final_C / Mathf.Pow (distanceSqr, 4);
-				magnitude = magnitude - 8.0f * final_D / Mathf.Pow (distanceSqr, 5);
-				magnitude = magnitude / StaticVariables.angstromsToMeters;
-				magnitude = magnitude + Q_eff * objectsInRange[i].Q_eff / (4.0f * Mathf.PI * StaticVariables.epsilon0 * distanceSqr * distance * StaticVariables.angstromsToMeters * StaticVariables.angstromsToMeters);
-
-				finalForce += deltaR * magnitude;
-			}
-								
-		}
-		
-		Vector3 adjustedForce = finalForce / StaticVariables.mass100amuToKg;
-		adjustedForce = adjustedForce / StaticVariables.angstromsToMeters;
-		adjustedForce = adjustedForce * StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime;
-		return adjustedForce;
-	}
-	*/
-
 	//this function takes care of double tapping, collision detection, and detecting OnMouseDown, OnMouseDrag, and OnMouseUp on iOS
+
 	void Update(){
 
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
@@ -277,7 +178,6 @@ public abstract class Atom : MonoBehaviour
 			UpdateBondText();
 			ApplyTransparency();
 		}
-		CheckVelocity ();
 	}
 
 	//another method for selecting atoms
@@ -707,35 +607,6 @@ public abstract class Atom : MonoBehaviour
 		return 1.225f * StaticVariables.sigmaValues [atomID,otherAtomScript.atomID];
 	}
 
-	//this functions checks the position of the atoms, and if its outside of the box, it reverses the atoms velocity to go back inside the box
-	void CheckVelocity(){
-
-		if (gameObject.rigidbody.isKinematic) return;
-
-		CreateEnvironment createEnvironment = StaticVariables.createEnvironment;
-		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
-		Vector3 newVelocity = gameObject.rigidbody.velocity;
-		if (gameObject.transform.position.x > bottomPlanePos.x + (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer) {
-			newVelocity.x = Math.Abs(newVelocity.x) * -1;
-		}
-		if (gameObject.transform.position.x < bottomPlanePos.x - (createEnvironment.width / 2.0f) + createEnvironment.errorBuffer) {
-			newVelocity.x = Math.Abs(newVelocity.x);
-		}
-		if (gameObject.transform.position.y > bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer) {
-			newVelocity.y = Math.Abs(newVelocity.y) * -1;
-		}
-		if (gameObject.transform.position.y < bottomPlanePos.y + createEnvironment.errorBuffer) {
-			newVelocity.y = Math.Abs(newVelocity.y);
-		}
-		if (gameObject.transform.position.z > bottomPlanePos.z + (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer) {
-			newVelocity.z = Math.Abs(newVelocity.z) * -1;
-		}
-		if (gameObject.transform.position.z < bottomPlanePos.z - (createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer) {
-			newVelocity.z = Math.Abs(newVelocity.z);
-		}
-		gameObject.rigidbody.velocity = newVelocity;
-	}
-
 	//this function checks the position of an atom, and if its outside of the box, simply place the atom back inside the box
 	Vector3 CheckPosition(Vector3 position){
 		CreateEnvironment createEnvironment = StaticVariables.createEnvironment;
@@ -760,6 +631,7 @@ public abstract class Atom : MonoBehaviour
 		}
 		return position;
 	}
+
 
 	//makes all atoms transparency except for the current atom and all atoms that are "close" to it
 	void ApplyTransparency(){

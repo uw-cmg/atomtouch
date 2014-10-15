@@ -78,6 +78,7 @@ public class CreateEnvironment : MonoBehaviour {
 			StaticVariables.coeff_D[atomScript.atomID,atomScript.atomID] = currentD;
 
 			StaticVariables.forceCoeffLJ[atomScript.atomID,atomScript.atomID] = 48.0f * atomScript.epsilon / StaticVariables.angstromsToMeters / currentSigma / currentSigma / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters * StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime;
+			StaticVariables.forceCoeffBK[atomScript.atomID,atomScript.atomID] = StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters;
 		}
 		for (int i = 0; i < molecules.Count; i++) {
 			Atom firstAtomScript = molecules[i].GetComponent<Atom>();
@@ -112,6 +113,7 @@ public class CreateEnvironment : MonoBehaviour {
 				StaticVariables.coeff_D[secondAtomScript.atomID,firstAtomScript.atomID] = currentD;
 
 				StaticVariables.forceCoeffLJ[firstAtomScript.atomID,secondAtomScript.atomID] = 48.0f * firstAtomScript.epsilon / StaticVariables.angstromsToMeters / currentSigma / currentSigma / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters * StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime;
+				StaticVariables.forceCoeffBK[firstAtomScript.atomID,secondAtomScript.atomID] = StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters;
 			}
 		}
 
