@@ -154,7 +154,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					potentialsActive = false;
 					StaticVariables.currentPotential = StaticVariables.Potential.LennardJones;
 					createEnvironment.InitAtoms();
-					slowMotionFrames = 10;
+					slowMotionFrames = StaticVariables.slowMotionFrames;
 				}
 				Rect buckinghamRect = new Rect(lennardJonesRect.x, lennardJonesRect.y + lennardJonesRect.height, lennardJonesRect.width, lennardJonesRect.height);
 				GUI.DrawTexture(buckinghamRect, lightBackground);
@@ -162,7 +162,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					potentialsActive = false;
 					StaticVariables.currentPotential = StaticVariables.Potential.Buckingham;
 					createEnvironment.InitAtoms();
-					slowMotionFrames = 10;
+					slowMotionFrames = StaticVariables.slowMotionFrames;
 				}
 				Rect brennerRect = new Rect(buckinghamRect.x, buckinghamRect.y + buckinghamRect.height, buckinghamRect.width, buckinghamRect.height);
 				GUI.DrawTexture(brennerRect, darkBackground);
@@ -170,7 +170,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					potentialsActive = false;
 					StaticVariables.currentPotential = StaticVariables.Potential.Brenner;
 					createEnvironment.InitAtoms();
-					slowMotionFrames = 10;
+					slowMotionFrames = StaticVariables.slowMotionFrames;
 				}
 			}
 
@@ -254,6 +254,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				resetPressed = true;
 				resetTime = Time.realtimeSinceStartup;
 				createEnvironment.InitAtoms();
+				slowMotionFrames = StaticVariables.slowMotionFrames;
 			}
 			if(Time.realtimeSinceStartup - resetTime > .05f){
 				resetPressed = false;
@@ -484,7 +485,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			tempNumberText.fontSize = 14;
 			tempNumberText.normal.textColor = Color.white;
 
-			GUI.Label (new Rect (temperatureBackgroundRect.x + temperatureBackgroundRect.width - 120.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)), 200.0f, 20), TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 272.15, 2)).ToString() + "C)", tempNumberText);
+			GUI.Label (new Rect (temperatureBackgroundRect.x + temperatureBackgroundRect.width - 120.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)), 200.0f, 20), TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 273.15, 2)).ToString() + "C)", tempNumberText);
 			float newTemp = GUI.HorizontalSlider (new Rect (temperatureBackgroundRect.x + 25.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)), temperatureBackgroundRect.width - 150.0f, 20.0f), TemperatureCalc.desiredTemperature, StaticVariables.tempRangeLow, StaticVariables.tempRangeHigh);
 			if (newTemp != TemperatureCalc.desiredTemperature) {
 				changingSlider = true;
@@ -528,7 +529,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			if (newVolume != guiVolume) {
 				guiVolume = newVolume;
 				changingSlider = true;
-				slowMotionFrames = 10;
+				slowMotionFrames = StaticVariables.slowMotionFrames;
 			}
 			else{
 				int volume = (int)guiVolume;
@@ -578,19 +579,22 @@ public class AtomTouchGUI : MonoBehaviour {
 			//possibly adjust the z value here depending on the position of the camera
 
 			if(addGraphicCopper && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
-				Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
+				//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
+				Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x - createEnvironment.width/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.y - createEnvironment.height/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.z - createEnvironment.depth/2.0f+createEnvironment.errorBuffer);
 				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
 				Instantiate(copperPrefab, curPosition, curRotation);
 			}
 		
 			if(addGraphicGold && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
-				Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
+				//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
+				Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x - createEnvironment.width/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.y - createEnvironment.height/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.z - createEnvironment.depth/2.0f+createEnvironment.errorBuffer);
 				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
 				Instantiate(goldPrefab, curPosition, curRotation);
 			}
 		
 			if(addGraphicPlatinum && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
-				Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
+				//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
+				Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x - createEnvironment.width/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.y - createEnvironment.height/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.z - createEnvironment.depth/2.0f+createEnvironment.errorBuffer);
 				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
 				Instantiate(platinumPrefab, curPosition, curRotation);
 			}
