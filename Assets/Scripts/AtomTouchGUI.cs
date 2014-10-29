@@ -113,7 +113,6 @@ public class AtomTouchGUI : MonoBehaviour {
 	//this function creates all UI elements in the game EXCEPT for the graph
 	void OnGUI(){
 
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		CreateEnvironment createEnvironment = StaticVariables.createEnvironment;
 
 		if (sliderControls != null) {
@@ -216,10 +215,9 @@ public class AtomTouchGUI : MonoBehaviour {
 			float buffer = 10.0f;
 
 			bool doubleTapped = false;
-			for(int i = 0; i < allMolecules.Length; i++){
-				GameObject currAtom = allMolecules[i];
-				Atom atomScript = currAtom.GetComponent<Atom>();
-				if(atomScript.doubleTapped){
+			for(int i = 0; i < Atom.AllAtoms.Count; i++){
+				Atom currAtom = Atom.AllAtoms[i];
+				if(currAtom.doubleTapped){
 					doubleTapped = true;
 				}
 			}
@@ -323,20 +321,20 @@ public class AtomTouchGUI : MonoBehaviour {
 			}
 
 			//create the red x if the user double tapped an atom
-			for (int i = 0; i < allMolecules.Length; i++) {
-				Atom atomScript = allMolecules[i].GetComponent<Atom>();
-				if(atomScript.doubleTapped){
+			for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+				Atom currAtom = Atom.AllAtoms[i];
+				if(currAtom.doubleTapped){
 					if(GUI.Button(new Rect(toolbarRect.x + 5*(toolbarRect.width / 6.0f), toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), redXButton, buttonStyle)){
 						createEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
-						atomScript.doubleTapped = false;
+						currAtom.doubleTapped = false;
 						Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
 						currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
-						atomScript.RemoveBondText();
-						atomScript.ResetTransparency();
+						currAtom.RemoveBondText();
+						currAtom.ResetTransparency();
 						RedXClicked();
 					}
 			
-					DisplayAtomProperties(allMolecules[i], openPanelRect);
+					DisplayAtomProperties(Atom.AllAtoms[i], openPanelRect);
 			
 				}
 			}
@@ -412,20 +410,19 @@ public class AtomTouchGUI : MonoBehaviour {
 			//create the garbage button for deleting atoms
 			Texture garbage = garbagePressed ? garbageTextureDown : garbageTexture;
 			if(GUI.Button(new Rect(lightAddAtom.x + 5.0f+(3*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), garbage, buttonStyle)){
-				for(int i = 0; i < allMolecules.Length; i++){
-					GameObject currAtom = allMolecules[i];
-					Atom atomScript = currAtom.GetComponent<Atom>();
-					if(atomScript.doubleTapped){
+				for(int i = 0; i < Atom.AllAtoms.Count; i++){
+					Atom currAtom = Atom.AllAtoms[i];
+					if(currAtom.doubleTapped){
 						createEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
 						Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
 					}
-					if(atomScript.selected){
+					if(currAtom.selected){
 						Destroy(currAtom);
 					}
-					if(atomScript.selected && atomScript.doubleTapped){
+					if(currAtom.selected && currAtom.doubleTapped){
 						currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
-						atomScript.RemoveBondText();
-						atomScript.ResetTransparency();
+						currAtom.RemoveBondText();
+						currAtom.ResetTransparency();
 					}
 				}
 				garbagePressed = true;
@@ -634,7 +631,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				selectAllText.alignment = TextAnchor.MiddleCenter;
 				selectAllText.fontSize = 22;
 				selectAllText.normal.textColor = Color.white;
-				if(selectedAtoms == allMolecules.Length){
+				if(selectedAtoms == Atom.AllAtoms.Count){
 					GUI.Label(selectAllRect, "Deselect All", selectAllText);
 					if(GUI.Button(selectAllRect, "", buttonStyle)){
 						DeselectAllAtoms();
@@ -684,13 +681,12 @@ public class AtomTouchGUI : MonoBehaviour {
 		timeText.fontSize = 14;
 		timeText.normal.textColor = Color.white;
 
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		int totalAtoms = allMolecules.Length;
+		int totalAtoms = Atom.AllAtoms.Count;
 		int copperAtoms = 0;
 		int goldAtoms = 0;
 		int platinumAtoms = 0;
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+			Atom currAtom = Atom.AllAtoms[i];
 			if (currAtom.GetComponent<Copper> () != null) {
 				copperAtoms++;
 			}
@@ -708,7 +704,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	}
 
 	//this function display the properties that are specific to one specific atom such as its position, velocity, and type
-	void DisplayAtomProperties(GameObject currAtom, Rect displayRect){
+	void DisplayAtomProperties(Atom currAtom, Rect displayRect){
 
 		GUIStyle timeText = GUI.skin.label;
 		timeText.alignment = TextAnchor.MiddleLeft;
@@ -742,15 +738,13 @@ public class AtomTouchGUI : MonoBehaviour {
 	}
 
 	//this function displays the angles of the bonds to other atoms
-	void DisplayBondProperties(GameObject currAtom, Rect displayRect){
+	void DisplayBondProperties(Atom currAtom, Rect displayRect){
 		
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		List<Vector3> bonds = new List<Vector3>();
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject atomNeighbor = allMolecules[i];
-			if(atomNeighbor == currAtom) continue;
-			Atom atomScript = currAtom.GetComponent<Atom>();
-			if(Vector3.Distance(currAtom.transform.position, atomNeighbor.transform.position) < atomScript.BondDistance(atomNeighbor)){
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+			Atom atomNeighbor = Atom.AllAtoms[i];
+			if(atomNeighbor.gameObject == currAtom.gameObject) continue;
+			if(Vector3.Distance(currAtom.transform.position, atomNeighbor.transform.position) < currAtom.BondDistance(atomNeighbor)){
 				bonds.Add(atomNeighbor.transform.position);
 			}
 		}
@@ -790,32 +784,27 @@ public class AtomTouchGUI : MonoBehaviour {
 
 	//this function selects all of the atoms in the scene
 	void SelectAllAtoms(){
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			Atom atomScript = currAtom.GetComponent<Atom>();
-			atomScript.selected = true;
-			atomScript.SetSelected(true);
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+			Atom currAtom = Atom.AllAtoms[i];
+			currAtom.selected = true;
+			currAtom.SetSelected(true);
 		}
 	}
 
 	//this function deselects all of the atoms in the scene
 	void DeselectAllAtoms(){
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			Atom atomScript = currAtom.GetComponent<Atom>();
-			atomScript.selected = false;
-			atomScript.SetSelected(false);
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+			Atom currAtom = Atom.AllAtoms[i];
+			currAtom.selected = false;
+			currAtom.SetSelected(false);
 		}
 	}
 
 	//this function returns the number of atoms that are selected
 	int CountSelectedAtoms(){
 		int selectedAtoms = 0;
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < Atom.AllMolecules.Count; i++) {
-			Atom currAtom = Atom.AllMolecules[i];
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+			Atom currAtom = Atom.AllAtoms[i];
 			if(currAtom.selected){
 				selectedAtoms++;
 			}
@@ -826,10 +815,9 @@ public class AtomTouchGUI : MonoBehaviour {
 	//this function checks the position of all of the atoms to make sure they are inside of the box
 	void CheckAtomVolumePositions(){
 
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+			Atom currAtom = Atom.AllAtoms[i];
 			Vector3 newPosition = currAtom.transform.position;
 			if(currAtom.transform.position.x > createEnvironment.bottomPlane.transform.position.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer){
 				newPosition.x = createEnvironment.bottomPlane.transform.position.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
@@ -877,9 +865,8 @@ public class AtomTouchGUI : MonoBehaviour {
 
 	//this function give all atoms in the scene a random velocity
 	public void AtomKick(){
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for(int i = 0; i < allMolecules.Length; i++){
-			GameObject currAtom = allMolecules[i];
+		for(int i = 0; i < Atom.AllAtoms.Count; i++){
+			Atom currAtom = Atom.AllAtoms[i];
 			float xVelocity = 0.0f;
 			float yVelocity = 0.0f;
 			float zVelocity = 0.0f;

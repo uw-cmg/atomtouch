@@ -53,7 +53,7 @@ public abstract class Atom : MonoBehaviour
 	//dictionary for holding the TextMeshes of distances between atoms
 	private Dictionary<String, TextMesh> bondDistanceText;
 
-	protected static List<Atom> m_AllMolecules = new List<Atom> ();
+	protected static List<Atom> m_AllAtoms = new List<Atom> ();
 
 	public TextMesh textMeshPrefab;
 	public bool held { get; set; }
@@ -75,14 +75,9 @@ public abstract class Atom : MonoBehaviour
 
 
 	//variables for computing the forces on atoms
-	private Vector3 lastVelocity = Vector3.zero;
-	private Vector3 a_n = Vector3.zero;
-	private Vector3 a_nplus1 = Vector3.zero;
 
 	void Awake(){
 		RegisterAtom (this);
-
-		gameObject.rigidbody.velocity = new Vector3 (UnityEngine.Random.Range(-1.0f, 1.0f), UnityEngine.Random.Range(-1.0f, 1.0f), UnityEngine.Random.Range(-1.0f, 1.0f));
 		bondDistanceText = new Dictionary<String, TextMesh> ();
 	}
 
@@ -91,23 +86,23 @@ public abstract class Atom : MonoBehaviour
 	}
 
 
-	// method to extract the list of allMolecules
-	public static List<Atom> AllMolecules { 
+	// method to extract the list of allAtoms
+	public static List<Atom> AllAtoms { 
 		get {
-			return m_AllMolecules;
+			return m_AllAtoms;
 		}
 	}
 
-	// method to register an added atom to the list of allMolecules
+	// method to register an added atom to the list of allAtoms
 	protected static void RegisterAtom( Atom atom ) {
-		m_AllMolecules.Add (atom);
+		m_AllAtoms.Add (atom);
 		CalculateForces.allForces.Add (atom, Vector3.zero);
 	}
 
-	// method to unregister a removed atom from the list of allMolecules
+	// method to unregister a removed atom from the list of allAtoms
 	protected static void UnregisterAtom( Atom atom ) { 
 		CalculateForces.allForces.Remove (atom);
-		m_AllMolecules.Remove( atom );
+		m_AllAtoms.Remove( atom );
 	}
 
 	//this function takes care of double tapping, collision detection, and detecting OnMouseDown, OnMouseDrag, and OnMouseUp on iOS
@@ -216,13 +211,11 @@ public abstract class Atom : MonoBehaviour
 					Vector2 touchOnePrevPos = touch2.position - touch2.deltaPosition;
 					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
 					deltaTouch2 = deltaMagnitudeDiff / 10.0f;
-					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 					Dictionary<String, Vector3> newAtomPositions = new Dictionary<String, Vector3>();
 					bool moveAtoms = true;
-					for(int i = 0; i < allMolecules.Length; i++){
-						GameObject currAtom = allMolecules[i];
-						Atom atomScript = currAtom.GetComponent<Atom>();
-						if(!atomScript.selected) continue;
+					for(int i = 0; i < AllAtoms.Count; i++){
+						Atom currAtom = AllAtoms[i];
+						if(!currAtom.selected) continue;
 						Quaternion cameraRotation = Camera.main.transform.rotation;
 						Vector3 projectPosition = currAtom.transform.position;
 						projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
@@ -237,10 +230,9 @@ public abstract class Atom : MonoBehaviour
 					}
 
 					if(newAtomPositions.Count > 0 && moveAtoms){
-						for(int i = 0; i < allMolecules.Length; i++){
-							GameObject currAtom = allMolecules[i];
-							Atom atomScript = currAtom.GetComponent<Atom>();
-							if(!atomScript.selected) continue;
+						for(int i = 0; i < AllAtoms.Count; i++){
+							Atom currAtom = AllAtoms[i];
+							if(!currAtom.selected) continue;
 							Vector3 newAtomPosition = newAtomPositions[currAtom.name];
 							currAtom.transform.position = newAtomPosition;
 						}
@@ -252,11 +244,9 @@ public abstract class Atom : MonoBehaviour
 			//this resets the neccesary variables so the atom can move in two dimensions again. It also resets the atom's material
 			moveZDirection = false;
 			held = false;
-			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-			for(int i = 0; i < allMolecules.Length; i++){
-				GameObject currAtom = allMolecules[i];
-				Atom atomScript = currAtom.GetComponent<Atom>();
-				atomScript.SetSelected(atomScript.selected);
+			for(int i = 0; i < AllAtoms.Count; i++){
+				Atom currAtom = AllAtoms[i];
+				currAtom.SetSelected(currAtom.selected);
 			}
 			
 		}
@@ -264,10 +254,9 @@ public abstract class Atom : MonoBehaviour
 
 	//reset all of the atoms double tapped to false
 	void ResetDoubleTapped(){
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			Atom atomScript = allMolecules[i].GetComponent<Atom>();
-			atomScript.doubleTapped = false;
+		for (int i = 0; i < AllAtoms.Count; i++) {
+			Atom currAtom = AllAtoms[i];
+			currAtom.doubleTapped = false;
 		}
 	}
 		
@@ -285,19 +274,17 @@ public abstract class Atom : MonoBehaviour
 		}
 		else{
 			//this is for a group of atoms
-			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 			gameObjectOffsets = new Dictionary<String, Vector3>();
 			gameObjectScreenPoints = new Dictionary<String, Vector3>();
-			for(int i = 0; i < allMolecules.Length; i++){
-				GameObject currAtom = allMolecules[i];
-				Atom atomScript = currAtom.GetComponent<Atom>();
-				if(atomScript.selected){
+			for(int i = 0; i < AllAtoms.Count; i++){
+				Atom currAtom = AllAtoms[i];
+				if(currAtom.selected){
 					currAtom.rigidbody.isKinematic = true;
 					Vector3 pointOnScreen = Camera.main.WorldToScreenPoint(currAtom.transform.position);
 					//the -15.0f here is for moving the atom above your finger
 					Vector3 atomOffset = currAtom.transform.position - Camera.main.ScreenToWorldPoint(
 						new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y - 15.0f, pointOnScreen.z));
-					atomScript.held = true;
+					currAtom.held = true;
 					gameObjectOffsets.Add(currAtom.name, atomOffset);
 					gameObjectScreenPoints.Add(currAtom.name, pointOnScreen);
 				}
@@ -322,19 +309,17 @@ public abstract class Atom : MonoBehaviour
 			}
 			else{
 				//this is for a group of atoms
-				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 				gameObjectOffsets = new Dictionary<String, Vector3>();
 				gameObjectScreenPoints = new Dictionary<String, Vector3>();
-				for(int i = 0; i < allMolecules.Length; i++){
-					GameObject currAtom = allMolecules[i];
-					Atom atomScript = currAtom.GetComponent<Atom>();
-					if(atomScript.selected){
+				for(int i = 0; i < AllAtoms.Count; i++){
+					Atom currAtom = AllAtoms[i];
+					if(currAtom.selected){
 						currAtom.rigidbody.isKinematic = true;
 						Vector3 pointOnScreen = Camera.main.WorldToScreenPoint(currAtom.transform.position);
 						//the -15.0 here is for moving the atom above your mouse
 						Vector3 atomOffset = currAtom.transform.position - Camera.main.ScreenToWorldPoint(
 							new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, pointOnScreen.z));
-						atomScript.held = true;
+						currAtom.held = true;
 						gameObjectOffsets.Add(currAtom.name, atomOffset);
 						gameObjectScreenPoints.Add(currAtom.name, pointOnScreen);
 					}
@@ -362,24 +347,21 @@ public abstract class Atom : MonoBehaviour
 			}
 			else{
 				//this is for a group of atoms
-				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 				bool noneDoubleTapped = true;
-				for(int i = 0; i < allMolecules.Length; i++){
-					GameObject currAtom = allMolecules[i];
-					Atom atomScript = currAtom.GetComponent<Atom>();
-					if(atomScript.doubleTapped && atomScript.selected) noneDoubleTapped = false;
+				for(int i = 0; i < AllAtoms.Count; i++){
+					Atom currAtom = AllAtoms[i];
+					if(currAtom.doubleTapped && currAtom.selected) noneDoubleTapped = false;
 				}
 
 				//only move the atoms if none of them have been double tapped
 				if(noneDoubleTapped){
 					List<Vector3> atomPositions = new List<Vector3>();
 					bool moveAtoms = true;
-					for(int i = 0; i < allMolecules.Length; i++){
-						GameObject currAtom = allMolecules[i];
-						Atom atomScript = currAtom.GetComponent<Atom>();
+					for(int i = 0; i < AllAtoms.Count; i++){
+						Atom currAtom = AllAtoms[i];
 						Vector3 newAtomPosition = currAtom.transform.position;
 						Vector3 diffVector = new Vector3(lastTouchPosition.x, lastTouchPosition.y) - new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y);
-						if(diffVector.magnitude > 0 && !doubleTapped && atomScript.selected && Input.touchCount == 1){
+						if(diffVector.magnitude > 0 && !doubleTapped && currAtom.selected && Input.touchCount == 1){
 							if(gameObjectOffsets != null && gameObjectScreenPoints != null){
 								Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
 								Vector3 currOffset = gameObjectOffsets[currAtom.name];
@@ -396,9 +378,9 @@ public abstract class Atom : MonoBehaviour
 					}
 					//only move the atoms if none of them have hit the wall of the box
 					if(atomPositions.Count > 0 && moveAtoms){
-						for(int i = 0; i < allMolecules.Length; i++){
+						for(int i = 0; i < AllAtoms.Count; i++){
 							Vector3 newAtomPosition = atomPositions[i];
-							GameObject currAtom = allMolecules[i];
+							Atom currAtom = AllAtoms[i];
 							currAtom.transform.position = newAtomPosition;
 						}
 					}
@@ -434,23 +416,20 @@ public abstract class Atom : MonoBehaviour
 				}
 				else{
 					//this is for a group of atoms
-					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 					bool noneDoubleTapped = true;
-					for(int i = 0; i < allMolecules.Length; i++){
-						GameObject currAtom = allMolecules[i];
-						Atom atomScript = currAtom.GetComponent<Atom>();
-						if(atomScript.doubleTapped && atomScript.selected) noneDoubleTapped = false;
+					for(int i = 0; i < AllAtoms.Count; i++){
+						Atom currAtom = AllAtoms[i];
+						if(currAtom.doubleTapped && currAtom.selected) noneDoubleTapped = false;
 					}
 
 					//only move the atoms if none of them have been double tapped
 					if(noneDoubleTapped){
 						List<Vector3> atomPositions = new List<Vector3>();
 						bool moveAtoms = true;
-						for(int i = 0; i < allMolecules.Length; i++){
-							GameObject currAtom = allMolecules[i];
-							Atom atomScript = currAtom.GetComponent<Atom>();
+						for(int i = 0; i < AllAtoms.Count; i++){
+							Atom currAtom = AllAtoms[i];
 							Vector3 newAtomPosition = currAtom.transform.position;
-							if((lastMousePosition - Input.mousePosition).magnitude > 0 && atomScript.selected){
+							if((lastMousePosition - Input.mousePosition).magnitude > 0 && currAtom.selected){
 								Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
 								Vector3 currOffset = gameObjectOffsets[currAtom.name];
 								Vector3 objScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, currScreenPoint.z);
@@ -464,7 +443,7 @@ public abstract class Atom : MonoBehaviour
 							
 							Vector3 finalPosition = newAtomPosition;
 							
-							if(atomScript.selected){
+							if(currAtom.selected){
 								float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
 								Vector3 projectPosition = newAtomPosition;
 								projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
@@ -479,9 +458,9 @@ public abstract class Atom : MonoBehaviour
 
 						//only move the atoms if none of them have hit the walls of the box
 						if(atomPositions.Count > 0 && moveAtoms){
-							for(int i = 0; i < allMolecules.Length; i++){
+							for(int i = 0; i < AllAtoms.Count; i++){
 								Vector3 newAtomPosition = atomPositions[i];
-								GameObject currAtom = allMolecules[i];
+								Atom currAtom = AllAtoms[i];
 								currAtom.transform.position = newAtomPosition;
 							}
 						}
@@ -504,8 +483,6 @@ public abstract class Atom : MonoBehaviour
 			rigidbody.isKinematic = false;
 		}
 		else{
-			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-
 			if(!selected){
 				//this is for one atom
 				rigidbody.isKinematic = false;
@@ -516,16 +493,15 @@ public abstract class Atom : MonoBehaviour
 				direction.Normalize();
 				float magnitude = 2.0f * directionMagnitude;
 				Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
-				gameObject.rigidbody.velocity = flingVector;
+				//gameObject.rigidbody.velocity = flingVector;
 			}
 			else{
 				//this is for a group of atoms
-				for(int i = 0; i < allMolecules.Length; i++){
-					GameObject currAtom = allMolecules[i];
-					Atom atomScript = currAtom.GetComponent<Atom>();
-					if(atomScript.selected){
+				for(int i = 0; i < AllAtoms.Count; i++){
+					Atom currAtom = AllAtoms[i];
+					if(currAtom.selected){
 						currAtom.rigidbody.isKinematic = false;
-						atomScript.held = false;
+						currAtom.held = false;
 
 						Quaternion cameraRotation = Camera.main.transform.rotation;
 						Vector3 direction = cameraRotation * (new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - new Vector3(lastTouchPosition.x, lastTouchPosition.y, 0.0f));
@@ -533,16 +509,15 @@ public abstract class Atom : MonoBehaviour
 						direction.Normalize();
 						float magnitude = 2.0f * directionMagnitude;
 						Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
-						currAtom.rigidbody.velocity = flingVector;
+						//currAtom.rigidbody.velocity = flingVector;
 					}
 				}
 			}
 
 			//reset the selection status of all the atoms
-			for(int i = 0; i < allMolecules.Length; i++){
-				GameObject currAtom = allMolecules[i];
-				Atom atomScript = currAtom.GetComponent<Atom>();
-				atomScript.SetSelected(atomScript.selected);
+			for(int i = 0; i < AllAtoms.Count; i++){
+				Atom currAtom = AllAtoms[i];
+				currAtom.SetSelected(currAtom.selected);
 			}
 
 		}
@@ -558,8 +533,6 @@ public abstract class Atom : MonoBehaviour
 				rigidbody.isKinematic = false;
 			}
 			else{
-				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-
 				if(!selected){
 					//this is for one atom
 					rigidbody.isKinematic = false;
@@ -569,32 +542,30 @@ public abstract class Atom : MonoBehaviour
 					direction.Normalize();
 					float magnitude = 10.0f;
 					Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
-					gameObject.rigidbody.velocity = flingVector;
+					//gameObject.rigidbody.velocity = flingVector;
 				}
 				else{
 					//this is for a group of atoms
-					for(int i = 0; i < allMolecules.Length; i++){
-						GameObject currAtom = allMolecules[i];
-						Atom atomScript = currAtom.GetComponent<Atom>();
-						if(atomScript.selected){
+					for(int i = 0; i < AllAtoms.Count; i++){
+						Atom currAtom = AllAtoms[i];
+						if(currAtom.selected){
 							currAtom.rigidbody.isKinematic = false;
-							atomScript.held = false;
+							currAtom.held = false;
 
 							Quaternion cameraRotation = Camera.main.transform.rotation;
 							Vector3 direction = cameraRotation * (Input.mousePosition - lastMousePosition);
 							direction.Normalize();
 							float magnitude = 10.0f;
 							Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
-							currAtom.rigidbody.velocity = flingVector;
+							//currAtom.rigidbody.velocity = flingVector;
 						}
 					}
 				}
 
 				//reset the selection status of all of the atoms
-				for(int i = 0; i < allMolecules.Length; i++){
-					GameObject currAtom = allMolecules[i];
-					Atom atomScript = currAtom.GetComponent<Atom>();
-					atomScript.SetSelected(atomScript.selected);
+				for(int i = 0; i < AllAtoms.Count; i++){
+					Atom currAtom = AllAtoms[i];
+					currAtom.SetSelected(currAtom.selected);
 				}
 			}
 			held = false;
@@ -602,9 +573,8 @@ public abstract class Atom : MonoBehaviour
 	}
 
 	//this functions returns the appropriate bond distance, given two atoms
-	public float BondDistance(GameObject otherAtom){
-		Atom otherAtomScript = otherAtom.GetComponent<Atom> ();
-		return 1.225f * StaticVariables.sigmaValues [atomID,otherAtomScript.atomID];
+	public float BondDistance(Atom otherAtom){
+		return 1.225f * StaticVariables.sigmaValues [atomID,otherAtom.atomID];
 	}
 
 	//this function checks the position of an atom, and if its outside of the box, simply place the atom back inside the box
@@ -635,34 +605,30 @@ public abstract class Atom : MonoBehaviour
 
 	//makes all atoms transparency except for the current atom and all atoms that are "close" to it
 	void ApplyTransparency(){
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject neighbor = allMolecules[i];
-			if(neighbor == gameObject) continue;
-			Atom neighborScript = neighbor.GetComponent<Atom>();
-			if(neighborScript.selected){
-				neighborScript.SetSelected(neighborScript.selected);
+		for (int i = 0; i < AllAtoms.Count; i++) {
+			Atom neighborAtom = AllAtoms[i];
+			if(neighborAtom.gameObject == gameObject) continue;
+			if(neighborAtom.selected){
+				neighborAtom.SetSelected(neighborAtom.selected);
 			}
-			else if(!neighborScript.selected && Vector3.Distance(gameObject.transform.position, neighbor.transform.position) > BondDistance(neighbor)){
-				neighborScript.SetTransparent(true);
+			else if(!neighborAtom.selected && Vector3.Distance(gameObject.transform.position, neighborAtom.transform.position) > BondDistance(neighborAtom)){
+				neighborAtom.SetTransparent(true);
 			}
 			else{
-				neighborScript.SetTransparent(false);
+				neighborAtom.SetTransparent(false);
 			}
 		}
 	}
 
 	//resets all atoms transparency back to normal or to selected depending on its status
 	public void ResetTransparency(){
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			Atom atomScript = currAtom.GetComponent<Atom>();
-			if(atomScript.selected){
-				atomScript.SetSelected(atomScript.selected);
+		for (int i = 0; i < AllAtoms.Count; i++) {
+			Atom currAtom = AllAtoms[i];
+			if(currAtom.selected){
+				currAtom.SetSelected(currAtom.selected);
 			}
 			else{
-				atomScript.SetTransparent(false);
+				currAtom.SetTransparent(false);
 			}
 		}
 	}
@@ -673,10 +639,9 @@ public abstract class Atom : MonoBehaviour
 		Vector3 left = cameraRotation * -Vector3.right;
 		Vector3 right = cameraRotation * Vector3.right;
 
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject atomNeighbor = allMolecules[i];
-			if(atomNeighbor == gameObject) continue;
+		for (int i = 0; i < AllAtoms.Count; i++) {
+			Atom atomNeighbor = AllAtoms[i];
+			if(atomNeighbor.gameObject == gameObject) continue;
 			float distance = Vector3.Distance(gameObject.transform.position, atomNeighbor.transform.position);
 			if(distance < BondDistance(atomNeighbor)){
 
@@ -729,11 +694,9 @@ public abstract class Atom : MonoBehaviour
 
 	//this function destroys all bond distance text in the scene
 	void RemoveAllBondText(){
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			Atom atomScript = currAtom.GetComponent<Atom>();
-			atomScript.RemoveBondText();
+		for (int i = 0; i < AllAtoms.Count; i++) {
+			Atom currAtom = AllAtoms[i];
+			currAtom.RemoveBondText();
 		}
 	}
 

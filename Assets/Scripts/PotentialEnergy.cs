@@ -34,11 +34,11 @@ public class PotentialEnergy : MonoBehaviour {
 		//this function computes the potential energy of the system every frame
 		//we only are interested in the average though, so we take the average potential energy over .05s 
 
-		for (int i = 0; i < Atom.AllMolecules.Count; i++) {
-			Atom currAtom = Atom.AllMolecules[i];
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+			Atom currAtom = Atom.AllAtoms[i];
 			double potentialEnergyPerAtom = 0.0f;
-			for(int j = 0; j < Atom.AllMolecules.Count; j++){
-				Atom neighborAtom = Atom.AllMolecules[j];
+			for(int j = 0; j < Atom.AllAtoms.Count; j++){
+				Atom neighborAtom = Atom.AllAtoms[j];
 				if(currAtom.gameObject == neighborAtom.gameObject) continue;
 
 				float finalSigma = StaticVariables.sigmaValues[currAtom.atomID,neighborAtom.atomID];

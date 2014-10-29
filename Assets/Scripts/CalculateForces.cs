@@ -22,8 +22,8 @@ public class CalculateForces : MonoBehaviour {
 
 		if (!StaticVariables.pauseTime) {
 
-			for (int i=0; i<Atom.AllMolecules.Count; i++){
-				Atom currAtom = Atom.AllMolecules[i];
+			for (int i=0; i<Atom.AllAtoms.Count; i++){
+				Atom currAtom = Atom.AllAtoms[i];
 				Vector3 position = currAtom.transform.position;
 				Vector3 velocity = currAtom.rigidbody.velocity;
 				var pair = ReflectFromWalls(position,velocity);
@@ -32,10 +32,10 @@ public class CalculateForces : MonoBehaviour {
 				currAtom.rigidbody.velocity = pair.Value;
 			}
 
-			for (int i = 0; i < Atom.AllMolecules.Count; i++) {
-				Atom firstAtom = Atom.AllMolecules [i];
-				for (int j = i+1; j<Atom.AllMolecules.Count; j++) {
-					Atom secondAtom = Atom.AllMolecules [j];
+			for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+				Atom firstAtom = Atom.AllAtoms [i];
+				for (int j = i+1; j<Atom.AllAtoms.Count; j++) {
+					Atom secondAtom = Atom.AllAtoms [j];
 					Vector3 force = Vector3.zero;
 
 					if (StaticVariables.currentPotential == StaticVariables.Potential.LennardJones) {
@@ -52,14 +52,14 @@ public class CalculateForces : MonoBehaviour {
 				
 			}
 
-		    for (int i = 0; i<Atom.AllMolecules.Count; i++) {
-				Atom currAtom = Atom.AllMolecules[i];
+		    for (int i = 0; i<Atom.AllAtoms.Count; i++) {
+				Atom currAtom = Atom.AllAtoms[i];
 				
 				if(!currAtom.rigidbody.isKinematic) currAtom.rigidbody.angularVelocity = Vector3.zero;
 				currAtom.rigidbody.AddForce (allForces[currAtom], mode:ForceMode.Force);
 				
 				//scale the velocity based on the temperature of the system
-				if ((currAtom.rigidbody.velocity.magnitude != 0) && !currAtom.rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && Atom.AllMolecules.Count > 1) {
+				if ((currAtom.rigidbody.velocity.magnitude != 0) && !currAtom.rigidbody.isKinematic && !float.IsInfinity(TemperatureCalc.squareRootAlpha) && Atom.AllAtoms.Count > 1) {
 					Vector3 newVelocity = currAtom.rigidbody.velocity * TemperatureCalc.squareRootAlpha;
 					currAtom.rigidbody.velocity = newVelocity;
 				}
@@ -72,8 +72,8 @@ public class CalculateForces : MonoBehaviour {
 		}
 		else{
 			//zero out all of the velocities of all of the atoms when time is stopped
-			for(int i = 0; i < Atom.AllMolecules.Count; i++){
-				Atom currAtom = Atom.AllMolecules[i];
+			for(int i = 0; i < Atom.AllAtoms.Count; i++){
+				Atom currAtom = Atom.AllAtoms[i];
 				if(!currAtom.rigidbody.isKinematic){
 					currAtom.rigidbody.velocity = Vector3.zero;
 				}

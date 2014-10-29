@@ -210,8 +210,8 @@ public class CreateEnvironment : MonoBehaviour {
 	//initialize the atoms to a random position and to the original number of atoms
 	public void InitAtoms(){
 		
-		for (int i = Atom.AllMolecules.Count-1; i >= 0; i--) {
-			Atom currAtom = Atom.AllMolecules [i];
+		for (int i = Atom.AllAtoms.Count-1; i >= 0; i--) {
+			Atom currAtom = Atom.AllAtoms [i];
 			Destroy (currAtom.gameObject);
 		}
 
@@ -235,8 +235,8 @@ public class CreateEnvironment : MonoBehaviour {
 		}
 
 		/*
-		for (int i = 0; i < Atom.AllMolecules.Count; i++) {
-			Atom currAtom = Atom.AllMolecules[i];
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+			Atom currAtom = Atom.AllAtoms[i];
 			currAtom.name = (i).ToString();
 		}
 		*/

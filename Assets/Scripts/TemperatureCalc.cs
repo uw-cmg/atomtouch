@@ -25,22 +25,21 @@ public class TemperatureCalc : MonoBehaviour {
 	public static float desiredTemperature = 300.0f; //K
 	public static double totalKineticEnergyJ;
 	public double instantTemp;
-	private int moleculeCount;
+	private int atomCount;
 	public double alpha;
 	public double draggedAlpha;
 	
 	void FixedUpdate () {
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		totalKineticEnergyJ = 0.0f;
-		moleculeCount = allMolecules.Length;
-		for (int i = 0; i < allMolecules.Length; i++) {
+		atomCount = Atom.AllAtoms.Count;
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
 			//compute the total energy in the system
-			GameObject molecule = allMolecules[i];
-			if(molecule.rigidbody && !molecule.rigidbody.isKinematic){
+			Atom atom = Atom.AllAtoms[i];
+			if(atom.rigidbody && !atom.rigidbody.isKinematic){
 				
-				double mass = molecule.rigidbody.mass;
+				double mass = atom.rigidbody.mass;
 				double massKg = mass * StaticVariables.mass100amuToKg; // mass in kg
-				double velocityAngstromsPerSecondApparent = molecule.rigidbody.velocity.magnitude;
+				double velocityAngstromsPerSecondApparent = atom.rigidbody.velocity.magnitude;
 				double velocityMetersPerSecond = velocityAngstromsPerSecondApparent * StaticVariables.angstromsToMeters / StaticVariables.fixedUpdateIntervalToRealTime;
 				double velocityMetersPerSecondSquared = Math.Pow(velocityMetersPerSecond, 2);
 				totalKineticEnergyJ += 0.5f * massKg * velocityMetersPerSecondSquared;
@@ -49,7 +48,7 @@ public class TemperatureCalc : MonoBehaviour {
 		
 		//using sum_KE = (3/2)N*kB*T
 		//T = sum_KE / 1.5 / N / kB
-		instantTemp = totalKineticEnergyJ / 1.5f / (float)moleculeCount / StaticVariables.kB;
+		instantTemp = totalKineticEnergyJ / 1.5f / (float)atomCount / StaticVariables.kB;
 		
 		alpha = desiredTemperature / instantTemp; 
 		
