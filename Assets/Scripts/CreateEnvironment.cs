@@ -45,15 +45,15 @@ public class CreateEnvironment : MonoBehaviour {
 	public Vector3 initialCenterPos;
 
 	void Awake(){
-		StaticVariables.createEnvironment = this;
+		StaticVariables.myEnvironment = this;
 	}
 
 	void Start () {
 
 		// pre-compute coefficients used in various types of potentials so that we don't have to calculate them dynamically
-		preComputeCoeff ();
+		preCompute ();
 
-		centerPos = new Vector3 (0.0f, 0.0f, 0.0f);
+		centerPos = Vector3.zero;
 		initialCenterPos = centerPos;
 		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
 
@@ -61,9 +61,9 @@ public class CreateEnvironment : MonoBehaviour {
 		InitAtoms ();
 
 		//figure out the dimensions of the box based on the volume
-		width = (float)Math.Pow (volume, (1.0f / 3.0f));
-		height = (float)Math.Pow (volume, (1.0f / 3.0f));
-		depth = (float)Math.Pow (volume, (1.0f / 3.0f));
+		width = Mathf.Pow (volume, (1.0f / 3.0f));
+		height = Mathf.Pow (volume, (1.0f / 3.0f));
+		depth = Mathf.Pow (volume, (1.0f / 3.0f));
 		
 		//create the bottom plane
 		Quaternion bottonPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 0.0f);
@@ -147,7 +147,8 @@ public class CreateEnvironment : MonoBehaviour {
 		atomTouchGUI.AtomKick ();
 	}
 
-	void Update () {
+	void Update ()
+	{
 
 		//when the volume of the box changes the width, height, and depth must change as well. The lines and the text must respond accordingly
 		width = Mathf.Pow (volume, (1.0f / 3.0f));
@@ -194,8 +195,6 @@ public class CreateEnvironment : MonoBehaviour {
 		frontPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
 		rightPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
 		leftPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
-
-
 	}
 
 	//make the side text become vertical
@@ -207,155 +206,128 @@ public class CreateEnvironment : MonoBehaviour {
 		return verticalText.ToString();
 	}
 
-	//initialize the atoms to a random position and to the original number of atoms
-	public void InitAtoms(){
+	// This function pre-computes coefficients used in various types of potentials so that we don't have to calculate them dynamically
+	public void preCompute()
+	{
+		for (int i = 0; i < molecules.Count; i++) {
+			Atom firstAtom = molecules[i].GetComponent<Atom>();
+			for(int j = 0; j < molecules.Count; j++){
+				Atom secondAtom = molecules[j].GetComponent<Atom>();
+				
+				float currentSigma = Mathf.Sqrt(firstAtom.sigma*secondAtom.sigma);
+				StaticVariables.sigmaValues[firstAtom.atomID,secondAtom.atomID] = currentSigma;
+
+				// when the pre-calculated normalized Lennard Jones force is multiplied by this coefficient the acceleration units is [Angstrom/second^2]
+				float currentAccelCoeff = 48.0f * firstAtom.epsilon / (currentSigma * currentSigma * StaticVariables.angstromsToMeters * StaticVariables.angstromsToMeters * firstAtom.massamu * StaticVariables.amuToKg);
+				StaticVariables.accelCoefficient[firstAtom.atomID, secondAtom.atomID] = currentAccelCoeff;
+				
+				float currentA = Mathf.Sqrt(firstAtom.buck_A*secondAtom.buck_A);
+				StaticVariables.coeff_A[firstAtom.atomID,secondAtom.atomID] = currentA;
+				
+				float currentB = Mathf.Sqrt(firstAtom.buck_B * secondAtom.buck_B);
+				StaticVariables.coeff_A[firstAtom.atomID, secondAtom.atomID] = currentB;
+				
+				float currentC = Mathf.Sqrt(firstAtom.buck_C * secondAtom.buck_C);
+				StaticVariables.coeff_A[firstAtom.atomID, secondAtom.atomID] = currentC;
+				
+				float currentD = Mathf.Sqrt(firstAtom.buck_D * secondAtom.buck_D);
+				StaticVariables.coeff_A[firstAtom.atomID, secondAtom.atomID] = currentD;
+
+				StaticVariables.forceCoeffBK[firstAtom.atomID,secondAtom.atomID] = StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters;
+			}
+		}
 		
-		for (int i = Atom.AllAtoms.Count-1; i >= 0; i--) {
+		// precalculate the LennardJones potential and store it in preLennarJones array.
+		int nR = (int)(StaticVariables.cutoff/StaticVariables.deltaR)+1;
+		StaticVariables.preLennardJonesForce = new float[nR];
+		StaticVariables.preLennardJonesPotential = new float[nR];
+		
+		for (int i = 0; i < nR; i++)
+		{
+			float distance = (float)i * StaticVariables.deltaR;
+			StaticVariables.preLennardJonesForce[i] = calcLennardJonesForce(distance);
+			StaticVariables.preLennardJonesPotential[i] = calcLennardJonesPotential(distance);
+		}
+	}
+
+	//the function returns the LennarJones force on the atom given the list of the atoms that are within range of it
+	private float calcLennardJonesForce(float distance)
+	{
+		float invDistance2 = 1.0f / distance / distance;
+		float invDistance6 = invDistance2 * invDistance2 * invDistance2;
+		float r_min = StaticVariables.rMinMultiplier;
+		
+		float forceMagnitude = 0.0f;
+		
+		if (distance > r_min)
+		{
+			forceMagnitude = invDistance2 * invDistance6 * (invDistance6 - 0.5f);
+		}
+		// Smooth the potential to go to a constant not infinity at r=0
+		else
+		{
+			float invr_min = 1 / r_min;
+			float invr_min2 = invr_min * invr_min;
+			float invr_min6 = invr_min2 * invr_min2 * invr_min2;
+			
+			float magnitude_Vmin = invr_min2 * invr_min6 * (invr_min6 - 0.5f);
+			
+			float r_Vmax = r_min / 1.5f;
+			float invr_Vmax2 = 1 / r_Vmax / r_Vmax;
+			float invr_Vmax6 = invr_Vmax2 * invr_Vmax2 * invr_Vmax2;
+			
+			float magnitude_Vmax = invr_Vmax2 * invr_Vmax6 * (invr_Vmax6 - 0.5f);
+			
+			float part1 = (distance / r_min) * Mathf.Exp(distance - r_min);
+			float part2 = magnitude_Vmax - magnitude_Vmin;
+			forceMagnitude = magnitude_Vmax - (part1 * part2);
+		}
+		
+		return forceMagnitude;
+	}
+	
+	//the function returns the LennarJones force on the atom given the list of the atoms that are within range of it
+	private float calcLennardJonesPotential(float distance)
+	{
+		float invDistance2 = 1.0f / distance / distance;
+		float invDistance6 = invDistance2 * invDistance2 * invDistance2;
+		
+		float potential = 0.0f;
+		
+		if (distance > 0.0f)
+		{
+			potential = invDistance6 * (invDistance6 - 1.0f);
+		}
+		
+		return potential;
+	}
+
+	//initialize the atoms to a random position and to the original number of atoms
+	public void InitAtoms()
+	{
+		//destroy and unregister all the current atoms
+		for (int i = Atom.AllAtoms.Count-1; i >= 0; i--)
+		{
 			Atom currAtom = Atom.AllAtoms [i];
+			Atom.UnregisterAtom(currAtom);
 			Destroy (currAtom.gameObject);
 		}
 
-		if (StaticVariables.currentPotential == StaticVariables.Potential.Buckingham) {
-			for (int i = 0; i < (int)(numMolecules/2); i++) {
-				Vector3 position = new Vector3 (centerPos.x + (UnityEngine.Random.Range (-(width / 2.0f) + errorBuffer, (width / 2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range (-(height / 2.0f) + errorBuffer, (height / 2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range (-(depth / 2.0f) + errorBuffer, (depth / 2.0f) - errorBuffer)));
-				Quaternion rotation = Quaternion.Euler (0, 0, 0);
-				Instantiate (molecules [0].rigidbody, position, rotation);
-			}
-			for (int i = (int)(numMolecules/2); i < numMolecules; i++) {
-				Vector3 position = new Vector3 (centerPos.x + (UnityEngine.Random.Range (-(width / 2.0f) + errorBuffer, (width / 2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range (-(height / 2.0f) + errorBuffer, (height / 2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range (-(depth / 2.0f) + errorBuffer, (depth / 2.0f) - errorBuffer)));
-				Quaternion rotation = Quaternion.Euler (0, 0, 0);
-				Instantiate (molecules [1].rigidbody, position, rotation);
-			}
-		} else {
-			for (int i = 0; i < numMolecules; i++) {
-				Vector3 position = new Vector3 (centerPos.x + (UnityEngine.Random.Range (-(width / 2.0f) + errorBuffer, (width / 2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range (-(height / 2.0f) + errorBuffer, (height / 2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range (-(depth / 2.0f) + errorBuffer, (depth / 2.0f) - errorBuffer)));
-				Quaternion rotation = Quaternion.Euler (0, 0, 0);
-				Instantiate (molecules [moleculeToSpawn].rigidbody, position, rotation);
-			}
+		float realWidth = width - 2.0f * errorBuffer;
+		float realHeight = height - 2.0f * errorBuffer;
+		float realDepth = depth - 2.0f * errorBuffer;
+
+		//initialize the new atoms
+		for (int i = 0; i < numMolecules; i++)
+		{
+			Vector3 position = new Vector3 (centerPos.x + (UnityEngine.Random.Range (-realWidth/2.0f, realWidth/2.0f)), centerPos.y + (UnityEngine.Random.Range (-realHeight/2.0f, realHeight/2.0f)), centerPos.z + (UnityEngine.Random.Range (-realDepth/2.0f, realDepth/2.0f)));
+			Quaternion rotation = Quaternion.Euler (0, 0, 0);
+			Instantiate (molecules [moleculeToSpawn].rigidbody, position, rotation);
+			Atom.AllAtoms[i].position = position;
 		}
 
-		/*
-		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
-			Atom currAtom = Atom.AllAtoms[i];
-			currAtom.name = (i).ToString();
-		}
-		*/
-		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
-		atomTouchGUI.AtomKick();
-	}
-
-
-	//the function returns the LennarJones force on the atom given the list of the atoms that are within range of it
-	float CalcLennardJonesForce(float distance){
-		double invDistance2 = 1.0 / distance / distance;
-		double invDistance6 = invDistance2 * invDistance2 * invDistance2;
-		double r_min = StaticVariables.r_min_multiplier;
-		
-		double forceMagnitude = 0.0;
-
-		if (distance > r_min) {
-			forceMagnitude = invDistance2* invDistance6 * (invDistance6 - 0.5);
-		
-		// Smooth the potential to go to a constant not infinity at r=0
-		} else {
-			double invr_min = 1 / r_min; 
-			double invr_min2 = invr_min * invr_min;
-			double invr_min6 = invr_min2 * invr_min2 * invr_min2;
-					
-			double magnitude_Vmin = invr_min2 * invr_min6 * (invr_min6 - 0.5);
-					
-			double r_Vmax = r_min / 1.5;
-			double invr_Vmax2 = 1 / r_Vmax / r_Vmax;
-			double invr_Vmax6 = invr_Vmax2 * invr_Vmax2 * invr_Vmax2;
-			
-			double magnitude_Vmax = invr_Vmax2 * invr_Vmax6 * (invr_Vmax6 - 0.5);
-					
-			double part1 = (distance / r_min) * (Math.Exp (distance - r_min));
-			double part2 = magnitude_Vmax - magnitude_Vmin;
-			forceMagnitude = magnitude_Vmax - (part1 * part2);
-		}
-		float magnitude = (float)forceMagnitude;
-		return magnitude;
-	}
-
-	// This function pre-computes coefficients used in various types of potentials so that we don't have to calculate them dynamically
-	public void preComputeCoeff(){
-		//the min sigma value and max sigma value are used for precalculating LJ forces.
-		Atom atomScript = molecules [1].GetComponent<Atom> ();
-		StaticVariables.sigmaValueMin = atomScript.sigma;
-		StaticVariables.sigmaValueMax = atomScript.sigma;
-
-		for (int i = 0; i < molecules.Count; i++) {
-			atomScript = molecules[i].GetComponent<Atom>();
-			float currentSigma = atomScript.sigma;
-			StaticVariables.sigmaValues[atomScript.atomID,atomScript.atomID] = currentSigma;
-			
-			if (currentSigma > StaticVariables.sigmaValueMax) {
-				StaticVariables.sigmaValueMax = currentSigma;
-			}
-			if (currentSigma < StaticVariables.sigmaValueMin) {
-				StaticVariables.sigmaValueMin = currentSigma;
-			}
-			
-			float currentA = atomScript.buck_A;
-			StaticVariables.coeff_A[atomScript.atomID,atomScript.atomID] = currentA;
-			float currentB = atomScript.buck_B;
-			StaticVariables.coeff_B[atomScript.atomID,atomScript.atomID] = currentB;
-			float currentC = atomScript.buck_C;
-			StaticVariables.coeff_C[atomScript.atomID,atomScript.atomID] = currentC;
-			float currentD = atomScript.buck_D;
-			StaticVariables.coeff_D[atomScript.atomID,atomScript.atomID] = currentD;
-			
-			StaticVariables.forceCoeffLJ[atomScript.atomID,atomScript.atomID] = 48.0f * atomScript.epsilon / StaticVariables.angstromsToMeters / currentSigma / currentSigma / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters * StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime;
-			StaticVariables.forceCoeffBK[atomScript.atomID,atomScript.atomID] = StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters;
-		}
-		for (int i = 0; i < molecules.Count; i++) {
-			Atom firstAtomScript = molecules[i].GetComponent<Atom>();
-			for(int j = i+1; j < molecules.Count; j++){
-				Atom secondAtomScript = molecules[j].GetComponent<Atom>();
-				
-				float currentSigma = Mathf.Sqrt(firstAtomScript.sigma+secondAtomScript.sigma);
-				StaticVariables.sigmaValues[firstAtomScript.atomID,secondAtomScript.atomID] = currentSigma;
-				
-				if (currentSigma > StaticVariables.sigmaValueMax) {
-					StaticVariables.sigmaValueMax = currentSigma;
-				}
-				if (currentSigma < StaticVariables.sigmaValueMin) {
-					StaticVariables.sigmaValueMin = currentSigma;
-				}
-				
-				
-				float currentA = Mathf.Sqrt(firstAtomScript.buck_A*secondAtomScript.buck_A);
-				StaticVariables.coeff_A[firstAtomScript.atomID,secondAtomScript.atomID] = currentA;
-				StaticVariables.coeff_A[secondAtomScript.atomID,firstAtomScript.atomID] = currentA;
-				
-				float currentB = Mathf.Sqrt(firstAtomScript.buck_B*secondAtomScript.buck_B);
-				StaticVariables.coeff_B[firstAtomScript.atomID,secondAtomScript.atomID] = currentB;
-				StaticVariables.coeff_B[secondAtomScript.atomID,firstAtomScript.atomID] = currentB;
-				
-				float currentC = Mathf.Sqrt(firstAtomScript.buck_C*secondAtomScript.buck_C);
-				StaticVariables.coeff_C[firstAtomScript.atomID,secondAtomScript.atomID] = currentC;
-				StaticVariables.coeff_C[secondAtomScript.atomID,firstAtomScript.atomID] = currentC;
-				
-				float currentD = Mathf.Sqrt(firstAtomScript.buck_D*secondAtomScript.buck_D);
-				StaticVariables.coeff_D[firstAtomScript.atomID,secondAtomScript.atomID] = currentD;
-				StaticVariables.coeff_D[secondAtomScript.atomID,firstAtomScript.atomID] = currentD;
-				
-				StaticVariables.forceCoeffLJ[firstAtomScript.atomID,secondAtomScript.atomID] = 48.0f * firstAtomScript.epsilon / StaticVariables.angstromsToMeters / currentSigma / currentSigma / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters * StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime;
-				StaticVariables.forceCoeffBK[firstAtomScript.atomID,secondAtomScript.atomID] = StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters;
-			}
-		}
-
-		// precalculate the LennardJones potential and store it in preLennarJones list.
-		int nR = (int)((StaticVariables.cutoff/StaticVariables.sigmaValueMin)/(StaticVariables.deltaR/StaticVariables.sigmaValueMax))+2;
-		
-		StaticVariables.preLennardJones = new float[nR];
-		
-		for (int i = 0; i < nR; i++) {
-			float distance = (float)i * StaticVariables.deltaR / StaticVariables.sigmaValueMax;
-			float magnitude = CalcLennardJonesForce (distance);
-			StaticVariables.preLennardJones[i] = magnitude;
-		}
+		//AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
+		//atomTouchGUI.AtomKick();
 	}
 
 }

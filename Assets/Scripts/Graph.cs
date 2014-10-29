@@ -69,11 +69,11 @@ public class Graph : MonoBehaviour {
 
 		if ((Time.time - startTime > refreshInterval && !StaticVariables.pauseTime) || first) {
 			if(dataPoints.Count < maxDataPoints){
-				dataPoints.Enqueue(PotentialEnergy.finalPotentialEnergy);
+				dataPoints.Enqueue(StaticVariables.potentialEnergy);
 			}
 			else{
 				dataPoints.Dequeue ();
-				dataPoints.Enqueue(PotentialEnergy.finalPotentialEnergy);
+				dataPoints.Enqueue(StaticVariables.potentialEnergy);
 
 				updateTime = true;
 			}

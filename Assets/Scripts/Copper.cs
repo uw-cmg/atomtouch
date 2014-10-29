@@ -15,8 +15,7 @@ using System.Collections;
 using System;
 
 public class Copper : Atom {
-	
-	private float sigmaValue = 2.3374f;
+
 	public Material copperMaterial;
 	public Material selectedMaterial;
 	public Material transparentMaterial;
@@ -34,10 +33,10 @@ public class Copper : Atom {
 	}
 		
 	public override float sigma {
-		get { return sigmaValue; }
+		get { return 2.3374f; }
 	}
 	
-	protected override float massamu {
+	public override float massamu {
 		get { return 63.546f; } //amu
 	}
 
@@ -84,7 +83,7 @@ public class Copper : Atom {
 		//make the atom its original color to start
 		SetSelected (false);
 		//scale the atom according to sigma
-		gameObject.transform.localScale = new Vector3(sigmaValue * .5f, sigmaValue * .5f, sigmaValue * .5f);
+		gameObject.transform.localScale = new Vector3(sigma * .5f, sigma * .5f, sigma * .5f);
 	}
 
 }

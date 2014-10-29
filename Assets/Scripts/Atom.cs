@@ -61,7 +61,7 @@ public abstract class Atom : MonoBehaviour
 	//variables that must be implemented because they are declared as abstract in the base class
 	public abstract float epsilon{ get; } // J
 	public abstract float sigma { get; }
-	protected abstract float massamu{ get; } //amu
+	public abstract float massamu{ get; } //amu
 	public abstract void SetSelected (bool selected);
 	public abstract void SetTransparent (bool transparent);
 	public abstract String atomName { get; }
@@ -73,17 +73,20 @@ public abstract class Atom : MonoBehaviour
 	public abstract float buck_D { get; } // Buckingham potential coefficient
 	public abstract float Q_eff { get; } // Ion effective charge for use in Buckingham potential
 
-
-	//variables for computing the forces on atoms
+	//variables for performing the velocity verlet algorithm
+	public Vector3 velocity = Vector3.zero;
+	public Vector3 position = Vector3.zero;
+	public Vector3 accelerationNew = Vector3.zero;
+	public Vector3 accelerationOld = Vector3.zero;
 
 	void Awake(){
 		RegisterAtom (this);
 		bondDistanceText = new Dictionary<String, TextMesh> ();
 	}
 
-	void OnDestroy(){
-		UnregisterAtom (this);
-	}
+	//void OnDestroy(){
+	//	UnregisterAtom (this);
+	//}
 
 
 	// method to extract the list of allAtoms
@@ -96,12 +99,10 @@ public abstract class Atom : MonoBehaviour
 	// method to register an added atom to the list of allAtoms
 	protected static void RegisterAtom( Atom atom ) {
 		m_AllAtoms.Add (atom);
-		CalculateForces.allForces.Add (atom, Vector3.zero);
 	}
 
 	// method to unregister a removed atom from the list of allAtoms
-	protected static void UnregisterAtom( Atom atom ) { 
-		CalculateForces.allForces.Remove (atom);
+	public static void UnregisterAtom( Atom atom ) { 
 		m_AllAtoms.Remove( atom );
 	}
 
@@ -579,25 +580,25 @@ public abstract class Atom : MonoBehaviour
 
 	//this function checks the position of an atom, and if its outside of the box, simply place the atom back inside the box
 	Vector3 CheckPosition(Vector3 position){
-		CreateEnvironment createEnvironment = StaticVariables.createEnvironment;
-		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
-		if (position.y > bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer) {
-			position.y = bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer;
+		CreateEnvironment myEnvironment= StaticVariables.myEnvironment;
+		Vector3 bottomPlanePos = myEnvironment.bottomPlane.transform.position;
+		if (position.y > bottomPlanePos.y + (myEnvironment.height) - myEnvironment.errorBuffer) {
+			position.y = bottomPlanePos.y + (myEnvironment.height) - myEnvironment.errorBuffer;
 		}
-		if (position.y < bottomPlanePos.y + createEnvironment.errorBuffer) {
-			position.y = bottomPlanePos.y + createEnvironment.errorBuffer;
+		if (position.y < bottomPlanePos.y + myEnvironment.errorBuffer) {
+			position.y = bottomPlanePos.y + myEnvironment.errorBuffer;
 		}
-		if (position.x > bottomPlanePos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer) {
-			position.x = bottomPlanePos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
+		if (position.x > bottomPlanePos.x + (myEnvironment.width/2.0f) - myEnvironment.errorBuffer) {
+			position.x = bottomPlanePos.x + (myEnvironment.width/2.0f) - myEnvironment.errorBuffer;
 		}
-		if (position.x < bottomPlanePos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer) {
-			position.x = bottomPlanePos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
+		if (position.x < bottomPlanePos.x - (myEnvironment.width/2.0f) + myEnvironment.errorBuffer) {
+			position.x = bottomPlanePos.x - (myEnvironment.width/2.0f) + myEnvironment.errorBuffer;
 		}
-		if (position.z > bottomPlanePos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer) {
-			position.z = bottomPlanePos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
+		if (position.z > bottomPlanePos.z + (myEnvironment.depth/2.0f) - myEnvironment.errorBuffer) {
+			position.z = bottomPlanePos.z + (myEnvironment.depth/2.0f) - myEnvironment.errorBuffer;
 		}
-		if (position.z < bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer) {
-			position.z = bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
+		if (position.z < bottomPlanePos.z - (myEnvironment.depth/2.0f) + myEnvironment.errorBuffer) {
+			position.z = bottomPlanePos.z - (myEnvironment.depth/2.0f) + myEnvironment.errorBuffer;
 		}
 		return position;
 	}
