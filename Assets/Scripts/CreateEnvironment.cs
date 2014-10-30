@@ -313,14 +313,10 @@ public class CreateEnvironment : MonoBehaviour {
 			Destroy (currAtom.gameObject);
 		}
 
-		float realWidth = width - 2.0f * errorBuffer;
-		float realHeight = height - 2.0f * errorBuffer;
-		float realDepth = depth - 2.0f * errorBuffer;
-
 		//initialize the new atoms
 		for (int i = 0; i < numMolecules; i++)
 		{
-			createAtom(molecules[moleculeToSpawn])
+			createAtom(molecules[moleculeToSpawn]);
 		}
 
 		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
@@ -364,7 +360,7 @@ public class CreateEnvironment : MonoBehaviour {
 	}
 	
 	//check the distance between the atoms, if it is larger than the equilibrium position move accept the random number, otherwise pick another set of random positions.
-	public bool checkProximity(Atom currAtom)
+	private bool checkProximity(Atom currAtom)
 	{
 		bool proximityFlag = true;
 		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
