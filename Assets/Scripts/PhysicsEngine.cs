@@ -67,8 +67,8 @@ public class PhysicsEngine : MonoBehaviour
 		deltaR = firstAtom.position - secondAtom.position;
 
 		float distanceSqr = deltaR.sqrMagnitude;
-		float finalSigma = StaticVariables.sigmaValues [firstAtom.atomID, secondAtom.atomID];
-		float normDistanceSqr = distanceSqr / finalSigma / finalSigma; // this is normalized distanceSqr to the sigmaValue
+		float finalSigmaSqr = StaticVariables.sigmaValuesSqr [firstAtom.atomID, secondAtom.atomID];
+		float normDistanceSqr = distanceSqr / finalSigmaSqr; // this is normalized distanceSqr to the sigmaValue
 		
 		//only get the forces of the atoms that are within the cutoff range
 		if (normDistanceSqr <= StaticVariables.cutoffSqr) 
@@ -145,13 +145,16 @@ public class PhysicsEngine : MonoBehaviour
 			// calculate kinetic energy of each atom
 			float velocitySqr = firstAtom.velocity.sqrMagnitude;
 			StaticVariables.kineticEnergy += 0.5f * firstAtom.massamu * StaticVariables.amuToKg * velocitySqr * StaticVariables.angstromsToMeters * StaticVariables.angstromsToMeters;
-			
+
 			// calculate potential energy between each pair of atoms
+			//potential energy calculation commented out for performance reasons.
+			/*
 			for (int j = i + 1; j < Atom.AllAtoms.Count; j++)
 			{
 				Atom secondAtom = Atom.AllAtoms[j];
 				StaticVariables.potentialEnergy += getLennardJonesPotential(firstAtom, secondAtom);
 			}
+			*/
 		}
 		
 		StaticVariables.currentTemperature = StaticVariables.kineticEnergy / 1.5f / (float)Atom.AllAtoms.Count / StaticVariables.kB;
@@ -166,8 +169,8 @@ public class PhysicsEngine : MonoBehaviour
 		Vector3 deltaR = firstAtom.position - secondAtom.position;
 
 		float distanceSqr = deltaR.sqrMagnitude;
-		float finalSigma = StaticVariables.sigmaValues[firstAtom.atomID, secondAtom.atomID];
-		float normDistanceSqr = distanceSqr / finalSigma / finalSigma; // this is normalized distanceSqr to the sigmaValue
+		float finalSigmaSqr = StaticVariables.sigmaValuesSqr[firstAtom.atomID, secondAtom.atomID];
+		float normDistanceSqr = distanceSqr / finalSigmaSqr; // this is normalized distanceSqr to the sigmaValue
 		
 		//only get the forces of the atoms that are within the cutoff range
 		if (normDistanceSqr <= StaticVariables.cutoffSqr)

@@ -216,6 +216,7 @@ public class CreateEnvironment : MonoBehaviour {
 				
 				float currentSigma = Mathf.Sqrt(firstAtom.sigma*secondAtom.sigma);
 				StaticVariables.sigmaValues[firstAtom.atomID,secondAtom.atomID] = currentSigma;
+				StaticVariables.sigmaValuesSqr[firstAtom.atomID,secondAtom.atomID] = currentSigma * currentSigma;
 
 				// when the pre-calculated normalized Lennard Jones force is multiplied by this coefficient the acceleration units is [Angstrom/second^2]
 				float currentAccelCoeff = 48.0f * firstAtom.epsilon / (currentSigma * currentSigma * StaticVariables.angstromsToMeters * StaticVariables.angstromsToMeters * firstAtom.massamu * StaticVariables.amuToKg);
@@ -370,8 +371,8 @@ public class CreateEnvironment : MonoBehaviour {
 			deltaR = currAtom.position - otherAtom.position;
 
 			float distanceSqr = deltaR.sqrMagnitude;
-			float finalSigma = StaticVariables.sigmaValues[currAtom.atomID, otherAtom.atomID];
-			float normDistanceSqr = distanceSqr / finalSigma / finalSigma; // this is normalized distanceSqr to the sigmaValue
+			float finalSigmaSqr = StaticVariables.sigmaValuesSqr[currAtom.atomID, otherAtom.atomID];
+			float normDistanceSqr = distanceSqr / finalSigmaSqr; // this is normalized distanceSqr to the sigmaValue
 			
 			//only get the forces of the atoms that are within the cutoff range
 			if (normDistanceSqr < 1.259921)

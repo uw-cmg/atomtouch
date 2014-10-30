@@ -413,11 +413,12 @@ public class AtomTouchGUI : MonoBehaviour {
 				for(int i = 0; i < Atom.AllAtoms.Count; i++){
 					Atom currAtom = Atom.AllAtoms[i];
 					if(currAtom.doubleTapped){
-						myEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
-						Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
+						myEnvironment.centerPos = Vector3.zero;
+						Camera.main.transform.LookAt(Vector3.zero);
 					}
 					if(currAtom.selected){
-						Destroy(currAtom);
+						Atom.UnregisterAtom(currAtom);
+						Destroy(currAtom.gameObject);
 					}
 					if(currAtom.selected && currAtom.doubleTapped){
 						currentTimeSpeed = StaticVariables.TimeSpeed.Normal;

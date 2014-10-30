@@ -77,12 +77,13 @@ public class StaticVariables {
 	public static float desiredTemperature = 300.0f;
 
 	//this variable causes the bond lines to either draw or not draw
-	public static bool drawBondLines = true;
+	public static bool drawBondLines = false;
 	//the variable pauses the simulation of physics
 	public static bool pauseTime = false;
 
 	// each atom has an integer number as an ID that is used to access the related element for the atom pair
 	public static float[,] sigmaValues = new float[3,3];
+	public static float[,] sigmaValuesSqr = new float[3, 3];
 	public static float[,] accelCoefficient = new float[3, 3]; // this is the coefficient that is multiplied by the preLennardJones vector to get the acceleration of each atom for each combinations
 	public static float[] preLennardJonesForce; //This is the pre-calculated value of LennardJones force for some mesh points.
 	public static float[] preLennardJonesPotential; //This is the pre-calculated value of LennardJones potential for some mesh points.
