@@ -575,25 +575,21 @@ public class AtomTouchGUI : MonoBehaviour {
 		
 			//possibly adjust the z value here depending on the position of the camera
 
-			if(addGraphicCopper && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
-				//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
-				Vector3 curPosition = new Vector3 (myEnvironment.centerPos.x - myEnvironment.width/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.y - myEnvironment.height/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.z - myEnvironment.depth/2.0f+myEnvironment.errorBuffer);
-				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-				Instantiate(copperPrefab, curPosition, curRotation);
+			if(addGraphicCopper && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
+			{
+				myEnvironment.createAtom(copperPrefab);
 			}
+
 		
-			if(addGraphicGold && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
-				//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
-				Vector3 curPosition = new Vector3 (myEnvironment.centerPos.x - myEnvironment.width/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.y - myEnvironment.height/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.z - myEnvironment.depth/2.0f+myEnvironment.errorBuffer);
-				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-				Instantiate(goldPrefab, curPosition, curRotation);
+			if(addGraphicGold && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
+			{
+				myEnvironment.createAtom(goldPrefab);
 			}
+
 		
-			if(addGraphicPlatinum && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
-				//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
-				Vector3 curPosition = new Vector3 (myEnvironment.centerPos.x - myEnvironment.width/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.y - myEnvironment.height/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.z - myEnvironment.depth/2.0f+myEnvironment.errorBuffer);
-				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-				Instantiate(platinumPrefab, curPosition, curRotation);
+			if(addGraphicPlatinum && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
+			{
+				myEnvironment.createAtom(platinumPrefab);
 			}
 					
 			addGraphicCopper = false;
@@ -655,21 +651,19 @@ public class AtomTouchGUI : MonoBehaviour {
 		timeText.normal.textColor = Color.white;
 		GUI.Label (new Rect (Screen.width - 75.0f, 10.0f, 70.0f, 40.0f), Math.Round(StaticVariables.currentTime, 1) + "ps");
 
-		//print ("Potential energy: " + PotentialEnergy.finalPotentialEnergy);
-
+		/*
 		if (slowMotionFrames > 0){
-			StaticVariables.MDTimestep = 0.5f * (float) Math.Pow (10, -15);
-			StaticVariables.fixedUpdateIntervalToRealTime = StaticVariables.MDTimestep / Time.fixedDeltaTime;
-			StaticVariables.updateIntervalToRealTime = StaticVariables.MDTimestep;
+			StaticVariables.MDTimestep = StaticVariables.MDTimestep / 5.0f;
+			StaticVariables.MDTimestepSqr = StaticVariables.MDTimestep * StaticVariables.MDTimestep;
 			myEnvironment.preCompute();
 			slowMotionFrames --;
 		}else if (slowMotionFrames == 0){
-			StaticVariables.MDTimestep = 3.0f * (float) Math.Pow (10, -15);
-			StaticVariables.fixedUpdateIntervalToRealTime = StaticVariables.MDTimestep / Time.fixedDeltaTime;
-			StaticVariables.updateIntervalToRealTime = StaticVariables.MDTimestep;
+			StaticVariables.MDTimestep = StaticVariables.MDTimestep * 5.0f;
+			StaticVariables.MDTimestepSqr = StaticVariables.MDTimestep * StaticVariables.MDTimestep;
 			myEnvironment.preCompute();
 			slowMotionFrames = -1;
 		}
+		*/
 
 
 	}
@@ -870,25 +864,28 @@ public class AtomTouchGUI : MonoBehaviour {
 			float xVelocity = 0.0f;
 			float yVelocity = 0.0f;
 			float zVelocity = 0.0f;
+			float maxVelocity = 0.05f / StaticVariables.MDTimestep; //this is maximum random velocity and needs to be determined emperically.
 			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
-				xVelocity = UnityEngine.Random.Range(1.0f, 5.0f);
+				xVelocity = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
 			}
 			else{
-				xVelocity = UnityEngine.Random.Range(-5.0f, -1.0f);
+				xVelocity = UnityEngine.Random.Range(-5.0f * maxVelocity, -1.0f * maxVelocity);
 			}
 			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
-				yVelocity = UnityEngine.Random.Range(1.0f, 5.0f);
+				yVelocity = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
 			}
 			else{
-				yVelocity = UnityEngine.Random.Range(-5.0f, -1.0f);
+				yVelocity = UnityEngine.Random.Range(-5.0f * maxVelocity, -1.0f * maxVelocity);
 			}
 			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
-				zVelocity = UnityEngine.Random.Range(1.0f, 5.0f);
+				zVelocity = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
 			}
 			else{
-				zVelocity = UnityEngine.Random.Range(-5.0f, -1.0f);
+				zVelocity = UnityEngine.Random.Range(-5.0f * maxVelocity, -1.0f * maxVelocity);
 			}
-			currAtom.rigidbody.velocity = new Vector3(xVelocity, yVelocity, zVelocity);
+			currAtom.velocity = new Vector3(xVelocity, yVelocity, zVelocity);
+			currAtom.accelerationOld = Vector3.zero;
+			currAtom.accelerationNew = Vector3.zero;
 		}
 	}
 	

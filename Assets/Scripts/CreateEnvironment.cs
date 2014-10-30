@@ -320,14 +320,70 @@ public class CreateEnvironment : MonoBehaviour {
 		//initialize the new atoms
 		for (int i = 0; i < numMolecules; i++)
 		{
-			Vector3 position = new Vector3 (centerPos.x + (UnityEngine.Random.Range (-realWidth/2.0f, realWidth/2.0f)), centerPos.y + (UnityEngine.Random.Range (-realHeight/2.0f, realHeight/2.0f)), centerPos.z + (UnityEngine.Random.Range (-realDepth/2.0f, realDepth/2.0f)));
-			Quaternion rotation = Quaternion.Euler (0, 0, 0);
-			Instantiate (molecules [moleculeToSpawn].rigidbody, position, rotation);
-			Atom.AllAtoms[i].position = position;
+			createAtom(molecules[moleculeToSpawn])
 		}
 
-		//AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
-		//atomTouchGUI.AtomKick();
+		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
+		atomTouchGUI.AtomKick();
+	}
+
+
+	// this method creates a new atom from the type of the preFab and checks the position to have a far enough distance from other atoms
+	public void createAtom(Rigidbody preFab)
+	{
+		CreateEnvironment myEnvironment = StaticVariables.myEnvironment;
+		Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+		Instantiate(preFab, myEnvironment.centerPos, curRotation);
+		int i = Atom.AllAtoms.Count-1;
+		Atom currAtom = Atom.AllAtoms[i];
+		currAtom.gameObject.name = i.ToString();
+
+		float realWidth = myEnvironment.width - 2.0f * myEnvironment.errorBuffer;
+		float realHeight = myEnvironment.height - 2.0f * myEnvironment.errorBuffer;
+		float realDepth = myEnvironment.depth - 2.0f * myEnvironment.errorBuffer;
+		Vector3 centerPos = myEnvironment.centerPos;
+
+		int tryNumber = 0;
+
+		bool proximityFlag = false;
+		while ((proximityFlag == false) && (tryNumber < 100))
+		{
+			tryNumber ++;
+			currAtom.position =  new Vector3 (centerPos.x + (UnityEngine.Random.Range (-realWidth/2.0f, realWidth/2.0f)), centerPos.y + (UnityEngine.Random.Range (-realHeight/2.0f, realHeight/2.0f)), centerPos.z + (UnityEngine.Random.Range (-realDepth/2.0f, realDepth/2.0f)));
+			proximityFlag = myEnvironment.checkProximity(currAtom);
+		}
+		currAtom.transform.position = currAtom.position;
+
+		if ((tryNumber == 100) && (proximityFlag == false)) 
+		{
+			Atom.UnregisterAtom(currAtom);
+			Destroy (currAtom.gameObject);
+			Debug.Log ("No space for atoms!");
+		}
+		
+	}
+	
+	//check the distance between the atoms, if it is larger than the equilibrium position move accept the random number, otherwise pick another set of random positions.
+	public bool checkProximity(Atom currAtom)
+	{
+		bool proximityFlag = true;
+		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
+		{
+			Atom otherAtom = Atom.AllAtoms[i];
+			Vector3 deltaR = Vector3.zero;
+			deltaR = currAtom.position - otherAtom.position;
+
+			float distanceSqr = deltaR.sqrMagnitude;
+			float finalSigma = StaticVariables.sigmaValues[currAtom.atomID, otherAtom.atomID];
+			float normDistanceSqr = distanceSqr / finalSigma / finalSigma; // this is normalized distanceSqr to the sigmaValue
+			
+			//only get the forces of the atoms that are within the cutoff range
+			if (normDistanceSqr < 1.259921)
+			{
+				proximityFlag = false;
+			}
+		}
+		return proximityFlag;
 	}
 
 }

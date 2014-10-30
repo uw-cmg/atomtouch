@@ -49,11 +49,10 @@ public class CameraScript : MonoBehaviour {
 					first = true;
 				}
 				if (touch.phase == TouchPhase.Moved) {
-					GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 					bool holdingAtom = false;
-					for (int i = 0; i < allMolecules.Length; i++) {
-						Atom atomScript = allMolecules[i].GetComponent<Atom>();
-						if(atomScript.held){
+					for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+						Atom currAtom = Atom.AllAtoms[i];
+						if(currAtom.held){
 							holdingAtom = true;
 							break;
 						}
@@ -98,11 +97,10 @@ public class CameraScript : MonoBehaviour {
 				first = true;
 			}
 			if(Input.GetMouseButton(0)){
-				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 				bool holdingAtom = false;
-				for (int i = 0; i < allMolecules.Length; i++) {
-					Atom atomScript = allMolecules[i].GetComponent<Atom>();
-					if(atomScript.held){
+				for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+					Atom currAtom = Atom.AllAtoms[i];
+					if(currAtom.held){
 						holdingAtom = true;
 						break;
 					}

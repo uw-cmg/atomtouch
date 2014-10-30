@@ -26,14 +26,13 @@ public class PinchZoom : MonoBehaviour {
 
 		bool beingHeld = false;
 		doubleTappedAtom = null;
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			Atom atomScript = allMolecules[i].GetComponent<Atom>();
-			if(atomScript.held){
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+			Atom currAtom = Atom.AllAtoms[i];
+			if(currAtom.held){
 				beingHeld = true;
 			}
-			if(atomScript.doubleTapped){
-				doubleTappedAtom = allMolecules[i];
+			if(currAtom.doubleTapped){
+				doubleTappedAtom = Atom.AllAtoms[i].gameObject;
 			}
 		}
 
@@ -79,8 +78,8 @@ public class PinchZoom : MonoBehaviour {
 					zChange = -3.0f;
 				}
 				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, zChange));
-				CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
-				Vector3 centerPos = new Vector3(createEnvironment.bottomPlane.transform.position.x, createEnvironment.bottomPlane.transform.position.y + (createEnvironment.height/2.0f), createEnvironment.bottomPlane.transform.position.z);
+				CreateEnvironment myEnvironment = StaticVariables.myEnvironment;
+				Vector3 centerPos = new Vector3(myEnvironment.bottomPlane.transform.position.x, myEnvironment.bottomPlane.transform.position.y + (myEnvironment.height/2.0f), myEnvironment.bottomPlane.transform.position.z);
 				//enforce a minimum and maximum distance from the center of the box that the user can scroll
 				if(Vector3.Distance(projectPosition, centerPos) < 70.0f && Vector3.Distance(projectPosition, centerPos) > 10.0f){
 					camera.transform.position = projectPosition;
@@ -119,8 +118,8 @@ public class PinchZoom : MonoBehaviour {
 					zChange = -3.0f;
 				}
 				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, zChange));
-				CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
-				Vector3 centerPos = new Vector3(createEnvironment.bottomPlane.transform.position.x, createEnvironment.bottomPlane.transform.position.y + (createEnvironment.height/2.0f), createEnvironment.bottomPlane.transform.position.z);
+				CreateEnvironment myEnvironment = StaticVariables.myEnvironment;
+				Vector3 centerPos = new Vector3(myEnvironment.bottomPlane.transform.position.x, myEnvironment.bottomPlane.transform.position.y + (myEnvironment.height/2.0f), myEnvironment.bottomPlane.transform.position.z);
 				//enforce a minimum and maximum distance from the center of the box that the user can scroll
 				if(Vector3.Distance(projectPosition, centerPos) < 70.0f && Vector3.Distance(projectPosition, centerPos) > 10.0f){
 					camera.transform.position = projectPosition;

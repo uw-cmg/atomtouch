@@ -107,7 +107,6 @@ public abstract class Atom : MonoBehaviour
 	}
 
 	//this function takes care of double tapping, collision detection, and detecting OnMouseDown, OnMouseDrag, and OnMouseUp on iOS
-
 	void Update(){
 
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
@@ -205,6 +204,7 @@ public abstract class Atom : MonoBehaviour
 					Vector3 projectPosition = transform.position;
 					projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
 					transform.position = CheckPosition(projectPosition);
+					this.position = CheckPosition(projectPosition);
 					screenPoint += new Vector3(0.0f, 0.0f, deltaTouch2);
 				}
 				else{
@@ -236,6 +236,7 @@ public abstract class Atom : MonoBehaviour
 							if(!currAtom.selected) continue;
 							Vector3 newAtomPosition = newAtomPositions[currAtom.name];
 							currAtom.transform.position = newAtomPosition;
+							currAtom.position = newAtomPosition;
 						}
 					}
 				}
@@ -344,6 +345,7 @@ public abstract class Atom : MonoBehaviour
 					Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
 					curPosition = CheckPosition(curPosition);
 					transform.position = curPosition;
+					this.position = curPosition;
 				}
 			}
 			else{
@@ -383,6 +385,7 @@ public abstract class Atom : MonoBehaviour
 							Vector3 newAtomPosition = atomPositions[i];
 							Atom currAtom = AllAtoms[i];
 							currAtom.transform.position = newAtomPosition;
+							currAtom.position = newAtomPosition;
 						}
 					}
 				}
@@ -406,6 +409,7 @@ public abstract class Atom : MonoBehaviour
 						Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
 						curPosition = CheckPosition(curPosition);
 						transform.position = curPosition;
+						this.position = curPosition;
 					}
 
 					//this is the implementation of moving the atom in the z-direction
@@ -413,6 +417,7 @@ public abstract class Atom : MonoBehaviour
 					Vector3 projectPosition = transform.position;
 					projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
 					transform.position = CheckPosition(projectPosition);
+					this.position = CheckPosition(projectPosition);
 					screenPoint += new Vector3(0.0f, 0.0f, deltaZ);
 				}
 				else{
@@ -440,6 +445,7 @@ public abstract class Atom : MonoBehaviour
 									moveAtoms = false;
 								}
 								//currAtom.transform.position = newAtomPosition;
+								//currAtom.position = newAtomPosition;
 							}
 							
 							Vector3 finalPosition = newAtomPosition;
@@ -463,6 +469,7 @@ public abstract class Atom : MonoBehaviour
 								Vector3 newAtomPosition = atomPositions[i];
 								Atom currAtom = AllAtoms[i];
 								currAtom.transform.position = newAtomPosition;
+								currAtom.position = newAtomPosition;
 							}
 						}
 					}
@@ -494,7 +501,7 @@ public abstract class Atom : MonoBehaviour
 				direction.Normalize();
 				float magnitude = 2.0f * directionMagnitude;
 				Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
-				//gameObject.rigidbody.velocity = flingVector;
+				this.velocity = flingVector;
 			}
 			else{
 				//this is for a group of atoms
@@ -510,7 +517,7 @@ public abstract class Atom : MonoBehaviour
 						direction.Normalize();
 						float magnitude = 2.0f * directionMagnitude;
 						Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
-						//currAtom.rigidbody.velocity = flingVector;
+						this.velocity = flingVector;
 					}
 				}
 			}
@@ -543,7 +550,7 @@ public abstract class Atom : MonoBehaviour
 					direction.Normalize();
 					float magnitude = 10.0f;
 					Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
-					//gameObject.rigidbody.velocity = flingVector;
+					this.velocity = flingVector;
 				}
 				else{
 					//this is for a group of atoms
@@ -558,7 +565,7 @@ public abstract class Atom : MonoBehaviour
 							direction.Normalize();
 							float magnitude = 10.0f;
 							Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
-							//currAtom.rigidbody.velocity = flingVector;
+							this.velocity = flingVector;
 						}
 					}
 				}
