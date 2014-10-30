@@ -22,6 +22,7 @@ public class StaticVariables {
 
 	public static float MDTimestep = 0.5f * Mathf.Pow (10, -15);
 	public static float MDTimestepSqr = MDTimestep * MDTimestep;
+	public static float MDTimestepInPicosecond = MDTimestep / Mathf.Pow (10, -12);
 
 	//Suppose every FixedUpdate physics interval (e.g. 0.02 seconds) is the
 	//Molecular Dynamics timestep of 0.5 * 10^-15 seconds
@@ -99,7 +100,8 @@ public class StaticVariables {
 
 	//this varaible keeps track of the current potential that is being used. (Note: only Lennard-Jones is currently implemented)
 	public static Potential currentPotential = Potential.LennardJones;
-	//this variable keeps track of the amount of simulation time that has passed
+
+	//this variable keeps track of the amount of simulation time that has passed in picoseconds
 	public static float currentTime = 0.0f;
 
 	//this variables points to the instance of the create environment

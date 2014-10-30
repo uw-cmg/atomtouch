@@ -656,11 +656,13 @@ public class AtomTouchGUI : MonoBehaviour {
 		if (slowMotionFrames > 0){
 			StaticVariables.MDTimestep = StaticVariables.MDTimestep / 5.0f;
 			StaticVariables.MDTimestepSqr = StaticVariables.MDTimestep * StaticVariables.MDTimestep;
+			StaticVariables.MDTimestepInPicosecond = StaticVariables.MDTimestep / Mathf.Pow (10, -12);
 			myEnvironment.preCompute();
 			slowMotionFrames --;
 		}else if (slowMotionFrames == 0){
 			StaticVariables.MDTimestep = StaticVariables.MDTimestep * 5.0f;
 			StaticVariables.MDTimestepSqr = StaticVariables.MDTimestep * StaticVariables.MDTimestep;
+			StaticVariables.MDTimestepInPicosecond = StaticVariables.MDTimestep / Mathf.Pow (10, -12);
 			myEnvironment.preCompute();
 			slowMotionFrames = -1;
 		}

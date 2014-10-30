@@ -24,6 +24,13 @@ public class PhysicsEngine : MonoBehaviour
 			VelocityVerlet();
 			ReflectFromWalls();
 			CalculateEnergy();
+
+			StaticVariables.currentTime += StaticVariables.MDTimestepInPicosecond;
+			Graph.numMDStepSinceLastRecord ++;
+
+			//if (AtomTouchGUI.currentTimeSpeed != StaticVariables.TimeSpeed.Stopped) {
+			//	StaticVariables.currentTime += Time.deltaTime;
+			//}
 		}
 	}
 

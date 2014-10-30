@@ -22,29 +22,30 @@ public class Graph : MonoBehaviour {
 
 	public Material mat;
 	private Queue dataPoints;
-	private float startTime;
 
 	//graph variables
 	public float xCoord;
 	public float yCoord;
 	public float width = 180.0f;
 	public float height = 184.0f;
-	public float refreshInterval = .1f;
+	public float refreshInterval = 0.1f;
 	public float lineWidth = .015f;
 	private float zDepth = 5.0f;
-	public float spacing = 15.0f;
+	public float spacing = 0.5f;
 	private float maxDataPoints;
-	private float dataMaximum = 0.0f;
-	private float dataMinimum = -1 * Mathf.Pow(10, -14);
+	private float dataMaximum = 5000.0f;
+	private float dataMinimum = 0.0f;
 	private float lowTime;
 	private float highTime;
 	private bool first;
-	public string yUnitLabel = "J";
+	public string yUnitLabel = "K";
 	public string xUnitLabel = "ps";
-	public string graphLabel = "Potential Energy vs Time";
+	public string graphLabel = "Temperature vs Time";
 	public Color axisColor = Color.red;
 	public Color lineColor = Color.yellow;
 	private bool updateTime = false;
+	public static int numMDStepSinceLastRecord = 0;
+	private float timeSpacing = 20.0f;
 
 	void Start () {
 
@@ -54,43 +55,30 @@ public class Graph : MonoBehaviour {
 		first = true;
 		maxDataPoints = (width / spacing) + 1;
 		dataPoints = new Queue ();
-		startTime = Time.realtimeSinceStartup;
-		lowTime = 0.0f;
-		highTime = maxDataPoints * refreshInterval;
 	}
 
-	void Update(){
-
-		//this function enqueues the data points of potential energy every .1s
-		//it only dequeues values when the graph has reached the edge of the screen
-		if (AtomTouchGUI.currentTimeSpeed != StaticVariables.TimeSpeed.Stopped) {
-			StaticVariables.currentTime += Time.deltaTime;
-		}
-
-		if ((Time.time - startTime > refreshInterval && !StaticVariables.pauseTime) || first) {
-			if(dataPoints.Count < maxDataPoints){
-				dataPoints.Enqueue(StaticVariables.potentialEnergy);
-			}
-			else{
-				dataPoints.Dequeue ();
-				dataPoints.Enqueue(StaticVariables.potentialEnergy);
-
-				updateTime = true;
-			}
-
-			first = false;
-			startTime = Time.time;
-		}
-		if (updateTime) {
-			lowTime += Time.deltaTime;
-			highTime += Time.deltaTime;
-		}
-		
-	}
-
+	//This method is called from AtomTouchGUI.cs
 	public void RecomputeMaxDataPoints(){
 		maxDataPoints = (width / spacing) + 1;
-		highTime = maxDataPoints * refreshInterval;
+		lowTime = 0.0f;
+		highTime = maxDataPoints * StaticVariables.MDTimestepInPicosecond * timeSpacing;
+		while (dataPoints.Count < maxDataPoints)
+		{
+			dataPoints.Enqueue(0.0f);
+		}
+	}
+
+	void Update()
+	{
+		if ((numMDStepSinceLastRecord > (int)timeSpacing)) 
+		{
+			dataPoints.Dequeue ();
+			dataPoints.Enqueue(StaticVariables.currentTemperature);
+			highTime = (float)Math.Round(StaticVariables.currentTime,1);
+			lowTime = (float)Math.Round(StaticVariables.currentTime - maxDataPoints * StaticVariables.MDTimestepInPicosecond * timeSpacing,1);
+			numMDStepSinceLastRecord = 0;
+		}
+
 	}
 
 	void OnGUI(){
@@ -105,8 +93,8 @@ public class Graph : MonoBehaviour {
 			GUI.Label (new Rect (xCoord + width/2.0f - 60, Screen.height - yCoord, 200, 20), graphLabel);
 			GUI.Label (new Rect (xCoord - 32, Screen.height - (Screen.height * .27f), 100, 20), (dataMaximum).ToString () + yUnitLabel);
 			GUI.Label (new Rect (xCoord - 53, Screen.height - yCoord - 15, 100, 20), (dataMinimum).ToString () + yUnitLabel);
-			GUI.Label (new Rect (xCoord - 5, Screen.height - yCoord, 100, 20), (Math.Round (lowTime)).ToString () + xUnitLabel);
-			GUI.Label (new Rect (xCoord + width - 35.0f, Screen.height - yCoord, 100, 20), (Math.Round(highTime)).ToString() + xUnitLabel);
+			GUI.Label (new Rect (xCoord - 5, Screen.height - yCoord, 100, 20), lowTime.ToString () + xUnitLabel);
+			GUI.Label (new Rect (xCoord + width - 35.0f, Screen.height - yCoord, 100, 20), highTime.ToString() + xUnitLabel);
 		}
 
 	}
@@ -142,8 +130,12 @@ public class Graph : MonoBehaviour {
 			//draw the lines on the graph
 			object[] dataPointArray = dataPoints.ToArray ();
 			for (int i = 0; i < dataPointArray.Length - 1; i++) {
-				float firstPercentage = 1 - ((float)dataPointArray[i] / (dataMinimum - dataMaximum));
-				float secondPercentage = 1 - ((float)dataPointArray[i+1] / (dataMinimum - dataMaximum));
+				//float firstPercentage = 1 - ((float)dataPointArray[i] / (dataMinimum - dataMaximum));
+				//float secondPercentage = 1 - ((float)dataPointArray[i+1] / (dataMinimum - dataMaximum));
+
+				float firstPercentage = ((float)dataPointArray[i]) / (dataMaximum - dataMinimum);
+				float secondPercentage = ((float)dataPointArray[i+1]) / (dataMaximum - dataMinimum);
+
 				if(firstPercentage > 1.0f){
 					firstPercentage = 1.0f;
 				}
