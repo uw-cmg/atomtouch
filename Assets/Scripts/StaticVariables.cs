@@ -103,6 +103,8 @@ public class StaticVariables {
 
 	//this variable keeps track of the amount of simulation time that has passed in picoseconds
 	public static float currentTime = 0.0f;
+	//this variable keeps the total number of time steps passed in the simulation
+	public static int iTime = 0;
 
 	//this variables points to the instance of the create environment
 	public static CreateEnvironment myEnvironment;
