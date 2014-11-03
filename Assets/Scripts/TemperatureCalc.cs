@@ -32,6 +32,9 @@ public class TemperatureCalc : MonoBehaviour {
 	void FixedUpdate () {
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		totalKineticEnergyJ = 0.0f;
+
+		StaticVariables.iTime ++;
+
 		moleculeCount = allMolecules.Length;
 		for (int i = 0; i < allMolecules.Length; i++) {
 			//compute the total energy in the system
@@ -111,5 +114,10 @@ public class TemperatureCalc : MonoBehaviour {
 		}
 		
 		squareRootAlpha = (float)Math.Pow (draggedAlpha, .5f);
+	}
+
+	void Update()
+	{
+		Debug.Log ("iTime = "+ StaticVariables.iTime);
 	}
 }
