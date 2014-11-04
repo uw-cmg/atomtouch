@@ -55,7 +55,7 @@ public class StaticVariables {
 		
 	//Cutoff for "seeing" other atoms, in Angstroms
 	//multiplied by sigma for Lennard-Jones potential
-	public static float cutoff = 10.0f; //mutliplier for cutoff
+	public static float cutoff = 2.5f; //mutliplier for cutoff
 	public static float cutoffSqr = cutoff * cutoff;
 
 	//Forces are precomputed for a number of discrete separation points and then used as a look up table.
