@@ -20,10 +20,18 @@ using System.Collections.Generic;
 
 public class StaticVariables {
 
-	public static float MDTimestep = 0.5f * (float) Math.Pow (10, -15);
+	public static float MDTimestep = 3.0f * (float) Math.Pow (10, -15);
 	//Suppose every FixedUpdate physics interval (e.g. 0.02 seconds) is the
 	//Molecular Dynamics timestep of 0.5 * 10^-15 seconds
 	public static float fixedUpdateIntervalToRealTime = MDTimestep / Time.fixedDeltaTime;
+
+	// This is the number of frames that the program enters a slow motion mode to avoid some gliches.
+	public static int slowMotionFrames = 20;
+
+	//Suppose every Update physics interval (e.g. 0.02 seconds) is the
+	//Molecular Dynamics timestep of 0.5 * 10^-15 seconds
+	public static float updateIntervalToRealTime = MDTimestep;
+
 	//do not scale temperature all at once
 	public static float alphaDrag = 1.0f * Time.fixedDeltaTime;
 
@@ -41,7 +49,8 @@ public class StaticVariables {
 		
 	//Cutoff for "seeing" other atoms, in Angstroms
 	//multiplied by sigma for Lennard-Jones potential
-	public static float cutoff = 17.0f; //mutliplier for cutoff 
+	public static float cutoff = 10.0f; //mutliplier for cutoff
+	public static float cutoffSqr = cutoff * cutoff;
 
 	//Forces are precomputed for a number of discrete separation points and then used as a look up table.
 	//The following is the step size in precalculated forces. It is in the same units as cutoff variable
@@ -67,19 +76,31 @@ public class StaticVariables {
 	public static bool drawBondLines = true;
 	//the variable pauses the simulation of physics
 	public static bool pauseTime = false;
-	//access to sigma values by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
-	public static Dictionary<String, float> sigmaValues = new Dictionary<String, float> ();
+
+	// each atom has an integer number as an ID that is used to access the related element for the atom pair
+	public static float[,] sigmaValues = new float[3,3];
+
+	// this coefficient adjusts the raw calculated Lennar-Jones force so that it has correct units.
+	public static float[,] forceCoeffLJ = new float[3,3];
+
+	// this coefficient adjusts the raw calculated Buckingham force so that it has correct units.
+	public static float[,] forceCoeffBK = new float[3,3];
 
 	//access to coefficients in Buckingham potential by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
-	public static Dictionary<String, float> coeff_A = new Dictionary<String, float> ();
-	public static Dictionary<String, float> coeff_B = new Dictionary<String, float> ();
-	public static Dictionary<String, float> coeff_C = new Dictionary<String, float> ();
-	public static Dictionary<String, float> coeff_D = new Dictionary<String, float> ();
+	public static float[,] coeff_A = new float[3,3];
+	public static float[,] coeff_B = new float[3,3];
+	public static float[,] coeff_C = new float[3,3];
+	public static float[,] coeff_D = new float[3,3];
 
 	//this varaible keeps track of the current potential that is being used. (Note: only Lennard-Jones is currently implemented)
 	public static Potential currentPotential = Potential.LennardJones;
 	//this variable keeps track of the amount of simulation time that has passed
 	public static float currentTime = 0.0f;
+
+	public static int iTime = 0;
+
+	//this variables points to the instance of the create environment
+	public static CreateEnvironment createEnvironment;
 
 	//There are three potentials, but currently Lennard-Jones is the only one that is implemented so changing
 	//between these potentials doesnt do anything

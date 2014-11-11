@@ -101,10 +101,12 @@ public class AtomTouchGUI : MonoBehaviour {
 	[HideInInspector]public bool changingSlider = false;
 	private float guiVolume;
 
+	private int slowMotionFrames;
+
 	public static StaticVariables.TimeSpeed currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
 
 	void Start () {
-		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		CreateEnvironment createEnvironment = StaticVariables.createEnvironment;
 		guiVolume = createEnvironment.volume;
 	}
 
@@ -112,7 +114,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	void OnGUI(){
 
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
+		CreateEnvironment createEnvironment = StaticVariables.createEnvironment;
 
 		if (sliderControls != null) {
 			GUI.skin = sliderControls;
@@ -152,6 +154,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					potentialsActive = false;
 					StaticVariables.currentPotential = StaticVariables.Potential.LennardJones;
 					createEnvironment.InitAtoms();
+					slowMotionFrames = StaticVariables.slowMotionFrames;
 				}
 				Rect buckinghamRect = new Rect(lennardJonesRect.x, lennardJonesRect.y + lennardJonesRect.height, lennardJonesRect.width, lennardJonesRect.height);
 				GUI.DrawTexture(buckinghamRect, lightBackground);
@@ -159,6 +162,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					potentialsActive = false;
 					StaticVariables.currentPotential = StaticVariables.Potential.Buckingham;
 					createEnvironment.InitAtoms();
+					slowMotionFrames = StaticVariables.slowMotionFrames;
 				}
 				Rect brennerRect = new Rect(buckinghamRect.x, buckinghamRect.y + buckinghamRect.height, buckinghamRect.width, buckinghamRect.height);
 				GUI.DrawTexture(brennerRect, darkBackground);
@@ -166,6 +170,7 @@ public class AtomTouchGUI : MonoBehaviour {
 					potentialsActive = false;
 					StaticVariables.currentPotential = StaticVariables.Potential.Brenner;
 					createEnvironment.InitAtoms();
+					slowMotionFrames = StaticVariables.slowMotionFrames;
 				}
 			}
 
@@ -249,6 +254,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				resetPressed = true;
 				resetTime = Time.realtimeSinceStartup;
 				createEnvironment.InitAtoms();
+				slowMotionFrames = StaticVariables.slowMotionFrames;
 			}
 			if(Time.realtimeSinceStartup - resetTime > .05f){
 				resetPressed = false;
@@ -479,7 +485,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			tempNumberText.fontSize = 14;
 			tempNumberText.normal.textColor = Color.white;
 
-			GUI.Label (new Rect (temperatureBackgroundRect.x + temperatureBackgroundRect.width - 120.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)), 200.0f, 20), TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 272.15, 2)).ToString() + "C)", tempNumberText);
+			GUI.Label (new Rect (temperatureBackgroundRect.x + temperatureBackgroundRect.width - 120.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)), 200.0f, 20), TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 273.15, 2)).ToString() + "C)", tempNumberText);
 			float newTemp = GUI.HorizontalSlider (new Rect (temperatureBackgroundRect.x + 25.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)), temperatureBackgroundRect.width - 150.0f, 20.0f), TemperatureCalc.desiredTemperature, StaticVariables.tempRangeLow, StaticVariables.tempRangeHigh);
 			if (newTemp != TemperatureCalc.desiredTemperature) {
 				changingSlider = true;
@@ -523,6 +529,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			if (newVolume != guiVolume) {
 				guiVolume = newVolume;
 				changingSlider = true;
+				slowMotionFrames = StaticVariables.slowMotionFrames;
 			}
 			else{
 				int volume = (int)guiVolume;
@@ -562,30 +569,33 @@ public class AtomTouchGUI : MonoBehaviour {
 					guiVolume = 64000;
 				}
 			}
+
+				
 		}
-		CheckAtomVolumePositions();
+		//CheckAtomVolumePositions();
 
 		if (Input.GetMouseButtonUp (0)) {
 		
 			//possibly adjust the z value here depending on the position of the camera
+
 			if(addGraphicCopper && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
-				Vector3 curPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 40.0f));
+				//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
+				Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x - createEnvironment.width/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.y - createEnvironment.height/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.z - createEnvironment.depth/2.0f+createEnvironment.errorBuffer);
 				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-				curPosition = CheckPosition(curPosition);
 				Instantiate(copperPrefab, curPosition, curRotation);
 			}
 		
 			if(addGraphicGold && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
-				Vector3 curPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 40.0f));
+				//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
+				Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x - createEnvironment.width/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.y - createEnvironment.height/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.z - createEnvironment.depth/2.0f+createEnvironment.errorBuffer);
 				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-				curPosition = CheckPosition(curPosition);
 				Instantiate(goldPrefab, curPosition, curRotation);
 			}
 		
 			if(addGraphicPlatinum && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
-				Vector3 curPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 40.0f));
+				//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
+				Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x - createEnvironment.width/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.y - createEnvironment.height/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.z - createEnvironment.depth/2.0f+createEnvironment.errorBuffer);
 				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-				curPosition = CheckPosition(curPosition);
 				Instantiate(platinumPrefab, curPosition, curRotation);
 			}
 					
@@ -649,6 +659,20 @@ public class AtomTouchGUI : MonoBehaviour {
 		GUI.Label (new Rect (Screen.width - 75.0f, 10.0f, 70.0f, 40.0f), Math.Round(StaticVariables.currentTime, 1) + "ps");
 
 		//print ("Potential energy: " + PotentialEnergy.finalPotentialEnergy);
+
+		if (slowMotionFrames > 0){
+			StaticVariables.MDTimestep = 0.5f * (float) Math.Pow (10, -15);
+			StaticVariables.fixedUpdateIntervalToRealTime = StaticVariables.MDTimestep / Time.fixedDeltaTime;
+			StaticVariables.updateIntervalToRealTime = StaticVariables.MDTimestep;
+			createEnvironment.preComputeCoeff();
+			slowMotionFrames --;
+		}else if (slowMotionFrames == 0){
+			StaticVariables.MDTimestep = 3.0f * (float) Math.Pow (10, -15);
+			StaticVariables.fixedUpdateIntervalToRealTime = StaticVariables.MDTimestep / Time.fixedDeltaTime;
+			StaticVariables.updateIntervalToRealTime = StaticVariables.MDTimestep;
+			createEnvironment.preComputeCoeff();
+			slowMotionFrames = -1;
+		}
 
 
 	}
@@ -786,39 +810,13 @@ public class AtomTouchGUI : MonoBehaviour {
 		}
 	}
 
-	//when an atom is added to the scene, its position must be checked to make sure it is inside of the box
-	Vector3 CheckPosition(Vector3 position){
-		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
-		Vector3 bottomPlanePos = createEnvironment.bottomPlane.transform.position;
-		if (position.y > bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer) {
-			position.y = bottomPlanePos.y + (createEnvironment.height) - createEnvironment.errorBuffer;
-		}
-		if (position.y < bottomPlanePos.y + createEnvironment.errorBuffer) {
-			position.y = bottomPlanePos.y + createEnvironment.errorBuffer;
-		}
-		if (position.x > bottomPlanePos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer) {
-			position.x = bottomPlanePos.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
-		}
-		if (position.x < bottomPlanePos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer) {
-			position.x = bottomPlanePos.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
-		}
-		if (position.z > bottomPlanePos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer) {
-			position.z = bottomPlanePos.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
-		}
-		if (position.z < bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer) {
-			position.z = bottomPlanePos.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
-		}
-		return position;
-	}
-
 	//this function returns the number of atoms that are selected
 	int CountSelectedAtoms(){
 		int selectedAtoms = 0;
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			Atom atomScript = currAtom.GetComponent<Atom>();
-			if(atomScript.selected){
+		for (int i = 0; i < Atom.AllMolecules.Count; i++) {
+			Atom currAtom = Atom.AllMolecules[i];
+			if(currAtom.selected){
 				selectedAtoms++;
 			}
 		}
@@ -827,7 +825,7 @@ public class AtomTouchGUI : MonoBehaviour {
 
 	//this function checks the position of all of the atoms to make sure they are inside of the box
 	void CheckAtomVolumePositions(){
-		
+
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
 		for (int i = 0; i < allMolecules.Length; i++) {
@@ -853,6 +851,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			}
 			currAtom.transform.position = newPosition;
 		}
+
 		
 	}
 
