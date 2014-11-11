@@ -29,7 +29,7 @@ public class CalculateForces : MonoBehaviour {
 				var pair = ReflectFromWalls(position,velocity);
 				
 				currAtom.transform.position = pair.Key;
-				currAtom.rigidbody.velocity = pair.Value;
+				if(!currAtom.rigidbody.isKinematic) currAtom.rigidbody.velocity = pair.Value;
 			}
 
 			for (int i = 0; i < Atom.AllMolecules.Count; i++) {
