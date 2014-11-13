@@ -73,6 +73,9 @@ public abstract class Atom : MonoBehaviour
 	public abstract float buck_D { get; } // Buckingham potential coefficient
 	public abstract float Q_eff { get; } // Ion effective charge for use in Buckingham potential
 
+	public float verletRadius = StaticVariables.cutoff + 1.0f;
+	public List<Atom> neighborList = new List<Atom> ();
+
 	//variables for performing the velocity verlet algorithm
 	public Vector3 velocity = Vector3.zero;
 	public Vector3 position = Vector3.zero;

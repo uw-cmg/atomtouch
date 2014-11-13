@@ -24,6 +24,9 @@ public class StaticVariables {
 	public static float MDTimestepSqr = MDTimestep * MDTimestep;
 	public static float MDTimestepInPicosecond = MDTimestep / Mathf.Pow (10, -12);
 
+	public static float clockTimeStart = 0.0f;
+	public static float clockTimeEnd = 0.0f;
+
 	//Suppose every FixedUpdate physics interval (e.g. 0.02 seconds) is the
 	//Molecular Dynamics timestep of 0.5 * 10^-15 seconds
 	public static float fixedUpdateIntervalToRealTime = MDTimestep / Time.fixedDeltaTime;
@@ -57,6 +60,9 @@ public class StaticVariables {
 	//multiplied by sigma for Lennard-Jones potential
 	public static float cutoff = 2.5f; //mutliplier for cutoff
 	public static float cutoffSqr = cutoff * cutoff;
+
+	//Number of MD timesteps to update verlet list
+	public static int nVerlet = 100;
 
 	//Forces are precomputed for a number of discrete separation points and then used as a look up table.
 	//The following is the step size in precalculated forces. It is in the same units as cutoff variable

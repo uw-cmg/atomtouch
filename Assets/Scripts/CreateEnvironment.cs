@@ -53,13 +53,13 @@ public class CreateEnvironment : MonoBehaviour {
 		// pre-compute coefficients used in various types of potentials so that we don't have to calculate them dynamically
 		preCompute ();
 
-		centerPos = Vector3.zero;
-		initialCenterPos = centerPos;
-		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
-
 		//create the atoms
 		InitAtoms ();
 
+		centerPos = Vector3.zero;
+		initialCenterPos = centerPos;
+		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
+		
 		//figure out the dimensions of the box based on the volume
 		width = Mathf.Pow (volume, (1.0f / 3.0f));
 		height = Mathf.Pow (volume, (1.0f / 3.0f));
@@ -219,7 +219,7 @@ public class CreateEnvironment : MonoBehaviour {
 				StaticVariables.sigmaValuesSqr[firstAtom.atomID,secondAtom.atomID] = currentSigma * currentSigma;
 
 				// when the pre-calculated normalized Lennard Jones force is multiplied by this coefficient the acceleration units is [Angstrom/second^2]
-				float currentAccelCoeff = 48.0f * firstAtom.epsilon / (currentSigma * currentSigma * StaticVariables.angstromsToMeters * StaticVariables.angstromsToMeters * firstAtom.massamu * StaticVariables.amuToKg);
+				float currentAccelCoeff = 24.0f * firstAtom.epsilon / (currentSigma * currentSigma * StaticVariables.angstromsToMeters * StaticVariables.angstromsToMeters * firstAtom.massamu * StaticVariables.amuToKg);
 				StaticVariables.accelCoefficient[firstAtom.atomID, secondAtom.atomID] = currentAccelCoeff;
 				
 				float currentA = Mathf.Sqrt(firstAtom.buck_A*secondAtom.buck_A);
@@ -256,13 +256,15 @@ public class CreateEnvironment : MonoBehaviour {
 	{
 		float invDistance2 = 1.0f / distance / distance;
 		float invDistance6 = invDistance2 * invDistance2 * invDistance2;
+		float invCutoff2 = 1.0f / StaticVariables.cutoff / StaticVariables.cutoff;
+		float invCutoff6 = invCutoff2 * invCutoff2 * invCutoff2;
 		float r_min = StaticVariables.rMinMultiplier;
 		
 		float forceMagnitude = 0.0f;
 		
 		if (distance > r_min)
 		{
-			forceMagnitude = invDistance2 * invDistance6 * (invDistance6 - 0.5f);
+			forceMagnitude = invDistance2 * ((2.0f * invDistance6 * invDistance6 - invDistance6) - (invCutoff2 / invDistance2) * (2.0f * invCutoff6 * invCutoff6 - invCutoff6 ));
 		}
 		// Smooth the potential to go to a constant not infinity at r=0
 		else
@@ -270,16 +272,14 @@ public class CreateEnvironment : MonoBehaviour {
 			float invr_min = 1 / r_min;
 			float invr_min2 = invr_min * invr_min;
 			float invr_min6 = invr_min2 * invr_min2 * invr_min2;
-			
-			float magnitude_Vmin = invr_min2 * invr_min6 * (invr_min6 - 0.5f);
+			float magnitude_Vmin = invr_min2 * ((2.0f * invr_min6 * invr_min6 - invr_min6) - (invCutoff2 / invr_min2) * (2.0f * invCutoff6 * invCutoff6 - invCutoff6));
 			
 			float r_Vmax = r_min / 1.5f;
 			float invr_Vmax2 = 1 / r_Vmax / r_Vmax;
 			float invr_Vmax6 = invr_Vmax2 * invr_Vmax2 * invr_Vmax2;
+			float magnitude_Vmax = invr_Vmax2 * ((2.0f * invr_Vmax6 * invr_Vmax6 - invr_Vmax6) - (invCutoff2 / invr_Vmax2) * (2.0f * invCutoff6 * invCutoff6 - invCutoff6));
 			
-			float magnitude_Vmax = invr_Vmax2 * invr_Vmax6 * (invr_Vmax6 - 0.5f);
-			
-			float part1 = (distance / r_min) * Mathf.Exp(distance - r_min);
+			float part1 = (distance / r_min) * ((float)Math.Exp(distance - r_min));
 			float part2 = magnitude_Vmax - magnitude_Vmin;
 			forceMagnitude = magnitude_Vmax - (part1 * part2);
 		}
@@ -292,12 +292,15 @@ public class CreateEnvironment : MonoBehaviour {
 	{
 		float invDistance2 = 1.0f / distance / distance;
 		float invDistance6 = invDistance2 * invDistance2 * invDistance2;
+		float invCutoff2 = 1.0f / StaticVariables.cutoff / StaticVariables.cutoff;
+		float invCutoff6 = invCutoff2 * invCutoff2 * invCutoff2;
+		float r_min = StaticVariables.rMinMultiplier;
 		
 		float potential = 0.0f;
 		
 		if (distance > 0.0f)
 		{
-			potential = invDistance6 * (invDistance6 - 1.0f);
+			potential = 4.0f * ((invDistance6 * invDistance6 - invDistance6) + (6.0f * invCutoff6 * invCutoff6 - 3.0f * invCutoff6) * (invCutoff2 / invDistance2) - 7.0f * invCutoff6 * invCutoff6 + 4.0f * invCutoff6);
 		}
 		
 		return potential;
