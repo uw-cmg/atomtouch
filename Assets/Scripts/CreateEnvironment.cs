@@ -209,9 +209,7 @@ public class CreateEnvironment : MonoBehaviour {
 	// This function pre-computes coefficients used in various types of potentials so that we don't have to calculate them dynamically
 	public void preCompute()
 	{
-		if (StaticVariables.currentPotential == StaticVariables.Potential.LennardJones)
 			LennardJones.preLennardJones ();
-		if (StaticVariables.currentPotential == StaticVariables.Potential.Buckingham)
 			Buckingham.preBuckingham ();
 	}
 	
@@ -233,6 +231,7 @@ public class CreateEnvironment : MonoBehaviour {
 			{
 				createAtom (molecules [0]);
 			}
+			LennardJones.calculateVerletRadius();
 		}
 		else if (StaticVariables.currentPotential == StaticVariables.Potential.Buckingham)
 		{
@@ -244,6 +243,7 @@ public class CreateEnvironment : MonoBehaviour {
 			{
 				createAtom (molecules [1]);
 			}
+			Buckingham.calculateVerletRadius();
 		}
 
 		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();

@@ -4,7 +4,7 @@ using System.Collections;
 public class Buckingham : MonoBehaviour {
 
 	//Cutoff distance for calculating LennarJones force. This quantity is unit less and normalized to sigmaValue for atom pair
-	public static float cutoff = 10.0f; //[Angstroms]
+	public static float cutoff = 5.0f; //[Angstroms]
 	public static float cutoffSqr = cutoff * cutoff;
 	
 	//The mesh size for pre-calculating Lennard Jones force.
@@ -153,7 +153,7 @@ public class Buckingham : MonoBehaviour {
 		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
 		{
 			Atom currAtom = Atom.AllAtoms[i];
-			currAtom.verletRadius = cutoff + 2.0f;
+			currAtom.verletRadius = cutoff + 1.0f;
 		}
 	}
 	
