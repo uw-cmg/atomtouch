@@ -209,103 +209,12 @@ public class CreateEnvironment : MonoBehaviour {
 	// This function pre-computes coefficients used in various types of potentials so that we don't have to calculate them dynamically
 	public void preCompute()
 	{
-		for (int i = 0; i < molecules.Count; i++) {
-			Atom firstAtom = molecules[i].GetComponent<Atom>();
-			for(int j = 0; j < molecules.Count; j++){
-				Atom secondAtom = molecules[j].GetComponent<Atom>();
-				
-				float currentSigma = Mathf.Sqrt(firstAtom.sigma*secondAtom.sigma);
-				StaticVariables.sigmaValues[firstAtom.atomID,secondAtom.atomID] = currentSigma;
-				StaticVariables.sigmaValuesSqr[firstAtom.atomID,secondAtom.atomID] = currentSigma * currentSigma;
-
-				// when the pre-calculated normalized Lennard Jones force is multiplied by this coefficient the acceleration units is [Angstrom/second^2]
-				float currentAccelCoeff = 24.0f * firstAtom.epsilon / (currentSigma * currentSigma * StaticVariables.angstromsToMeters * StaticVariables.angstromsToMeters * firstAtom.massamu * StaticVariables.amuToKg);
-				StaticVariables.accelCoefficient[firstAtom.atomID, secondAtom.atomID] = currentAccelCoeff;
-				
-				float currentA = Mathf.Sqrt(firstAtom.buck_A*secondAtom.buck_A);
-				StaticVariables.coeff_A[firstAtom.atomID,secondAtom.atomID] = currentA;
-				
-				float currentB = Mathf.Sqrt(firstAtom.buck_B * secondAtom.buck_B);
-				StaticVariables.coeff_A[firstAtom.atomID, secondAtom.atomID] = currentB;
-				
-				float currentC = Mathf.Sqrt(firstAtom.buck_C * secondAtom.buck_C);
-				StaticVariables.coeff_A[firstAtom.atomID, secondAtom.atomID] = currentC;
-				
-				float currentD = Mathf.Sqrt(firstAtom.buck_D * secondAtom.buck_D);
-				StaticVariables.coeff_A[firstAtom.atomID, secondAtom.atomID] = currentD;
-
-				StaticVariables.forceCoeffBK[firstAtom.atomID,secondAtom.atomID] = StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters;
-			}
-		}
-		
-		// precalculate the LennardJones potential and store it in preLennarJones array.
-		int nR = (int)(StaticVariables.cutoff/StaticVariables.deltaR)+1;
-		StaticVariables.preLennardJonesForce = new float[nR];
-		StaticVariables.preLennardJonesPotential = new float[nR];
-		
-		for (int i = 0; i < nR; i++)
-		{
-			float distance = (float)i * StaticVariables.deltaR;
-			StaticVariables.preLennardJonesForce[i] = calcLennardJonesForce(distance);
-			StaticVariables.preLennardJonesPotential[i] = calcLennardJonesPotential(distance);
-		}
-	}
-
-	//the function returns the LennarJones force on the atom given the list of the atoms that are within range of it
-	private float calcLennardJonesForce(float distance)
-	{
-		float invDistance2 = 1.0f / distance / distance;
-		float invDistance6 = invDistance2 * invDistance2 * invDistance2;
-		float invCutoff2 = 1.0f / StaticVariables.cutoff / StaticVariables.cutoff;
-		float invCutoff6 = invCutoff2 * invCutoff2 * invCutoff2;
-		float r_min = StaticVariables.rMinMultiplier;
-		
-		float forceMagnitude = 0.0f;
-		
-		if (distance > r_min)
-		{
-			forceMagnitude = invDistance2 * ((2.0f * invDistance6 * invDistance6 - invDistance6) - (invCutoff2 / invDistance2) * (2.0f * invCutoff6 * invCutoff6 - invCutoff6 ));
-		}
-		// Smooth the potential to go to a constant not infinity at r=0
-		else
-		{
-			float invr_min = 1 / r_min;
-			float invr_min2 = invr_min * invr_min;
-			float invr_min6 = invr_min2 * invr_min2 * invr_min2;
-			float magnitude_Vmin = invr_min2 * ((2.0f * invr_min6 * invr_min6 - invr_min6) - (invCutoff2 / invr_min2) * (2.0f * invCutoff6 * invCutoff6 - invCutoff6));
-			
-			float r_Vmax = r_min / 1.5f;
-			float invr_Vmax2 = 1 / r_Vmax / r_Vmax;
-			float invr_Vmax6 = invr_Vmax2 * invr_Vmax2 * invr_Vmax2;
-			float magnitude_Vmax = invr_Vmax2 * ((2.0f * invr_Vmax6 * invr_Vmax6 - invr_Vmax6) - (invCutoff2 / invr_Vmax2) * (2.0f * invCutoff6 * invCutoff6 - invCutoff6));
-			
-			float part1 = (distance / r_min) * ((float)Math.Exp(distance - r_min));
-			float part2 = magnitude_Vmax - magnitude_Vmin;
-			forceMagnitude = magnitude_Vmax - (part1 * part2);
-		}
-		
-		return forceMagnitude;
+		if (StaticVariables.currentPotential == StaticVariables.Potential.LennardJones)
+			LennardJones.preLennardJones ();
+		if (StaticVariables.currentPotential == StaticVariables.Potential.Buckingham)
+			Buckingham.preBuckingham ();
 	}
 	
-	//the function returns the LennarJones force on the atom given the list of the atoms that are within range of it
-	private float calcLennardJonesPotential(float distance)
-	{
-		float invDistance2 = 1.0f / distance / distance;
-		float invDistance6 = invDistance2 * invDistance2 * invDistance2;
-		float invCutoff2 = 1.0f / StaticVariables.cutoff / StaticVariables.cutoff;
-		float invCutoff6 = invCutoff2 * invCutoff2 * invCutoff2;
-		float r_min = StaticVariables.rMinMultiplier;
-		
-		float potential = 0.0f;
-		
-		if (distance > 0.0f)
-		{
-			potential = 4.0f * ((invDistance6 * invDistance6 - invDistance6) + (6.0f * invCutoff6 * invCutoff6 - 3.0f * invCutoff6) * (invCutoff2 / invDistance2) - 7.0f * invCutoff6 * invCutoff6 + 4.0f * invCutoff6);
-		}
-		
-		return potential;
-	}
-
 	//initialize the atoms to a random position and to the original number of atoms
 	public void InitAtoms()
 	{
@@ -318,9 +227,23 @@ public class CreateEnvironment : MonoBehaviour {
 		}
 
 		//initialize the new atoms
-		for (int i = 0; i < numMolecules; i++)
+		if (StaticVariables.currentPotential == StaticVariables.Potential.LennardJones)
 		{
-			createAtom(molecules[moleculeToSpawn]);
+			for (int i = 0; i < numMolecules; i++)
+			{
+				createAtom (molecules [0]);
+			}
+		}
+		else if (StaticVariables.currentPotential == StaticVariables.Potential.Buckingham)
+		{
+			for (int i = 0; i < numMolecules/2; i++)
+			{
+				createAtom (molecules [0]);
+			}
+			for (int i = numMolecules/2; i < numMolecules; i++)
+			{
+				createAtom (molecules [1]);
+			}
 		}
 
 		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
@@ -374,11 +297,8 @@ public class CreateEnvironment : MonoBehaviour {
 			deltaR = currAtom.position - otherAtom.position;
 
 			float distanceSqr = deltaR.sqrMagnitude;
-			float finalSigmaSqr = StaticVariables.sigmaValuesSqr[currAtom.atomID, otherAtom.atomID];
-			float normDistanceSqr = distanceSqr / finalSigmaSqr; // this is normalized distanceSqr to the sigmaValue
-			
 			//only get the forces of the atoms that are within the cutoff range
-			if (normDistanceSqr < 1.259921)
+			if (distanceSqr < (3.0f * 3.0f))
 			{
 				proximityFlag = false;
 			}

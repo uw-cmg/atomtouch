@@ -73,7 +73,7 @@ public abstract class Atom : MonoBehaviour
 	public abstract float buck_D { get; } // Buckingham potential coefficient
 	public abstract float Q_eff { get; } // Ion effective charge for use in Buckingham potential
 
-	public float verletRadius = StaticVariables.cutoff + 1.0f;
+	public float verletRadius = 0.0f;
 	public List<Atom> neighborList = new List<Atom> ();
 
 	//variables for performing the velocity verlet algorithm
@@ -585,7 +585,8 @@ public abstract class Atom : MonoBehaviour
 
 	//this functions returns the appropriate bond distance, given two atoms
 	public float BondDistance(Atom otherAtom){
-		return 1.225f * StaticVariables.sigmaValues [atomID,otherAtom.atomID];
+		//return 1.225f * StaticVariables.sigmaValues [atomID,otherAtom.atomID];
+		return 3.0f;
 	}
 
 	//this function checks the position of an atom, and if its outside of the box, simply place the atom back inside the box

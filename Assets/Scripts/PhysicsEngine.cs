@@ -15,15 +15,19 @@ using System;
 
 public class PhysicsEngine : MonoBehaviour
 {
-	
+	void Awake(){
+		if (StaticVariables.currentPotential == StaticVariables.Potential.LennardJones)
+			LennardJones.calculateVerletRadius ();
+		if (StaticVariables.currentPotential == StaticVariables.Potential.Buckingham)
+			Buckingham.calculateVerletRadius ();
+	}
+
 	void FixedUpdate()
 	{
 		
 		if (!StaticVariables.pauseTime)
 		{
 
-			if (StaticVariables.iTime % StaticVariables.nVerlet == 0)
-				calculateNeighborList();
 			VelocityVerlet();
 			ReflectFromWalls();
 			CalculateEnergy();
@@ -65,23 +69,37 @@ public class PhysicsEngine : MonoBehaviour
 			currAtom.accelerationNew = Vector3.zero;
 			currAtom.transform.position = currAtom.position;
 		}
-		
-		// update the acceleration of all atoms
-		for (int i=0; i< Atom.AllAtoms.Count-1; i++) {
-			Atom firstAtom = Atom.AllAtoms[i];
-			/*
-			for (int j=i+1; j<Atom.AllAtoms.Count; j++) {
-				Atom secondAtom = Atom.AllAtoms[j];
-				getLennardJonesForce(firstAtom, secondAtom);
-			}
-			*/
 
-			for (int j = 0; j < firstAtom.neighborList.Count; j++)
+
+		if (StaticVariables.currentPotential == StaticVariables.Potential.LennardJones)
+		{
+			if (StaticVariables.iTime % StaticVariables.nVerlet == 0)
+				LennardJones.calculateNeighborList();
+			// update the acceleration of all atoms
+			for (int i=0; i< Atom.AllAtoms.Count-1; i++) 
 			{
-				Atom secondAtom = firstAtom.neighborList[j];
-				getLennardJonesForce(firstAtom, secondAtom);
+				Atom firstAtom = Atom.AllAtoms[i];
+				for (int j = 0; j < firstAtom.neighborList.Count; j++)
+				{
+					Atom secondAtom = firstAtom.neighborList[j];
+					LennardJones.getForce(firstAtom, secondAtom);
+				}
 			}
-
+		}
+		else if (StaticVariables.currentPotential == StaticVariables.Potential.Buckingham)
+		{
+			if (StaticVariables.iTime % StaticVariables.nVerlet == 0)
+				Buckingham.calculateNeighborList();
+			// update the acceleration of all atoms
+			for (int i=0; i< Atom.AllAtoms.Count-1; i++) 
+			{
+				Atom firstAtom = Atom.AllAtoms[i];
+				for (int j = 0; j < firstAtom.neighborList.Count; j++)
+				{
+					Atom secondAtom = firstAtom.neighborList[j];
+					Buckingham.getForce(firstAtom, secondAtom);
+				}
+			}
 		}
 		
 		// update the velocity of all atoms
@@ -93,27 +111,7 @@ public class PhysicsEngine : MonoBehaviour
 		}
 	}
 
-	//the function returns the Lennard-Jones force on the atom given the list of all the atoms in the simulation
-	void getLennardJonesForce(Atom firstAtom, Atom secondAtom)
-	{
-		Vector3 firstAtomAcceleration = Vector3.zero;
-		Vector3 secondAtomAcceleration = Vector3.zero;
-		
-		Vector3 deltaR = Vector3.zero;
-		deltaR = firstAtom.position - secondAtom.position;
 
-		float distanceSqr = deltaR.sqrMagnitude;
-		float finalSigmaSqr = StaticVariables.sigmaValuesSqr [firstAtom.atomID, secondAtom.atomID];
-		float normDistanceSqr = distanceSqr / finalSigmaSqr; // this is normalized distanceSqr to the sigmaValue
-		
-		//only get the forces of the atoms that are within the cutoff range
-		if (normDistanceSqr <= StaticVariables.cutoffSqr) 
-		{
-			int iR = (int) ((float)Math.Sqrt(normDistanceSqr)/(StaticVariables.deltaR));
-			firstAtom.accelerationNew = firstAtom.accelerationNew + StaticVariables.preLennardJonesForce[iR] * StaticVariables.accelCoefficient[firstAtom.atomID,secondAtom.atomID] * deltaR;
-			secondAtom.accelerationNew = secondAtom.accelerationNew - StaticVariables.preLennardJonesForce[iR] * StaticVariables.accelCoefficient[secondAtom.atomID, firstAtom.atomID] * deltaR;
-		}
-	}
 
 	//reflect the atoms from the walls
 	void ReflectFromWalls()
@@ -173,7 +171,7 @@ public class PhysicsEngine : MonoBehaviour
 		StaticVariables.potentialEnergy = 0.0f;
 		StaticVariables.kineticEnergy = 0.0f;
 		StaticVariables.currentTemperature = 0.0f;
-		
+
 		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
 		{
 			Atom firstAtom = Atom.AllAtoms[i];
@@ -183,17 +181,21 @@ public class PhysicsEngine : MonoBehaviour
 			StaticVariables.kineticEnergy += 0.5f * firstAtom.massamu * StaticVariables.amuToKg * velocitySqr * StaticVariables.angstromsToMeters * StaticVariables.angstromsToMeters;
 
 			// calculate potential energy between each pair of atoms
-			/*
-			for (int j = i + 1; j < Atom.AllAtoms.Count; j++)
+			if (StaticVariables.currentPotential == StaticVariables.Potential.LennardJones)
 			{
-				Atom secondAtom = Atom.AllAtoms[j];
-				StaticVariables.potentialEnergy += getLennardJonesPotential(firstAtom, secondAtom);
+				for (int j = 0; j < firstAtom.neighborList.Count; j++)
+				{
+					Atom secondAtom = firstAtom.neighborList[j];
+					StaticVariables.potentialEnergy += LennardJones.getPotential(firstAtom, secondAtom);
+				}
 			}
-			*/
-			for (int j = 0; j < firstAtom.neighborList.Count; j++)
+			else if (StaticVariables.currentPotential == StaticVariables.Potential.Buckingham)
 			{
-				Atom secondAtom = firstAtom.neighborList[j];
-				StaticVariables.potentialEnergy += getLennardJonesPotential(firstAtom, secondAtom);
+				for (int j = 0; j < firstAtom.neighborList.Count; j++)
+				{
+					Atom secondAtom = firstAtom.neighborList[j];
+					StaticVariables.potentialEnergy += Buckingham.getPotential(firstAtom, secondAtom);
+				}
 			}
 
 		}
@@ -201,25 +203,6 @@ public class PhysicsEngine : MonoBehaviour
 		StaticVariables.currentTemperature = StaticVariables.kineticEnergy / 1.5f / (float)Atom.AllAtoms.Count / StaticVariables.kB;
 		calculateSqrtAlpha();
 		
-	}
-	
-	//the function returns the Lennard-Jones force on the atom given the list of all the atoms in the simulation
-	float getLennardJonesPotential(Atom firstAtom, Atom secondAtom)
-	{
-		float potential = 0.0f;
-		Vector3 deltaR = firstAtom.position - secondAtom.position;
-
-		float distanceSqr = deltaR.sqrMagnitude;
-		float finalSigmaSqr = StaticVariables.sigmaValuesSqr[firstAtom.atomID, secondAtom.atomID];
-		float normDistanceSqr = distanceSqr / finalSigmaSqr; // this is normalized distanceSqr to the sigmaValue
-		
-		//only get the forces of the atoms that are within the cutoff range
-		if (normDistanceSqr <= StaticVariables.cutoffSqr)
-		{
-			int iR = (int)(Mathf.Sqrt(normDistanceSqr) / (StaticVariables.deltaR));
-			potential = firstAtom.epsilon * StaticVariables.preLennardJonesPotential[iR];
-		}
-		return potential;
 	}
 	
 	void calculateSqrtAlpha()
@@ -251,36 +234,5 @@ public class PhysicsEngine : MonoBehaviour
 			draggedAlpha = 1.0f;
 		}
 		StaticVariables.sqrtAlpha = (float)Math.Pow(draggedAlpha, 0.5f);
-	}
-
-	//This function creates a list of all neighbor list for each atom
-	void calculateNeighborList()
-	{
-		//clear the old neighborList
-		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
-		{
-			Atom currAtom = Atom.AllAtoms[i];
-			currAtom.neighborList.Clear();
-		}
-		
-		//create the new neighborList
-		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
-		{
-			Atom firstAtom = Atom.AllAtoms[i];
-			for (int j = i + 1; j < Atom.AllAtoms.Count; j++)
-			{
-				Atom secondAtom = Atom.AllAtoms[j];
-				Vector3 deltaR = Vector3.zero;
-				deltaR = firstAtom.position - secondAtom.position;
-
-				float distanceSqr = deltaR.sqrMagnitude;
-				float finalSigma = StaticVariables.sigmaValues[firstAtom.atomID, secondAtom.atomID];
-				float normDistanceSqr = distanceSqr / finalSigma / finalSigma; // this is normalized distanceSqr to the sigmaValue
-				if (normDistanceSqr < (firstAtom.verletRadius * firstAtom.verletRadius))
-				{
-					firstAtom.neighborList.Add(secondAtom);
-				}
-			}
-		}
 	}
 }

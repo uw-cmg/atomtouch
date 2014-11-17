@@ -55,32 +55,13 @@ public class StaticVariables {
 
 	//Convert units of Angstroms to meters
 	public static float angstromsToMeters = (float) Math.Pow (10,-10);
-		
-	//Cutoff for "seeing" other atoms, in Angstroms
-	//multiplied by sigma for Lennard-Jones potential
-	public static float cutoff = 2.5f; //mutliplier for cutoff
-	public static float cutoffSqr = cutoff * cutoff;
 
 	//Number of MD timesteps to update verlet list
 	public static int nVerlet = 100;
-
-	//Forces are precomputed for a number of discrete separation points and then used as a look up table.
-	//The following is the step size in precalculated forces. It is in the same units as cutoff variable
-	public static float deltaR = 0.0001f;
-
-
-	//When r_ij is small, the Lennard-Jones potential is extremely large.
-	//At a certain r_min, we will substitute the L-J potential with a function that
-	//curves to a constant as r_ij goes to zero.
-
-	//Multiplier for transition between actual L-J potential and curve to constant
-	//    This number will be multiplied by sigma to find the transition distance
-	public static float rMinMultiplier = 0.75f;
 		
 	//Temperature slider bounds in K
 	public static float tempRangeLow = 0.01f;
 	public static float tempRangeHigh = 5000.0f; 
-
 	public static float desiredTemperature = 300.0f;
 
 	//this variable causes the bond lines to either draw or not draw
@@ -88,24 +69,8 @@ public class StaticVariables {
 	//the variable pauses the simulation of physics
 	public static bool pauseTime = false;
 
-	// each atom has an integer number as an ID that is used to access the related element for the atom pair
-	public static float[,] sigmaValues = new float[3,3];
-	public static float[,] sigmaValuesSqr = new float[3, 3];
-	public static float[,] accelCoefficient = new float[3, 3]; // this is the coefficient that is multiplied by the preLennardJones vector to get the acceleration of each atom for each combinations
-	public static float[] preLennardJonesForce; //This is the pre-calculated value of LennardJones force for some mesh points.
-	public static float[] preLennardJonesPotential; //This is the pre-calculated value of LennardJones potential for some mesh points.
-
-	// this coefficient adjusts the raw calculated Buckingham force so that it has correct units.
-	public static float[,] forceCoeffBK = new float[3,3];
-
-	//access to coefficients in Buckingham potential by appending the two atomNames together e.g. "CopperCopper" or "CopperGold" etc
-	public static float[,] coeff_A = new float[3,3];
-	public static float[,] coeff_B = new float[3,3];
-	public static float[,] coeff_C = new float[3,3];
-	public static float[,] coeff_D = new float[3,3];
-
 	//this varaible keeps track of the current potential that is being used. (Note: only Lennard-Jones is currently implemented)
-	public static Potential currentPotential = Potential.LennardJones;
+	public static Potential currentPotential = Potential.Buckingham;
 
 	//this variable keeps track of the amount of simulation time that has passed in picoseconds
 	public static float currentTime = 0.0f;

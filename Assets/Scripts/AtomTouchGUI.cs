@@ -867,7 +867,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			float xVelocity = 0.0f;
 			float yVelocity = 0.0f;
 			float zVelocity = 0.0f;
-			float maxVelocity = 0.01f / StaticVariables.MDTimestep; //this is maximum random velocity and needs to be determined emperically.
+			float maxVelocity = 0.05f / StaticVariables.MDTimestep; //this is maximum random velocity and needs to be determined emperically.
 			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
 				xVelocity = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
 			}
