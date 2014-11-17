@@ -29,6 +29,7 @@ public class PhysicsEngine : MonoBehaviour
 			CalculateEnergy();
 
 
+
 			if (StaticVariables.iTime == 0)
 			{
 				StaticVariables.clockTimeStart = Time.realtimeSinceStartup;
@@ -44,6 +45,7 @@ public class PhysicsEngine : MonoBehaviour
 				float timePerStepPerAtom = timePerStep / StaticVariables.myEnvironment.numMolecules;
 				Debug.Log ("Delta Time = " + deltaTime +" , iTime = " + StaticVariables.iTime + " , time per step = " + timePerStep + " , time per step per atom = " + timePerStepPerAtom);
 			}
+
 
 			StaticVariables.currentTime += StaticVariables.MDTimestepInPicosecond;
 			Graph.numMDStepSinceLastRecord ++;
