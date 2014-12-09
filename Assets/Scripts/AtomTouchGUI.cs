@@ -212,7 +212,6 @@ public class AtomTouchGUI : MonoBehaviour {
 			if(GUI.Button(bottomRect, "", buttonStyle)){
 				dataPanelActive = !dataPanelActive;
 			}
-			float buffer = 10.0f;
 
 			bool doubleTapped = false;
 			for(int i = 0; i < Atom.AllAtoms.Count; i++){

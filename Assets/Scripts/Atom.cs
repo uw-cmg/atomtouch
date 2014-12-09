@@ -337,7 +337,6 @@ public abstract class Atom : MonoBehaviour
 	void OnMouseDragIOS(){
 		if (Time.realtimeSinceStartup - dragStartTime > 0.1f) {
 			dragCalled = true;
-			Quaternion cameraRotation = Camera.main.transform.rotation;
 			ApplyTransparency();
 			rigidbody.isKinematic = true;
 			if(!selected){
@@ -648,7 +647,6 @@ public abstract class Atom : MonoBehaviour
 	//this functions creates, moves, and destroys bond distance text depending on the distance to other atoms in the system
 	void UpdateBondText(){
 		Quaternion cameraRotation = Camera.main.transform.rotation;
-		Vector3 left = cameraRotation * -Vector3.right;
 		Vector3 right = cameraRotation * Vector3.right;
 
 		for (int i = 0; i < AllAtoms.Count; i++) {
@@ -678,7 +676,7 @@ public abstract class Atom : MonoBehaviour
 					bondDistance = bondDistanceText[atomNeighbor.name];
 					bondDistance.transform.rotation = cameraRotation;
 					bondDistance.transform.position = midpoint;
-				}catch (KeyNotFoundException e){
+				}catch (KeyNotFoundException){
 					bondDistance = Instantiate(textMeshPrefab, midpoint, cameraRotation) as TextMesh;
 					bondDistanceText.Add(atomNeighbor.name, bondDistance);
 				}
@@ -690,7 +688,7 @@ public abstract class Atom : MonoBehaviour
 					TextMesh bondDistance = bondDistanceText[atomNeighbor.name];
 					Destroy(bondDistance);
 					bondDistanceText.Remove(atomNeighbor.name);
-				}catch(KeyNotFoundException e){} //dont do anything with the caught exception
+				}catch(KeyNotFoundException){} //dont do anything with the caught exception
 			}
 		}
 

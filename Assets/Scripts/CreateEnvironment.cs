@@ -58,7 +58,6 @@ public class CreateEnvironment : MonoBehaviour {
 
 		centerPos = Vector3.zero;
 		initialCenterPos = centerPos;
-		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
 		
 		//figure out the dimensions of the box based on the volume
 		width = Mathf.Pow (volume, (1.0f / 3.0f));
@@ -154,8 +153,6 @@ public class CreateEnvironment : MonoBehaviour {
 		width = Mathf.Pow (volume, (1.0f / 3.0f));
 		height = Mathf.Pow (volume, (1.0f / 3.0f));
 		depth = Mathf.Pow (volume, (1.0f / 3.0f));
-		
-		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
 
 		//change the position of the bottom line
 		LineRenderer bottomLine = bottomText.GetComponent<LineRenderer> ();

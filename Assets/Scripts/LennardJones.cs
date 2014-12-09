@@ -99,7 +99,6 @@ public class LennardJones : MonoBehaviour {
 		float invDistance6 = invDistance2 * invDistance2 * invDistance2;
 		float invCutoff2 = 1.0f / cutoff / cutoff;
 		float invCutoff6 = invCutoff2 * invCutoff2 * invCutoff2;
-		float r_min = rMinMultiplier;
 		
 		float potential = 0.0f;
 		
@@ -114,9 +113,6 @@ public class LennardJones : MonoBehaviour {
 	//the function returns the Lennard-Jones force on the atom given the list of all the atoms in the simulation
 	public static void getForce(Atom firstAtom, Atom secondAtom)
 	{
-		float[] firstAtomAcceleration = new float[3];
-		float[] secondAtomAcceleration = new float[3];
-		
 		Vector3 deltaR = firstAtom.position - secondAtom.position;
 		float distanceSqr = deltaR.sqrMagnitude;
 		float finalSigma = sigmaValues[firstAtom.atomID, secondAtom.atomID];

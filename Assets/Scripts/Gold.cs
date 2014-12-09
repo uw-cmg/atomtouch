@@ -24,6 +24,7 @@ public class Gold : Atom
 		get{ return "Gold"; } 
 	}
 
+
 	public override int atomID {
 		get{ return 1;}
 	}

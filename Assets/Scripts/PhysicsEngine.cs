@@ -127,7 +127,7 @@ public class PhysicsEngine : MonoBehaviour
 			if (remainder < boxDimension.x)
 			{
 				currAtom.position.x = remainder - boxDimension.x / 2.0f;
-				currAtom.velocity.x = currAtom.velocity.x;
+				currAtom.velocity.x = +1.0f * currAtom.velocity.x;
 			}
 			else
 			{
@@ -141,7 +141,7 @@ public class PhysicsEngine : MonoBehaviour
 			if (remainder < boxDimension.y)
 			{
 				currAtom.position.y = remainder - boxDimension.y / 2.0f;
-				currAtom.velocity.y = currAtom.velocity.y;
+				currAtom.velocity.y = +1.0f * currAtom.velocity.y;
 			}
 			else
 			{
@@ -155,7 +155,7 @@ public class PhysicsEngine : MonoBehaviour
 			if (remainder < boxDimension.z)
 			{
 				currAtom.position.z = remainder - boxDimension.z / 2.0f;
-				currAtom.velocity.z = currAtom.velocity.z;
+				currAtom.velocity.z = +1.0f * currAtom.velocity.z;
 			}
 			else
 			{

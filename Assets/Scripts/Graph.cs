@@ -31,19 +31,18 @@ public class Graph : MonoBehaviour {
 	public float refreshInterval = 0.1f;
 	public float lineWidth = .015f;
 	private float zDepth = 5.0f;
+
 	public float spacing = 0.5f;
 	private float maxDataPoints;
 	private float dataMaximum = 5000.0f;
 	private float dataMinimum = 0.0f;
 	private float lowTime;
 	private float highTime;
-	private bool first;
 	public string yUnitLabel = "K";
 	public string xUnitLabel = "ps";
 	public string graphLabel = "Temperature vs Time";
 	public Color axisColor = Color.red;
 	public Color lineColor = Color.yellow;
-	private bool updateTime = false;
 	public static int numMDStepSinceLastRecord = 0;
 	private float timeSpacing = 20.0f;
 
@@ -52,7 +51,6 @@ public class Graph : MonoBehaviour {
 		//these coorindates will be over written in AtomtouchGUI
 		xCoord = Screen.width - 250;
 		yCoord = 70;
-		first = true;
 		maxDataPoints = (width / spacing) + 1;
 		dataPoints = new Queue ();
 	}
