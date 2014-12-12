@@ -1,28 +1,34 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Buckingham : MonoBehaviour {
+public class Buckingham : Potential {
 
 	//Cutoff distance for calculating Buckingham force. Beyond this distance the force is taken to be zero.
-	private static float cutoff = 10.0f; //[Angstrom]
-	private static float cutoffSqr = cutoff * cutoff;
-
+	private float cutoff = 10.0f; //[Angstrom]
+	private float cutoffSqr;
+	
 	//Cutoff distance for using the spline interpolation function. Beyond this distance the force smoothed to zero.
-	private static float rSpline = cutoff-2.0f; //[Angstrom]
-
+	private float rSpline; //[Angstrom]
+	
 	//The mesh size for pre-calculating Lennard Jones force.
-	private static float dR = 0.0001f;
+	private float dR = 0.0001f;
 	
 	//pre-calculated coefficients and forces for Buckingham potential
-	private static float[, ,] preBuckinghamAcceleration;
-	private static float[, ,] PreBuckinghamPotential;
+	private float[, ,] preBuckinghamAcceleration;
+	private float[, ,] PreBuckinghamPotential;
 	
-	private static float[,] coeff_A = new float[3, 3];
-	private static float[,] coeff_B = new float[3, 3];
-	private static float[,] coeff_C = new float[3, 3];
-	private static float[,] coeff_D = new float[3, 3];
+	private float[,] coeff_A = new float[3, 3];
+	private float[,] coeff_B = new float[3, 3];
+	private float[,] coeff_C = new float[3, 3];
+	private float[,] coeff_D = new float[3, 3];
 	
-	public static void preBuckingham()
+	public Buckingham()
+	{
+		cutoffSqr = cutoff * cutoff;
+		rSpline = cutoff - 2.0f;
+	}
+	
+	public override void preCompute()
 	{
 		// precalculate the LennardJones potential and store it in preLennarJones array.
 		int nR = (int)(cutoff / dR) + 1;
@@ -30,12 +36,12 @@ public class Buckingham : MonoBehaviour {
 		PreBuckinghamPotential = new float[3,3,nR];
 		
 		//precompute sigma and acceleration coefficient for the Buckingham potential
-		for (int i = 0; i < StaticVariables.myEnvironment.molecules.Count; i++)
+		for (int i = 0; i < CreateEnvironment.myEnvironment.molecules.Count; i++)
 		{
-			Atom firstAtom = StaticVariables.myEnvironment.molecules[i].GetComponent<Atom>();
-			for (int j = 0; j < StaticVariables.myEnvironment.molecules.Count; j++)
+			Atom firstAtom = CreateEnvironment.myEnvironment.molecules[i].GetComponent<Atom>();
+			for (int j = 0; j < CreateEnvironment.myEnvironment.molecules.Count; j++)
 			{
-				Atom secondAtom = StaticVariables.myEnvironment.molecules[j].GetComponent<Atom>();
+				Atom secondAtom = CreateEnvironment.myEnvironment.molecules[j].GetComponent<Atom>();
 				
 				float currentA = Mathf.Sqrt(firstAtom.buck_A * secondAtom.buck_A);
 				coeff_A[firstAtom.atomID, secondAtom.atomID] = currentA;
@@ -59,17 +65,18 @@ public class Buckingham : MonoBehaviour {
 				}
 			}
 		}
+		//WriteData.WritePotential(PreBuckinghamPotential);
+		//WriteData.WriteForce(preBuckinghamAcceleration);
 	}
 	
 	//the function returns the LennarJones force on the atom given the list of the atoms that are within range of it
-	private static float calcAcceleration(float distance,Atom firstAtom, Atom secondAtom)
+	private float calcAcceleration(float distance,Atom firstAtom, Atom secondAtom)
 	{
 		float invDistance2 = 1.0f / distance / distance;
 		float invDistance6 = invDistance2 * invDistance2 * invDistance2;
 		float invDistance7 = invDistance6 / distance;
 		float invDistance8 = invDistance7 / distance;
 		float invDistance9 = invDistance8 / distance;
-
 		float invrSpline2 = 1.0f / rSpline / rSpline;
 		float invrSpline6 = invrSpline2 * invrSpline2 * invrSpline2;
 		float invrSpline7 = invrSpline6 / rSpline;
@@ -80,12 +87,12 @@ public class Buckingham : MonoBehaviour {
 		float B = coeff_B [firstAtom.atomID,secondAtom.atomID];
 		float C = coeff_C [firstAtom.atomID,secondAtom.atomID];
 		float D = coeff_D [firstAtom.atomID,secondAtom.atomID];
-
+		
 		float y1 = A * Mathf.Exp(-B * rSpline) - C * invrSpline6 - D * invrSpline8 + firstAtom.Q_eff * secondAtom.Q_eff / (4.0f * StaticVariables.epsilon0 * Mathf.PI * StaticVariables.angstromsToMeters) / rSpline;
 		float y2 = 0.0f;
 		float k1 = -A * B * Mathf.Exp(-B * rSpline) + 6.0f * C * invrSpline7 + 8.0f * D * invrSpline9 - firstAtom.Q_eff * secondAtom.Q_eff / (4.0f * StaticVariables.epsilon0 * Mathf.PI * StaticVariables.angstromsToMeters) * invrSpline2; //units of this derivative is [J/Angstrom]
 		float k2 = 0.0f;
-
+		
 		float uPrime_r = 0.0f;
 		if (distance <= rSpline)
 		{
@@ -102,20 +109,20 @@ public class Buckingham : MonoBehaviour {
 		{
 			uPrime_r = 0.0f;
 		}
-
+		
+		//float forceMagnitude = -1.0f * uPrime_r / distance + uPrime_rc / cutoff;
 		float forceMagnitude = -1.0f * uPrime_r / distance;
 		float acceleration = forceMagnitude / (firstAtom.massamu * StaticVariables.amuToKg * StaticVariables.angstromsToMeters); //Units of [1 / second^2] when multiplied by deltaR gets units of [Angstrom / second^2]
 		return acceleration;
 	}
 	
 	//the function returns the LennarJones force on the atom given the list of the atoms that are within range of it
-	private static float calcPotential(float distance, Atom firstAtom, Atom secondAtom)
+	private float calcPotential(float distance, Atom firstAtom, Atom secondAtom)
 	{
 		float invDistance2 = 1.0f / distance / distance;
 		float invDistance6 = invDistance2 * invDistance2 * invDistance2;
 		float invDistance7 = invDistance6 / distance;
 		float invDistance8 = invDistance7 / distance;
-
 		float invrSpline2 = 1.0f / rSpline / rSpline;
 		float invrSpline6 = invrSpline2 * invrSpline2 * invrSpline2;
 		float invrSpline7 = invrSpline6 / rSpline;
@@ -126,13 +133,14 @@ public class Buckingham : MonoBehaviour {
 		float B = coeff_B[firstAtom.atomID, secondAtom.atomID];
 		float C = coeff_C[firstAtom.atomID, secondAtom.atomID];
 		float D = coeff_D[firstAtom.atomID, secondAtom.atomID];
-
+		
 		float y1 = A * Mathf.Exp(-B * rSpline) - C * invrSpline6 - D * invrSpline8 + firstAtom.Q_eff * secondAtom.Q_eff / (4.0f * StaticVariables.epsilon0 * Mathf.PI * StaticVariables.angstromsToMeters) / rSpline;
 		float y2 = 0.0f;
 		float k1 = -A * B * Mathf.Exp(-B * rSpline) + 6.0f * C * invrSpline7 + 8.0f * D * invrSpline9 - firstAtom.Q_eff * secondAtom.Q_eff / (4.0f * StaticVariables.epsilon0 * Mathf.PI * StaticVariables.angstromsToMeters) * invrSpline2; //units of this derivative is [J/Angstrom]
 		float k2 = 0.0f;
-
+		
 		float u_r = 0.0f;
+		
 		if (distance <= rSpline)
 		{
 			u_r = A * Mathf.Exp(-B * distance) - C * invDistance6 - D * invDistance8 + firstAtom.Q_eff * secondAtom.Q_eff / (4.0f * StaticVariables.epsilon0 * Mathf.PI * StaticVariables.angstromsToMeters) / distance;
@@ -148,32 +156,31 @@ public class Buckingham : MonoBehaviour {
 		{
 			u_r = 0.0f;
 		}
-
+		
 		float potential = u_r; //Units of Joules
 		return potential;
 	}
 	
 	//the function returns the Lennard-Jones force on the atom given the list of all the atoms in the simulation
-	public static void getForce(Atom firstAtom, Atom secondAtom)
+	public override void getForce(Atom firstAtom, Atom secondAtom)
 	{
-		Vector3 deltaR = firstAtom.position - secondAtom.position;
+		Vector3 deltaR = Boundary.myBoundary.deltaPosition(firstAtom,secondAtom);
 		float distanceSqr = deltaR.sqrMagnitude;
 		
 		//only get the forces of the atoms that are within the cutoff range
 		if (distanceSqr <= cutoffSqr)
 		{
 			int iR = (int)(Mathf.Sqrt(distanceSqr) / (dR));
-			firstAtom.accelerationNew = firstAtom.accelerationNew + preBuckinghamAcceleration[firstAtom.atomID, secondAtom.atomID,iR] * deltaR;
+			firstAtom.accelerationNew = firstAtom.accelerationNew+ preBuckinghamAcceleration[firstAtom.atomID, secondAtom.atomID,iR] * deltaR;
 			secondAtom.accelerationNew = secondAtom.accelerationNew - preBuckinghamAcceleration[secondAtom.atomID, firstAtom.atomID,iR] * deltaR;
-
 		}
 	}
 	
 	//the function returns the Lennard-Jones force on the atom given the list of all the atoms in the simulation
-	public static float getPotential(Atom firstAtom, Atom secondAtom)
+	public override float getPotential(Atom firstAtom, Atom secondAtom)
 	{
 		float potential = 0.0f;
-		Vector3 deltaR = firstAtom.position - secondAtom.position;
+		Vector3 deltaR = Boundary.myBoundary.deltaPosition(firstAtom,secondAtom);
 		float distanceSqr = deltaR.sqrMagnitude;
 		
 		//only get the forces of the atoms that are within the cutoff range
@@ -185,7 +192,7 @@ public class Buckingham : MonoBehaviour {
 		return potential;
 	}
 	
-	public static void calculateVerletRadius()
+	public override void calculateVerletRadius()
 	{
 		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
 		{
@@ -195,7 +202,7 @@ public class Buckingham : MonoBehaviour {
 	}
 	
 	//This function creates a list of all neighbor list for each atom
-	public static void calculateNeighborList()
+	public override void calculateNeighborList()
 	{
 		//clear the old neighborList
 		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
@@ -211,13 +218,10 @@ public class Buckingham : MonoBehaviour {
 			for (int j = i + 1; j < Atom.AllAtoms.Count; j++)
 			{
 				Atom secondAtom = Atom.AllAtoms[j];
-				Vector3 deltaR = firstAtom.position - secondAtom.position;
-
+				Vector3 deltaR = Boundary.myBoundary.deltaPosition(firstAtom, secondAtom);
 				float distanceSqr = deltaR.sqrMagnitude;
-				if (distanceSqr < (firstAtom.verletRadius * firstAtom.verletRadius))
-				{
+				if (distanceSqr < firstAtom.verletRadius * firstAtom.verletRadius)
 					firstAtom.neighborList.Add(secondAtom);
-				}
 			}
 		}
 	}

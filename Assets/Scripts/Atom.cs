@@ -590,7 +590,7 @@ public abstract class Atom : MonoBehaviour
 
 	//this function checks the position of an atom, and if its outside of the box, simply place the atom back inside the box
 	Vector3 CheckPosition(Vector3 position){
-		CreateEnvironment myEnvironment= StaticVariables.myEnvironment;
+		CreateEnvironment myEnvironment= CreateEnvironment.myEnvironment;
 		Vector3 bottomPlanePos = myEnvironment.bottomPlane.transform.position;
 		if (position.y > bottomPlanePos.y + (myEnvironment.height) - myEnvironment.errorBuffer) {
 			position.y = bottomPlanePos.y + (myEnvironment.height) - myEnvironment.errorBuffer;

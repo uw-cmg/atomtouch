@@ -44,8 +44,11 @@ public class CreateEnvironment : MonoBehaviour {
 	private GameObject leftPlane;
 	public Vector3 initialCenterPos;
 
+	//this variables points to the instance of the create environment
+	public static CreateEnvironment myEnvironment;
+
 	void Awake(){
-		StaticVariables.myEnvironment = this;
+		CreateEnvironment.myEnvironment = this;
 	}
 
 	void Start () {
@@ -203,13 +206,16 @@ public class CreateEnvironment : MonoBehaviour {
 		return verticalText.ToString();
 	}
 
-	// This function pre-computes coefficients used in various types of potentials so that we don't have to calculate them dynamically
 	public void preCompute()
 	{
-			LennardJones.preLennardJones ();
-			Buckingham.preBuckingham ();
+		if (Potential.currentPotential == Potential.potentialType.LennardJones)
+			Potential.myPotential = new LennardJones();
+		else if(Potential.currentPotential == Potential.potentialType.Buckingham)
+			Potential.myPotential = new Buckingham();
+
+		Potential.myPotential.preCompute ();
 	}
-	
+
 	//initialize the atoms to a random position and to the original number of atoms
 	public void InitAtoms()
 	{
@@ -222,15 +228,14 @@ public class CreateEnvironment : MonoBehaviour {
 		}
 
 		//initialize the new atoms
-		if (StaticVariables.currentPotential == StaticVariables.Potential.LennardJones)
+		if (Potential.currentPotential == Potential.potentialType.LennardJones)
 		{
 			for (int i = 0; i < numMolecules; i++)
 			{
 				createAtom (molecules [0]);
 			}
-			LennardJones.calculateVerletRadius();
 		}
-		else if (StaticVariables.currentPotential == StaticVariables.Potential.Buckingham)
+		else if (Potential.currentPotential == Potential.potentialType.Buckingham)
 		{
 			for (int i = 0; i < numMolecules/2; i++)
 			{
@@ -240,8 +245,8 @@ public class CreateEnvironment : MonoBehaviour {
 			{
 				createAtom (molecules [1]);
 			}
-			Buckingham.calculateVerletRadius();
 		}
+		Potential.myPotential.calculateVerletRadius ();
 
 		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		atomTouchGUI.AtomKick();
@@ -251,7 +256,7 @@ public class CreateEnvironment : MonoBehaviour {
 	// this method creates a new atom from the type of the preFab and checks the position to have a far enough distance from other atoms
 	public void createAtom(Rigidbody preFab)
 	{
-		CreateEnvironment myEnvironment = StaticVariables.myEnvironment;
+		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		Quaternion curRotation = Quaternion.Euler(0, 0, 0);
 		Instantiate(preFab, myEnvironment.centerPos, curRotation);
 		int i = Atom.AllAtoms.Count-1;
@@ -290,8 +295,7 @@ public class CreateEnvironment : MonoBehaviour {
 		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
 		{
 			Atom otherAtom = Atom.AllAtoms[i];
-			Vector3 deltaR = Vector3.zero;
-			deltaR = currAtom.position - otherAtom.position;
+			Vector3 deltaR = Boundary.myBoundary.deltaPosition(currAtom, otherAtom);
 
 			float distanceSqr = deltaR.sqrMagnitude;
 			//only get the forces of the atoms that are within the cutoff range

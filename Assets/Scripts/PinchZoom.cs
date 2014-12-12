@@ -78,7 +78,7 @@ public class PinchZoom : MonoBehaviour {
 					zChange = -3.0f;
 				}
 				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, zChange));
-				CreateEnvironment myEnvironment = StaticVariables.myEnvironment;
+				CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 				Vector3 centerPos = new Vector3(myEnvironment.bottomPlane.transform.position.x, myEnvironment.bottomPlane.transform.position.y + (myEnvironment.height/2.0f), myEnvironment.bottomPlane.transform.position.z);
 				//enforce a minimum and maximum distance from the center of the box that the user can scroll
 				if(Vector3.Distance(projectPosition, centerPos) < 70.0f && Vector3.Distance(projectPosition, centerPos) > 10.0f){
@@ -118,7 +118,7 @@ public class PinchZoom : MonoBehaviour {
 					zChange = -3.0f;
 				}
 				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, zChange));
-				CreateEnvironment myEnvironment = StaticVariables.myEnvironment;
+				CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 				Vector3 centerPos = new Vector3(myEnvironment.bottomPlane.transform.position.x, myEnvironment.bottomPlane.transform.position.y + (myEnvironment.height/2.0f), myEnvironment.bottomPlane.transform.position.z);
 				//enforce a minimum and maximum distance from the center of the box that the user can scroll
 				if(Vector3.Distance(projectPosition, centerPos) < 70.0f && Vector3.Distance(projectPosition, centerPos) > 10.0f){

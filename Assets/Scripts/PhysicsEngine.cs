@@ -15,13 +15,6 @@ using System;
 
 public class PhysicsEngine : MonoBehaviour
 {
-	void Awake(){
-		if (StaticVariables.currentPotential == StaticVariables.Potential.LennardJones)
-			LennardJones.calculateVerletRadius ();
-		if (StaticVariables.currentPotential == StaticVariables.Potential.Buckingham)
-			Buckingham.calculateVerletRadius ();
-	}
-
 	void FixedUpdate()
 	{
 		
@@ -29,7 +22,7 @@ public class PhysicsEngine : MonoBehaviour
 		{
 
 			VelocityVerlet();
-			ReflectFromWalls();
+			Boundary.myBoundary.Apply();
 			CalculateEnergy();
 
 
@@ -46,7 +39,7 @@ public class PhysicsEngine : MonoBehaviour
 				Debug.Log ("End Time = " +  StaticVariables.clockTimeEnd +" , iTime = " + StaticVariables.iTime);
 				float deltaTime = StaticVariables.clockTimeEnd - StaticVariables.clockTimeStart;
 				float timePerStep = deltaTime / (float)StaticVariables.iTime;
-				float timePerStepPerAtom = timePerStep / StaticVariables.myEnvironment.numMolecules;
+				float timePerStepPerAtom = timePerStep / CreateEnvironment.myEnvironment.numMolecules;
 				Debug.Log ("Delta Time = " + deltaTime +" , iTime = " + StaticVariables.iTime + " , time per step = " + timePerStep + " , time per step per atom = " + timePerStepPerAtom);
 			}
 
@@ -71,37 +64,20 @@ public class PhysicsEngine : MonoBehaviour
 		}
 
 
-		if (StaticVariables.currentPotential == StaticVariables.Potential.LennardJones)
+		if (StaticVariables.iTime % StaticVariables.nVerlet == 0)
+			Potential.myPotential.calculateNeighborList();
+		// update the acceleration of all atoms
+		for (int i=0; i< Atom.AllAtoms.Count-1; i++) 
 		{
-			if (StaticVariables.iTime % StaticVariables.nVerlet == 0)
-				LennardJones.calculateNeighborList();
-			// update the acceleration of all atoms
-			for (int i=0; i< Atom.AllAtoms.Count-1; i++) 
+			Atom firstAtom = Atom.AllAtoms[i];
+			for (int j = 0; j < firstAtom.neighborList.Count; j++)
 			{
-				Atom firstAtom = Atom.AllAtoms[i];
-				for (int j = 0; j < firstAtom.neighborList.Count; j++)
-				{
-					Atom secondAtom = firstAtom.neighborList[j];
-					LennardJones.getForce(firstAtom, secondAtom);
-				}
+				Atom secondAtom = firstAtom.neighborList[j];
+				Potential.myPotential.getForce(firstAtom, secondAtom);
 			}
 		}
-		else if (StaticVariables.currentPotential == StaticVariables.Potential.Buckingham)
-		{
-			if (StaticVariables.iTime % StaticVariables.nVerlet == 0)
-				Buckingham.calculateNeighborList();
-			// update the acceleration of all atoms
-			for (int i=0; i< Atom.AllAtoms.Count-1; i++) 
-			{
-				Atom firstAtom = Atom.AllAtoms[i];
-				for (int j = 0; j < firstAtom.neighborList.Count; j++)
-				{
-					Atom secondAtom = firstAtom.neighborList[j];
-					Buckingham.getForce(firstAtom, secondAtom);
-				}
-			}
-		}
-		
+
+
 		// update the velocity of all atoms
 		for (int i = 0; i < Atom.AllAtoms.Count; i++)
 		{
@@ -111,60 +87,6 @@ public class PhysicsEngine : MonoBehaviour
 		}
 	}
 
-
-
-	//reflect the atoms from the walls
-	void ReflectFromWalls()
-	{
-		Vector3 boxDimension = new Vector3 (StaticVariables.myEnvironment.width-2.0f * StaticVariables.myEnvironment.errorBuffer, StaticVariables.myEnvironment.height-2.0f * StaticVariables.myEnvironment.errorBuffer , StaticVariables.myEnvironment.depth-2.0f * StaticVariables.myEnvironment.errorBuffer);
-		
-		for (int i = 0; i < Atom.AllAtoms.Count; i++)
-		{
-			Atom currAtom = Atom.AllAtoms[i];
-
-			float sign = Mathf.Sign(currAtom.position.x);
-			float remainder = ((Mathf.Abs(currAtom.position.x) + boxDimension.x/2.0f) % (2.0f * boxDimension.x));
-			if (remainder < boxDimension.x)
-			{
-				currAtom.position.x = remainder - boxDimension.x / 2.0f;
-				currAtom.velocity.x = +1.0f * currAtom.velocity.x;
-			}
-			else
-			{
-				currAtom.position.x = 3.0f * boxDimension.x / 2.0f - remainder;
-				currAtom.velocity.x = -1.0f * currAtom.velocity.x;
-			}
-			currAtom.position.x = sign * currAtom.position.x;
-
-			sign = Mathf.Sign(currAtom.position.y);
-			remainder = ((Mathf.Abs(currAtom.position.y) + boxDimension.y/2.0f) % (2.0f * boxDimension.y));
-			if (remainder < boxDimension.y)
-			{
-				currAtom.position.y = remainder - boxDimension.y / 2.0f;
-				currAtom.velocity.y = +1.0f * currAtom.velocity.y;
-			}
-			else
-			{
-				currAtom.position.y = 3.0f * boxDimension.y / 2.0f - remainder;
-				currAtom.velocity.y = -1.0f * currAtom.velocity.y;
-			}
-			currAtom.position.y = sign * currAtom.position.y;
-
-			sign = Mathf.Sign(currAtom.position.z);
-			remainder = ((Mathf.Abs(currAtom.position.z) + boxDimension.z/2.0f) % (2.0f * boxDimension.z));
-			if (remainder < boxDimension.z)
-			{
-				currAtom.position.z = remainder - boxDimension.z / 2.0f;
-				currAtom.velocity.z = +1.0f * currAtom.velocity.z;
-			}
-			else
-			{
-				currAtom.position.z = 3.0f * boxDimension.z / 2.0f - remainder;
-				currAtom.velocity.z = -1.0f * currAtom.velocity.z;
-			}
-			currAtom.position.z = sign * currAtom.position.z;
-		}
-	}
 	
 	void CalculateEnergy()
 	{
@@ -181,28 +103,15 @@ public class PhysicsEngine : MonoBehaviour
 			StaticVariables.kineticEnergy += 0.5f * firstAtom.massamu * StaticVariables.amuToKg * velocitySqr * StaticVariables.angstromsToMeters * StaticVariables.angstromsToMeters;
 
 			// calculate potential energy between each pair of atoms
-			if (StaticVariables.currentPotential == StaticVariables.Potential.LennardJones)
+			for (int j = 0; j < firstAtom.neighborList.Count; j++)
 			{
-				for (int j = 0; j < firstAtom.neighborList.Count; j++)
-				{
-					Atom secondAtom = firstAtom.neighborList[j];
-					StaticVariables.potentialEnergy += LennardJones.getPotential(firstAtom, secondAtom);
-				}
+				Atom secondAtom = firstAtom.neighborList[j];
+				StaticVariables.potentialEnergy += Potential.myPotential.getPotential(firstAtom, secondAtom);
 			}
-			else if (StaticVariables.currentPotential == StaticVariables.Potential.Buckingham)
-			{
-				for (int j = 0; j < firstAtom.neighborList.Count; j++)
-				{
-					Atom secondAtom = firstAtom.neighborList[j];
-					StaticVariables.potentialEnergy += Buckingham.getPotential(firstAtom, secondAtom);
-				}
-			}
-
 		}
 		
 		StaticVariables.currentTemperature = StaticVariables.kineticEnergy / 1.5f / (float)Atom.AllAtoms.Count / StaticVariables.kB;
 		calculateSqrtAlpha();
-		
 	}
 	
 	void calculateSqrtAlpha()

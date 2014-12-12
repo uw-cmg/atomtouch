@@ -106,14 +106,14 @@ public class AtomTouchGUI : MonoBehaviour {
 	public static StaticVariables.TimeSpeed currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
 
 	void Start () {
-		CreateEnvironment myEnvironment = StaticVariables.myEnvironment;
+		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		guiVolume = myEnvironment.volume;
 	}
 
 	//this function creates all UI elements in the game EXCEPT for the graph
 	void OnGUI(){
 
-		CreateEnvironment myEnvironment = StaticVariables.myEnvironment;
+		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 
 		if (sliderControls != null) {
 			GUI.skin = sliderControls;
@@ -151,7 +151,8 @@ public class AtomTouchGUI : MonoBehaviour {
 				GUI.DrawTexture(lennardJonesRect, darkBackground);
 				if(GUI.Button(lennardJonesRect, "Lennard-Jones", buttonStyle)){
 					potentialsActive = false;
-					StaticVariables.currentPotential = StaticVariables.Potential.LennardJones;
+					Potential.currentPotential = Potential.potentialType.LennardJones;
+					myEnvironment.preCompute();
 					myEnvironment.InitAtoms();
 					slowMotionFrames = StaticVariables.slowMotionFrames;
 				}
@@ -159,7 +160,8 @@ public class AtomTouchGUI : MonoBehaviour {
 				GUI.DrawTexture(buckinghamRect, lightBackground);
 				if(GUI.Button(buckinghamRect, "Buckingham", buttonStyle)){
 					potentialsActive = false;
-					StaticVariables.currentPotential = StaticVariables.Potential.Buckingham;
+					Potential.currentPotential = Potential.potentialType.Buckingham;
+					myEnvironment.preCompute();
 					myEnvironment.InitAtoms();
 					slowMotionFrames = StaticVariables.slowMotionFrames;
 				}
@@ -167,7 +169,8 @@ public class AtomTouchGUI : MonoBehaviour {
 				GUI.DrawTexture(brennerRect, darkBackground);
 				if(GUI.Button(brennerRect, "Brenner", buttonStyle)){
 					potentialsActive = false;
-					StaticVariables.currentPotential = StaticVariables.Potential.Brenner;
+					Potential.currentPotential = Potential.potentialType.Brenner;
+					myEnvironment.preCompute();
 					myEnvironment.InitAtoms();
 					slowMotionFrames = StaticVariables.slowMotionFrames;
 				}

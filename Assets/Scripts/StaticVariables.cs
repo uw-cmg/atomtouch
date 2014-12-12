@@ -69,30 +69,16 @@ public class StaticVariables {
 	//the variable pauses the simulation of physics
 	public static bool pauseTime = false;
 
-	//this varaible keeps track of the current potential that is being used. (Note: only Lennard-Jones is currently implemented)
-	public static Potential currentPotential = Potential.Buckingham;
-
 	//this variable keeps track of the amount of simulation time that has passed in picoseconds
 	public static float currentTime = 0.0f;
 	//this variable keeps the total number of time steps passed in the simulation
 	public static int iTime = 0;
-
-	//this variables points to the instance of the create environment
-	public static CreateEnvironment myEnvironment;
 
 	public static float kineticEnergy = 0.0f;  // units in Joules
 	public static float potentialEnergy = 0.0f;  // units in Joules
 	public static float currentTemperature = 0.0f;  // units in Kelvin
 
 	public static float sqrtAlpha = 1.0f;
-
-	//There are three potentials, but currently Lennard-Jones is the only one that is implemented so changing
-	//between these potentials doesnt do anything
-	public enum Potential{
-		LennardJones,
-		Brenner,
-		Buckingham
-	};
 
 	//this is an enum of the different states that time can pass
 	public enum TimeSpeed{
