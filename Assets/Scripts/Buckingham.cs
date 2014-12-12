@@ -4,7 +4,7 @@ using System.Collections;
 public class Buckingham : MonoBehaviour {
 
 	//Cutoff distance for calculating Buckingham force. Beyond this distance the force is taken to be zero.
-	private static float cutoff = 15.0f; //[Angstrom]
+	private static float cutoff = 10.0f; //[Angstrom]
 	private static float cutoffSqr = cutoff * cutoff;
 
 	//Cutoff distance for using the spline interpolation function. Beyond this distance the force smoothed to zero.
@@ -103,7 +103,6 @@ public class Buckingham : MonoBehaviour {
 			uPrime_r = 0.0f;
 		}
 
-		//float forceMagnitude = -1.0f * uPrime_r / distance + uPrime_rc / cutoff;
 		float forceMagnitude = -1.0f * uPrime_r / distance;
 		float acceleration = forceMagnitude / (firstAtom.massamu * StaticVariables.amuToKg * StaticVariables.angstromsToMeters); //Units of [1 / second^2] when multiplied by deltaR gets units of [Angstrom / second^2]
 		return acceleration;
@@ -116,6 +115,7 @@ public class Buckingham : MonoBehaviour {
 		float invDistance6 = invDistance2 * invDistance2 * invDistance2;
 		float invDistance7 = invDistance6 / distance;
 		float invDistance8 = invDistance7 / distance;
+
 		float invrSpline2 = 1.0f / rSpline / rSpline;
 		float invrSpline6 = invrSpline2 * invrSpline2 * invrSpline2;
 		float invrSpline7 = invrSpline6 / rSpline;
