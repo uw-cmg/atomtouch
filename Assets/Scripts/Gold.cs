@@ -38,7 +38,8 @@ public class Gold : Atom
 	}
 	
 	public override float massamu {
-		get { return 196.967f; } //amu
+		//get { return 196.967f; } //amu for Gold
+		get { return 35.453f; } //amu for Chlorine
 	}
 
 	// We assume gold to play the role of chloride
@@ -59,7 +60,7 @@ public class Gold : Atom
 	}
 	
 	public override float Q_eff {
-		get { return -1.0f*1.6f*Mathf.Pow(10,-19); } //units of Coulomb
+		get { return -0.7f*1.6f*Mathf.Pow(10,-19); } //units of Coulomb
 	}
 
 	public override void SetSelected (bool selected){

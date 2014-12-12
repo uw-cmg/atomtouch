@@ -37,7 +37,8 @@ public class Copper : Atom {
 	}
 	
 	public override float massamu {
-		get { return 63.546f; } //amu
+		//get { return 63.546f; } //amu for Copper
+		get { return 22.98977f; } //amu for Sodium
 	}
 
 	// We assume copper to play the role of sodium
@@ -58,7 +59,7 @@ public class Copper : Atom {
 	}
 
 	public override float Q_eff {
-		get { return 1.0f*1.6f*Mathf.Pow(10,-19); } //units of Coulomb
+		get { return 0.7f*1.6f*Mathf.Pow(10,-19); } //units of Coulomb
 	}
 
 	public override void SetSelected (bool selected){
