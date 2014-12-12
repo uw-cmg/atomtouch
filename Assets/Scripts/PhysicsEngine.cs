@@ -64,8 +64,11 @@ public class PhysicsEngine : MonoBehaviour
 		}
 
 
-		if (StaticVariables.iTime % StaticVariables.nVerlet == 0)
-			Potential.myPotential.calculateNeighborList();
+		if (StaticVariables.iTime % StaticVariables.nVerlet == 0) 
+		{
+			Potential.myPotential.calculateNeighborList ();
+			PairDistributionFunction.calculateAveragePairDistribution();
+		}
 		// update the acceleration of all atoms
 		for (int i=0; i< Atom.AllAtoms.Count-1; i++) 
 		{

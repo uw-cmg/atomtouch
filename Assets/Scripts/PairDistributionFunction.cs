@@ -5,10 +5,10 @@ public class PairDistributionFunction : MonoBehaviour {
 
 	//The mesh size for pair distribution function.
 	private static float dR = 0.1f; //[Angstrom]
-	private static float maxR = 60.0f; //[Angstrom]
+	public static float maxR = 15.0f; //[Angstrom]
 	private static float[] pairDistribution = new float[(int)(maxR / dR)];
 	private static float[] pairDistributionAverage = new float[(int)(maxR / dR)];
-	private static float numberOfCalculations = 0.0f;
+	public static float numberOfCalculations = 0.0f;
 	private static float normCoefficient = 0.0f;
 	
 	public static float[] PairDistributionAverage
@@ -21,23 +21,27 @@ public class PairDistributionFunction : MonoBehaviour {
 	
 	public static void calculateAveragePairDistribution()
 	{
-		if (StaticVariables.iTime % StaticVariables.nVerlet == 0)
+		if (numberOfCalculations > 20) 
 		{
-			normCoefficient = CreateEnvironment.myEnvironment.volume / ((float)Atom.AllAtoms.Count * (float)Atom.AllAtoms.Count * 4.0f * Mathf.PI * dR * dR * dR);
-			updatePairDistribution();
+			numberOfCalculations = 1.0f;
+
 			for (int iR = 1; iR < pairDistribution.Length; iR++)
 			{
-				pairDistributionAverage[iR] = (pairDistributionAverage[iR] * numberOfCalculations + pairDistribution[iR] * normCoefficient / (float)iR / (float)iR);
-				numberOfCalculations++;
-				pairDistributionAverage[iR] = pairDistributionAverage[iR] / numberOfCalculations;
-			}    
+				pairDistribution[iR] = 0.0f;
+			}
 		}
+
+		normCoefficient = CreateEnvironment.myEnvironment.volume / ((float)Atom.AllAtoms.Count * (float)Atom.AllAtoms.Count * 4.0f * Mathf.PI * dR * dR * dR);
+		updatePairDistribution();
+		numberOfCalculations++;
+		for (int iR = 1; iR < pairDistribution.Length; iR++)
+		{
+			pairDistributionAverage[iR] = pairDistribution[iR] * normCoefficient / (float)iR / (float)iR / numberOfCalculations;
+		}    
 	}
 	
-	public static void updatePairDistribution()
-	{
-		pairDistribution.Initialize();
-		
+	private static void updatePairDistribution()
+	{	
 		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
 		{
 			Atom firstAtom = Atom.AllAtoms[i];
@@ -47,7 +51,8 @@ public class PairDistributionFunction : MonoBehaviour {
 				Vector3 deltaR = Boundary.myBoundary.deltaPosition(firstAtom, secondAtom);
 				float distance = deltaR.magnitude;
 				int iR = (int)Mathf.Floor(distance / dR);
-				pairDistribution[iR] += 2.0f;
+				if (iR < pairDistribution.Length)
+					pairDistribution[iR] += 2.0f;
 			}
 		}
 	}

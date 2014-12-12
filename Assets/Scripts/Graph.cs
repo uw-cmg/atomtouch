@@ -34,7 +34,7 @@ public class Graph : MonoBehaviour {
 
 	public float spacing = 0.5f;
 	private float maxDataPoints;
-	private float dataMaximum = 5000.0f;
+	private float dataMaximum = 5.0f;
 	private float dataMinimum = 0.0f;
 	private float lowTime;
 	private float highTime;
@@ -81,6 +81,9 @@ public class Graph : MonoBehaviour {
 
 	void OnGUI(){
 
+		float minRadius = 0.0f;
+		float maxRadius = PairDistributionFunction.maxR;
+
 		//this function puts the labels of the graph on screen
 		GUIStyle graphText = GUI.skin.label;
 		graphText.alignment = TextAnchor.MiddleLeft;
@@ -90,9 +93,9 @@ public class Graph : MonoBehaviour {
 		if (atomGUI.dataPanelActive) {
 			GUI.Label (new Rect (xCoord + width/2.0f - 60, Screen.height - yCoord, 200, 20), graphLabel);
 			GUI.Label (new Rect (xCoord - 32, Screen.height - (Screen.height * .27f), 100, 20), (dataMaximum).ToString () + yUnitLabel);
-			GUI.Label (new Rect (xCoord - 53, Screen.height - yCoord - 15, 100, 20), (dataMinimum).ToString () + yUnitLabel);
-			GUI.Label (new Rect (xCoord - 5, Screen.height - yCoord, 100, 20), lowTime.ToString () + xUnitLabel);
-			GUI.Label (new Rect (xCoord + width - 35.0f, Screen.height - yCoord, 100, 20), highTime.ToString() + xUnitLabel);
+			GUI.Label (new Rect (xCoord - 53, Screen.height - yCoord - 15, 100, 20), (PairDistributionFunction.numberOfCalculations).ToString () + yUnitLabel);
+			GUI.Label (new Rect (xCoord - 5, Screen.height - yCoord, 100, 20), minRadius.ToString () + xUnitLabel);
+			GUI.Label (new Rect (xCoord + width - 35.0f, Screen.height - yCoord, 100, 20), maxRadius.ToString() + xUnitLabel);
 		}
 
 	}
@@ -126,10 +129,10 @@ public class Graph : MonoBehaviour {
 			}
 
 			//draw the lines on the graph
-			object[] dataPointArray = dataPoints.ToArray ();
+			//object[] dataPointArray = dataPoints.ToArray ();
+			float[] dataPointArray = PairDistributionFunction.PairDistributionAverage;
+			spacing = width / dataPointArray.Length;
 			for (int i = 0; i < dataPointArray.Length - 1; i++) {
-				//float firstPercentage = 1 - ((float)dataPointArray[i] / (dataMinimum - dataMaximum));
-				//float secondPercentage = 1 - ((float)dataPointArray[i+1] / (dataMinimum - dataMaximum));
 
 				float firstPercentage = ((float)dataPointArray[i]) / (dataMaximum - dataMinimum);
 				float secondPercentage = ((float)dataPointArray[i+1]) / (dataMaximum - dataMinimum);
