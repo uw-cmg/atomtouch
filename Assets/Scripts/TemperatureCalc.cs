@@ -39,11 +39,11 @@ public class TemperatureCalc : MonoBehaviour {
 		for (int i = 0; i < allMolecules.Length; i++) {
 			//compute the total energy in the system
 			GameObject molecule = allMolecules[i];
-			if(molecule.rigidbody && !molecule.rigidbody.isKinematic){
+			if(molecule.GetComponent<Rigidbody>() && !molecule.GetComponent<Rigidbody>().isKinematic){
 				
-				double mass = molecule.rigidbody.mass;
+				double mass = molecule.GetComponent<Rigidbody>().mass;
 				double massKg = mass * StaticVariables.mass100amuToKg; // mass in kg
-				double velocityAngstromsPerSecondApparent = molecule.rigidbody.velocity.magnitude;
+				double velocityAngstromsPerSecondApparent = molecule.GetComponent<Rigidbody>().velocity.magnitude;
 				double velocityMetersPerSecond = velocityAngstromsPerSecondApparent * StaticVariables.angstromsToMeters / StaticVariables.fixedUpdateIntervalToRealTime;
 				double velocityMetersPerSecondSquared = Math.Pow(velocityMetersPerSecond, 2);
 				totalKineticEnergyJ += 0.5f * massKg * velocityMetersPerSecondSquared;

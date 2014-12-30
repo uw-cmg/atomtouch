@@ -194,24 +194,24 @@ public class CameraScript : MonoBehaviour {
 		
 		float colorMaximum = .37f;
 		float colorMinimum = 0.1f;
-		camera.backgroundColor = new Color(camera.backgroundColor.r + redValue, camera.backgroundColor.g + greenValue, camera.backgroundColor.b + blueValue);
-		if (camera.backgroundColor.r > colorMaximum) {
-			camera.backgroundColor = new Color(colorMaximum, camera.backgroundColor.g, camera.backgroundColor.b);
+		GetComponent<Camera>().backgroundColor = new Color(GetComponent<Camera>().backgroundColor.r + redValue, GetComponent<Camera>().backgroundColor.g + greenValue, GetComponent<Camera>().backgroundColor.b + blueValue);
+		if (GetComponent<Camera>().backgroundColor.r > colorMaximum) {
+			GetComponent<Camera>().backgroundColor = new Color(colorMaximum, GetComponent<Camera>().backgroundColor.g, GetComponent<Camera>().backgroundColor.b);
 		}
-		else if (camera.backgroundColor.r < colorMinimum) {
-			camera.backgroundColor = new Color(colorMinimum, camera.backgroundColor.g, camera.backgroundColor.b);
+		else if (GetComponent<Camera>().backgroundColor.r < colorMinimum) {
+			GetComponent<Camera>().backgroundColor = new Color(colorMinimum, GetComponent<Camera>().backgroundColor.g, GetComponent<Camera>().backgroundColor.b);
 		}
-		if (camera.backgroundColor.g > colorMaximum) {
-			camera.backgroundColor = new Color(camera.backgroundColor.r, colorMaximum, camera.backgroundColor.b);
+		if (GetComponent<Camera>().backgroundColor.g > colorMaximum) {
+			GetComponent<Camera>().backgroundColor = new Color(GetComponent<Camera>().backgroundColor.r, colorMaximum, GetComponent<Camera>().backgroundColor.b);
 		}
-		else if (camera.backgroundColor.g < colorMinimum) {
-			camera.backgroundColor = new Color(camera.backgroundColor.r, colorMinimum, camera.backgroundColor.b);
+		else if (GetComponent<Camera>().backgroundColor.g < colorMinimum) {
+			GetComponent<Camera>().backgroundColor = new Color(GetComponent<Camera>().backgroundColor.r, colorMinimum, GetComponent<Camera>().backgroundColor.b);
 		}
-		if (camera.backgroundColor.b > colorMaximum) {
-			camera.backgroundColor = new Color(camera.backgroundColor.r, camera.backgroundColor.g, colorMaximum);
+		if (GetComponent<Camera>().backgroundColor.b > colorMaximum) {
+			GetComponent<Camera>().backgroundColor = new Color(GetComponent<Camera>().backgroundColor.r, GetComponent<Camera>().backgroundColor.g, colorMaximum);
 		}
-		else if (camera.backgroundColor.b < colorMinimum) {
-			camera.backgroundColor = new Color(camera.backgroundColor.r, camera.backgroundColor.g, colorMinimum);
+		else if (GetComponent<Camera>().backgroundColor.b < colorMinimum) {
+			GetComponent<Camera>().backgroundColor = new Color(GetComponent<Camera>().backgroundColor.r, GetComponent<Camera>().backgroundColor.g, colorMinimum);
 		}
 	}
 

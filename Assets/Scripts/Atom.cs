@@ -82,7 +82,7 @@ public abstract class Atom : MonoBehaviour
 	void Awake(){
 		RegisterAtom (this);
 
-		gameObject.rigidbody.velocity = new Vector3 (UnityEngine.Random.Range(-1.0f, 1.0f), UnityEngine.Random.Range(-1.0f, 1.0f), UnityEngine.Random.Range(-1.0f, 1.0f));
+		gameObject.GetComponent<Rigidbody>().velocity = new Vector3 (UnityEngine.Random.Range(-1.0f, 1.0f), UnityEngine.Random.Range(-1.0f, 1.0f), UnityEngine.Random.Range(-1.0f, 1.0f));
 		bondDistanceText = new Dictionary<String, TextMesh> ();
 	}
 
@@ -292,7 +292,7 @@ public abstract class Atom : MonoBehaviour
 				GameObject currAtom = allMolecules[i];
 				Atom atomScript = currAtom.GetComponent<Atom>();
 				if(atomScript.selected){
-					currAtom.rigidbody.isKinematic = true;
+					currAtom.GetComponent<Rigidbody>().isKinematic = true;
 					Vector3 pointOnScreen = Camera.main.WorldToScreenPoint(currAtom.transform.position);
 					//the -15.0f here is for moving the atom above your finger
 					Vector3 atomOffset = currAtom.transform.position - Camera.main.ScreenToWorldPoint(
@@ -329,7 +329,7 @@ public abstract class Atom : MonoBehaviour
 					GameObject currAtom = allMolecules[i];
 					Atom atomScript = currAtom.GetComponent<Atom>();
 					if(atomScript.selected){
-						currAtom.rigidbody.isKinematic = true;
+						currAtom.GetComponent<Rigidbody>().isKinematic = true;
 						Vector3 pointOnScreen = Camera.main.WorldToScreenPoint(currAtom.transform.position);
 						//the -15.0 here is for moving the atom above your mouse
 						Vector3 atomOffset = currAtom.transform.position - Camera.main.ScreenToWorldPoint(
@@ -349,7 +349,7 @@ public abstract class Atom : MonoBehaviour
 			dragCalled = true;
 			Quaternion cameraRotation = Camera.main.transform.rotation;
 			ApplyTransparency();
-			rigidbody.isKinematic = true;
+			GetComponent<Rigidbody>().isKinematic = true;
 			if(!selected){
 				//this is for one atom
 				Vector3 diffVector = new Vector3(lastTouchPosition.x, lastTouchPosition.y) - new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y);
@@ -414,7 +414,7 @@ public abstract class Atom : MonoBehaviour
 				dragCalled = true;
 				Quaternion cameraRotation = Camera.main.transform.rotation;
 				ApplyTransparency();
-				rigidbody.isKinematic = true;
+				GetComponent<Rigidbody>().isKinematic = true;
 
 				if(!selected){
 					//this is for one atom
@@ -501,14 +501,14 @@ public abstract class Atom : MonoBehaviour
 			//if the user only tapped the atom, this is executed
 			selected = !selected;
 			SetSelected(selected);
-			rigidbody.isKinematic = false;
+			GetComponent<Rigidbody>().isKinematic = false;
 		}
 		else{
 			GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 
 			if(!selected){
 				//this is for one atom
-				rigidbody.isKinematic = false;
+				GetComponent<Rigidbody>().isKinematic = false;
 
 				Quaternion cameraRotation = Camera.main.transform.rotation;
 				Vector3 direction = cameraRotation * (new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - new Vector3(lastTouchPosition.x, lastTouchPosition.y, 0.0f));
@@ -516,7 +516,7 @@ public abstract class Atom : MonoBehaviour
 				direction.Normalize();
 				float magnitude = 2.0f * directionMagnitude;
 				Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
-				gameObject.rigidbody.velocity = flingVector;
+				gameObject.GetComponent<Rigidbody>().velocity = flingVector;
 			}
 			else{
 				//this is for a group of atoms
@@ -524,7 +524,7 @@ public abstract class Atom : MonoBehaviour
 					GameObject currAtom = allMolecules[i];
 					Atom atomScript = currAtom.GetComponent<Atom>();
 					if(atomScript.selected){
-						currAtom.rigidbody.isKinematic = false;
+						currAtom.GetComponent<Rigidbody>().isKinematic = false;
 						atomScript.held = false;
 
 						Quaternion cameraRotation = Camera.main.transform.rotation;
@@ -533,7 +533,7 @@ public abstract class Atom : MonoBehaviour
 						direction.Normalize();
 						float magnitude = 2.0f * directionMagnitude;
 						Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
-						currAtom.rigidbody.velocity = flingVector;
+						currAtom.GetComponent<Rigidbody>().velocity = flingVector;
 					}
 				}
 			}
@@ -555,21 +555,21 @@ public abstract class Atom : MonoBehaviour
 				//this is executed if an atom is only tapped
 				selected = !selected;
 				SetSelected(selected);
-				rigidbody.isKinematic = false;
+				GetComponent<Rigidbody>().isKinematic = false;
 			}
 			else{
 				GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 
 				if(!selected){
 					//this is for one atom
-					rigidbody.isKinematic = false;
+					GetComponent<Rigidbody>().isKinematic = false;
 
 					Quaternion cameraRotation = Camera.main.transform.rotation;
 					Vector2 direction = cameraRotation * (Input.mousePosition - lastMousePosition);
 					direction.Normalize();
 					float magnitude = 10.0f;
 					Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
-					gameObject.rigidbody.velocity = flingVector;
+					gameObject.GetComponent<Rigidbody>().velocity = flingVector;
 				}
 				else{
 					//this is for a group of atoms
@@ -577,7 +577,7 @@ public abstract class Atom : MonoBehaviour
 						GameObject currAtom = allMolecules[i];
 						Atom atomScript = currAtom.GetComponent<Atom>();
 						if(atomScript.selected){
-							currAtom.rigidbody.isKinematic = false;
+							currAtom.GetComponent<Rigidbody>().isKinematic = false;
 							atomScript.held = false;
 
 							Quaternion cameraRotation = Camera.main.transform.rotation;
@@ -585,7 +585,7 @@ public abstract class Atom : MonoBehaviour
 							direction.Normalize();
 							float magnitude = 10.0f;
 							Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
-							currAtom.rigidbody.velocity = flingVector;
+							currAtom.GetComponent<Rigidbody>().velocity = flingVector;
 						}
 					}
 				}

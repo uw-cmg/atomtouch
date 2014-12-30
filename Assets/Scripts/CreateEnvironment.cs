@@ -219,18 +219,18 @@ public class CreateEnvironment : MonoBehaviour {
 			for (int i = 0; i < (int)(numMolecules/2); i++) {
 				Vector3 position = new Vector3 (centerPos.x + (UnityEngine.Random.Range (-(width / 2.0f) + errorBuffer, (width / 2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range (-(height / 2.0f) + errorBuffer, (height / 2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range (-(depth / 2.0f) + errorBuffer, (depth / 2.0f) - errorBuffer)));
 				Quaternion rotation = Quaternion.Euler (0, 0, 0);
-				Instantiate (molecules [0].rigidbody, position, rotation);
+				Instantiate (molecules [0].GetComponent<Rigidbody>(), position, rotation);
 			}
 			for (int i = (int)(numMolecules/2); i < numMolecules; i++) {
 				Vector3 position = new Vector3 (centerPos.x + (UnityEngine.Random.Range (-(width / 2.0f) + errorBuffer, (width / 2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range (-(height / 2.0f) + errorBuffer, (height / 2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range (-(depth / 2.0f) + errorBuffer, (depth / 2.0f) - errorBuffer)));
 				Quaternion rotation = Quaternion.Euler (0, 0, 0);
-				Instantiate (molecules [1].rigidbody, position, rotation);
+				Instantiate (molecules [1].GetComponent<Rigidbody>(), position, rotation);
 			}
 		} else {
 			for (int i = 0; i < numMolecules; i++) {
 				Vector3 position = new Vector3 (centerPos.x + (UnityEngine.Random.Range (-(width / 2.0f) + errorBuffer, (width / 2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range (-(height / 2.0f) + errorBuffer, (height / 2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range (-(depth / 2.0f) + errorBuffer, (depth / 2.0f) - errorBuffer)));
 				Quaternion rotation = Quaternion.Euler (0, 0, 0);
-				Instantiate (molecules [moleculeToSpawn].rigidbody, position, rotation);
+				Instantiate (molecules [moleculeToSpawn].GetComponent<Rigidbody>(), position, rotation);
 			}
 		}
 

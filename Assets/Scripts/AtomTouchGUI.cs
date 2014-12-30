@@ -735,7 +735,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 20.0f, 200, 30), "Element Name: " + elementName);
 		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 50.0f, 200, 30), "Element Symbol: " + elementSymbol);
 		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 80.0f, 200, 50), "Position: " + currAtom.transform.position.ToString("E0"));
-		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 130.0f, 200, 50), "Velocity: " + currAtom.transform.rigidbody.velocity.ToString("E0"));
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 130.0f, 200, 50), "Velocity: " + currAtom.transform.GetComponent<Rigidbody>().velocity.ToString("E0"));
 		
 		DisplayBondProperties (currAtom, displayRect);
 		
@@ -901,7 +901,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			else{
 				zVelocity = UnityEngine.Random.Range(-5.0f, -1.0f);
 			}
-			currAtom.rigidbody.velocity = new Vector3(xVelocity, yVelocity, zVelocity);
+			currAtom.GetComponent<Rigidbody>().velocity = new Vector3(xVelocity, yVelocity, zVelocity);
 		}
 	}
 	

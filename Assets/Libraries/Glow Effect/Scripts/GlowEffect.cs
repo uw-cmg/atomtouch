@@ -46,7 +46,7 @@ public class GlowEffect : MonoBehaviour {
 			
 			glowMaterial.SetTexture("_Glow", replaceRenderTexture);
 						
-			shaderCamera = new GameObject("Glow Effect", typeof(Camera)).camera;
+			shaderCamera = new GameObject("Glow Effect", typeof(Camera)).GetComponent<Camera>();
 			shaderCamera.gameObject.hideFlags = HideFlags.HideAndDontSave;
 		}
 		
@@ -99,7 +99,7 @@ public class GlowEffect : MonoBehaviour {
 	public void OnDisable()
 	{
 		glowMaterial.mainTexture = null;
-		camera.targetTexture = null;
+		GetComponent<Camera>().targetTexture = null;
 		DestroyObject(shaderCamera);
 		DestroyObject(blurA);
 		DestroyObject(blurB);
@@ -108,7 +108,7 @@ public class GlowEffect : MonoBehaviour {
 	public void OnPreRender()
 	{
 		if (!useAlphaChannelForGlow) {
-			shaderCamera.CopyFrom(camera);
+			shaderCamera.CopyFrom(GetComponent<Camera>());
 			shaderCamera.backgroundColor = Color.clear;
 			shaderCamera.clearFlags = CameraClearFlags.SolidColor;
 			shaderCamera.renderingPath = RenderingPath.Forward;

@@ -64,19 +64,19 @@ public class Platinum : Atom {
 
 	public override void SetSelected (bool selected){
 		if (selected) {
-			gameObject.renderer.material = selectedMaterial;
+			gameObject.GetComponent<Renderer>().material = selectedMaterial;
 		}
 		else{
-			gameObject.renderer.material = platinumMaterial;
+			gameObject.GetComponent<Renderer>().material = platinumMaterial;
 		}
 	}
 
 	public override void SetTransparent(bool transparent){
 		if (transparent) {
-			gameObject.renderer.material = transparentMaterial;
+			gameObject.GetComponent<Renderer>().material = transparentMaterial;
 		}
 		else{
-			gameObject.renderer.material = platinumMaterial;
+			gameObject.GetComponent<Renderer>().material = platinumMaterial;
 		}
 	}
 	
