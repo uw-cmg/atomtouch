@@ -20,7 +20,6 @@ public class PhysicsEngine : MonoBehaviour
 		
 		if (!StaticVariables.pauseTime)
 		{
-
 			VelocityVerlet();
 			Boundary.myBoundary.Apply();
 			CalculateEnergy();
@@ -70,7 +69,7 @@ public class PhysicsEngine : MonoBehaviour
 			PairDistributionFunction.calculateAveragePairDistribution();
 		}
 		// update the acceleration of all atoms
-		for (int i=0; i< Atom.AllAtoms.Count-1; i++) 
+		for (int i=0; i< Atom.AllAtoms.Count; i++) 
 		{
 			Atom firstAtom = Atom.AllAtoms[i];
 			for (int j = 0; j < firstAtom.neighborList.Count; j++)
@@ -79,7 +78,6 @@ public class PhysicsEngine : MonoBehaviour
 				Potential.myPotential.getForce(firstAtom, secondAtom);
 			}
 		}
-
 
 		// update the velocity of all atoms
 		for (int i = 0; i < Atom.AllAtoms.Count; i++)
@@ -97,7 +95,7 @@ public class PhysicsEngine : MonoBehaviour
 		StaticVariables.kineticEnergy = 0.0f;
 		StaticVariables.currentTemperature = 0.0f;
 
-		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
+		for (int i = 0; i < Atom.AllAtoms.Count; i++)
 		{
 			Atom firstAtom = Atom.AllAtoms[i];
 			
@@ -145,6 +143,7 @@ public class PhysicsEngine : MonoBehaviour
 		{
 			draggedAlpha = 1.0f;
 		}
-		StaticVariables.sqrtAlpha = (float)Math.Pow(draggedAlpha, 0.5f);
+		StaticVariables.sqrtAlpha = Mathf.Sqrt(draggedAlpha);
+		
 	}
 }

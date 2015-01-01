@@ -58,6 +58,7 @@ public class CreateEnvironment : MonoBehaviour {
 
 		//create the atoms
 		InitAtoms ();
+		//InitAtomsDebug ();
 
 		centerPos = Vector3.zero;
 		initialCenterPos = centerPos;
@@ -143,10 +144,6 @@ public class CreateEnvironment : MonoBehaviour {
 		depthLine.SetColors(lineColor, lineColor);
 		depthLine.SetWidth(0.2F, 0.2F);
 		depthLine.SetVertexCount(2);
-
-		//give all of the atoms a random velocity on startup
-		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
-		atomTouchGUI.AtomKick ();
 	}
 
 	void Update ()
@@ -248,9 +245,48 @@ public class CreateEnvironment : MonoBehaviour {
 		}
 		Potential.myPotential.calculateVerletRadius ();
 
+		myEnvironment.numMolecules = Atom.AllAtoms.Count;
+
 		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		atomTouchGUI.AtomKick();
 	}
+
+
+	//initialize two atoms to fixed positions with zero velocity for debuging purposes.
+	public void InitAtomsDebug()
+	{
+		//destroy and unregister all the current atoms
+		for (int i = Atom.AllAtoms.Count-1; i >= 0; i--)
+		{
+			Atom currAtom = Atom.AllAtoms [i];
+			Atom.UnregisterAtom(currAtom);
+			Destroy (currAtom.gameObject);
+		}
+
+		{
+			CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
+			Vector3 centerPos = myEnvironment.centerPos;
+			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+
+			Instantiate(molecules [0], myEnvironment.centerPos, curRotation);
+			int i = Atom.AllAtoms.Count-1;
+			Atom currAtom = Atom.AllAtoms[i];
+			currAtom.gameObject.name = i.ToString();
+        	currAtom.position =  new Vector3 (centerPos.x + 2.0f, centerPos.y , centerPos.z );
+			currAtom.transform.position = currAtom.position;
+		
+			Instantiate(molecules [1], myEnvironment.centerPos, curRotation);
+			i = Atom.AllAtoms.Count-1;
+			currAtom = Atom.AllAtoms[i];
+			currAtom.gameObject.name = i.ToString();
+			currAtom.position =  new Vector3 (centerPos.x - 2.0f, centerPos.y , centerPos.z );
+			currAtom.transform.position = currAtom.position;
+
+			Potential.myPotential.calculateVerletRadius ();
+			myEnvironment.numMolecules = Atom.AllAtoms.Count;
+		}
+	}
+
 
 
 	// this method creates a new atom from the type of the preFab and checks the position to have a far enough distance from other atoms

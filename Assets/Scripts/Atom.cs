@@ -85,6 +85,10 @@ public abstract class Atom : MonoBehaviour
 	void Awake(){
 		RegisterAtom (this);
 		bondDistanceText = new Dictionary<String, TextMesh> ();
+		this.velocity = Vector3.zero;
+		this.position = Vector3.zero;
+		this.accelerationNew = Vector3.zero;
+		this.accelerationOld = Vector3.zero;
 	}
 
 	//void OnDestroy(){
@@ -585,7 +589,16 @@ public abstract class Atom : MonoBehaviour
 	//this functions returns the appropriate bond distance, given two atoms
 	public float BondDistance(Atom otherAtom){
 		//return 1.225f * StaticVariables.sigmaValues [atomID,otherAtom.atomID];
-		return 3.0f;
+		float bondLength = 0.0f;
+		if (Potential.currentPotential == Potential.potentialType.LennardJones)
+		{
+			bondLength =  3.0f;
+		}
+		else if (Potential.currentPotential == Potential.potentialType.Buckingham)
+		{
+			bondLength = 3.0f;
+		}
+		return bondLength;
 	}
 
 	//this function checks the position of an atom, and if its outside of the box, simply place the atom back inside the box

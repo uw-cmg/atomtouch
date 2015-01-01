@@ -34,7 +34,7 @@ public class Graph : MonoBehaviour {
 
 	public float spacing = 0.5f;
 	private float maxDataPoints;
-	private float dataMaximum = 5.0f;
+	private float dataMaximum = 5000.0f;
 	private float dataMinimum = 0.0f;
 	private float lowTime;
 	private float highTime;
@@ -129,8 +129,8 @@ public class Graph : MonoBehaviour {
 			}
 
 			//draw the lines on the graph
-			//object[] dataPointArray = dataPoints.ToArray ();
-			float[] dataPointArray = PairDistributionFunction.PairDistributionAverage;
+			object[] dataPointArray = dataPoints.ToArray ();
+			//float[] dataPointArray = PairDistributionFunction.PairDistributionAverage;
 			spacing = width / dataPointArray.Length;
 			for (int i = 0; i < dataPointArray.Length - 1; i++) {
 

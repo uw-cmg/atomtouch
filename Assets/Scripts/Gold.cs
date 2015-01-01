@@ -38,8 +38,8 @@ public class Gold : Atom
 	}
 	
 	public override float massamu {
-		//get { return 196.967f; } //amu for Gold
-		get { return 35.453f; } //amu for Chlorine
+		get { return 196.967f; } //amu for Gold
+		//get { return 35.453f; } //amu for Chlorine
 	}
 
 	// We assume gold to play the role of chloride

@@ -39,7 +39,8 @@ public class StaticVariables {
 	public static float updateIntervalToRealTime = MDTimestep;
 
 	//do not scale temperature all at once
-	public static float alphaDrag = 0.1f;
+	public static float alphaDrag = 0.01f;
+	public static float sqrtAlpha = 1.0f;
 
 	//Boltzmann constant in J/K
 	public static float kB = 1.381f * (float) Math.Pow(10,-23);
@@ -77,8 +78,6 @@ public class StaticVariables {
 	public static float kineticEnergy = 0.0f;  // units in Joules
 	public static float potentialEnergy = 0.0f;  // units in Joules
 	public static float currentTemperature = 0.0f;  // units in Kelvin
-
-	public static float sqrtAlpha = 1.0f;
 
 	//this is an enum of the different states that time can pass
 	public enum TimeSpeed{

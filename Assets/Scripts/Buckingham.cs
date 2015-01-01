@@ -58,15 +58,13 @@ public class Buckingham : Potential {
 				for (int iR = 0; iR < nR; iR++)
 				{
 					float distance = (float)iR * dR;
-					if (distance < 0.7f)
-						distance = 0.7f;
+					if (distance < 1.455f)
+						distance = 1.455f;
 					preBuckinghamAcceleration[firstAtom.atomID,secondAtom.atomID,iR] = calcAcceleration(distance,firstAtom,secondAtom);
 					PreBuckinghamPotential[firstAtom.atomID, secondAtom.atomID, iR] = calcPotential(distance, firstAtom, secondAtom);
 				}
 			}
 		}
-		//WriteData.WritePotential(PreBuckinghamPotential);
-		//WriteData.WriteForce(preBuckinghamAcceleration);
 	}
 	
 	//the function returns the LennarJones force on the atom given the list of the atoms that are within range of it
@@ -194,7 +192,7 @@ public class Buckingham : Potential {
 	
 	public override void calculateVerletRadius()
 	{
-		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
+		for (int i = 0; i < Atom.AllAtoms.Count; i++)
 		{
 			Atom currAtom = Atom.AllAtoms[i];
 			currAtom.verletRadius = cutoff + 1.0f;
@@ -205,7 +203,7 @@ public class Buckingham : Potential {
 	public override void calculateNeighborList()
 	{
 		//clear the old neighborList
-		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
+		for (int i = 0; i < Atom.AllAtoms.Count; i++)
 		{
 			Atom currAtom = Atom.AllAtoms[i];
 			currAtom.neighborList.Clear();
@@ -220,7 +218,7 @@ public class Buckingham : Potential {
 				Atom secondAtom = Atom.AllAtoms[j];
 				Vector3 deltaR = Boundary.myBoundary.deltaPosition(firstAtom, secondAtom);
 				float distanceSqr = deltaR.sqrMagnitude;
-				if (distanceSqr < firstAtom.verletRadius * firstAtom.verletRadius)
+				if (distanceSqr < (firstAtom.verletRadius * firstAtom.verletRadius))
 					firstAtom.neighborList.Add(secondAtom);
 			}
 		}
