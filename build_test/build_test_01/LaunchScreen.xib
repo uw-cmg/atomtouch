@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
+  <dependencies>
+    <deployment identifier="iOS" />
+    <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244" />
+  </dependencies>
+  <objects>
+    <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" />
+    <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder" />
+    <view userInteractionEnabled="NO" contentMode="scaleToFill" id="iN0-l3-epB">
+      <rect key="frame" x="0.0" y="0.0" width="480" height="584" />
+      <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" />
+      <subviews>
+        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gVh-4A-1je">
+          <rect key="frame" x="0.0" y="0.0" width="480" height="584" />
+          <subviews>
+            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchScreenImage.png" translatesAutoresizingMaskIntoConstraints="NO" id="Etn-d3-fHe">
+              <rect key="frame" x="168" y="220" width="1" height="1" />
+            </imageView>
+          </subviews>
+          <color key="backgroundColor" red="0.254902" green="0.5764706" blue="0.8078431" alpha="1" colorSpace="calibratedRGB" />
+          <constraints>
+            <constraint firstAttribute="centerX" secondItem="Etn-d3-fHe" secondAttribute="centerX" id="rQ1-2x-Gq7" />
+            <constraint firstAttribute="centerY" secondItem="Etn-d3-fHe" secondAttribute="centerY" id="tiY-fv-f3h" />
+          </constraints>
+        </view>
+      </subviews>
+      <constraints>
+        <constraint firstAttribute="bottom" secondItem="gVh-4A-1je" secondAttribute="bottom" id="0S2-lL-jZB" />
+        <constraint firstAttribute="trailing" secondItem="gVh-4A-1je" secondAttribute="trailing" id="VuP-2L-qF6" />
+        <constraint firstItem="gVh-4A-1je" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="YR3-EJ-Buz" />
+        <constraint firstItem="gVh-4A-1je" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="vpD-ho-HFo" />
+      </constraints>
+      <nil key="simulatedStatusBarMetrics" />
+      <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics" />
+      <point key="canvasLocation" x="415" y="348" />
+    </view>
+  </objects>
+  <resources>
+    <image name="LaunchScreenImage.png" width="1" height="1" />
+  </resources>
+</document>
