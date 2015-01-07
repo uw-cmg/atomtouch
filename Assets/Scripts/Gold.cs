@@ -16,15 +16,15 @@ using System;
 
 public class Gold : Atom
 {
-	private float sigmaValue = 2.6367f;
 	public Material goldMaterial;
 	public Material selectedMaterial;
 	public Material transparentMaterial;
-
+	
 	public override String atomName { 
 		get{ return "Gold"; } 
 	}
-
+	
+	
 	public override int atomID {
 		get{ return 1;}
 	}
@@ -34,13 +34,14 @@ public class Gold : Atom
 	}
 	
 	public override float sigma {
-		get { return sigmaValue; }
+		get { return 2.6367f; }
 	}
 	
-	protected override float massamu {
-		get { return 196.967f; } //amu
+	public override float massamu {
+		//get { return 196.967f; } //amu for Gold
+		get { return 35.453f; } //amu for Chlorine
 	}
-
+	
 	// We assume gold to play the role of chloride
 	public override float buck_A {
 		get { return 405774.0f*1.6f*Mathf.Pow(10,-19); } //units of [J]
@@ -59,9 +60,9 @@ public class Gold : Atom
 	}
 	
 	public override float Q_eff {
-		get { return -1.0f*1.6f*Mathf.Pow(10,-19); } //units of Coulomb
+		get { return -0.7f*1.6f*Mathf.Pow(10,-19); } //units of Coulomb
 	}
-
+	
 	public override void SetSelected (bool selected){
 		if (selected) {
 			gameObject.renderer.material = selectedMaterial;
@@ -70,7 +71,7 @@ public class Gold : Atom
 			gameObject.renderer.material = goldMaterial;
 		}
 	}
-
+	
 	public override void SetTransparent(bool transparent){
 		if (transparent) {
 			gameObject.renderer.material = transparentMaterial;
@@ -79,13 +80,13 @@ public class Gold : Atom
 			gameObject.renderer.material = goldMaterial;
 		}
 	}
-
+	
 	void Start ()
 	{
 		//make the atom its original color to start
 		SetSelected (false);
 		//scale the atom according to sigma
-		gameObject.transform.localScale = new Vector3(sigmaValue * .5f, sigmaValue * .5f, sigmaValue * .5f);
+		gameObject.transform.localScale = new Vector3(sigma * .5f, sigma * .5f, sigma * .5f);
 	}
 }
 

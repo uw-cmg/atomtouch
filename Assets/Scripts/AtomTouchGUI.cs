@@ -6,6 +6,14 @@
  * There are a couple of weird quirks with the creation of the UI. The first is that the graph
  * is NOT defined in this class, it has its own class. This is because the function responsible
  * for creating the UI, OnGUI(), draws over OnPostRender, meaning it draws over the graph. To solve
+/**
+ * Class: AtomTouchGUI.cs
+ * Created by: Justin Moeller
+ * Description: The sole purpose of this class is to define the GUI of the game. Because of this,
+ * most of the global variables are declared public to easily swap out the graphics of the UI.
+ * There are a couple of weird quirks with the creation of the UI. The first is that the graph
+ * is NOT defined in this class, it has its own class. This is because the function responsible
+ * for creating the UI, OnGUI(), draws over OnPostRender, meaning it draws over the graph. To solve
  * this problem, the UI simply draws around the graph and the graph draws in the blank space. (sort of
  * like a cookie cutter) The second quirk is that, in order to get around Unity's restrictions of drawing
  * buttons, most of the buttons are drawn with a texture behind them and a blank button (with no text)
@@ -20,9 +28,10 @@ using UnityEngine;
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class AtomTouchGUI : MonoBehaviour {
-
+	
 	//state of the UI
 	private bool atomTouchActive = true;
 	private bool toolbarActive = true;
@@ -32,7 +41,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	private bool volumePanelActive = true;
 	private bool whiteCornerActive = false;
 	private bool potentialsActive = false;
-
+	
 	//textures for the UI
 	public Texture lightBackground;
 	public Texture darkBackground;
@@ -41,42 +50,42 @@ public class AtomTouchGUI : MonoBehaviour {
 	public Texture whiteCornerArrow;
 	public Texture downArrow;
 	public Texture upArrow;
-
+	
 	//prefabs to spawn
 	public Rigidbody copperPrefab;
 	public Rigidbody goldPrefab;
 	public Rigidbody platinumPrefab;
-
+	
 	//reset button
 	public Texture resetButtonUp;
 	public Texture resetButtonDown;
 	private bool resetPressed;
 	private float resetTime;
-
+	
 	//snap camera button
 	public Texture cameraButtonUp;
 	public Texture cameraButtonDown;
 	private bool cameraPressed;
 	private float cameraTime;
-
+	
 	//bond line button
 	public Texture bondLineUp;
 	public Texture bondLineDown;
-
+	
 	//atom kick button
 	public Texture atomKickUp;
 	public Texture atomKickDown;
 	private bool atomKickPressed;
 	private float atomKickTime;
-
+	
 	//time button
 	public Texture normalTimeButton;
 	public Texture slowTimeButton;
 	public Texture stoppedTimeButton;
-
+	
 	//red x button
 	public Texture redXButton;
-
+	
 	//add atom buttons
 	public Texture copperTexture;
 	public Texture goldTexture;
@@ -97,29 +106,28 @@ public class AtomTouchGUI : MonoBehaviour {
 	[HideInInspector]public bool addGraphicPlatinum;
 	public GUISkin sliderControls;
 	private bool firstPass = true;
-
+	
 	[HideInInspector]public bool changingSlider = false;
 	private float guiVolume;
-
+	
 	private int slowMotionFrames;
-
+	
 	public static StaticVariables.TimeSpeed currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
-
+	
 	void Start () {
-		CreateEnvironment createEnvironment = StaticVariables.createEnvironment;
-		guiVolume = createEnvironment.volume;
+		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
+		guiVolume = myEnvironment.volume;
 	}
-
+	
 	//this function creates all UI elements in the game EXCEPT for the graph
 	void OnGUI(){
-
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		CreateEnvironment createEnvironment = StaticVariables.createEnvironment;
+		
+		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 
 		if (sliderControls != null) {
 			GUI.skin = sliderControls;
 		}
-
+		
 		//create the "Atomtouch" menu
 		GUIStyle buttonStyle = GUI.skin.label;
 		Rect arrowBackgroundRect = new Rect (0.0f, 0.0f, Screen.width * .14f, Screen.height * .13f * .3f);
@@ -129,7 +137,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		if (GUI.Button (arrowBackgroundRect, "", buttonStyle)) {
 			atomTouchActive = !atomTouchActive;
 		}
-
+		
 		Rect atomTouchRect = new Rect (0.0f, Screen.height * .13f * .3f, Screen.width * .14f, (Screen.height * .13f) - Screen.height * .13f * .3f);
 		if (atomTouchActive) {
 			GUIStyle textStyle = GUI.skin.label;
@@ -141,7 +149,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				potentialsActive = !potentialsActive;
 			}
 			GUI.DrawTexture(new Rect(atomTouchRect.x + atomTouchRect.width - 20.0f, atomTouchRect.y + atomTouchRect.height - 20.0f, 20.0f, 20.0f), whiteCornerArrow);
-
+			
 			//create the dropdown of different potentials
 			if(potentialsActive){
 				GUIStyle potentialText = GUI.skin.label;
@@ -152,35 +160,38 @@ public class AtomTouchGUI : MonoBehaviour {
 				GUI.DrawTexture(lennardJonesRect, darkBackground);
 				if(GUI.Button(lennardJonesRect, "Lennard-Jones", buttonStyle)){
 					potentialsActive = false;
-					StaticVariables.currentPotential = StaticVariables.Potential.LennardJones;
-					createEnvironment.InitAtoms();
+					Potential.currentPotential = Potential.potentialType.LennardJones;
+					myEnvironment.preCompute();
+					myEnvironment.InitAtoms();
 					slowMotionFrames = StaticVariables.slowMotionFrames;
 				}
 				Rect buckinghamRect = new Rect(lennardJonesRect.x, lennardJonesRect.y + lennardJonesRect.height, lennardJonesRect.width, lennardJonesRect.height);
 				GUI.DrawTexture(buckinghamRect, lightBackground);
 				if(GUI.Button(buckinghamRect, "Buckingham", buttonStyle)){
 					potentialsActive = false;
-					StaticVariables.currentPotential = StaticVariables.Potential.Buckingham;
-					createEnvironment.InitAtoms();
+					Potential.currentPotential = Potential.potentialType.Buckingham;
+					myEnvironment.preCompute();
+					myEnvironment.InitAtoms();
 					slowMotionFrames = StaticVariables.slowMotionFrames;
 				}
 				Rect brennerRect = new Rect(buckinghamRect.x, buckinghamRect.y + buckinghamRect.height, buckinghamRect.width, buckinghamRect.height);
 				GUI.DrawTexture(brennerRect, darkBackground);
 				if(GUI.Button(brennerRect, "Brenner", buttonStyle)){
 					potentialsActive = false;
-					StaticVariables.currentPotential = StaticVariables.Potential.Brenner;
-					createEnvironment.InitAtoms();
+					Potential.currentPotential = Potential.potentialType.Brenner;
+					myEnvironment.preCompute();
+					myEnvironment.InitAtoms();
 					slowMotionFrames = StaticVariables.slowMotionFrames;
 				}
 			}
-
+			
 		}
-
+		
 		GUIStyle currStyle = GUI.skin.label;
 		currStyle.alignment = TextAnchor.MiddleCenter;
 		currStyle.fontSize = 25;
 		currStyle.normal.textColor = Color.white;
-
+		
 		Rect arrowBackgroundRectToolbar = new Rect (Screen.width * .14f + 5.0f, 0.0f, Screen.width * .28f, Screen.height * .13f * .3f);
 		Texture toolbarArrow = toolbarActive ? upArrow : downArrow;
 		GUI.DrawTexture (arrowBackgroundRectToolbar, darkBackground);
@@ -188,12 +199,12 @@ public class AtomTouchGUI : MonoBehaviour {
 		if (GUI.Button (arrowBackgroundRectToolbar, "", buttonStyle)) {
 			toolbarActive = !toolbarActive;
 		}
-
+		
 		Rect panelArrowRect = new Rect (Screen.width * .5f, Screen.height - (Screen.height * .13f * .3f), 20.0f, Screen.height * .13f * .3f);
 		Rect panelRect = new Rect (0.0f, Screen.height - (Screen.height * .27f), Screen.width, (Screen.height * .27f));
 		Rect openPanelRect = new Rect(0.0f, panelRect.y, (Screen.width * .6f) + 10.0f, panelRect.height);
 		Rect bottomRect = new Rect(panelRect.x + openPanelRect.width, panelArrowRect.y, Screen.width - openPanelRect.width, panelArrowRect.height);
-
+		
 		//specify the graph's coordinates
 		Graph graph = Camera.main.GetComponent<Graph>();
 		graph.xCoord = bottomRect.x;
@@ -204,7 +215,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			graph.RecomputeMaxDataPoints();
 			firstPass = false;
 		}
-
+		
 		//create the data panel
 		if (dataPanelActive) {
 			GUI.DrawTexture(openPanelRect, lightBackground);
@@ -213,17 +224,15 @@ public class AtomTouchGUI : MonoBehaviour {
 			if(GUI.Button(bottomRect, "", buttonStyle)){
 				dataPanelActive = !dataPanelActive;
 			}
-			float buffer = 10.0f;
-
+			
 			bool doubleTapped = false;
-			for(int i = 0; i < allMolecules.Length; i++){
-				GameObject currAtom = allMolecules[i];
-				Atom atomScript = currAtom.GetComponent<Atom>();
-				if(atomScript.doubleTapped){
+			for(int i = 0; i < Atom.AllAtoms.Count; i++){
+				Atom currAtom = Atom.AllAtoms[i];
+				if(currAtom.doubleTapped){
 					doubleTapped = true;
 				}
 			}
-
+			
 			if(!doubleTapped){
 				DisplaySystemProperties(openPanelRect);
 			}
@@ -237,7 +246,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		if (GUI.Button (new Rect (0.0f, panelArrowRect.y, Screen.width, panelArrowRect.height), "", buttonStyle)) {
 			dataPanelActive = !dataPanelActive;
 		}
-
+		
 		//create the toolbar options menu (i.e atomkick, reset camera, etc)
 		GUIStyle toolBarButtonStyle = GUI.skin.label;
 		toolBarButtonStyle.alignment = TextAnchor.MiddleCenter;
@@ -247,19 +256,19 @@ public class AtomTouchGUI : MonoBehaviour {
 		Rect toolbarRect = new Rect(arrowBackgroundRectToolbar.x, arrowBackgroundRectToolbar.height, arrowBackgroundRectToolbar.width, atomTouchRect.height);
 		if (toolbarActive) {
 			GUI.DrawTexture(toolbarRect, lightBackground);
-
+			
 			//create reset button
 			Texture reset = resetPressed ? resetButtonDown : resetButtonUp;
 			if(GUI.Button(new Rect(toolbarRect.x, toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), reset, buttonStyle)){
 				resetPressed = true;
 				resetTime = Time.realtimeSinceStartup;
-				createEnvironment.InitAtoms();
+				myEnvironment.InitAtoms();
 				slowMotionFrames = StaticVariables.slowMotionFrames;
 			}
 			if(Time.realtimeSinceStartup - resetTime > .05f){
 				resetPressed = false;
 			}
-
+			
 			//create camera button
 			Texture camera = cameraPressed ? cameraButtonDown : cameraButtonUp;
 			if(GUI.Button(new Rect(toolbarRect.x + (toolbarRect.width / 6.0f), toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), camera, buttonStyle)){
@@ -271,13 +280,13 @@ public class AtomTouchGUI : MonoBehaviour {
 			if(Time.realtimeSinceStartup - cameraTime > .05f){
 				cameraPressed = false;
 			}
-
+			
 			//create bond line button
 			Texture bondLine = StaticVariables.drawBondLines ? bondLineUp : bondLineDown;
 			if(GUI.Button(new Rect(toolbarRect.x + 2*(toolbarRect.width / 6.0f), toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), bondLine, buttonStyle)){
 				StaticVariables.drawBondLines = !StaticVariables.drawBondLines;
 			}
-
+			
 			//create atom kick button
 			Texture atomKick = atomKickPressed ? atomKickDown : atomKickUp;
 			if(GUI.Button(new Rect(toolbarRect.x + 3*(toolbarRect.width / 6.0f), toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), atomKick, buttonStyle)){
@@ -288,7 +297,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			if(Time.realtimeSinceStartup - atomKickTime > .05f){
 				atomKickPressed = false;
 			}
-
+			
 			//create the current time button
 			Texture timeTexture = normalTimeButton;
 			if(currentTimeSpeed == StaticVariables.TimeSpeed.Normal){
@@ -302,12 +311,12 @@ public class AtomTouchGUI : MonoBehaviour {
 				Time.timeScale = .05f;
 				MotionBlur blur = Camera.main.GetComponent<MotionBlur>();
 				blur.blurAmount = 0.68f;
-
+				
 			}
 			else if(currentTimeSpeed == StaticVariables.TimeSpeed.Stopped){
 				timeTexture = stoppedTimeButton;
 			}
-
+			
 			if(GUI.Button(new Rect(toolbarRect.x + 4*(toolbarRect.width / 6.0f), toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), timeTexture, buttonStyle)){
 				if(currentTimeSpeed == StaticVariables.TimeSpeed.Normal){
 					currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
@@ -321,29 +330,29 @@ public class AtomTouchGUI : MonoBehaviour {
 					currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
 				}
 			}
-
+			
 			//create the red x if the user double tapped an atom
-			for (int i = 0; i < allMolecules.Length; i++) {
-				Atom atomScript = allMolecules[i].GetComponent<Atom>();
-				if(atomScript.doubleTapped){
+			for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+				Atom currAtom = Atom.AllAtoms[i];
+				if(currAtom.doubleTapped){
 					if(GUI.Button(new Rect(toolbarRect.x + 5*(toolbarRect.width / 6.0f), toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), redXButton, buttonStyle)){
-						createEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
-						atomScript.doubleTapped = false;
+						myEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
+						currAtom.doubleTapped = false;
 						Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
 						currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
-						atomScript.RemoveBondText();
-						atomScript.ResetTransparency();
+						currAtom.RemoveBondText();
+						currAtom.ResetTransparency();
 						RedXClicked();
 					}
-			
-					DisplayAtomProperties(allMolecules[i], openPanelRect);
-			
+					
+					DisplayAtomProperties(Atom.AllAtoms[i], openPanelRect);
+					
 				}
 			}
 		}
-
-
-
+		
+		
+		
 		//create the add atom toolbar
 		Rect addAtomRect = new Rect (panelRect.x, panelRect.y - panelArrowRect.height, Screen.width * .2f, panelArrowRect.height);
 		GUI.DrawTexture (addAtomRect, darkBackground);
@@ -352,11 +361,11 @@ public class AtomTouchGUI : MonoBehaviour {
 		if (GUI.Button (addAtomRect, "", buttonStyle)) {
 			addAtomActive = !addAtomActive;
 		}
-
+		
 		Rect lightAddAtom = new Rect(addAtomRect.x, addAtomRect.y - (Screen.height*.1f), addAtomRect.width, (Screen.height*.1f));
 		if (addAtomActive) {
 			GUI.DrawTexture(lightAddAtom, lightBackground);
-
+			
 			//create the copper button
 			if(GUI.RepeatButton(new Rect(lightAddAtom.x + 5.0f, lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), copperTextureAdd, buttonStyle)){
 				if(!clicked){
@@ -408,35 +417,35 @@ public class AtomTouchGUI : MonoBehaviour {
 					}
 				}
 			}
-
+			
 			//create the garbage button for deleting atoms
 			Texture garbage = garbagePressed ? garbageTextureDown : garbageTexture;
 			if(GUI.Button(new Rect(lightAddAtom.x + 5.0f+(3*(addAtomRect.width / 4.0f)), lightAddAtom.y, addAtomRect.width / 4.0f, lightAddAtom.height), garbage, buttonStyle)){
-				for(int i = 0; i < allMolecules.Length; i++){
-					GameObject currAtom = allMolecules[i];
-					Atom atomScript = currAtom.GetComponent<Atom>();
-					if(atomScript.doubleTapped){
-						createEnvironment.centerPos = new Vector3(0.0f, 0.0f, 0.0f);
-						Camera.main.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
+				for(int i = 0; i < Atom.AllAtoms.Count; i++){
+					Atom currAtom = Atom.AllAtoms[i];
+					if(currAtom.doubleTapped){
+						myEnvironment.centerPos = Vector3.zero;
+						Camera.main.transform.LookAt(Vector3.zero);
 					}
-					if(atomScript.selected){
-						Destroy(currAtom);
+					if(currAtom.selected){
+						Atom.UnregisterAtom(currAtom);
+						Destroy(currAtom.gameObject);
 					}
-					if(atomScript.selected && atomScript.doubleTapped){
+					if(currAtom.selected && currAtom.doubleTapped){
 						currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
-						atomScript.RemoveBondText();
-						atomScript.ResetTransparency();
+						currAtom.RemoveBondText();
+						currAtom.ResetTransparency();
 					}
 				}
 				garbagePressed = true;
 				garbageTime = Time.realtimeSinceStartup;
 			}
-
+			
 			if(Time.realtimeSinceStartup - garbageTime > .05f){
 				garbagePressed = false;
 			}
 		}
-
+		
 		if (addGraphicCopper) {
 			Color guiColor = Color.white;
 			guiColor.a = 0.25f;
@@ -460,7 +469,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			GUI.DrawTexture(new Rect((Input.mousePosition.x - 25.0f), (Screen.height - Input.mousePosition.y) - 25.0f, 50.0f, 50.0f), platinumTexture);
 			GUI.color = Color.white;
 		}
-
+		
 		//create the temperature panel and the temperature slider
 		Rect temperatureArrowBackgroundRect = new Rect(addAtomRect.x + addAtomRect.width + 10.0f, addAtomRect.y, (Screen.width - (addAtomRect.width+20)) / 2.0f, addAtomRect.height);
 		GUI.DrawTexture(temperatureArrowBackgroundRect, darkBackground);
@@ -469,37 +478,37 @@ public class AtomTouchGUI : MonoBehaviour {
 		if(GUI.Button(temperatureArrowBackgroundRect, "", buttonStyle)){
 			temperaturePanelActive = !temperaturePanelActive;
 		}
-
+		
 		if(temperaturePanelActive){
 			Rect temperatureBackgroundRect = new Rect(temperatureArrowBackgroundRect.x, temperatureArrowBackgroundRect.y - (lightAddAtom.height), temperatureArrowBackgroundRect.width, lightAddAtom.height);
 			GUI.DrawTexture(temperatureBackgroundRect, lightBackground);
-
+			
 			GUIStyle tempertureText = GUI.skin.label;
 			tempertureText.alignment = TextAnchor.MiddleCenter;
 			tempertureText.fontSize = 25;
 			tempertureText.normal.textColor = Color.white;
 			GUI.Label (new Rect(temperatureArrowBackgroundRect.x, temperatureBackgroundRect.y, temperatureBackgroundRect.width, temperatureBackgroundRect.height * .4f), "Temperature", tempertureText);
-
+			
 			GUIStyle tempNumberText = GUI.skin.label;
 			tempNumberText.alignment = TextAnchor.MiddleLeft;
 			tempNumberText.fontSize = 14;
 			tempNumberText.normal.textColor = Color.white;
-
-			GUI.Label (new Rect (temperatureBackgroundRect.x + temperatureBackgroundRect.width - 120.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)), 200.0f, 20), TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 273.15, 2)).ToString() + "C)", tempNumberText);
-			float newTemp = GUI.HorizontalSlider (new Rect (temperatureBackgroundRect.x + 25.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)), temperatureBackgroundRect.width - 150.0f, 20.0f), TemperatureCalc.desiredTemperature, StaticVariables.tempRangeLow, StaticVariables.tempRangeHigh);
-			if (newTemp != TemperatureCalc.desiredTemperature) {
+			
+			GUI.Label (new Rect (temperatureBackgroundRect.x + temperatureBackgroundRect.width - 120.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)), 200.0f, 20), StaticVariables.desiredTemperature + "K" + " (" + (Math.Round(StaticVariables.desiredTemperature - 273.15, 2)).ToString() + "C)", tempNumberText);
+			float newTemp = GUI.HorizontalSlider (new Rect (temperatureBackgroundRect.x + 25.0f, (temperatureBackgroundRect.y + (temperatureBackgroundRect.height/2.0f)), temperatureBackgroundRect.width - 150.0f, 20.0f), StaticVariables.desiredTemperature, StaticVariables.tempRangeLow, StaticVariables.tempRangeHigh);
+			if (newTemp != StaticVariables.desiredTemperature) {
 				changingSlider = true;
-				TemperatureCalc.desiredTemperature = newTemp;
+				StaticVariables.desiredTemperature = newTemp;
 			}
 			else{
 				//the gui temperature has been set, we can safely change the desired temperature
-				int temp = (int)TemperatureCalc.desiredTemperature;
+				int temp = (int)StaticVariables.desiredTemperature;
 				int remainder = temp % 20;
 				temp -= remainder;
-				TemperatureCalc.desiredTemperature = temp;
+				StaticVariables.desiredTemperature = temp;
 			}
 		}
-
+		
 		//create the volume panel and the volume slider
 		Rect volumeArrowBackgroundRect = new Rect (temperatureArrowBackgroundRect.x + temperatureArrowBackgroundRect.width + 10.0f, addAtomRect.y, temperatureArrowBackgroundRect.width, temperatureArrowBackgroundRect.height);
 		GUI.DrawTexture (volumeArrowBackgroundRect, darkBackground);
@@ -508,24 +517,24 @@ public class AtomTouchGUI : MonoBehaviour {
 		if (GUI.Button (volumeArrowBackgroundRect, "", buttonStyle)) {
 			volumePanelActive = !volumePanelActive;
 		}
-
+		
 		if (volumePanelActive) {
 			Rect volumeBackgroundRect = new Rect(volumeArrowBackgroundRect.x, volumeArrowBackgroundRect.y - (lightAddAtom.height), volumeArrowBackgroundRect.width, lightAddAtom.height);
 			GUI.DrawTexture(volumeBackgroundRect, lightBackground);
-
+			
 			GUIStyle volumeText = GUI.skin.label;
 			volumeText.alignment = TextAnchor.MiddleCenter;
 			volumeText.fontSize = 25;
 			volumeText.normal.textColor = Color.white;
 			GUI.Label (new Rect(volumeBackgroundRect.x, volumeBackgroundRect.y, volumeBackgroundRect.width, volumeBackgroundRect.height * .4f), "Volume", volumeText);
-
+			
 			GUIStyle volNumberText = GUI.skin.label;
 			volNumberText.alignment = TextAnchor.UpperLeft;
 			volNumberText.fontSize = 14;
 			volNumberText.normal.textColor = Color.white;
 			GUI.Label (new Rect (volumeBackgroundRect.x + volumeBackgroundRect.width - 120.0f, (volumeBackgroundRect.y + (volumeBackgroundRect.height/2.0f)) - 5.0f, 200.0f, 80.0f), guiVolume + " Angstroms\n cubed", volNumberText);
 			float newVolume = GUI.HorizontalSlider (new Rect (volumeBackgroundRect.x + 25.0f, (volumeBackgroundRect.y + (volumeBackgroundRect.height/2.0f)), volumeBackgroundRect.width - 150.0f, 20.0f), guiVolume, 1000.0f, 64000.0f);
-
+			
 			if (newVolume != guiVolume) {
 				guiVolume = newVolume;
 				changingSlider = true;
@@ -541,64 +550,60 @@ public class AtomTouchGUI : MonoBehaviour {
 				int remainder35 = Math.Abs(42875 - volume);
 				int remainder40 = Math.Abs(64000 - volume);
 				if(remainder10 < remainder15 && remainder10 < remainder20 && remainder10 < remainder25 && remainder10 < remainder30 && remainder10 < remainder35 && remainder10 < remainder40){
-					createEnvironment.volume = 1000;
+					myEnvironment.volume = 1000;
 					guiVolume = 1000;
 				}
 				else if(remainder15 < remainder10 && remainder15 < remainder20 && remainder15 < remainder25 && remainder15 < remainder30 && remainder15 < remainder35 && remainder15 < remainder40){
-					createEnvironment.volume = 3375;
+					myEnvironment.volume = 3375;
 					guiVolume = 3375;
 				}
 				else if(remainder20 < remainder15 && remainder20 < remainder10 && remainder20 < remainder25 && remainder20 < remainder30 && remainder20 < remainder35 && remainder20 < remainder40){
-					createEnvironment.volume = 8000;
+					myEnvironment.volume = 8000;
 					guiVolume = 8000;
 				}
 				else if(remainder25 < remainder10 && remainder25 < remainder15 && remainder25 < remainder20 && remainder25 < remainder30 && remainder25 < remainder35 && remainder25 < remainder40){
-					createEnvironment.volume = 15625;
+					myEnvironment.volume = 15625;
 					guiVolume = 15625;
 				}
 				else if(remainder30 < remainder15 && remainder30 < remainder20 && remainder30 < remainder25 && remainder30 < remainder10 && remainder30 < remainder35 && remainder30 < remainder40){
-					createEnvironment.volume = 27000;
+					myEnvironment.volume = 27000;
 					guiVolume = 27000;
 				}
 				else if(remainder35 < remainder10 && remainder35 < remainder15 && remainder35 < remainder20 && remainder35 < remainder25 && remainder35 < remainder30 && remainder35 < remainder40){
-					createEnvironment.volume = 42875;
+					myEnvironment.volume = 42875;
 					guiVolume = 42875;
 				}
 				else if(remainder40 < remainder15 && remainder40 < remainder20 && remainder40 < remainder25 && remainder40 < remainder30 && remainder40 < remainder35 && remainder40 < remainder10){
-					createEnvironment.volume = 64000;
+					myEnvironment.volume = 64000;
 					guiVolume = 64000;
 				}
 			}
-
-				
+			
+			
 		}
 		//CheckAtomVolumePositions();
-
+		
 		if (Input.GetMouseButtonUp (0)) {
-		
+			
 			//possibly adjust the z value here depending on the position of the camera
-
-			if(addGraphicCopper && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
-				//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
-				Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x - createEnvironment.width/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.y - createEnvironment.height/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.z - createEnvironment.depth/2.0f+createEnvironment.errorBuffer);
-				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-				Instantiate(copperPrefab, curPosition, curRotation);
+			
+			if(addGraphicCopper && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
+			{
+				myEnvironment.createAtom(copperPrefab);
 			}
-		
-			if(addGraphicGold && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
-				//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
-				Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x - createEnvironment.width/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.y - createEnvironment.height/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.z - createEnvironment.depth/2.0f+createEnvironment.errorBuffer);
-				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-				Instantiate(goldPrefab, curPosition, curRotation);
+			
+			
+			if(addGraphicGold && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
+			{
+				myEnvironment.createAtom(goldPrefab);
 			}
-		
-			if(addGraphicPlatinum && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
-				//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
-				Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x - createEnvironment.width/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.y - createEnvironment.height/2.0f+createEnvironment.errorBuffer, createEnvironment.centerPos.z - createEnvironment.depth/2.0f+createEnvironment.errorBuffer);
-				Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-				Instantiate(platinumPrefab, curPosition, curRotation);
+			
+			
+			if(addGraphicPlatinum && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
+			{
+				myEnvironment.createAtom(platinumPrefab);
 			}
-					
+			
 			addGraphicCopper = false;
 			addGraphicGold = false;
 			addGraphicPlatinum = false;
@@ -607,7 +612,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			clicked = false;
 			startTime = 0.0f;
 		}
-
+		
 		//create the atom selected graphic if the user has select 1 or more atoms
 		int selectedAtoms = CountSelectedAtoms ();
 		if (selectedAtoms > 0) {
@@ -619,14 +624,14 @@ public class AtomTouchGUI : MonoBehaviour {
 			GUI.DrawTexture(darkBlueRect, darkBlueBackground);
 			String atomSelectedString = selectedAtoms == 1 ? " Atom Selected" : " Atoms Selected";
 			GUI.Label(darkBlueRect, selectedAtoms.ToString() + atomSelectedString);
-
+			
 			Rect lightBlueRect = new Rect(darkBlueRect.x + darkBlueRect.width, 0.0f, 15.0f, darkBlueRect.height);
 			GUI.DrawTexture(lightBlueRect, lightBlueBackground);
 			GUI.DrawTexture(new Rect(lightBlueRect.x, lightBlueRect.y + (lightBlueRect.height) - 15.0f, lightBlueRect.width, 15.0f), whiteCornerArrow);
 			if(GUI.Button(lightBlueRect, "", buttonStyle)){
 				whiteCornerActive = !whiteCornerActive;
 			}
-
+			
 			if(whiteCornerActive){
 				Rect selectAllRect = new Rect(darkBlueRect.x, darkBlueRect.y + darkBlueRect.height, darkBlueRect.width + lightBlueRect.width, 45.0f);
 				GUI.DrawTexture(selectAllRect, darkBackground);
@@ -634,7 +639,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				selectAllText.alignment = TextAnchor.MiddleCenter;
 				selectAllText.fontSize = 22;
 				selectAllText.normal.textColor = Color.white;
-				if(selectedAtoms == allMolecules.Length){
+				if(selectedAtoms == Atom.AllAtoms.Count){
 					GUI.Label(selectAllRect, "Deselect All", selectAllText);
 					if(GUI.Button(selectAllRect, "", buttonStyle)){
 						DeselectAllAtoms();
@@ -648,49 +653,48 @@ public class AtomTouchGUI : MonoBehaviour {
 						whiteCornerActive = false;
 					}
 				}
-
+				
 			}
 		}
-
+		
 		GUIStyle timeText = GUI.skin.label;
 		timeText.alignment = TextAnchor.MiddleLeft;
 		timeText.fontSize = 18;
 		timeText.normal.textColor = Color.white;
 		GUI.Label (new Rect (Screen.width - 75.0f, 10.0f, 70.0f, 40.0f), Math.Round(StaticVariables.currentTime, 1) + "ps");
-
-		//print ("Potential energy: " + PotentialEnergy.finalPotentialEnergy);
-
+		
+		/*
 		if (slowMotionFrames > 0){
-			StaticVariables.MDTimestep = 0.5f * (float) Math.Pow (10, -15);
-			StaticVariables.fixedUpdateIntervalToRealTime = StaticVariables.MDTimestep / Time.fixedDeltaTime;
-			StaticVariables.updateIntervalToRealTime = StaticVariables.MDTimestep;
-			createEnvironment.preComputeCoeff();
+			StaticVariables.MDTimestep = StaticVariables.MDTimestep / 5.0f;
+			StaticVariables.MDTimestepSqr = StaticVariables.MDTimestep * StaticVariables.MDTimestep;
+			StaticVariables.MDTimestepInPicosecond = StaticVariables.MDTimestep / Mathf.Pow (10, -12);
+			myEnvironment.preCompute();
 			slowMotionFrames --;
 		}else if (slowMotionFrames == 0){
-			StaticVariables.MDTimestep = 3.0f * (float) Math.Pow (10, -15);
-			StaticVariables.fixedUpdateIntervalToRealTime = StaticVariables.MDTimestep / Time.fixedDeltaTime;
-			StaticVariables.updateIntervalToRealTime = StaticVariables.MDTimestep;
-			createEnvironment.preComputeCoeff();
+			StaticVariables.MDTimestep = StaticVariables.MDTimestep * 5.0f;
+			StaticVariables.MDTimestepSqr = StaticVariables.MDTimestep * StaticVariables.MDTimestep;
+			StaticVariables.MDTimestepInPicosecond = StaticVariables.MDTimestep / Mathf.Pow (10, -12);
+			myEnvironment.preCompute();
 			slowMotionFrames = -1;
 		}
-
-
+		*/
+		
+		
 	}
-
+	
 	//this function displays properties that are apart of the system as a whole, such as the number of atoms
 	void DisplaySystemProperties(Rect displayRect){
 		GUIStyle timeText = GUI.skin.label;
 		timeText.alignment = TextAnchor.MiddleLeft;
 		timeText.fontSize = 14;
 		timeText.normal.textColor = Color.white;
-
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		int totalAtoms = allMolecules.Length;
+		
+		int totalAtoms = Atom.AllAtoms.Count;
 		int copperAtoms = 0;
 		int goldAtoms = 0;
 		int platinumAtoms = 0;
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+			Atom currAtom = Atom.AllAtoms[i];
 			if (currAtom.GetComponent<Copper> () != null) {
 				copperAtoms++;
 			}
@@ -706,15 +710,15 @@ public class AtomTouchGUI : MonoBehaviour {
 		GUI.Label (new Rect(displayRect.x + 10.0f, displayRect.y + 70.0f, 225, 30), "Gold Atoms: " + goldAtoms);
 		GUI.Label (new Rect(displayRect.x + 10.0f, displayRect.y + 100.0f, 225, 30), "Platinum Atoms: " + platinumAtoms);
 	}
-
+	
 	//this function display the properties that are specific to one specific atom such as its position, velocity, and type
-	void DisplayAtomProperties(GameObject currAtom, Rect displayRect){
-
+	void DisplayAtomProperties(Atom currAtom, Rect displayRect){
+		
 		GUIStyle timeText = GUI.skin.label;
 		timeText.alignment = TextAnchor.MiddleLeft;
 		timeText.fontSize = 14;
 		timeText.normal.textColor = Color.white;
-
+		
 		String elementName = "";
 		String elementSymbol = "";
 		
@@ -740,21 +744,19 @@ public class AtomTouchGUI : MonoBehaviour {
 		DisplayBondProperties (currAtom, displayRect);
 		
 	}
-
+	
 	//this function displays the angles of the bonds to other atoms
-	void DisplayBondProperties(GameObject currAtom, Rect displayRect){
+	void DisplayBondProperties(Atom currAtom, Rect displayRect){
 		
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
 		List<Vector3> bonds = new List<Vector3>();
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject atomNeighbor = allMolecules[i];
-			if(atomNeighbor == currAtom) continue;
-			Atom atomScript = currAtom.GetComponent<Atom>();
-			if(Vector3.Distance(currAtom.transform.position, atomNeighbor.transform.position) < atomScript.BondDistance(atomNeighbor)){
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+			Atom atomNeighbor = Atom.AllAtoms[i];
+			if(atomNeighbor.gameObject == currAtom.gameObject) continue;
+			if(Vector3.Distance(currAtom.transform.position, atomNeighbor.transform.position) < currAtom.BondDistance(atomNeighbor)){
 				bonds.Add(atomNeighbor.transform.position);
 			}
 		}
-
+		
 		//need more than 1 bond to form an angle
 		if (bonds.Count > 1) {
 			int angleNumber = 1;
@@ -787,49 +789,43 @@ public class AtomTouchGUI : MonoBehaviour {
 		}
 		
 	}
-
+	
 	//this function selects all of the atoms in the scene
 	void SelectAllAtoms(){
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			Atom atomScript = currAtom.GetComponent<Atom>();
-			atomScript.selected = true;
-			atomScript.SetSelected(true);
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+			Atom currAtom = Atom.AllAtoms[i];
+			currAtom.selected = true;
+			currAtom.SetSelected(true);
 		}
 	}
-
+	
 	//this function deselects all of the atoms in the scene
 	void DeselectAllAtoms(){
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
-			Atom atomScript = currAtom.GetComponent<Atom>();
-			atomScript.selected = false;
-			atomScript.SetSelected(false);
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+			Atom currAtom = Atom.AllAtoms[i];
+			currAtom.selected = false;
+			currAtom.SetSelected(false);
 		}
 	}
-
+	
 	//this function returns the number of atoms that are selected
 	int CountSelectedAtoms(){
 		int selectedAtoms = 0;
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < Atom.AllMolecules.Count; i++) {
-			Atom currAtom = Atom.AllMolecules[i];
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+			Atom currAtom = Atom.AllAtoms[i];
 			if(currAtom.selected){
 				selectedAtoms++;
 			}
 		}
 		return selectedAtoms;
 	}
-
+	
 	//this function checks the position of all of the atoms to make sure they are inside of the box
 	void CheckAtomVolumePositions(){
-
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
+		
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
-		for (int i = 0; i < allMolecules.Length; i++) {
-			GameObject currAtom = allMolecules[i];
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+			Atom currAtom = Atom.AllAtoms[i];
 			Vector3 newPosition = currAtom.transform.position;
 			if(currAtom.transform.position.x > createEnvironment.bottomPlane.transform.position.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer){
 				newPosition.x = createEnvironment.bottomPlane.transform.position.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
@@ -851,10 +847,10 @@ public class AtomTouchGUI : MonoBehaviour {
 			}
 			currAtom.transform.position = newPosition;
 		}
-
+		
 		
 	}
-
+	
 	//this function changes the panels so they are in double clicked mode
 	public void SetDoubleClicked(){
 		dataPanelActive = true;
@@ -864,7 +860,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		temperaturePanelActive = false;
 		volumePanelActive = false;
 	}
-
+	
 	//this function disables the panels so it goes back to the default mode
 	void RedXClicked(){
 		dataPanelActive = false;
@@ -874,36 +870,204 @@ public class AtomTouchGUI : MonoBehaviour {
 		temperaturePanelActive = true;
 		volumePanelActive = true;
 	}
-
+	
 	//this function give all atoms in the scene a random velocity
 	public void AtomKick(){
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for(int i = 0; i < allMolecules.Length; i++){
-			GameObject currAtom = allMolecules[i];
+		for(int i = 0; i < Atom.AllAtoms.Count; i++){
+			Atom currAtom = Atom.AllAtoms[i];
 			float xVelocity = 0.0f;
 			float yVelocity = 0.0f;
 			float zVelocity = 0.0f;
+			float maxVelocity = 0.05f / StaticVariables.MDTimestep; //this is maximum random velocity and needs to be determined emperically.
 			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
-				xVelocity = UnityEngine.Random.Range(1.0f, 5.0f);
+				xVelocity = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
 			}
 			else{
-				xVelocity = UnityEngine.Random.Range(-5.0f, -1.0f);
+				xVelocity = UnityEngine.Random.Range(-5.0f * maxVelocity, -1.0f * maxVelocity);
 			}
 			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
-				yVelocity = UnityEngine.Random.Range(1.0f, 5.0f);
+				yVelocity = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
 			}
 			else{
-				yVelocity = UnityEngine.Random.Range(-5.0f, -1.0f);
+				yVelocity = UnityEngine.Random.Range(-5.0f * maxVelocity, -1.0f * maxVelocity);
 			}
 			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
-				zVelocity = UnityEngine.Random.Range(1.0f, 5.0f);
+				zVelocity = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
 			}
 			else{
-				zVelocity = UnityEngine.Random.Range(-5.0f, -1.0f);
+				zVelocity = UnityEngine.Random.Range(-5.0f * maxVelocity, -1.0f * maxVelocity);
 			}
-			currAtom.rigidbody.velocity = new Vector3(xVelocity, yVelocity, zVelocity);
+			currAtom.velocity = new Vector3(xVelocity, yVelocity, zVelocity);
+			//currAtom.accelerationOld = Vector3.zero;
+			//currAtom.accelerationNew = Vector3.zero;
 		}
 	}
 	
 	
+
+
+
+	public void AddPlatinumAtom(){
+		
+		if(Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
+			//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
+			CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
+			Vector3 curPosition = new Vector3 (myEnvironment.centerPos.x - myEnvironment.width/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.y - myEnvironment.height/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.z - myEnvironment.depth/2.0f+myEnvironment.errorBuffer);
+			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+			Instantiate(platinumPrefab, curPosition, curRotation);
+	}
+	
+
+
+	
+}
+
+	public void AddGoldAtom(){
+		
+		if(Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
+			//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
+			CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
+			Vector3 curPosition = new Vector3 (myEnvironment.centerPos.x - myEnvironment.width/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.y - myEnvironment.height/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.z - myEnvironment.depth/2.0f+myEnvironment.errorBuffer);
+			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+			Instantiate(goldPrefab, curPosition, curRotation);
+		}
+
+	}
+
+	public void AddCopperAtom(){
+		
+		if(Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
+			//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
+			CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
+			Vector3 curPosition = new Vector3 (myEnvironment.centerPos.x - myEnvironment.width/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.y - myEnvironment.height/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.z - myEnvironment.depth/2.0f+myEnvironment.errorBuffer);
+			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+			Instantiate(copperPrefab, curPosition, curRotation);
+		}
+
+	
+	
+
+	}
+
+	public void ResetAll(){
+	
+		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
+		myEnvironment.InitAtoms ();
+		slowMotionFrames = StaticVariables.slowMotionFrames;
+	
+	}
+
+	public void createBondline(){
+
+				Texture bondLine = StaticVariables.drawBondLines ? bondLineUp : bondLineDown;
+				StaticVariables.drawBondLines = !StaticVariables.drawBondLines;
+		}
+
+
+	public void changeTimer(){
+
+		if(currentTimeSpeed == StaticVariables.TimeSpeed.Normal){
+			currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
+			StaticVariables.pauseTime = true;
+		}
+		else if(currentTimeSpeed == StaticVariables.TimeSpeed.Stopped){
+			currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
+			Time.timeScale = .05f;
+			StaticVariables.pauseTime = false;
+		}
+		else if(currentTimeSpeed == StaticVariables.TimeSpeed.SlowMotion){
+			currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
+			Time.timeScale = 1.0f;
+		}
+		
+	}
+
+	public void resetCamera(){
+
+
+		Camera.main.transform.position = new Vector3(0.0f, 0.0f, -40.0f);
+		Camera.main.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+	}
+
+	public void selectAll() {
+
+		SelectAllAtoms();
+
+	}
+
+	public void deselectAll(){
+		DeselectAllAtoms ();
+	}
+
+	public void ChangeAtomVolume(){
+		//GameObject[] volumetag = GameObject.FindGameObjectsWithTag("scrolltag1");
+		//GUI.Label (new Rect (volumetag.x + volumetag.width - 120.0f, (volumetag.y + (volumetag.height/2.0f)), 200.0f, 20), TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 273.15, 2)).ToString() + "C)", tempNumberText);
+		
+		Slider volumeSlider = null;
+		GameObject volume = GameObject.FindWithTag ("Scrolltag2");
+		volumeSlider = volume.GetComponent<Slider> ();
+		
+		//CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
+		CreateEnvironment createEnvironment = CreateEnvironment.myEnvironment;
+		GUI.Label (new Rect (800, 400, 255, 30), "hello");
+		
+		if (volumeSlider != null) 
+		{
+			//Debug.Log(Math.Abs(50 - volumeSlider.value));
+			createEnvironment.width = Math.Abs(50 - volumeSlider.value);
+			createEnvironment.height = Math.Abs(50 - volumeSlider.value);
+			createEnvironment.depth = Math.Abs(50 - volumeSlider.value);
+			createEnvironment.volume = createEnvironment.depth* createEnvironment.height*createEnvironment.width;
+		} 
+		else 
+		{
+			Debug.LogError("temp error");
+		}
+	}
+	
+	public void ChangeAtomTemperature(){
+		Slider tempSlider = null;
+		GameObject temp = GameObject.FindWithTag ("Scrolltag1");
+		
+		tempSlider = temp.GetComponent<Slider> ();
+		
+		if (tempSlider != null) 
+		{
+			StaticVariables.desiredTemperature = Math.Abs(5000 - tempSlider.value);
+		} 
+		else 
+		{
+			Debug.LogError("temp error");
+		}
+	}
+
+	/*
+	public void displayInfo(){
+
+			
+		//Boolean toDisplay;
+		if (toDisplay == true) {
+			GameObject atomDisplay = GameObject.FindGameObjectWithTag("atomInfo");
+			toDisplay = false;			
+			atomDisplay.SetActive(false);
+	
+						
+		} 
+		else {
+
+			//str.text ="Atom info";
+			GameObject atomDisplay = GameObject.FindGameObjectWithTag("atomInfo");
+
+
+
+
+		
+			
+
+		}
+		
+	
+	}
+	*/
+
 }

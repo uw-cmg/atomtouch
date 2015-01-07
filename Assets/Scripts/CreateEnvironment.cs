@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System;
 
 public class CreateEnvironment : MonoBehaviour {
-
+	
 	public int numMolecules = 10;
 	public List<Rigidbody> molecules = new List<Rigidbody>();
 	public int moleculeToSpawn = 0;
@@ -32,7 +32,7 @@ public class CreateEnvironment : MonoBehaviour {
 	public float depth;
 	public float volume = 8000.0f;
 	public TextMesh textMeshPrefab;
-
+	
 	private TextMesh bottomText;
 	private TextMesh sideText;
 	private TextMesh depthText;
@@ -43,27 +43,29 @@ public class CreateEnvironment : MonoBehaviour {
 	private GameObject rightPlane;
 	private GameObject leftPlane;
 	public Vector3 initialCenterPos;
-
+	
+	//this variables points to the instance of the create environment
+	public static CreateEnvironment myEnvironment;
+	
 	void Awake(){
-		StaticVariables.createEnvironment = this;
+		CreateEnvironment.myEnvironment = this;
 	}
-
+	
 	void Start () {
-
+		
 		// pre-compute coefficients used in various types of potentials so that we don't have to calculate them dynamically
-		preComputeCoeff ();
-
-		centerPos = new Vector3 (0.0f, 0.0f, 0.0f);
-		initialCenterPos = centerPos;
-		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
-
+		preCompute ();
+		
 		//create the atoms
 		InitAtoms ();
-
+		
+		centerPos = Vector3.zero;
+		initialCenterPos = centerPos;
+		
 		//figure out the dimensions of the box based on the volume
-		width = (float)Math.Pow (volume, (1.0f / 3.0f));
-		height = (float)Math.Pow (volume, (1.0f / 3.0f));
-		depth = (float)Math.Pow (volume, (1.0f / 3.0f));
+		width = Mathf.Pow (volume, (1.0f / 3.0f));
+		height = Mathf.Pow (volume, (1.0f / 3.0f));
+		depth = Mathf.Pow (volume, (1.0f / 3.0f));
 		
 		//create the bottom plane
 		Quaternion bottonPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 0.0f);
@@ -72,7 +74,7 @@ public class CreateEnvironment : MonoBehaviour {
 		bottomPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
 		bottomPlane.name = "BottomPlane";
 		bottomPlane.tag = "Plane";
-
+		
 		//create the top plane
 		Quaternion topPlaneRotation = Quaternion.Euler (0.0f, 180.0f, 180.0f);
 		Vector3 topPlanePos = new Vector3 (centerPos.x, centerPos.y + (height/2.0f), centerPos.z);
@@ -80,7 +82,7 @@ public class CreateEnvironment : MonoBehaviour {
 		topPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
 		topPlane.name = "TopPlane";
 		topPlane.tag = "Plane";
-
+		
 		//create the back plane
 		Quaternion backPlaneRotation = Quaternion.Euler (270.0f, 0.0f, 0.0f);
 		Vector3 backPlanePos = new Vector3 (centerPos.x, centerPos.y, centerPos.z + (depth/2.0f));
@@ -88,7 +90,7 @@ public class CreateEnvironment : MonoBehaviour {
 		backPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
 		backPlane.name = "BackPlane";
 		backPlane.tag = "Plane";
-
+		
 		//create the front plane
 		Quaternion frontPlaneRotation = Quaternion.Euler (90.0f, 0.0f, 0.0f);
 		Vector3 frontPlanePos = new Vector3 (centerPos.x, centerPos.y, centerPos.z - (depth/2.0f));
@@ -96,7 +98,7 @@ public class CreateEnvironment : MonoBehaviour {
 		frontPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
 		frontPlane.name = "FrontPlane";
 		frontPlane.tag = "Plane";
-
+		
 		//create the right plane
 		Quaternion rightPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 90.0f);
 		Vector3 rightPlanePos = new Vector3 (centerPos.x + (width/2.0f), centerPos.y, centerPos.z);
@@ -104,7 +106,7 @@ public class CreateEnvironment : MonoBehaviour {
 		rightPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
 		rightPlane.name = "RightPlane";
 		rightPlane.tag = "Plane";
-
+		
 		//create the left plane
 		Quaternion leftPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 270.0f);
 		Vector3 leftPlanePos = new Vector3 (centerPos.x - (width/2.0f), centerPos.y, centerPos.z);
@@ -112,7 +114,7 @@ public class CreateEnvironment : MonoBehaviour {
 		leftPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
 		leftPlane.name = "LeftPlane";
 		leftPlane.tag = "Plane";
-
+		
 		//create the lines that border the box and the text of width, height, and depth
 		//bottom line and text
 		Color lineColor = new Color (Color.yellow.r, Color.yellow.g, Color.yellow.b, .6f);
@@ -123,7 +125,7 @@ public class CreateEnvironment : MonoBehaviour {
 		bottomLine.SetColors(lineColor, lineColor);
 		bottomLine.SetWidth(0.2F, 0.2F);
 		bottomLine.SetVertexCount(2);
-
+		
 		//side line and text
 		sideText = Instantiate(textMeshPrefab, new Vector3(bottomPlanePos.x + (width/2.0f) + 1.0f, bottomPlanePos.y + (height*7/10.0f), bottomPlanePos.z - (depth/2.0f)), Quaternion.identity) as TextMesh;
 		sideText.text = VerticalText(height.ToString() + " Angstroms");
@@ -132,7 +134,7 @@ public class CreateEnvironment : MonoBehaviour {
 		sideLine.SetColors(lineColor, lineColor);
 		sideLine.SetWidth(0.2F, 0.2F);
 		sideLine.SetVertexCount(2);
-
+		
 		//depth line and text
 		depthText = Instantiate(textMeshPrefab, new Vector3(centerPos.x + (width/2.0f), bottomPlanePos.y - 1.0f, centerPos.z - 2.0f), Quaternion.Euler(0.0f, -90.0f, 0.0f)) as TextMesh;
 		depthText.text = depth.ToString() + " Angstroms";
@@ -141,36 +143,35 @@ public class CreateEnvironment : MonoBehaviour {
 		depthLine.SetColors(lineColor, lineColor);
 		depthLine.SetWidth(0.2F, 0.2F);
 		depthLine.SetVertexCount(2);
-
+		
 		//give all of the atoms a random velocity on startup
 		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		atomTouchGUI.AtomKick ();
 	}
-
-	void Update () {
-
+	
+	void Update ()
+	{
+		
 		//when the volume of the box changes the width, height, and depth must change as well. The lines and the text must respond accordingly
 		width = Mathf.Pow (volume, (1.0f / 3.0f));
 		height = Mathf.Pow (volume, (1.0f / 3.0f));
 		depth = Mathf.Pow (volume, (1.0f / 3.0f));
 		
-		CameraScript cameraScript = Camera.main.GetComponent<CameraScript> ();
-
 		//change the position of the bottom line
 		LineRenderer bottomLine = bottomText.GetComponent<LineRenderer> ();
 		bottomLine.SetPosition(0, new Vector3(bottomPlane.transform.position.x - (width/2.0f), bottomPlane.transform.position.y, bottomText.transform.position.z));
 		bottomLine.SetPosition(1, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, bottomText.transform.position.z));
-
+		
 		//change the position of the side line
 		LineRenderer sideLine = sideText.GetComponent<LineRenderer> ();
 		sideLine.SetPosition (0, new Vector3 (bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, sideText.transform.position.z));
 		sideLine.SetPosition (1, new Vector3 (bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y + height, sideText.transform.position.z));
-
+		
 		//change the position of the depth line
 		LineRenderer depthLine = depthText.GetComponent<LineRenderer> ();
 		depthLine.SetPosition(0, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, bottomPlane.transform.position.z - (depth/2.0f)));
 		depthLine.SetPosition(1, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, bottomPlane.transform.position.z + (depth/2.0f)));
-
+		
 		//change the text of the labels and change their positions
 		bottomText.text = width.ToString() + " Angstroms";
 		sideText.text = VerticalText(height.ToString() + " Angstroms");
@@ -178,7 +179,7 @@ public class CreateEnvironment : MonoBehaviour {
 		sideText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f) + 1.0f, bottomPlane.transform.position.y + (height*7/10.0f), bottomPlane.transform.position.z - (depth / 2.0f));
 		depthText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f), bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - 2.0f);
 		bottomText.transform.position = new Vector3 (bottomPlane.transform.position.x - 2.0f, bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - (depth / 2.0f));
-
+		
 		//change the position of the box
 		rightPlane.transform.position = new Vector3 (initialCenterPos.x + (width/2.0f), initialCenterPos.y, initialCenterPos.z);
 		leftPlane.transform.position = new Vector3 (initialCenterPos.x - (width/2.0f), initialCenterPos.y, initialCenterPos.z);
@@ -186,7 +187,7 @@ public class CreateEnvironment : MonoBehaviour {
 		topPlane.transform.position = new Vector3 (initialCenterPos.x, initialCenterPos.y + (height/2.0f), initialCenterPos.z);
 		backPlane.transform.position = new Vector3 (initialCenterPos.x, initialCenterPos.y, initialCenterPos.z + (depth/2.0f));
 		frontPlane.transform.position = new Vector3 (initialCenterPos.x, initialCenterPos.y, initialCenterPos.z - (depth/2.0f));
-
+		
 		//change the size of the box
 		bottomPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
 		topPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
@@ -194,10 +195,8 @@ public class CreateEnvironment : MonoBehaviour {
 		frontPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
 		rightPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
 		leftPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
-
-
 	}
-
+	
 	//make the side text become vertical
 	String VerticalText(String text){
 		System.Text.StringBuilder verticalText = new System.Text.StringBuilder (text.Length * 2);
@@ -206,156 +205,106 @@ public class CreateEnvironment : MonoBehaviour {
 		}
 		return verticalText.ToString();
 	}
-
-	//initialize the atoms to a random position and to the original number of atoms
-	public void InitAtoms(){
+	
+	public void preCompute()
+	{
+		if (Potential.currentPotential == Potential.potentialType.LennardJones)
+			Potential.myPotential = new LennardJones();
+		else if(Potential.currentPotential == Potential.potentialType.Buckingham)
+			Potential.myPotential = new Buckingham();
 		
-		for (int i = Atom.AllMolecules.Count-1; i >= 0; i--) {
-			Atom currAtom = Atom.AllMolecules [i];
+		Potential.myPotential.preCompute ();
+	}
+	
+	//initialize the atoms to a random position and to the original number of atoms
+	public void InitAtoms()
+	{
+		//destroy and unregister all the current atoms
+		for (int i = Atom.AllAtoms.Count-1; i >= 0; i--)
+		{
+			Atom currAtom = Atom.AllAtoms [i];
+			Atom.UnregisterAtom(currAtom);
 			Destroy (currAtom.gameObject);
 		}
-
-		if (StaticVariables.currentPotential == StaticVariables.Potential.Buckingham) {
-			for (int i = 0; i < (int)(numMolecules/2); i++) {
-				Vector3 position = new Vector3 (centerPos.x + (UnityEngine.Random.Range (-(width / 2.0f) + errorBuffer, (width / 2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range (-(height / 2.0f) + errorBuffer, (height / 2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range (-(depth / 2.0f) + errorBuffer, (depth / 2.0f) - errorBuffer)));
-				Quaternion rotation = Quaternion.Euler (0, 0, 0);
-				Instantiate (molecules [0].rigidbody, position, rotation);
-			}
-			for (int i = (int)(numMolecules/2); i < numMolecules; i++) {
-				Vector3 position = new Vector3 (centerPos.x + (UnityEngine.Random.Range (-(width / 2.0f) + errorBuffer, (width / 2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range (-(height / 2.0f) + errorBuffer, (height / 2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range (-(depth / 2.0f) + errorBuffer, (depth / 2.0f) - errorBuffer)));
-				Quaternion rotation = Quaternion.Euler (0, 0, 0);
-				Instantiate (molecules [1].rigidbody, position, rotation);
-			}
-		} else {
-			for (int i = 0; i < numMolecules; i++) {
-				Vector3 position = new Vector3 (centerPos.x + (UnityEngine.Random.Range (-(width / 2.0f) + errorBuffer, (width / 2.0f) - errorBuffer)), centerPos.y + (UnityEngine.Random.Range (-(height / 2.0f) + errorBuffer, (height / 2.0f) - errorBuffer)), centerPos.z + (UnityEngine.Random.Range (-(depth / 2.0f) + errorBuffer, (depth / 2.0f) - errorBuffer)));
-				Quaternion rotation = Quaternion.Euler (0, 0, 0);
-				Instantiate (molecules [moleculeToSpawn].rigidbody, position, rotation);
+		
+		//initialize the new atoms
+		if (Potential.currentPotential == Potential.potentialType.LennardJones)
+		{
+			for (int i = 0; i < numMolecules; i++)
+			{
+				createAtom (molecules [0]);
 			}
 		}
-
-		/*
-		for (int i = 0; i < Atom.AllMolecules.Count; i++) {
-			Atom currAtom = Atom.AllMolecules[i];
-			currAtom.name = (i).ToString();
+		else if (Potential.currentPotential == Potential.potentialType.Buckingham)
+		{
+			for (int i = 0; i < numMolecules/2; i++)
+			{
+				createAtom (molecules [0]);
+			}
+			for (int i = numMolecules/2; i < numMolecules; i++)
+			{
+				createAtom (molecules [1]);
+			}
 		}
-		*/
+		Potential.myPotential.calculateVerletRadius ();
+		
 		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		atomTouchGUI.AtomKick();
 	}
-
-
-	//the function returns the LennarJones force on the atom given the list of the atoms that are within range of it
-	float CalcLennardJonesForce(float distance){
-		double invDistance2 = 1.0 / distance / distance;
-		double invDistance6 = invDistance2 * invDistance2 * invDistance2;
-		double r_min = StaticVariables.r_min_multiplier;
+	
+	
+	// this method creates a new atom from the type of the preFab and checks the position to have a far enough distance from other atoms
+	public void createAtom(Rigidbody preFab)
+	{
+		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
+		Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+		Instantiate(preFab, myEnvironment.centerPos, curRotation);
+		int i = Atom.AllAtoms.Count-1;
+		Atom currAtom = Atom.AllAtoms[i];
+		currAtom.gameObject.name = i.ToString();
 		
-		double forceMagnitude = 0.0;
-
-		if (distance > r_min) {
-			forceMagnitude = invDistance2* invDistance6 * (invDistance6 - 0.5);
+		float realWidth = myEnvironment.width - 2.0f * myEnvironment.errorBuffer;
+		float realHeight = myEnvironment.height - 2.0f * myEnvironment.errorBuffer;
+		float realDepth = myEnvironment.depth - 2.0f * myEnvironment.errorBuffer;
+		Vector3 centerPos = myEnvironment.centerPos;
 		
-		// Smooth the potential to go to a constant not infinity at r=0
-		} else {
-			double invr_min = 1 / r_min; 
-			double invr_min2 = invr_min * invr_min;
-			double invr_min6 = invr_min2 * invr_min2 * invr_min2;
-					
-			double magnitude_Vmin = invr_min2 * invr_min6 * (invr_min6 - 0.5);
-					
-			double r_Vmax = r_min / 1.5;
-			double invr_Vmax2 = 1 / r_Vmax / r_Vmax;
-			double invr_Vmax6 = invr_Vmax2 * invr_Vmax2 * invr_Vmax2;
-			
-			double magnitude_Vmax = invr_Vmax2 * invr_Vmax6 * (invr_Vmax6 - 0.5);
-					
-			double part1 = (distance / r_min) * (Math.Exp (distance - r_min));
-			double part2 = magnitude_Vmax - magnitude_Vmin;
-			forceMagnitude = magnitude_Vmax - (part1 * part2);
+		int tryNumber = 0;
+		
+		bool proximityFlag = false;
+		while ((proximityFlag == false) && (tryNumber < 100))
+		{
+			tryNumber ++;
+			currAtom.position =  new Vector3 (centerPos.x + (UnityEngine.Random.Range (-realWidth/2.0f, realWidth/2.0f)), centerPos.y + (UnityEngine.Random.Range (-realHeight/2.0f, realHeight/2.0f)), centerPos.z + (UnityEngine.Random.Range (-realDepth/2.0f, realDepth/2.0f)));
+			proximityFlag = myEnvironment.checkProximity(currAtom);
 		}
-		float magnitude = (float)forceMagnitude;
-		return magnitude;
+		currAtom.transform.position = currAtom.position;
+		
+		if ((tryNumber == 100) && (proximityFlag == false)) 
+		{
+			Atom.UnregisterAtom(currAtom);
+			Destroy (currAtom.gameObject);
+			Debug.Log ("No space for atoms!");
+		}
+		
 	}
-
-	// This function pre-computes coefficients used in various types of potentials so that we don't have to calculate them dynamically
-	public void preComputeCoeff(){
-		//the min sigma value and max sigma value are used for precalculating LJ forces.
-		Atom atomScript = molecules [1].GetComponent<Atom> ();
-		StaticVariables.sigmaValueMin = atomScript.sigma;
-		StaticVariables.sigmaValueMax = atomScript.sigma;
-
-		for (int i = 0; i < molecules.Count; i++) {
-			atomScript = molecules[i].GetComponent<Atom>();
-			float currentSigma = atomScript.sigma;
-			StaticVariables.sigmaValues[atomScript.atomID,atomScript.atomID] = currentSigma;
+	
+	//check the distance between the atoms, if it is larger than the equilibrium position move accept the random number, otherwise pick another set of random positions.
+	private bool checkProximity(Atom currAtom)
+	{
+		bool proximityFlag = true;
+		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
+		{
+			Atom otherAtom = Atom.AllAtoms[i];
+			Vector3 deltaR = Boundary.myBoundary.deltaPosition(currAtom, otherAtom);
 			
-			if (currentSigma > StaticVariables.sigmaValueMax) {
-				StaticVariables.sigmaValueMax = currentSigma;
-			}
-			if (currentSigma < StaticVariables.sigmaValueMin) {
-				StaticVariables.sigmaValueMin = currentSigma;
-			}
-			
-			float currentA = atomScript.buck_A;
-			StaticVariables.coeff_A[atomScript.atomID,atomScript.atomID] = currentA;
-			float currentB = atomScript.buck_B;
-			StaticVariables.coeff_B[atomScript.atomID,atomScript.atomID] = currentB;
-			float currentC = atomScript.buck_C;
-			StaticVariables.coeff_C[atomScript.atomID,atomScript.atomID] = currentC;
-			float currentD = atomScript.buck_D;
-			StaticVariables.coeff_D[atomScript.atomID,atomScript.atomID] = currentD;
-			
-			StaticVariables.forceCoeffLJ[atomScript.atomID,atomScript.atomID] = 48.0f * atomScript.epsilon / StaticVariables.angstromsToMeters / currentSigma / currentSigma / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters * StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime;
-			StaticVariables.forceCoeffBK[atomScript.atomID,atomScript.atomID] = StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters;
-		}
-		for (int i = 0; i < molecules.Count; i++) {
-			Atom firstAtomScript = molecules[i].GetComponent<Atom>();
-			for(int j = i+1; j < molecules.Count; j++){
-				Atom secondAtomScript = molecules[j].GetComponent<Atom>();
-				
-				float currentSigma = Mathf.Sqrt(firstAtomScript.sigma+secondAtomScript.sigma);
-				StaticVariables.sigmaValues[firstAtomScript.atomID,secondAtomScript.atomID] = currentSigma;
-				
-				if (currentSigma > StaticVariables.sigmaValueMax) {
-					StaticVariables.sigmaValueMax = currentSigma;
-				}
-				if (currentSigma < StaticVariables.sigmaValueMin) {
-					StaticVariables.sigmaValueMin = currentSigma;
-				}
-				
-				
-				float currentA = Mathf.Sqrt(firstAtomScript.buck_A*secondAtomScript.buck_A);
-				StaticVariables.coeff_A[firstAtomScript.atomID,secondAtomScript.atomID] = currentA;
-				StaticVariables.coeff_A[secondAtomScript.atomID,firstAtomScript.atomID] = currentA;
-				
-				float currentB = Mathf.Sqrt(firstAtomScript.buck_B*secondAtomScript.buck_B);
-				StaticVariables.coeff_B[firstAtomScript.atomID,secondAtomScript.atomID] = currentB;
-				StaticVariables.coeff_B[secondAtomScript.atomID,firstAtomScript.atomID] = currentB;
-				
-				float currentC = Mathf.Sqrt(firstAtomScript.buck_C*secondAtomScript.buck_C);
-				StaticVariables.coeff_C[firstAtomScript.atomID,secondAtomScript.atomID] = currentC;
-				StaticVariables.coeff_C[secondAtomScript.atomID,firstAtomScript.atomID] = currentC;
-				
-				float currentD = Mathf.Sqrt(firstAtomScript.buck_D*secondAtomScript.buck_D);
-				StaticVariables.coeff_D[firstAtomScript.atomID,secondAtomScript.atomID] = currentD;
-				StaticVariables.coeff_D[secondAtomScript.atomID,firstAtomScript.atomID] = currentD;
-				
-				StaticVariables.forceCoeffLJ[firstAtomScript.atomID,secondAtomScript.atomID] = 48.0f * firstAtomScript.epsilon / StaticVariables.angstromsToMeters / currentSigma / currentSigma / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters * StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime;
-				StaticVariables.forceCoeffBK[firstAtomScript.atomID,secondAtomScript.atomID] = StaticVariables.fixedUpdateIntervalToRealTime * StaticVariables.fixedUpdateIntervalToRealTime / StaticVariables.mass100amuToKg / StaticVariables.angstromsToMeters;
+			float distanceSqr = deltaR.sqrMagnitude;
+			//only get the forces of the atoms that are within the cutoff range
+			if (distanceSqr < (3.0f * 3.0f))
+			{
+				proximityFlag = false;
 			}
 		}
-
-		// precalculate the LennardJones potential and store it in preLennarJones list.
-		int nR = (int)((StaticVariables.cutoff/StaticVariables.sigmaValueMin)/(StaticVariables.deltaR/StaticVariables.sigmaValueMax))+2;
-		
-		StaticVariables.preLennardJones = new float[nR];
-		
-		for (int i = 0; i < nR; i++) {
-			float distance = (float)i * StaticVariables.deltaR / StaticVariables.sigmaValueMax;
-			float magnitude = CalcLennardJonesForce (distance);
-			StaticVariables.preLennardJones[i] = magnitude;
-		}
+		return proximityFlag;
 	}
-
+	
 }

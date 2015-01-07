@@ -16,15 +16,14 @@ using System;
 
 public class Platinum : Atom {
 	
-	private float sigmaValue = 2.5394f;
 	public Material platinumMaterial;
 	public Material selectedMaterial;
 	public Material transparentMaterial;
-
+	
 	public override String atomName { 
 		get{ return "Platinum"; } 
 	}
-
+	
 	public override int atomID {
 		get{ return 2;}
 	}
@@ -32,15 +31,15 @@ public class Platinum : Atom {
 	public override float epsilon {
 		get { return ((float)(1.0922 * Math.Pow(10, -19))); } // J
 	}
-		
+	
 	public override float sigma {
-		get { return sigmaValue; }
+		get { return 2.5394f; }
 	}
 	
-	protected override float massamu {
+	public override float massamu {
 		get { return 195.084f; } //amu
 	}
-
+	
 	// These are just dummy variables for platinum
 	public override float buck_A {
 		get { return 0.0f; } //units of [J]
@@ -61,7 +60,7 @@ public class Platinum : Atom {
 	public override float Q_eff {
 		get { return 0.0f; } //units of Coulomb
 	}
-
+	
 	public override void SetSelected (bool selected){
 		if (selected) {
 			gameObject.renderer.material = selectedMaterial;
@@ -70,7 +69,7 @@ public class Platinum : Atom {
 			gameObject.renderer.material = platinumMaterial;
 		}
 	}
-
+	
 	public override void SetTransparent(bool transparent){
 		if (transparent) {
 			gameObject.renderer.material = transparentMaterial;
@@ -80,12 +79,12 @@ public class Platinum : Atom {
 		}
 	}
 	
-
+	
 	void Start () {
 		//make the atom its original color to start
 		SetSelected (false);
 		//scale the atom according to sigma
-		gameObject.transform.localScale = new Vector3(sigmaValue * .5f, sigmaValue * .5f, sigmaValue * .5f);
+		gameObject.transform.localScale = new Vector3(sigma * .5f, sigma * .5f, sigma * .5f);
 	}
-
+	
 }

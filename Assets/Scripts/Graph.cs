@@ -19,82 +19,73 @@ using System.Collections;
 using System;
 
 public class Graph : MonoBehaviour {
-
+	
 	public Material mat;
 	private Queue dataPoints;
-	private float startTime;
-
+	
 	//graph variables
 	public float xCoord;
 	public float yCoord;
 	public float width = 180.0f;
 	public float height = 184.0f;
-	public float refreshInterval = .1f;
+	public float refreshInterval = 0.1f;
 	public float lineWidth = .015f;
 	private float zDepth = 5.0f;
-	public float spacing = 15.0f;
+	
+	public float spacing = 0.5f;
 	private float maxDataPoints;
-	private float dataMaximum = 0.0f;
-	private float dataMinimum = -1 * Mathf.Pow(10, -14);
+	private float dataMaximum = 5.0f;
+	private float dataMinimum = 0.0f;
 	private float lowTime;
 	private float highTime;
-	private bool first;
-	public string yUnitLabel = "J";
+	public string yUnitLabel = "K";
 	public string xUnitLabel = "ps";
-	public string graphLabel = "Potential Energy vs Time";
+	public string graphLabel = "Temperature vs Time";
 	public Color axisColor = Color.red;
 	public Color lineColor = Color.yellow;
-	private bool updateTime = false;
-
+	public static int numMDStepSinceLastRecord = 0;
+	private float timeSpacing = 20.0f;
+	
 	void Start () {
-
+		
 		//these coorindates will be over written in AtomtouchGUI
 		xCoord = Screen.width - 250;
 		yCoord = 70;
-		first = true;
 		maxDataPoints = (width / spacing) + 1;
 		dataPoints = new Queue ();
-		startTime = Time.realtimeSinceStartup;
+	}
+	
+	//This method is called from AtomTouchGUI.cs
+	public void RecomputeMaxDataPoints(){
+		maxDataPoints = (width / spacing) + 1;
 		lowTime = 0.0f;
-		highTime = maxDataPoints * refreshInterval;
+		highTime = maxDataPoints * StaticVariables.MDTimestepInPicosecond * timeSpacing;
+		while (dataPoints.Count < maxDataPoints)
+		{
+			dataPoints.Enqueue(0.0f);
+		}
 	}
 
-	void Update(){
-
-		//this function enqueues the data points of potential energy every .1s
-		//it only dequeues values when the graph has reached the edge of the screen
-		if (AtomTouchGUI.currentTimeSpeed != StaticVariables.TimeSpeed.Stopped) {
-			StaticVariables.currentTime += Time.deltaTime;
-		}
-
-		if ((Time.time - startTime > refreshInterval && !StaticVariables.pauseTime) || first) {
-			if(dataPoints.Count < maxDataPoints){
-				dataPoints.Enqueue(PotentialEnergy.finalPotentialEnergy);
-			}
-			else{
-				dataPoints.Dequeue ();
-				dataPoints.Enqueue(PotentialEnergy.finalPotentialEnergy);
-
-				updateTime = true;
-			}
-
-			first = false;
-			startTime = Time.time;
-		}
-		if (updateTime) {
-			lowTime += Time.deltaTime;
-			highTime += Time.deltaTime;
+	/*
+	void Update()
+	{
+		if ((numMDStepSinceLastRecord > (int)timeSpacing)) 
+		{
+			dataPoints.Dequeue ();
+			dataPoints.Enqueue(StaticVariables.currentTemperature);
+			highTime = (float)Math.Round(StaticVariables.currentTime,1);
+			lowTime = (float)Math.Round(StaticVariables.currentTime - maxDataPoints * StaticVariables.MDTimestepInPicosecond * timeSpacing,1);
+			numMDStepSinceLastRecord = 0;
 		}
 		
 	}
-
-	public void RecomputeMaxDataPoints(){
-		maxDataPoints = (width / spacing) + 1;
-		highTime = maxDataPoints * refreshInterval;
-	}
-
+	*/
+	
 	void OnGUI(){
-
+		
+		float minRadius = 0.0f;
+		float maxRadius = PairDistributionFunction.maxR;
+		
 		//this function puts the labels of the graph on screen
 		GUIStyle graphText = GUI.skin.label;
 		graphText.alignment = TextAnchor.MiddleLeft;
@@ -104,16 +95,16 @@ public class Graph : MonoBehaviour {
 		if (atomGUI.dataPanelActive) {
 			GUI.Label (new Rect (xCoord + width/2.0f - 60, Screen.height - yCoord, 200, 20), graphLabel);
 			GUI.Label (new Rect (xCoord - 32, Screen.height - (Screen.height * .27f), 100, 20), (dataMaximum).ToString () + yUnitLabel);
-			GUI.Label (new Rect (xCoord - 53, Screen.height - yCoord - 15, 100, 20), (dataMinimum).ToString () + yUnitLabel);
-			GUI.Label (new Rect (xCoord - 5, Screen.height - yCoord, 100, 20), (Math.Round (lowTime)).ToString () + xUnitLabel);
-			GUI.Label (new Rect (xCoord + width - 35.0f, Screen.height - yCoord, 100, 20), (Math.Round(highTime)).ToString() + xUnitLabel);
+			GUI.Label (new Rect (xCoord - 53, Screen.height - yCoord - 15, 100, 20), (PairDistributionFunction.numberOfCalculations).ToString () + yUnitLabel);
+			GUI.Label (new Rect (xCoord - 5, Screen.height - yCoord, 100, 20), minRadius.ToString () + xUnitLabel);
+			GUI.Label (new Rect (xCoord + width - 35.0f, Screen.height - yCoord, 100, 20), maxRadius.ToString() + xUnitLabel);
 		}
-
+		
 	}
-
+	
 	//OnGUI will draw over this function, so the graph cannot be behind any GUI elements
 	void OnPostRender(){
-
+		
 		AtomTouchGUI atomGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		if (atomGUI.dataPanelActive) {
 			//draw the background for the graph
@@ -126,10 +117,10 @@ public class Graph : MonoBehaviour {
 			
 			//horizontal axis
 			StaticVariables.DrawLine (lowerLeft, lowerRight, axisColor, axisColor, lineWidth, mat);
-
+			
 			//vertical axis
 			StaticVariables.DrawLine (upperLeft, lowerLeft, axisColor, axisColor, lineWidth, mat);
-
+			
 			//tick marks
 			int numTicks = (int)(highTime - lowTime) + 1;
 			float tickSpacing = (float)((width-10.0f) / numTicks);
@@ -138,12 +129,16 @@ public class Graph : MonoBehaviour {
 				Vector3 bottom = camera.ScreenToWorldPoint(new Vector3(xCoord + (i*tickSpacing), yCoord - 10.0f, zDepth));
 				StaticVariables.DrawLine(top, bottom, Color.black, Color.black, lineWidth, mat);
 			}
-
+			
 			//draw the lines on the graph
-			object[] dataPointArray = dataPoints.ToArray ();
+			//object[] dataPointArray = dataPoints.ToArray ();
+			float[] dataPointArray = PairDistributionFunction.PairDistributionAverage;
+			spacing = width / dataPointArray.Length;
 			for (int i = 0; i < dataPointArray.Length - 1; i++) {
-				float firstPercentage = 1 - ((float)dataPointArray[i] / (dataMinimum - dataMaximum));
-				float secondPercentage = 1 - ((float)dataPointArray[i+1] / (dataMinimum - dataMaximum));
+				
+				float firstPercentage = ((float)dataPointArray[i]) / (dataMaximum - dataMinimum);
+				float secondPercentage = ((float)dataPointArray[i+1]) / (dataMaximum - dataMinimum);
+				
 				if(firstPercentage > 1.0f){
 					firstPercentage = 1.0f;
 				}
@@ -156,7 +151,7 @@ public class Graph : MonoBehaviour {
 				else if(secondPercentage < 0.0f){
 					secondPercentage = 0.0f;
 				}
-						
+				
 				float firstYAddition = firstPercentage * height;
 				float secondYAddition = secondPercentage * height;
 				
@@ -165,8 +160,8 @@ public class Graph : MonoBehaviour {
 				StaticVariables.DrawLine(firstPoint, secondPoint, lineColor, lineColor, lineWidth, mat);
 			}
 		}
-
-
-
+		
+		
+		
 	}
 }
