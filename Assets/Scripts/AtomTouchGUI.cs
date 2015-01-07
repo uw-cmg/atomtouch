@@ -50,7 +50,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	public Texture whiteCornerArrow;
 	public Texture downArrow;
 	public Texture upArrow;
-	
+	//some references to the UI
+	public GameObject timer;
 	//prefabs to spawn
 	public Rigidbody copperPrefab;
 	public Rigidbody goldPrefab;
@@ -965,19 +966,24 @@ public class AtomTouchGUI : MonoBehaviour {
 
 
 	public void changeTimer(){
-
+		RawImage ri = timer.GetComponent<RawImage>();
 		if(currentTimeSpeed == StaticVariables.TimeSpeed.Normal){
 			currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
 			StaticVariables.pauseTime = true;
+			//caller: main camera
+			ri.texture = stoppedTimeButton;
+
 		}
 		else if(currentTimeSpeed == StaticVariables.TimeSpeed.Stopped){
 			currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
 			Time.timeScale = .05f;
 			StaticVariables.pauseTime = false;
+			ri.texture = slowTimeButton;
 		}
 		else if(currentTimeSpeed == StaticVariables.TimeSpeed.SlowMotion){
 			currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
 			Time.timeScale = 1.0f;
+			ri.texture = normalTimeButton;
 		}
 		
 	}
