@@ -52,6 +52,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	public Texture upArrow;
 	//some references to the UI
 	public GameObject timer;
+	public GameObject tempSlider;//temperature
+	public GameObject volSlider;//volume
 	//prefabs to spawn
 	public Rigidbody copperPrefab;
 	public Rigidbody goldPrefab;
@@ -960,10 +962,20 @@ public class AtomTouchGUI : MonoBehaviour {
 
 	public void createBondline(){
 
-				Texture bondLine = StaticVariables.drawBondLines ? bondLineUp : bondLineDown;
-				StaticVariables.drawBondLines = !StaticVariables.drawBondLines;
-		}
+		Texture bondLine = StaticVariables.drawBondLines ? bondLineUp : bondLineDown;
+		StaticVariables.drawBondLines = !StaticVariables.drawBondLines;
+	}
 
+	//for volume slider
+	//range: 15 - 45
+	//step size: 5
+	public void SnapVolumeToInterval(int stepSize){
+		Slider volSliderComponent = volSlider.GetComponent<Slider>();
+		int rawVal = (int)volSliderComponent.value;
+		if(rawVal % stepSize != 0)
+			volSliderComponent.value = (rawVal / stepSize) * stepSize + stepSize;
+
+	}
 
 	public void changeTimer(){
 		RawImage ri = timer.GetComponent<RawImage>();
@@ -1020,8 +1032,11 @@ public class AtomTouchGUI : MonoBehaviour {
 		if (volumeSlider != null) 
 		{
 			//Debug.Log(Math.Abs(50 - volumeSlider.value));
-			createEnvironment.width = Math.Abs(50 - volumeSlider.value);
-			createEnvironment.height = Math.Abs(50 - volumeSlider.value);
+			//createEnvironment.width = Math.Abs(50 - volumeSlider.value);
+			//createEnvironment.height = Math.Abs(50 - volumeSlider.value);
+			//createEnvironment.depth = Math.Abs(50 - volumeSlider.value);
+			createEnvironment.width = Math.Abs(50-volumeSlider.value);
+			createEnvironment.height = Math.Abs(50-volumeSlider.value);
 			createEnvironment.depth = Math.Abs(50 - volumeSlider.value);
 			createEnvironment.volume = createEnvironment.depth* createEnvironment.height*createEnvironment.width;
 		} 
