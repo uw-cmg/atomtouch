@@ -21,11 +21,11 @@ public class VisualizeInteraction : MonoBehaviour {
 	void OnPostRender(){
 
 		if (StaticVariables.drawBondLines) {
-			for (int i = 0; i < Atom.AllMolecules.Count; i++) {
-				for(int j = i + 1; j < Atom.AllMolecules.Count; j++){
-					Atom currAtom = Atom.AllMolecules[i];
-					Atom neighborAtom = Atom.AllMolecules[j];
-					if((currAtom.transform.position - neighborAtom.transform.position).magnitude < currAtom.BondDistance(neighborAtom.gameObject)){
+			for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+				for(int j = i + 1; j < Atom.AllAtoms.Count; j++){
+					Atom currAtom = Atom.AllAtoms[i];
+					Atom neighborAtom = Atom.AllAtoms[j];
+					if((currAtom.transform.position - neighborAtom.transform.position).magnitude < currAtom.BondDistance(neighborAtom)){
 						//draw a line from currAtom to atomNeighbor
 						StaticVariables.DrawLine (currAtom.transform.position, neighborAtom.transform.position, Color.white, Color.white, .05f, mat);
 					}

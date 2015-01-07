@@ -129,11 +129,14 @@ public class CameraScript : MonoBehaviour {
 						first = false;
 					}
 
-					if(rotateAroundY){
-						Camera.main.transform.RotateAround(createEnvironment.centerPos, cameraRotation * Vector3.up, deltaTouchX);
-					}
-					else{
-						Camera.main.transform.RotateAround(createEnvironment.centerPos, cameraRotation * Vector3.right, deltaTouchY);
+					if(Input.mousePosition.x < (931-60))
+					{
+						if(rotateAroundY){
+							Camera.main.transform.RotateAround(createEnvironment.centerPos, cameraRotation * Vector3.up, deltaTouchX);
+						}
+						else{
+							Camera.main.transform.RotateAround(createEnvironment.centerPos, cameraRotation * Vector3.right, deltaTouchY);
+						}
 					}
 				}
 			}
