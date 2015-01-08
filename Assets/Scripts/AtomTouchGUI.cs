@@ -973,7 +973,6 @@ public class AtomTouchGUI : MonoBehaviour {
 	}
 
 	public void ResetAll(){
-	
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		myEnvironment.InitAtoms ();
 		slowMotionFrames = StaticVariables.slowMotionFrames;

@@ -65,7 +65,7 @@ public class StaticVariables {
 	public static float desiredTemperature = 300.0f;
 	
 	//this variable causes the bond lines to either draw or not draw
-	public static bool drawBondLines = false;
+	public static bool drawBondLines = true;
 	//the variable pauses the simulation of physics
 	public static bool pauseTime = false;
 	
