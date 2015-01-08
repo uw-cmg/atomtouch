@@ -811,7 +811,26 @@ public class AtomTouchGUI : MonoBehaviour {
 			currAtom.SetSelected(false);
 		}
 	}
-	
+
+
+	public void DeleteSelectedAtoms(){
+		Debug.Log("DeleteSelectedAtoms called");
+		for(int i=Atom.AllAtoms.Count-1; i >= 0;i--){
+			Atom currAtom = Atom.AllAtoms[i];
+			if(currAtom.selected){
+				//delete this atom from the list
+				Debug.Log("deleting atom: " + i);
+				currAtom.selected = false;
+				currAtom.SetSelected(false);
+				//Atom.AllAtoms.RemoveAt(i);
+				Atom.UnregisterAtom(currAtom);
+				//delete the object
+				Destroy(currAtom.gameObject);
+			}
+			
+
+		}
+	}
 	//this function returns the number of atoms that are selected
 	int CountSelectedAtoms(){
 		int selectedAtoms = 0;
