@@ -54,6 +54,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject timer;
 	public GameObject tempSlider;//temperature
 	public GameObject volSlider;//volume
+	public GameObject bondLineBtn; 
 	//prefabs to spawn
 	public Rigidbody copperPrefab;
 	public Rigidbody goldPrefab;
@@ -961,8 +962,9 @@ public class AtomTouchGUI : MonoBehaviour {
 	}
 
 	public void createBondline(){
-
+		RawImage ri = bondLineBtn.GetComponent<RawImage>();
 		Texture bondLine = StaticVariables.drawBondLines ? bondLineUp : bondLineDown;
+		ri.texture = bondLine;
 		StaticVariables.drawBondLines = !StaticVariables.drawBondLines;
 	}
 

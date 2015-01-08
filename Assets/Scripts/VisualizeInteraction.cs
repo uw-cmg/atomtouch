@@ -17,7 +17,7 @@ using System.Collections;
 public class VisualizeInteraction : MonoBehaviour {
 	
 	public Material mat;
-
+	public Color bondColor;
 	void OnPostRender(){
 
 		if (StaticVariables.drawBondLines) {
@@ -25,9 +25,12 @@ public class VisualizeInteraction : MonoBehaviour {
 				for(int j = i + 1; j < Atom.AllAtoms.Count; j++){
 					Atom currAtom = Atom.AllAtoms[i];
 					Atom neighborAtom = Atom.AllAtoms[j];
-					if((currAtom.transform.position - neighborAtom.transform.position).magnitude < currAtom.BondDistance(neighborAtom)){
+					if((currAtom.transform.position - neighborAtom.transform.position).magnitude 
+						< currAtom.BondDistance(neighborAtom)){
 						//draw a line from currAtom to atomNeighbor
-						StaticVariables.DrawLine (currAtom.transform.position, neighborAtom.transform.position, Color.white, Color.white, .05f, mat);
+						if(bondColor == null)bondColor = Color.clear;
+						StaticVariables.DrawLine (currAtom.transform.position, 
+							neighborAtom.transform.position, bondColor, bondColor, .05f, mat);
 					}
 				}
 			}

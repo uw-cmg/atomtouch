@@ -87,9 +87,12 @@ public class StaticVariables {
 		Stopped
 	};
 	
-	//this function will draw a line from startinPos to endingPos. The atom colors will color each side of the line.
-	//Note: this function can only be called within OnPostRender(). It will not display if called from a different function
-	public static void DrawLine(Vector3 startingPos, Vector3 endingPos, Color atomColor1, Color atomColor2, float lineWidth, Material mat){
+	//this function will draw a line from startinPos to endingPos. 
+	//The atom colors will color each side of the line.
+	//Note: this function can only be called within OnPostRender(). 
+	//It will not display if called from a different function
+	public static void DrawLine(Vector3 startingPos, Vector3 endingPos, 
+		Color atomColor1, Color atomColor2, float lineWidth, Material mat){
 		
 		Vector3 startingPos2 = (startingPos - endingPos);
 		startingPos2.Normalize ();
