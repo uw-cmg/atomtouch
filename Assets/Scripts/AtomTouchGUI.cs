@@ -41,7 +41,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	private bool volumePanelActive = true;
 	private bool whiteCornerActive = false;
 	private bool potentialsActive = false;
-	
+	private float oldTemperaure = -1;
 	//textures for the UI
 	public Texture lightBackground;
 	public Texture darkBackground;
@@ -893,14 +893,17 @@ public class AtomTouchGUI : MonoBehaviour {
 		temperaturePanelActive = true;
 		volumePanelActive = true;
 	}
-	//kick all selected atoms
+	//kick all selected atoms or all if none is selected
 	public void SelectedAtomsKick(){
+		bool hasAtomSelected = false;
 		for(int i = 0; i < Atom.AllAtoms.Count; i++){
 			Atom currAtom = Atom.AllAtoms[i];
 			if(currAtom.selected){
+				hasAtomSelected = true;
 				AtomKick(i);
 			}
 		}
+		if(!hasAtomSelected)AllAtomsKick();
 	}
 	public void AllAtomsKick(){
 		for(int i = 0; i < Atom.AllAtoms.Count; i++){
@@ -916,7 +919,9 @@ public class AtomTouchGUI : MonoBehaviour {
 			float xVelocity = 0.0f;
 			float yVelocity = 0.0f;
 			float zVelocity = 0.0f;
-			float maxVelocity = 0.05f / StaticVariables.MDTimestep; //this is maximum random velocity and needs to be determined emperically.
+			//this is maximum random velocity and needs to be determined emperically.
+			float maxVelocity = 0.05f / StaticVariables.MDTimestep; 
+
 			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
 				xVelocity = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
 			}
@@ -1085,21 +1090,35 @@ public class AtomTouchGUI : MonoBehaviour {
 			Debug.LogError("temp error");
 		}
 	}
-	
-	public void ChangeAtomTemperature(){
-		Slider tempSlider = null;
-		GameObject temp = GameObject.FindWithTag ("Scrolltag1");
-		
-		tempSlider = temp.GetComponent<Slider> ();
-		
-		if (tempSlider != null) 
-		{
-			StaticVariables.desiredTemperature = Math.Abs(5000 - tempSlider.value);
-		} 
-		else 
-		{
-			Debug.LogError("temp error");
+	//check if all of the atoms are static
+	public bool CheckAllAtomsStatic(){
+		for(int i=0;i<Atom.AllAtoms.Count;i++){
+			Atom currentAtom = Atom.AllAtoms[i];
+			Vector3 atomVel = currentAtom.rigidbody.velocity;
+			float diff = Vector3.Distance(atomVel, Vector3.zero);
+			if(!Mathf.Approximately(diff, 0.0f)){
+				return false;
+			}
 		}
+		return true;
+	}
+	public void ChangeAtomTemperature(){
+		Slider tempSliderComponent = null;
+		
+		tempSliderComponent = tempSlider.GetComponent<Slider> ();
+		oldTemperaure = StaticVariables.desiredTemperature;
+		StaticVariables.desiredTemperature = Math.Abs(5000 - tempSliderComponent.value);
+		//Debug.Log("old temp: " + oldTemperaure);
+		
+		if(oldTemperaure < 0){
+			return;
+		}else if(Mathf.Approximately(oldTemperaure, 0.0f)){
+			//if all atoms are static, kick all
+			if(CheckAllAtomsStatic()){
+				AllAtomsKick();
+			}
+		}
+		
 	}
 
 	/*
