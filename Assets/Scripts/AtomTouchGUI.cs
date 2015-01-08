@@ -296,7 +296,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			if(GUI.Button(new Rect(toolbarRect.x + 3*(toolbarRect.width / 6.0f), toolbarRect.y, toolbarRect.width / 6.0f, toolbarRect.height), atomKick, buttonStyle)){
 				atomKickPressed = true;
 				atomKickTime = Time.realtimeSinceStartup;
-				AtomKick();
+				AllAtomsKick();
 			}
 			if(Time.realtimeSinceStartup - atomKickTime > .05f){
 				atomKickPressed = false;
@@ -893,10 +893,25 @@ public class AtomTouchGUI : MonoBehaviour {
 		temperaturePanelActive = true;
 		volumePanelActive = true;
 	}
-	
-	//this function give all atoms in the scene a random velocity
-	public void AtomKick(){
+	//kick all selected atoms
+	public void SelectedAtomsKick(){
 		for(int i = 0; i < Atom.AllAtoms.Count; i++){
+			Atom currAtom = Atom.AllAtoms[i];
+			if(currAtom.selected){
+				AtomKick(i);
+			}
+		}
+	}
+	public void AllAtomsKick(){
+		for(int i = 0; i < Atom.AllAtoms.Count; i++){
+			Atom currAtom = Atom.AllAtoms[i];
+			AtomKick(i);
+		}
+	}
+
+	//kick only one atom
+	public void AtomKick(int i){
+		//for(int i = 0; i < Atom.AllAtoms.Count; i++){
 			Atom currAtom = Atom.AllAtoms[i];
 			float xVelocity = 0.0f;
 			float yVelocity = 0.0f;
@@ -923,7 +938,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			currAtom.velocity = new Vector3(xVelocity, yVelocity, zVelocity);
 			//currAtom.accelerationOld = Vector3.zero;
 			//currAtom.accelerationNew = Vector3.zero;
-		}
+		//}
 	}
 	
 	
@@ -937,7 +952,8 @@ public class AtomTouchGUI : MonoBehaviour {
 			CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 			Vector3 curPosition = new Vector3 (myEnvironment.centerPos.x - myEnvironment.width/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.y - myEnvironment.height/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.z - myEnvironment.depth/2.0f+myEnvironment.errorBuffer);
 			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-			Instantiate(platinumPrefab, curPosition, curRotation);
+			//Instantiate(platinumPrefab, curPosition, curRotation);
+			myEnvironment.createAtom(platinumPrefab);
 	}
 	
 
@@ -952,19 +968,23 @@ public class AtomTouchGUI : MonoBehaviour {
 			CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 			Vector3 curPosition = new Vector3 (myEnvironment.centerPos.x - myEnvironment.width/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.y - myEnvironment.height/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.z - myEnvironment.depth/2.0f+myEnvironment.errorBuffer);
 			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-			Instantiate(goldPrefab, curPosition, curRotation);
+			//Instantiate(goldPrefab, curPosition, curRotation);
+			myEnvironment.createAtom(goldPrefab);
 		}
 
 	}
 
 	public void AddCopperAtom(){
 		
-		if(Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
+		if(Input.mousePosition.x < Screen.width 
+			&& Input.mousePosition.x > 0 && Input.mousePosition.y > 0 
+			&& Input.mousePosition.y < Screen.height){
 			//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
 			CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 			Vector3 curPosition = new Vector3 (myEnvironment.centerPos.x - myEnvironment.width/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.y - myEnvironment.height/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.z - myEnvironment.depth/2.0f+myEnvironment.errorBuffer);
 			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-			Instantiate(copperPrefab, curPosition, curRotation);
+			//Instantiate(copperPrefab, curPosition, curRotation);
+			myEnvironment.createAtom(copperPrefab);
 		}
 
 	

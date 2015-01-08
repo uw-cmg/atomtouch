@@ -42,6 +42,7 @@ public class CreateEnvironment : MonoBehaviour {
 	private GameObject frontPlane;
 	private GameObject rightPlane;
 	private GameObject leftPlane;
+	private AtomTouchGUI atomTouchGUI;
 	public Vector3 initialCenterPos;
 	
 	//this variables points to the instance of the create environment
@@ -49,6 +50,7 @@ public class CreateEnvironment : MonoBehaviour {
 	
 	void Awake(){
 		CreateEnvironment.myEnvironment = this;
+		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 	}
 	
 	void Start () {
@@ -145,8 +147,8 @@ public class CreateEnvironment : MonoBehaviour {
 		depthLine.SetVertexCount(2);
 		
 		//give all of the atoms a random velocity on startup
-		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
-		atomTouchGUI.AtomKick ();
+		//atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
+		atomTouchGUI.AllAtomsKick ();
 	}
 	
 	void Update ()
@@ -248,8 +250,8 @@ public class CreateEnvironment : MonoBehaviour {
 		}
 		Potential.myPotential.calculateVerletRadius ();
 		
-		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
-		atomTouchGUI.AtomKick();
+		//AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
+		atomTouchGUI.AllAtomsKick();
 	}
 	
 	
@@ -278,7 +280,9 @@ public class CreateEnvironment : MonoBehaviour {
 			proximityFlag = myEnvironment.checkProximity(currAtom);
 		}
 		currAtom.transform.position = currAtom.position;
-		
+		//kick it
+		atomTouchGUI.AtomKick(i);
+
 		if ((tryNumber == 100) && (proximityFlag == false)) 
 		{
 			Atom.UnregisterAtom(currAtom);
