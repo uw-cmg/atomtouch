@@ -118,9 +118,25 @@ public class AtomTouchGUI : MonoBehaviour {
 	
 	public static StaticVariables.TimeSpeed currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
 	
+	private Slider tempSliderComponent;
+	private Slider volSliderComponent;
+	void Awake(){
+		tempSliderComponent = tempSlider.GetComponent<Slider> ();
+		volSliderComponent = volSlider.GetComponent<Slider>();
+		//set slider range
+		tempSliderComponent.minValue = StaticVariables.minTemp;
+		tempSliderComponent.maxValue = StaticVariables.maxTemp;
+		//tempSliderComponent.value = StaticVariables.defaultTemp;
+
+		volSliderComponent.minValue = StaticVariables.minVol * 0.1f; //to nm
+		volSliderComponent.maxValue = StaticVariables.maxVol * 0.1f; //to nm
+		//volSliderComponent.value = StaticVariables.defaultVol;
+	}
 	void Start () {
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		guiVolume = myEnvironment.volume;
+		tempSliderComponent.value = StaticVariables.defaultTemp;
+		volSliderComponent.value = (StaticVariables.maxVol-StaticVariables.defaultVol) * 0.1f;
 	}
 	
 	//this function creates all UI elements in the game EXCEPT for the graph
@@ -1012,13 +1028,13 @@ public class AtomTouchGUI : MonoBehaviour {
 	}
 
 	//for volume slider
-	//range: 15 - 45
-	//step size: 5
-	public void SnapVolumeToInterval(int stepSize){
-		Slider volSliderComponent = volSlider.GetComponent<Slider>();
-		int rawVal = (int)volSliderComponent.value;
-		if(rawVal % stepSize != 0)
-			volSliderComponent.value = (rawVal / stepSize) * stepSize + stepSize;
+	//range: 1.5 - 4.5 nm 
+	//step size: 0.5
+	public void SnapVolumeToInterval(float stepSize){
+		float rawVal = volSliderComponent.value;
+		float floor = Mathf.Floor(rawVal / stepSize);
+		if(!Mathf.Approximately(rawVal / stepSize, floor))
+			volSliderComponent.value = floor * stepSize + stepSize;
 
 	}
 
@@ -1066,29 +1082,19 @@ public class AtomTouchGUI : MonoBehaviour {
 		//GameObject[] volumetag = GameObject.FindGameObjectsWithTag("scrolltag1");
 		//GUI.Label (new Rect (volumetag.x + volumetag.width - 120.0f, (volumetag.y + (volumetag.height/2.0f)), 200.0f, 20), TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 273.15, 2)).ToString() + "C)", tempNumberText);
 		
-		Slider volumeSlider = null;
-		GameObject volume = GameObject.FindWithTag ("Scrolltag2");
-		volumeSlider = volume.GetComponent<Slider> ();
+		//Slider volumeSlider = null;
+		//GameObject volume = GameObject.FindWithTag ("Scrolltag2");
 		
-		//CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment>();
 		CreateEnvironment createEnvironment = CreateEnvironment.myEnvironment;
-		GUI.Label (new Rect (800, 400, 255, 30), "hello");
+		//these are in angstroms
+		createEnvironment.width = Math.Abs(StaticVariables.maxVol -volSliderComponent.value*10.0f);
+		createEnvironment.height = Math.Abs(StaticVariables.maxVol-volSliderComponent.value*10.0f);
+		createEnvironment.depth = Math.Abs(StaticVariables.maxVol- volSliderComponent.value*10.0f);
+		createEnvironment.volume = 
+			createEnvironment.width*
+			createEnvironment.height*
+			createEnvironment.depth; //to nm^3
 		
-		if (volumeSlider != null) 
-		{
-			//Debug.Log(Math.Abs(50 - volumeSlider.value));
-			//createEnvironment.width = Math.Abs(50 - volumeSlider.value);
-			//createEnvironment.height = Math.Abs(50 - volumeSlider.value);
-			//createEnvironment.depth = Math.Abs(50 - volumeSlider.value);
-			createEnvironment.width = Math.Abs(50-volumeSlider.value);
-			createEnvironment.height = Math.Abs(50-volumeSlider.value);
-			createEnvironment.depth = Math.Abs(50 - volumeSlider.value);
-			createEnvironment.volume = createEnvironment.depth* createEnvironment.height*createEnvironment.width;
-		} 
-		else 
-		{
-			Debug.LogError("temp error");
-		}
 	}
 	//check if all of the atoms are static
 	public bool CheckAllAtomsStatic(){
@@ -1103,12 +1109,11 @@ public class AtomTouchGUI : MonoBehaviour {
 		return true;
 	}
 	public void ChangeAtomTemperature(){
-		Slider tempSliderComponent = null;
+		//Slider tempSliderComponent = null;
 		
-		tempSliderComponent = tempSlider.GetComponent<Slider> ();
+		//tempSliderComponent = tempSlider.GetComponent<Slider> ();
 		oldTemperaure = StaticVariables.desiredTemperature;
 		StaticVariables.desiredTemperature = Math.Abs(5000 - tempSliderComponent.value);
-		//Debug.Log("old temp: " + oldTemperaure);
 		
 		if(oldTemperaure < 0){
 			return;
