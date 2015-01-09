@@ -37,12 +37,12 @@ public class CreateEnvironment : MonoBehaviour {
 	private TextMesh sideText;
 	private TextMesh depthText;
 	[HideInInspector]public GameObject bottomPlane;
-	private GameObject topPlane;
-	private GameObject backPlane;
-	private GameObject frontPlane;
-	private GameObject rightPlane;
-	private GameObject leftPlane;
-	private AtomTouchGUI atomTouchGUI;
+	public static GameObject topPlane;
+	public static GameObject backPlane;
+	public static GameObject frontPlane;
+	public static GameObject rightPlane;
+	public static GameObject leftPlane;
+	public AtomTouchGUI atomTouchGUI;
 	public Vector3 initialCenterPos;
 	public float lineWidth = 0.2f;
 	//this variables points to the instance of the create environment
@@ -182,9 +182,9 @@ public class CreateEnvironment : MonoBehaviour {
 		//bottomText.text = width.ToString() + " Angstroms";
 		//sideText.text = VerticalText(height.ToString() + " Angstroms");
 		//depthText.text = depth.ToString() + " Angstroms";
-		//sideText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f) + 1.0f, bottomPlane.transform.position.y + (height*7/10.0f), bottomPlane.transform.position.z - (depth / 2.0f));
-		//depthText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f), bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - 2.0f);
-		//bottomText.transform.position = new Vector3 (bottomPlane.transform.position.x - 2.0f, bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - (depth / 2.0f));
+		sideText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f) + 1.0f, bottomPlane.transform.position.y + (height*7/10.0f), bottomPlane.transform.position.z - (depth / 2.0f));
+		depthText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f), bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - 2.0f);
+		bottomText.transform.position = new Vector3 (bottomPlane.transform.position.x - 2.0f, bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - (depth / 2.0f));
 		
 		//change the position of the box
 		rightPlane.transform.position = new Vector3 (initialCenterPos.x + (width/2.0f), initialCenterPos.y, initialCenterPos.z);
