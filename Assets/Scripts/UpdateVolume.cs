@@ -15,7 +15,7 @@ public class UpdateVolume : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
-		text.text =  "Vol" + System.Environment.NewLine + createEnvironment.volume*0.001f+ " nm^3";
+		text.text =  "Vol" + System.Environment.NewLine + (createEnvironment.volume*0.1f*0.1f*0.1f).ToString("0.00")+ " nm^3";
 		
 	}
 }

@@ -1087,9 +1087,10 @@ public class AtomTouchGUI : MonoBehaviour {
 		
 		CreateEnvironment createEnvironment = CreateEnvironment.myEnvironment;
 		//these are in angstroms
-		createEnvironment.width = Math.Abs(StaticVariables.maxVol -volSliderComponent.value*10.0f);
-		createEnvironment.height = Math.Abs(StaticVariables.maxVol-volSliderComponent.value*10.0f);
-		createEnvironment.depth = Math.Abs(StaticVariables.maxVol- volSliderComponent.value*10.0f);
+		float offset = StaticVariables.maxVol + StaticVariables.minVol;
+		createEnvironment.width = Math.Abs(offset -volSliderComponent.value*10.0f);
+		createEnvironment.height = Math.Abs(offset -volSliderComponent.value*10.0f);
+		createEnvironment.depth = Math.Abs(offset - volSliderComponent.value*10.0f);
 		createEnvironment.volume = 
 			createEnvironment.width*
 			createEnvironment.height*
