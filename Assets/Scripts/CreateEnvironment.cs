@@ -119,6 +119,7 @@ public class CreateEnvironment : MonoBehaviour {
 		
 		//create the lines that border the box and the text of width, height, and depth
 		//bottom line and text
+		/*
 		Color lineColor = new Color (Color.yellow.r, Color.yellow.g, Color.yellow.b, .6f);
 		bottomText = Instantiate(textMeshPrefab, new Vector3(bottomPlanePos.x - 2.0f, bottomPlanePos.y - 1.0f, bottomPlanePos.z - (depth/2.0f)), Quaternion.identity) as TextMesh;
 		bottomText.text = width.ToString() + " Angstroms";
@@ -127,8 +128,9 @@ public class CreateEnvironment : MonoBehaviour {
 		bottomLine.SetColors(lineColor, lineColor);
 		bottomLine.SetWidth(0.2F, 0.2F);
 		bottomLine.SetVertexCount(2);
-		
+		*/
 		//side line and text
+		/*
 		sideText = Instantiate(textMeshPrefab, new Vector3(bottomPlanePos.x + (width/2.0f) + 1.0f, bottomPlanePos.y + (height*7/10.0f), bottomPlanePos.z - (depth/2.0f)), Quaternion.identity) as TextMesh;
 		sideText.text = VerticalText(height.ToString() + " Angstroms");
 		LineRenderer sideLine = sideText.transform.gameObject.AddComponent<LineRenderer> ();
@@ -145,9 +147,8 @@ public class CreateEnvironment : MonoBehaviour {
 		depthLine.SetColors(lineColor, lineColor);
 		depthLine.SetWidth(0.2F, 0.2F);
 		depthLine.SetVertexCount(2);
-		
+		*/
 		//give all of the atoms a random velocity on startup
-		//atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		atomTouchGUI.AllAtomsKick ();
 	}
 	
@@ -175,12 +176,12 @@ public class CreateEnvironment : MonoBehaviour {
 		depthLine.SetPosition(1, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, bottomPlane.transform.position.z + (depth/2.0f)));
 		
 		//change the text of the labels and change their positions
-		bottomText.text = width.ToString() + " Angstroms";
-		sideText.text = VerticalText(height.ToString() + " Angstroms");
-		depthText.text = depth.ToString() + " Angstroms";
-		sideText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f) + 1.0f, bottomPlane.transform.position.y + (height*7/10.0f), bottomPlane.transform.position.z - (depth / 2.0f));
-		depthText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f), bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - 2.0f);
-		bottomText.transform.position = new Vector3 (bottomPlane.transform.position.x - 2.0f, bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - (depth / 2.0f));
+		//bottomText.text = width.ToString() + " Angstroms";
+		//sideText.text = VerticalText(height.ToString() + " Angstroms");
+		//depthText.text = depth.ToString() + " Angstroms";
+		//sideText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f) + 1.0f, bottomPlane.transform.position.y + (height*7/10.0f), bottomPlane.transform.position.z - (depth / 2.0f));
+		//depthText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f), bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - 2.0f);
+		//bottomText.transform.position = new Vector3 (bottomPlane.transform.position.x - 2.0f, bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - (depth / 2.0f));
 		
 		//change the position of the box
 		rightPlane.transform.position = new Vector3 (initialCenterPos.x + (width/2.0f), initialCenterPos.y, initialCenterPos.z);
