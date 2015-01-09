@@ -64,9 +64,11 @@ public class Platinum : Atom {
 	public override void SetSelected (bool selected){
 		if (selected) {
 			gameObject.renderer.material = selectedMaterial;
+			Atom.numSelectedAtoms++;
 		}
 		else{
 			gameObject.renderer.material = platinumMaterial;
+			Atom.numSelectedAtoms--;
 		}
 	}
 	

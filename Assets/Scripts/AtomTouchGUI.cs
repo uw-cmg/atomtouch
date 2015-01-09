@@ -851,14 +851,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	}
 	//this function returns the number of atoms that are selected
 	int CountSelectedAtoms(){
-		int selectedAtoms = 0;
-		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
-			Atom currAtom = Atom.AllAtoms[i];
-			if(currAtom.selected){
-				selectedAtoms++;
-			}
-		}
-		return selectedAtoms;
+		return Atom.numSelectedAtoms;
 	}
 	
 	//this function checks the position of all of the atoms to make sure they are inside of the box
@@ -977,12 +970,10 @@ public class AtomTouchGUI : MonoBehaviour {
 			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
 			//Instantiate(platinumPrefab, curPosition, curRotation);
 			myEnvironment.createAtom(platinumPrefab);
+			Atom.EnableSelectAtomGroup(Atom.numSelectedAtoms > 0);
+		}
+	
 	}
-	
-
-
-	
-}
 
 	public void AddGoldAtom(){
 		
@@ -993,6 +984,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
 			//Instantiate(goldPrefab, curPosition, curRotation);
 			myEnvironment.createAtom(goldPrefab);
+			Atom.EnableSelectAtomGroup(Atom.numSelectedAtoms > 0);
 		}
 
 	}
@@ -1008,6 +1000,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
 			//Instantiate(copperPrefab, curPosition, curRotation);
 			myEnvironment.createAtom(copperPrefab);
+			Atom.EnableSelectAtomGroup(Atom.numSelectedAtoms > 0);
 		}
 
 	
@@ -1019,7 +1012,8 @@ public class AtomTouchGUI : MonoBehaviour {
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		myEnvironment.InitAtoms ();
 		slowMotionFrames = StaticVariables.slowMotionFrames;
-	
+		Atom.EnableSelectAtomGroup(false);
+		Atom.numSelectedAtoms = 0;
 	}
 
 	public void createBondline(){

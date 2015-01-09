@@ -82,6 +82,7 @@ public abstract class Atom : MonoBehaviour
 	public Vector3 accelerationNew = Vector3.zero;
 	public Vector3 accelerationOld = Vector3.zero;
 	
+	public static int numSelectedAtoms = 0;
 	void Awake(){
 		RegisterAtom (this);
 		bondDistanceText = new Dictionary<String, TextMesh> ();
@@ -165,8 +166,9 @@ public abstract class Atom : MonoBehaviour
 				RaycastHit hitInfo;
 				if (Physics.Raycast( ray, out hitInfo ) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
 					lastTapTime = Time.realtimeSinceStartup;
+					EnableSelectAtomGroup(true);
 				}
-				EnableSelectAtomGroup(true);
+
 			}
 			//EnableSelectAtomGroup(true);
 			HandleRightClick();
@@ -320,7 +322,7 @@ public abstract class Atom : MonoBehaviour
 				//the -15.0 here is for moving the atom above your mouse
 				offset = transform.position - Camera.main.ScreenToWorldPoint(
 					new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, screenPoint.z));
-				
+				Debug.Log("mouse down, atom not selected");
 			}else{
 				//this is for a group of atoms
 				gameObjectOffsets = new Dictionary<String, Vector3>();
@@ -549,7 +551,7 @@ public abstract class Atom : MonoBehaviour
 				//this is executed if an atom is only tapped
 				selected = !selected;
 				SetSelected(selected);
-
+				
 				rigidbody.isKinematic = false;
 			}
 			else{

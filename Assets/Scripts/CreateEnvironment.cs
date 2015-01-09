@@ -261,6 +261,7 @@ public class CreateEnvironment : MonoBehaviour {
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		Quaternion curRotation = Quaternion.Euler(0, 0, 0);
 		Instantiate(preFab, myEnvironment.centerPos, curRotation);
+		
 		int i = Atom.AllAtoms.Count-1;
 		Atom currAtom = Atom.AllAtoms[i];
 		currAtom.gameObject.name = i.ToString();
