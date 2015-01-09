@@ -64,12 +64,12 @@ public class Platinum : Atom {
 	public override void SetSelected (bool selected){
 		if (selected) {
 			gameObject.renderer.material = selectedMaterial;
-			Atom.numSelectedAtoms++;
 		}
 		else{
 			gameObject.renderer.material = platinumMaterial;
-			Atom.numSelectedAtoms--;
 		}
+		//Atom.EnableSelectAtomGroup(NumberofAtom.selectedAtoms>0);
+		//Debug.Log("selected atoms: " + NumberofAtom.selectedAtoms);
 	}
 	
 	public override void SetTransparent(bool transparent){

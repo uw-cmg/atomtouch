@@ -164,13 +164,21 @@ public abstract class Atom : MonoBehaviour
 				}
 				Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
 				RaycastHit hitInfo;
-				if (Physics.Raycast( ray, out hitInfo ) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
+				if (Physics.Raycast( ray, out hitInfo )
+				 && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
 					lastTapTime = Time.realtimeSinceStartup;
-					EnableSelectAtomGroup(true);
+					//if originally is not selected
+					if(!selected){
+						EnableSelectAtomGroup(true);
+					}else{
+						if(NumberofAtom.selectedAtoms <= 1){
+							EnableSelectAtomGroup(false);
+						}
+					}
+					
 				}
 
 			}
-			//EnableSelectAtomGroup(true);
 			HandleRightClick();
 		}
 		if (doubleTapped) {
@@ -551,7 +559,7 @@ public abstract class Atom : MonoBehaviour
 				//this is executed if an atom is only tapped
 				selected = !selected;
 				SetSelected(selected);
-				
+
 				rigidbody.isKinematic = false;
 			}
 			else{

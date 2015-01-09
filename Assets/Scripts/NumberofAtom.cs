@@ -19,7 +19,12 @@ public class NumberofAtom : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+		//selectedAtoms = AtomTouchGUI.CountSelectedAtoms ();
+		//selectedAtoms = CountSelectedAtoms();
+
+		//Atom.EnableSelectAtomGroup(selectedAtoms > 0);
 		selectedAtoms = CountSelectedAtoms ();
+		//Atom.EnableSelectAtomGroup(selectedAtoms>0);
 		text.text = selectedAtoms + " Atom(s) selected";
 
 	}
