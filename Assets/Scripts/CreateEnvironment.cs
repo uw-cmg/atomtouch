@@ -159,7 +159,7 @@ public class CreateEnvironment : MonoBehaviour {
 		width = Mathf.Pow (volume, (1.0f / 3.0f));
 		height = Mathf.Pow (volume, (1.0f / 3.0f));
 		depth = Mathf.Pow (volume, (1.0f / 3.0f));
-		
+		/*
 		//change the position of the bottom line
 		LineRenderer bottomLine = bottomText.GetComponent<LineRenderer> ();
 		bottomLine.SetPosition(0, new Vector3(bottomPlane.transform.position.x - (width/2.0f), bottomPlane.transform.position.y, bottomText.transform.position.z));
@@ -174,7 +174,7 @@ public class CreateEnvironment : MonoBehaviour {
 		LineRenderer depthLine = depthText.GetComponent<LineRenderer> ();
 		depthLine.SetPosition(0, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, bottomPlane.transform.position.z - (depth/2.0f)));
 		depthLine.SetPosition(1, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, bottomPlane.transform.position.z + (depth/2.0f)));
-		
+		*/
 		//change the text of the labels and change their positions
 		//bottomText.text = width.ToString() + " Angstroms";
 		//sideText.text = VerticalText(height.ToString() + " Angstroms");
