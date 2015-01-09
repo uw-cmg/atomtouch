@@ -82,7 +82,6 @@ public abstract class Atom : MonoBehaviour
 	public Vector3 accelerationNew = Vector3.zero;
 	public Vector3 accelerationOld = Vector3.zero;
 	
-	public static int numSelectedAtoms = 0;
 	void Awake(){
 		RegisterAtom (this);
 		bondDistanceText = new Dictionary<String, TextMesh> ();

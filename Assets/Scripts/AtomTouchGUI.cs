@@ -133,13 +133,15 @@ public class AtomTouchGUI : MonoBehaviour {
 		volSliderComponent.minValue = StaticVariables.minVol * 0.1f; //to nm
 		volSliderComponent.maxValue = StaticVariables.maxVol * 0.1f; //to nm
 		//volSliderComponent.value = StaticVariables.defaultVol;
+
+		//tempSliderComponent.value = StaticVariables.defaultTemp;
+		//volSliderComponent.value = (StaticVariables.maxVol-StaticVariables.defaultVol) * 0.1f;
 		Atom.EnableSelectAtomGroup(false);
 	}
 	void Start () {
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		guiVolume = myEnvironment.volume;
-		tempSliderComponent.value = StaticVariables.defaultTemp;
-		volSliderComponent.value = (StaticVariables.maxVol-StaticVariables.defaultVol) * 0.1f;
+		
 	}
 	
 	//this function creates all UI elements in the game EXCEPT for the graph

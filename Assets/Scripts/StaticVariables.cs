@@ -83,8 +83,8 @@ public class StaticVariables {
 	public static float minTemp = 0.0f;
 	public static float defaultTemp = 300.0f;
 
-	public static float maxVol = 45.0f; //in angstroms
-	public static float minVol = 15.0f;
+	public static float maxVol = 40.0f; //in angstroms
+	public static float minVol = 10.0f;
 	public static float defaultVol = 20.0f;
 	//this is an enum of the different states that time can pass
 	public enum TimeSpeed{
