@@ -36,7 +36,7 @@ public class CreateEnvironment : MonoBehaviour {
 	private TextMesh bottomText;
 	private TextMesh sideText;
 	private TextMesh depthText;
-	[HideInInspector]public GameObject bottomPlane;
+	public static GameObject bottomPlane;
 	public static GameObject topPlane;
 	public static GameObject backPlane;
 	public static GameObject frontPlane;

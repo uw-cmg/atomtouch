@@ -871,23 +871,23 @@ public class AtomTouchGUI : MonoBehaviour {
 		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
 			Atom currAtom = Atom.AllAtoms[i];
 			Vector3 newPosition = currAtom.transform.position;
-			if(currAtom.transform.position.x > createEnvironment.bottomPlane.transform.position.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer){
-				newPosition.x = createEnvironment.bottomPlane.transform.position.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
+			if(currAtom.transform.position.x > CreateEnvironment.bottomPlane.transform.position.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer){
+				newPosition.x = CreateEnvironment.bottomPlane.transform.position.x + (createEnvironment.width/2.0f) - createEnvironment.errorBuffer;
 			}
-			if(currAtom.transform.position.x < createEnvironment.bottomPlane.transform.position.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer){
-				newPosition.x = createEnvironment.bottomPlane.transform.position.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
+			if(currAtom.transform.position.x < CreateEnvironment.bottomPlane.transform.position.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer){
+				newPosition.x = CreateEnvironment.bottomPlane.transform.position.x - (createEnvironment.width/2.0f) + createEnvironment.errorBuffer;
 			}
-			if(currAtom.transform.position.y > createEnvironment.bottomPlane.transform.position.y + (createEnvironment.height) - createEnvironment.errorBuffer){
-				newPosition.y = createEnvironment.bottomPlane.transform.position.y + (createEnvironment.height) - createEnvironment.errorBuffer;
+			if(currAtom.transform.position.y > CreateEnvironment.bottomPlane.transform.position.y + (createEnvironment.height) - createEnvironment.errorBuffer){
+				newPosition.y = CreateEnvironment.bottomPlane.transform.position.y + (createEnvironment.height) - createEnvironment.errorBuffer;
 			}
-			if(currAtom.transform.position.y < createEnvironment.bottomPlane.transform.position.y + createEnvironment.errorBuffer){
-				newPosition.y = createEnvironment.bottomPlane.transform.position.y + createEnvironment.errorBuffer;
+			if(currAtom.transform.position.y < CreateEnvironment.bottomPlane.transform.position.y + createEnvironment.errorBuffer){
+				newPosition.y = CreateEnvironment.bottomPlane.transform.position.y + createEnvironment.errorBuffer;
 			}
-			if(currAtom.transform.position.z > createEnvironment.bottomPlane.transform.position.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer){
-				newPosition.z = createEnvironment.bottomPlane.transform.position.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
+			if(currAtom.transform.position.z > CreateEnvironment.bottomPlane.transform.position.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer){
+				newPosition.z = CreateEnvironment.bottomPlane.transform.position.z + (createEnvironment.depth/2.0f) - createEnvironment.errorBuffer;
 			}
-			if(currAtom.transform.position.z < createEnvironment.bottomPlane.transform.position.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer){
-				newPosition.z = createEnvironment.bottomPlane.transform.position.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
+			if(currAtom.transform.position.z < CreateEnvironment.bottomPlane.transform.position.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer){
+				newPosition.z = CreateEnvironment.bottomPlane.transform.position.z - (createEnvironment.depth/2.0f) + createEnvironment.errorBuffer;
 			}
 			currAtom.transform.position = newPosition;
 		}
@@ -1112,6 +1112,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		MeshRenderer frontMesh = CreateEnvironment.frontPlane.GetComponent<MeshRenderer>();
 		MeshRenderer leftMesh = CreateEnvironment.leftPlane.GetComponent<MeshRenderer>();
 		MeshRenderer rightMesh = CreateEnvironment.rightPlane.GetComponent<MeshRenderer>();
+		MeshRenderer bottomMesh = CreateEnvironment.bottomPlane.GetComponent<MeshRenderer>();
 
 		if(Mathf.Approximately(realVol, 1.0f)){
 			topMesh.material = matPlane1;
@@ -1119,6 +1120,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			frontMesh.material = matPlane1;
 			leftMesh.material = matPlane1;
 			rightMesh.material = matPlane1;
+			bottomMesh.material = matPlane1;
 		}
 		else if(Mathf.Approximately(realVol, 1.5f)){
 			topMesh.material = matPlane1_5;
@@ -1126,6 +1128,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			frontMesh.material = matPlane1_5;
 			leftMesh.material = matPlane1_5;
 			rightMesh.material = matPlane1_5;
+			bottomMesh.material = matPlane1_5;
 		}
 		else if(Mathf.Approximately(realVol,2.0f)){
 			topMesh.material = matPlane2;
@@ -1133,6 +1136,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			frontMesh.material = matPlane2;
 			leftMesh.material = matPlane2;
 			rightMesh.material = matPlane2;
+			bottomMesh.material = matPlane2;
 		}
 		else if(Mathf.Approximately(realVol,2.5f)){
 			topMesh.material = matPlane2_5;
@@ -1140,6 +1144,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			frontMesh.material = matPlane2_5;
 			leftMesh.material = matPlane2_5;
 			rightMesh.material = matPlane2_5;
+			bottomMesh.material = matPlane2_5;
 		}
 		else if(Mathf.Approximately(realVol,3.0f)){
 			topMesh.material = matPlane3;
@@ -1147,6 +1152,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			frontMesh.material = matPlane3;
 			leftMesh.material = matPlane3;
 			rightMesh.material = matPlane3;
+			bottomMesh.material = matPlane3;
 		}
 		else if(Mathf.Approximately(realVol,3.5f)){
 			topMesh.material = matPlane3_5;
@@ -1154,6 +1160,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			frontMesh.material = matPlane3_5;
 			leftMesh.material = matPlane3_5;
 			rightMesh.material = matPlane3_5;
+			bottomMesh.material = matPlane3_5;
 		}
 		else if(Mathf.Approximately(realVol,4.0f)){
 			topMesh.material = matPlane4;
@@ -1161,6 +1168,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			frontMesh.material = matPlane4;
 			leftMesh.material = matPlane4;
 			rightMesh.material = matPlane4;
+			bottomMesh.material = matPlane4;
 		}
 	}
 	//check if all of the atoms are static
