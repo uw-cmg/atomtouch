@@ -42,6 +42,15 @@ public class AtomTouchGUI : MonoBehaviour {
 	private bool whiteCornerActive = false;
 	private bool potentialsActive = false;
 	private float oldTemperaure = -1;
+	//plane materials
+	public Material matPlane1;
+	public Material matPlane1_5;
+	public Material matPlane2;
+	public Material matPlane2_5;
+	public Material matPlane3;
+	public Material matPlane3_5;
+	public Material matPlane4;
+
 	//textures for the UI
 	public Texture lightBackground;
 	public Texture darkBackground;
@@ -1091,7 +1100,68 @@ public class AtomTouchGUI : MonoBehaviour {
 			createEnvironment.width*
 			createEnvironment.height*
 			createEnvironment.depth; //to nm^3
-		
+		//since slider is upside down...
+		float realVol = createEnvironment.width * 0.1f;
+		ChangePlaneMaterial(realVol);
+	}
+
+	public void ChangePlaneMaterial(float realVol){
+
+		MeshRenderer topMesh = CreateEnvironment.topPlane.GetComponent<MeshRenderer>();
+		MeshRenderer backMesh = CreateEnvironment.backPlane.GetComponent<MeshRenderer>();
+		MeshRenderer frontMesh = CreateEnvironment.frontPlane.GetComponent<MeshRenderer>();
+		MeshRenderer leftMesh = CreateEnvironment.leftPlane.GetComponent<MeshRenderer>();
+		MeshRenderer rightMesh = CreateEnvironment.rightPlane.GetComponent<MeshRenderer>();
+
+		if(Mathf.Approximately(realVol, 1.0f)){
+			topMesh.material = matPlane1;
+			backMesh.material = matPlane1;
+			frontMesh.material = matPlane1;
+			leftMesh.material = matPlane1;
+			rightMesh.material = matPlane1;
+		}
+		else if(Mathf.Approximately(realVol, 1.5f)){
+			topMesh.material = matPlane1_5;
+			backMesh.material = matPlane1_5;
+			frontMesh.material = matPlane1_5;
+			leftMesh.material = matPlane1_5;
+			rightMesh.material = matPlane1_5;
+		}
+		else if(Mathf.Approximately(realVol,2.0f)){
+			topMesh.material = matPlane2;
+			backMesh.material = matPlane2;
+			frontMesh.material = matPlane2;
+			leftMesh.material = matPlane2;
+			rightMesh.material = matPlane2;
+		}
+		else if(Mathf.Approximately(realVol,2.5f)){
+			topMesh.material = matPlane2_5;
+			backMesh.material = matPlane2_5;
+			frontMesh.material = matPlane2_5;
+			leftMesh.material = matPlane2_5;
+			rightMesh.material = matPlane2_5;
+		}
+		else if(Mathf.Approximately(realVol,3.0f)){
+			topMesh.material = matPlane3;
+			backMesh.material = matPlane3;
+			frontMesh.material = matPlane3;
+			leftMesh.material = matPlane3;
+			rightMesh.material = matPlane3;
+		}
+		else if(Mathf.Approximately(realVol,3.5f)){
+			topMesh.material = matPlane3_5;
+			backMesh.material = matPlane3_5;
+			frontMesh.material = matPlane3_5;
+			leftMesh.material = matPlane3_5;
+			rightMesh.material = matPlane3_5;
+		}
+		else if(Mathf.Approximately(realVol,4.0f)){
+			topMesh.material = matPlane4;
+			backMesh.material = matPlane4;
+			frontMesh.material = matPlane4;
+			leftMesh.material = matPlane4;
+			rightMesh.material = matPlane4;
+		}
 	}
 	//check if all of the atoms are static
 	public bool CheckAllAtomsStatic(){
