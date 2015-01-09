@@ -44,7 +44,7 @@ public class CreateEnvironment : MonoBehaviour {
 	private GameObject leftPlane;
 	private AtomTouchGUI atomTouchGUI;
 	public Vector3 initialCenterPos;
-	
+	public float lineWidth = 0.2f;
 	//this variables points to the instance of the create environment
 	public static CreateEnvironment myEnvironment;
 	
@@ -119,35 +119,38 @@ public class CreateEnvironment : MonoBehaviour {
 		
 		//create the lines that border the box and the text of width, height, and depth
 		//bottom line and text
-		/*
+		
 		Color lineColor = new Color (Color.yellow.r, Color.yellow.g, Color.yellow.b, .6f);
 		bottomText = Instantiate(textMeshPrefab, new Vector3(bottomPlanePos.x - 2.0f, bottomPlanePos.y - 1.0f, bottomPlanePos.z - (depth/2.0f)), Quaternion.identity) as TextMesh;
-		bottomText.text = width.ToString() + " Angstroms";
+		//bottomText.text = width.ToString() + " Angstroms";
+		bottomText.text = "";
 		LineRenderer bottomLine = bottomText.transform.gameObject.AddComponent<LineRenderer> ();
 		bottomLine.material = mat;
 		bottomLine.SetColors(lineColor, lineColor);
-		bottomLine.SetWidth(0.2F, 0.2F);
+		bottomLine.SetWidth(lineWidth, lineWidth);
 		bottomLine.SetVertexCount(2);
-		*/
+		
 		//side line and text
-		/*
+		
 		sideText = Instantiate(textMeshPrefab, new Vector3(bottomPlanePos.x + (width/2.0f) + 1.0f, bottomPlanePos.y + (height*7/10.0f), bottomPlanePos.z - (depth/2.0f)), Quaternion.identity) as TextMesh;
-		sideText.text = VerticalText(height.ToString() + " Angstroms");
+		//sideText.text = VerticalText(height.ToString() + " Angstroms");
+		sideText.text = "";
 		LineRenderer sideLine = sideText.transform.gameObject.AddComponent<LineRenderer> ();
 		sideLine.material = mat;
 		sideLine.SetColors(lineColor, lineColor);
-		sideLine.SetWidth(0.2F, 0.2F);
+		sideLine.SetWidth(lineWidth, lineWidth);
 		sideLine.SetVertexCount(2);
 		
 		//depth line and text
 		depthText = Instantiate(textMeshPrefab, new Vector3(centerPos.x + (width/2.0f), bottomPlanePos.y - 1.0f, centerPos.z - 2.0f), Quaternion.Euler(0.0f, -90.0f, 0.0f)) as TextMesh;
-		depthText.text = depth.ToString() + " Angstroms";
+		//depthText.text = depth.ToString() + " Angstroms";
+		depthText.text = "";
 		LineRenderer depthLine = depthText.transform.gameObject.AddComponent<LineRenderer> ();
 		depthLine.material = mat;
 		depthLine.SetColors(lineColor, lineColor);
-		depthLine.SetWidth(0.2F, 0.2F);
+		depthLine.SetWidth(lineWidth, lineWidth);
 		depthLine.SetVertexCount(2);
-		*/
+		
 		//give all of the atoms a random velocity on startup
 		atomTouchGUI.AllAtomsKick ();
 	}
@@ -159,22 +162,22 @@ public class CreateEnvironment : MonoBehaviour {
 		width = Mathf.Pow (volume, (1.0f / 3.0f));
 		height = Mathf.Pow (volume, (1.0f / 3.0f));
 		depth = Mathf.Pow (volume, (1.0f / 3.0f));
-		/*
+		
 		//change the position of the bottom line
 		LineRenderer bottomLine = bottomText.GetComponent<LineRenderer> ();
 		bottomLine.SetPosition(0, new Vector3(bottomPlane.transform.position.x - (width/2.0f), bottomPlane.transform.position.y, bottomText.transform.position.z));
 		bottomLine.SetPosition(1, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, bottomText.transform.position.z));
-		
+		bottomLine.SetWidth(lineWidth, lineWidth);
 		//change the position of the side line
 		LineRenderer sideLine = sideText.GetComponent<LineRenderer> ();
 		sideLine.SetPosition (0, new Vector3 (bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, sideText.transform.position.z));
 		sideLine.SetPosition (1, new Vector3 (bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y + height, sideText.transform.position.z));
-		
+		sideLine.SetWidth(lineWidth, lineWidth);
 		//change the position of the depth line
 		LineRenderer depthLine = depthText.GetComponent<LineRenderer> ();
 		depthLine.SetPosition(0, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, bottomPlane.transform.position.z - (depth/2.0f)));
 		depthLine.SetPosition(1, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, bottomPlane.transform.position.z + (depth/2.0f)));
-		*/
+		depthLine.SetWidth(lineWidth, lineWidth);
 		//change the text of the labels and change their positions
 		//bottomText.text = width.ToString() + " Angstroms";
 		//sideText.text = VerticalText(height.ToString() + " Angstroms");
