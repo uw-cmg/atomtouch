@@ -166,8 +166,9 @@ public abstract class Atom : MonoBehaviour
 				if (Physics.Raycast( ray, out hitInfo ) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
 					lastTapTime = Time.realtimeSinceStartup;
 				}
+				EnableSelectAtomGroup(true);
 			}
-			
+			//EnableSelectAtomGroup(true);
 			HandleRightClick();
 		}
 		if (doubleTapped) {
@@ -178,9 +179,17 @@ public abstract class Atom : MonoBehaviour
 			ApplyTransparency();
 		}
 	}
-	
+	public static void EnableSelectAtomGroup(bool enable){
+		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
+		atomTouchGUI.selectAtomPanel.SetActive(enable);
+		atomTouchGUI.selectAtomGroup.SetActive(enable);
+		foreach (Transform child in atomTouchGUI.selectAtomGroup.transform){
+  			child.gameObject.SetActive(enable);
+		}
+	}
 	//another method for selecting atoms
 	void HandleRightClick(){
+		//hide selectpanel
 		if (Input.GetMouseButtonDown (1)) {
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hitInfo;
@@ -312,8 +321,7 @@ public abstract class Atom : MonoBehaviour
 				offset = transform.position - Camera.main.ScreenToWorldPoint(
 					new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, screenPoint.z));
 				
-			}
-			else{
+			}else{
 				//this is for a group of atoms
 				gameObjectOffsets = new Dictionary<String, Vector3>();
 				gameObjectScreenPoints = new Dictionary<String, Vector3>();
@@ -541,6 +549,7 @@ public abstract class Atom : MonoBehaviour
 				//this is executed if an atom is only tapped
 				selected = !selected;
 				SetSelected(selected);
+
 				rigidbody.isKinematic = false;
 			}
 			else{
@@ -554,8 +563,7 @@ public abstract class Atom : MonoBehaviour
 					float magnitude = 10.0f;
 					Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
 					this.velocity = flingVector;
-				}
-				else{
+				}else{
 					//this is for a group of atoms
 					for(int i = 0; i < AllAtoms.Count; i++){
 						Atom currAtom = AllAtoms[i];

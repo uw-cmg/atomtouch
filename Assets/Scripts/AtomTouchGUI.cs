@@ -55,6 +55,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject tempSlider;//temperature
 	public GameObject volSlider;//volume
 	public GameObject bondLineBtn; 
+	public GameObject selectAtomPanel;
+	public GameObject selectAtomGroup;
 	//prefabs to spawn
 	public Rigidbody copperPrefab;
 	public Rigidbody goldPrefab;
@@ -131,6 +133,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		volSliderComponent.minValue = StaticVariables.minVol * 0.1f; //to nm
 		volSliderComponent.maxValue = StaticVariables.maxVol * 0.1f; //to nm
 		//volSliderComponent.value = StaticVariables.defaultVol;
+		Atom.EnableSelectAtomGroup(false);
 	}
 	void Start () {
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
@@ -843,9 +846,8 @@ public class AtomTouchGUI : MonoBehaviour {
 				//delete the object
 				Destroy(currAtom.gameObject);
 			}
-			
-
 		}
+		Atom.EnableSelectAtomGroup(false);
 	}
 	//this function returns the number of atoms that are selected
 	int CountSelectedAtoms(){
