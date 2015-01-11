@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System;
 
 public class PairDistributionFunction : MonoBehaviour {
 
 	//The mesh size for pair distribution function.
 	private static float dR = 0.1f; //[Angstrom]
-	public static float maxR = 15.0f; //[Angstrom]
-	private static float[] pairDistribution = new float[(int)(maxR / dR)];
+	private static float maxR = 15.0f; //[Angstrom]
+	private static int avgLength = 30; // this variable keeps the number of steps that the distribution function is averaged over
+	private static int calculationNumber = 0; // this variable keeps the index number for calculating the distribution number. Its maximum is avgLength
 	private static float[] pairDistributionAverage = new float[(int)(maxR / dR)];
-	public static float numberOfCalculations = 0.0f;
 	private static float normCoefficient = 0.0f;
+	private static float[][] pairDistributionLog = new float[avgLength][];
 	
 	public static float[] PairDistributionAverage
 	{
@@ -18,30 +21,36 @@ public class PairDistributionFunction : MonoBehaviour {
 			return pairDistributionAverage;
 		}
 	}
+
+	public static float MaxR
+	{
+		get
+		{
+			return maxR;
+		}
+	}
 	
 	public static void calculateAveragePairDistribution()
 	{
-		if (numberOfCalculations > 20) 
-		{
-			numberOfCalculations = 1.0f;
-
-			for (int iR = 1; iR < pairDistribution.Length; iR++)
-			{
-				pairDistribution[iR] = 0.0f;
-			}
-		}
+		if (calculationNumber == avgLength)
+			calculationNumber = 0;
 
 		normCoefficient = CreateEnvironment.myEnvironment.volume / ((float)Atom.AllAtoms.Count * (float)Atom.AllAtoms.Count * 4.0f * Mathf.PI * dR * dR * dR);
-		updatePairDistribution();
-		numberOfCalculations++;
-		for (int iR = 1; iR < pairDistribution.Length; iR++)
+		pairDistributionLog[calculationNumber] = updatePairDistribution();
+		calculationNumber++;
+		for (int iR = 1; iR < (int)(maxR / dR); iR++)
 		{
-			pairDistributionAverage[iR] = pairDistribution[iR] * normCoefficient / (float)iR / (float)iR / numberOfCalculations;
+			pairDistributionAverage[iR]=0;
+			for(int iC = 0; iC < avgLength; iC++)
+			{
+				pairDistributionAverage[iR] += pairDistributionLog[iC][iR] * normCoefficient / (float)iR / (float)iR / (float)avgLength;
+			}
 		}    
 	}
 	
-	private static void updatePairDistribution()
+	private static float[] updatePairDistribution()
 	{	
+		float[] pairDistribution = new float[(int)(maxR / dR)];
 		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
 		{
 			Atom firstAtom = Atom.AllAtoms[i];
@@ -55,5 +64,6 @@ public class PairDistributionFunction : MonoBehaviour {
 					pairDistribution[iR] += 2.0f;
 			}
 		}
+		return pairDistribution;
 	}
 }
