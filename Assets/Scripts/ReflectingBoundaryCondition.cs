@@ -7,6 +7,8 @@ public class ReflectingBoundaryCondition : Boundary {
 	public override void Apply()
 	{
 		Vector3 boxDimension = new Vector3 (CreateEnvironment.myEnvironment.width-2.0f * CreateEnvironment.myEnvironment.errorBuffer, CreateEnvironment.myEnvironment.height-2.0f * CreateEnvironment.myEnvironment.errorBuffer , CreateEnvironment.myEnvironment.depth-2.0f * CreateEnvironment.myEnvironment.errorBuffer);
+		boxDimension.y = boxDimension.x;
+		boxDimension.z = boxDimension.x;
 		
 		for (int i = 0; i < Atom.AllAtoms.Count; i++)
 		{
@@ -39,7 +41,8 @@ public class ReflectingBoundaryCondition : Boundary {
 				currAtom.velocity.y = -1.0f * currAtom.velocity.y;
 			}
 			currAtom.position.y = sign * currAtom.position.y;
-			
+
+
 			sign = Mathf.Sign(currAtom.position.z);
 			remainder = ((Mathf.Abs(currAtom.position.z) + boxDimension.z/2.0f) % (2.0f * boxDimension.z));
 			if (remainder < boxDimension.z)

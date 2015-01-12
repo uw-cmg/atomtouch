@@ -11,7 +11,7 @@ public class Buckingham : Potential {
 	private float rSpline; //[Angstrom]
 	
 	//The mesh size for pre-calculating Lennard Jones force.
-	private float dR = 0.0001f;
+	private float dR = 0.001f;
 	
 	//pre-calculated coefficients and forces for Buckingham potential
 	private float[, ,] preBuckinghamAcceleration;
