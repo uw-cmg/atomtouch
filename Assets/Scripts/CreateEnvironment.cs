@@ -26,7 +26,8 @@ public class CreateEnvironment : MonoBehaviour {
 	public GameObject plane;
 	public Vector3 centerPos;
 	public float errorBuffer = 0.5f;
-	public Material mat;
+	public Material lineMat; //line material
+	public Color lineColor;
 	public float width;
 	public float height;
 	public float depth;
@@ -120,12 +121,14 @@ public class CreateEnvironment : MonoBehaviour {
 		//create the lines that border the box and the text of width, height, and depth
 		//bottom line and text
 		
-		Color lineColor = new Color (Color.yellow.r, Color.yellow.g, Color.yellow.b, .6f);
+		if(lineColor == null){
+			lineColor = new Color (Color.yellow.r, Color.yellow.g, Color.yellow.b, .6f);
+		}
 		bottomText = Instantiate(textMeshPrefab, new Vector3(bottomPlanePos.x - 2.0f, bottomPlanePos.y - 1.0f, bottomPlanePos.z - (depth/2.0f)), Quaternion.identity) as TextMesh;
 		//bottomText.text = width.ToString() + " Angstroms";
 		bottomText.text = "";
 		LineRenderer bottomLine = bottomText.transform.gameObject.AddComponent<LineRenderer> ();
-		bottomLine.material = mat;
+		bottomLine.material = lineMat;
 		bottomLine.SetColors(lineColor, lineColor);
 		bottomLine.SetWidth(lineWidth, lineWidth);
 		bottomLine.SetVertexCount(2);
@@ -136,7 +139,7 @@ public class CreateEnvironment : MonoBehaviour {
 		//sideText.text = VerticalText(height.ToString() + " Angstroms");
 		sideText.text = "";
 		LineRenderer sideLine = sideText.transform.gameObject.AddComponent<LineRenderer> ();
-		sideLine.material = mat;
+		sideLine.material = lineMat;
 		sideLine.SetColors(lineColor, lineColor);
 		sideLine.SetWidth(lineWidth, lineWidth);
 		sideLine.SetVertexCount(2);
@@ -146,7 +149,7 @@ public class CreateEnvironment : MonoBehaviour {
 		//depthText.text = depth.ToString() + " Angstroms";
 		depthText.text = "";
 		LineRenderer depthLine = depthText.transform.gameObject.AddComponent<LineRenderer> ();
-		depthLine.material = mat;
+		depthLine.material = lineMat;
 		depthLine.SetColors(lineColor, lineColor);
 		depthLine.SetWidth(lineWidth, lineWidth);
 		depthLine.SetVertexCount(2);
