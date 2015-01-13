@@ -14,7 +14,7 @@ public class UpdateTemperature : MonoBehaviour {
 	void Update () {
 		//if(oldTemperature < 0)
 		text.text = "Temp" + System.Environment.NewLine +  StaticVariables.desiredTemperature + "K"
-		+ System.Environment.NewLine + "(" + KToC(StaticVariables.desiredTemperature) +"°C)";
+		+ System.Environment.NewLine + "(" + KToC(StaticVariables.desiredTemperature).ToString("0.00") +"°C)";
 	}
 
 	public static float KToC(float k){
