@@ -431,7 +431,6 @@ public abstract class Atom : MonoBehaviour
 						transform.position = curPosition;
 						this.position = curPosition;
 					}
-					
 					//this is the implementation of moving the atom in the z-direction
 					float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
 					Vector3 projectPosition = transform.position;

@@ -49,10 +49,10 @@ public class Graph : MonoBehaviour {
 	void Start () {
 		
 		//these coorindates will be over written in AtomtouchGUI
-		xCoord = Screen.width - 250;
-		yCoord = 70;
-		maxDataPoints = (width / spacing) + 1;
-		dataPoints = new Queue ();
+		//xCoord = Screen.width - 250;
+		//yCoord = 70;
+		//maxDataPoints = (width / spacing) + 1;
+		//dataPoints = new Queue ();
 	}
 	
 	//This method is called from AtomTouchGUI.cs
