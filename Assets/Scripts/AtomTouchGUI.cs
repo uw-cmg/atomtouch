@@ -67,6 +67,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject selectAtomPanel;
 	public GameObject selectAtomGroup;
 	public GameObject settingsCanvas;
+	public Text selectAllText;
+	private bool selectedAll;
 	//prefabs to spawn
 	public Rigidbody copperPrefab;
 	public Rigidbody goldPrefab;
@@ -148,6 +150,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		//volSliderComponent.value = (StaticVariables.maxVol-StaticVariables.defaultVol) * 0.1f;
 		Atom.EnableSelectAtomGroup(false);
 		settingsCanvas.SetActive(false);
+		selectedAll = false;
 		//Debug.Log("Settings canvas enabled: " + SettingsCanvas.activeSelf);
 	}
 	void Start () {
@@ -843,6 +846,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			currAtom.selected = false;
 			currAtom.SetSelected(false);
 		}
+		Atom.EnableSelectAtomGroup(false);
 	}
 
 
@@ -1081,9 +1085,18 @@ public class AtomTouchGUI : MonoBehaviour {
 		Camera.main.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 	}
 
-	public void selectAll() {
-
-		SelectAllAtoms();
+	public void ToggleSelectAll() {
+		selectedAll = !selectedAll;
+		if(selectedAll)
+		{
+			SelectAllAtoms();
+			selectAllText.text = "Deselect All";
+		}
+		else
+		{
+			DeselectAllAtoms();
+			selectAllText.text = "Select All";
+		}
 
 	}
 
