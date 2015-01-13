@@ -66,6 +66,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject bondLineBtn; 
 	public GameObject selectAtomPanel;
 	public GameObject selectAtomGroup;
+	public GameObject settingsCanvas;
 	//prefabs to spawn
 	public Rigidbody copperPrefab;
 	public Rigidbody goldPrefab;
@@ -146,11 +147,12 @@ public class AtomTouchGUI : MonoBehaviour {
 		//tempSliderComponent.value = StaticVariables.defaultTemp;
 		//volSliderComponent.value = (StaticVariables.maxVol-StaticVariables.defaultVol) * 0.1f;
 		Atom.EnableSelectAtomGroup(false);
+		settingsCanvas.SetActive(false);
+		//Debug.Log("Settings canvas enabled: " + SettingsCanvas.activeSelf);
 	}
 	void Start () {
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
-		guiVolume = myEnvironment.volume;
-		
+		guiVolume = myEnvironment.volume;	
 	}
 	
 	//this function creates all UI elements in the game EXCEPT for the graph
@@ -716,7 +718,8 @@ public class AtomTouchGUI : MonoBehaviour {
 		
 	}
 	
-	//this function displays properties that are apart of the system as a whole, such as the number of atoms
+	//this function displays properties that are apart of the system as a whole,
+	// such as the number of atoms
 	void DisplaySystemProperties(Rect displayRect){
 		GUIStyle timeText = GUI.skin.label;
 		timeText.alignment = TextAnchor.MiddleLeft;
@@ -1062,8 +1065,13 @@ public class AtomTouchGUI : MonoBehaviour {
 			currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
 			Time.timeScale = 1.0f;
 			ri.texture = normalTimeButton;
-		}
-		
+		}	
+	}
+
+	public void SettingsOnClick(){
+		bool oldStatus = settingsCanvas.activeSelf;
+		settingsCanvas.SetActive(!oldStatus);
+
 	}
 
 	public void resetCamera(){
