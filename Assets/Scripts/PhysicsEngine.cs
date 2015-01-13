@@ -48,8 +48,10 @@ public class PhysicsEngine : MonoBehaviour
 			Graph.numMDStepSinceLastRecord ++;
 			StaticVariables.iTime ++;
 
+		
 		}
 	}
+
 
 	void VelocityVerlet()
 	{
