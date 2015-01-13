@@ -111,8 +111,7 @@ public abstract class Atom : MonoBehaviour
 	
 	//this function takes care of double tapping, collision detection, 
 	//and detecting OnMouseDown, OnMouseDrag, and OnMouseUp on iOS
-	void Update(){
-		
+	void Update(){	
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			if(Input.touchCount > 0){
 				Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
@@ -129,7 +128,8 @@ public abstract class Atom : MonoBehaviour
 							AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
 						}
 						//user touch an atom at this point
-						OnMouseDownIOS();
+						//OnMouseDownIOS();
+						OnTouch();
 						lastTapTime = Time.realtimeSinceStartup;
 					}
 				}
@@ -285,7 +285,9 @@ public abstract class Atom : MonoBehaviour
 	}
 	
 	//this is the equivalent of OnMouseDown, but for iOS
-	void OnMouseDownIOS(){
+	//void OnMouseDownIOS(){
+	void OnTouch(){
+		if (Application.platform != RuntimePlatform.IPhonePlayer)return;
 		dragStartTime = Time.realtimeSinceStartup;
 		dragCalled = false;
 		held = true;
@@ -318,37 +320,37 @@ public abstract class Atom : MonoBehaviour
 	
 	//controls for debugging on pc
 	void OnMouseDown (){
-		if (Application.platform != RuntimePlatform.IPhonePlayer) {
-			dragStartTime = Time.realtimeSinceStartup;
-			dragCalled = false;
-			held = true;
-			
-			if(!selected){
-				//this is for one atom
-				screenPoint = Camera.main.WorldToScreenPoint(transform.position);
-				//the -15.0 here is for moving the atom above your mouse
-				offset = transform.position - Camera.main.ScreenToWorldPoint(
-					new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, screenPoint.z));
-				Debug.Log("mouse down, atom not selected");
-			}else{
-				//this is for a group of atoms
-				gameObjectOffsets = new Dictionary<String, Vector3>();
-				gameObjectScreenPoints = new Dictionary<String, Vector3>();
-				for(int i = 0; i < AllAtoms.Count; i++){
-					Atom currAtom = AllAtoms[i];
-					if(currAtom.selected){
-						currAtom.rigidbody.isKinematic = true;
-						Vector3 pointOnScreen = Camera.main.WorldToScreenPoint(currAtom.transform.position);
-						//the -15.0 here is for moving the atom above your mouse
-						Vector3 atomOffset = currAtom.transform.position - Camera.main.ScreenToWorldPoint(
-							new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, pointOnScreen.z));
-						currAtom.held = true;
-						gameObjectOffsets.Add(currAtom.name, atomOffset);
-						gameObjectScreenPoints.Add(currAtom.name, pointOnScreen);
-					}
+		if (Application.platform == RuntimePlatform.IPhonePlayer)return;
+		dragStartTime = Time.realtimeSinceStartup;
+		dragCalled = false;
+		held = true;
+		
+		if(!selected){
+			//this is for one atom
+			screenPoint = Camera.main.WorldToScreenPoint(transform.position);
+			//the -15.0 here is for moving the atom above your mouse
+			offset = transform.position - Camera.main.ScreenToWorldPoint(
+				new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, screenPoint.z));
+			Debug.Log("mouse down, atom not selected");
+		}else{
+			//this is for a group of atoms
+			gameObjectOffsets = new Dictionary<String, Vector3>();
+			gameObjectScreenPoints = new Dictionary<String, Vector3>();
+			for(int i = 0; i < AllAtoms.Count; i++){
+				Atom currAtom = AllAtoms[i];
+				if(currAtom.selected){
+					currAtom.rigidbody.isKinematic = true;
+					Vector3 pointOnScreen = Camera.main.WorldToScreenPoint(currAtom.transform.position);
+					//the -15.0 here is for moving the atom above your mouse
+					Vector3 atomOffset = currAtom.transform.position - Camera.main.ScreenToWorldPoint(
+						new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, pointOnScreen.z));
+					currAtom.held = true;
+					gameObjectOffsets.Add(currAtom.name, atomOffset);
+					gameObjectScreenPoints.Add(currAtom.name, pointOnScreen);
 				}
 			}
 		}
+		
 	}
 	
 	//this is the equivalent of OnMouseDrag for iOS

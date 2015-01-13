@@ -1068,15 +1068,15 @@ public class AtomTouchGUI : MonoBehaviour {
 		}	
 	}
 
+	//toggle settings callback
+	//TODO
 	public void SettingsOnClick(){
 		bool oldStatus = settingsCanvas.activeSelf;
 		settingsCanvas.SetActive(!oldStatus);
-
+	 	//if active, pause game, change timer state to stopped
 	}
 
 	public void resetCamera(){
-
-
 		Camera.main.transform.position = new Vector3(0.0f, 0.0f, -40.0f);
 		Camera.main.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 	}
