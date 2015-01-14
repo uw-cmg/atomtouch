@@ -23,6 +23,8 @@ public class SettingsControl : MonoBehaviour {
 				Debug.Log("mio");
 				settingsCanvas.SetActive(false);
 				hudCanvas.SetActive(true);
+				//resume
+				StaticVariables.pauseTime = false;
 			}
 		}
 	}
@@ -34,5 +36,8 @@ public class SettingsControl : MonoBehaviour {
 	public void OnClick_SettingsButton(){
 		settingsCanvas.SetActive(true);
 		hudCanvas.SetActive(false);
+		//pause
+		AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
+		StaticVariables.pauseTime = true;
 	}
 }
