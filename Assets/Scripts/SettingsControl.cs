@@ -7,6 +7,7 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject settingsPanel;
 	public GameObject hudCanvas;
 	public GameObject settingsButton;
+	public GameObject bondLineOn;
 
 	private bool mouseExitsSettingsPanel; //aka, pause the game
 	private static bool gamePaused;
@@ -54,5 +55,13 @@ public class SettingsControl : MonoBehaviour {
 
 	public void OnClick_SettingsButton(){
 		PauseGame();
+	}
+
+	public void OnToggle_Bondline(){
+		//RawImage ri = bondLineBtn.GetComponent<RawImage>();
+		//Texture bondLine = StaticVariables.drawBondLines ? bondLineUp : bondLineDown;
+		//ri.texture = bondLine;
+		//StaticVariables.drawBondLines = !StaticVariables.drawBondLines;
+		StaticVariables.drawBondLines = bondLineOn.GetComponent<Toggle>().isOn;
 	}
 }

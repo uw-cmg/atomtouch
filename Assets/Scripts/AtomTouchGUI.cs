@@ -1035,7 +1035,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		slowMotionFrames = StaticVariables.slowMotionFrames;
 		Atom.EnableSelectAtomGroup(false);
 	}
-
+	//for the left panel
 	public void createBondline(){
 		RawImage ri = bondLineBtn.GetComponent<RawImage>();
 		Texture bondLine = StaticVariables.drawBondLines ? bondLineUp : bondLineDown;
