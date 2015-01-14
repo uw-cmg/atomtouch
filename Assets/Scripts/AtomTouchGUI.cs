@@ -60,6 +60,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	public Texture downArrow;
 	public Texture upArrow;
 	//some references to the UI
+	public GameObject hud;
 	public GameObject timer;
 	public GameObject tempSlider;//temperature
 	public GameObject volSlider;//volume
@@ -69,6 +70,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject settingsCanvas;
 	public Text selectAllText;
 	private bool selectedAll;
+	private bool settingsActive;
 	//prefabs to spawn
 	public Rigidbody copperPrefab;
 	public Rigidbody goldPrefab;
@@ -151,6 +153,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		Atom.EnableSelectAtomGroup(false);
 		settingsCanvas.SetActive(false);
 		selectedAll = false;
+		settingsActive = false;
 		//Debug.Log("Settings canvas enabled: " + SettingsCanvas.activeSelf);
 	}
 	void Start () {
@@ -1056,7 +1059,6 @@ public class AtomTouchGUI : MonoBehaviour {
 		if(currentTimeSpeed == StaticVariables.TimeSpeed.Normal){
 			currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
 			StaticVariables.pauseTime = true;
-			//caller: main camera
 			ri.texture = stoppedTimeButton;
 
 		}
@@ -1073,14 +1075,55 @@ public class AtomTouchGUI : MonoBehaviour {
 		}	
 	}
 
+	public void RestoreTimer(StaticVariables.TimeSpeed oldTimeSpeed){
+		RawImage ri = timer.GetComponent<RawImage>();
+		currentTimeSpeed = oldTimeSpeed;
+		if(oldTimeSpeed == StaticVariables.TimeSpeed.Normal){
+			Time.timeScale = 1.0f;
+			ri.texture = normalTimeButton;
+		}
+		else if(oldTimeSpeed == StaticVariables.TimeSpeed.Stopped){
+			StaticVariables.pauseTime = true;
+			ri.texture = stoppedTimeButton;
+		}
+		else if(currentTimeSpeed == StaticVariables.TimeSpeed.SlowMotion){
+			Time.timeScale = 0.05f;
+			StaticVariables.pauseTime = false;
+			ri.texture = slowTimeButton;
+		}	
+	}
+
 	//toggle settings callback
 	//TODO
 	public void SettingsOnClick(){
 		bool oldStatus = settingsCanvas.activeSelf;
 		settingsCanvas.SetActive(!oldStatus);
 	 	//if active, pause game, change timer state to stopped
+	 	StaticVariables.TimeSpeed oldTimeSpeed = currentTimeSpeed;
+	 	Debug.Log("old time speed:" +oldTimeSpeed);
+	 	//if originally settings is not active
+	 	if(!settingsActive)
+	 	{
+	 		//RawImage ri = timer.GetComponent<RawImage>();
+		 	//currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
+			//StaticVariables.pauseTime = true;
+			//ri.texture = stoppedTimeButton;
+			//turn off hud
+			//hud.SetActive(false);
+		}
+		/*
+		else
+		{
+			hud.SetActive(true);
+			Debug.Log("restoring timer");
+			RestoreTimer(oldTimeSpeed);
+		}
+		*/
+		settingsActive = settingsCanvas.activeSelf;
 	}
-
+	public void test(){
+		Debug.Log("mio");
+	}
 	public void resetCamera(){
 		Camera.main.transform.position = new Vector3(0.0f, 0.0f, -40.0f);
 		Camera.main.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);

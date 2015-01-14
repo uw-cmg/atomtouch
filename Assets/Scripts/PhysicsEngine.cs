@@ -25,8 +25,6 @@ public class PhysicsEngine : MonoBehaviour
 			Boundary.myBoundary.Apply();
 			CalculateEnergy();
 
-
-
 			if (StaticVariables.iTime == 0)
 			{
 				StaticVariables.clockTimeStart = Time.realtimeSinceStartup;
