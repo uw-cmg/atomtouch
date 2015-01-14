@@ -8,10 +8,16 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject hudCanvas;
 	public GameObject settingsButton;
 
-	private bool mouseExitsSettingsPanel;
-
+	private bool mouseExitsSettingsPanel; //aka, pause the game
+	private static bool gamePaused;
+    public static bool GamePaused
+    {
+    	get { return gamePaused; }
+       	//set { this._Name = value; }  
+    }
 	void Awake(){
 		mouseExitsSettingsPanel = false;
+		gamePaused = false;
 	}
 	void Start () {
 		
@@ -20,13 +26,26 @@ public class SettingsControl : MonoBehaviour {
 	void Update(){
 		if(Input.GetMouseButtonDown(0)){
 			if(mouseExitsSettingsPanel){
-				Debug.Log("mio");
-				settingsCanvas.SetActive(false);
-				hudCanvas.SetActive(true);
-				//resume
-				StaticVariables.pauseTime = false;
+				ResumeGame();
 			}
 		}
+	}
+	public void ResumeGame(){
+		Debug.Log("mio");
+		gamePaused = true;
+		settingsCanvas.SetActive(false);
+		hudCanvas.SetActive(true);
+		//resume
+		StaticVariables.pauseTime = false;
+	}
+
+	public void PauseGame(){
+		gamePaused = false;
+		settingsCanvas.SetActive(true);
+		hudCanvas.SetActive(false);
+		//pause
+		AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
+		StaticVariables.pauseTime = true;
 	}
 
 	public void OnClick_OutsideSettings(bool exits){
@@ -34,10 +53,6 @@ public class SettingsControl : MonoBehaviour {
 	}
 
 	public void OnClick_SettingsButton(){
-		settingsCanvas.SetActive(true);
-		hudCanvas.SetActive(false);
-		//pause
-		AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
-		StaticVariables.pauseTime = true;
+		PauseGame();
 	}
 }

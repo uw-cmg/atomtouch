@@ -320,6 +320,7 @@ public abstract class Atom : MonoBehaviour
 	
 	//controls for debugging on pc
 	void OnMouseDown (){
+		if(SettingsControl.GamePaused)return;
 		if (Application.platform == RuntimePlatform.IPhonePlayer)return;
 		dragStartTime = Time.realtimeSinceStartup;
 		dragCalled = false;
@@ -554,6 +555,7 @@ public abstract class Atom : MonoBehaviour
 	}
 	
 	void OnMouseUp (){
+		if(SettingsControl.GamePaused)return;
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
 			if(!dragCalled){
 				//this is executed if an atom is only tapped
