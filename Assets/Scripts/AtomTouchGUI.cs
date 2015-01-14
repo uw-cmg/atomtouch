@@ -581,18 +581,21 @@ public class AtomTouchGUI : MonoBehaviour {
 			if(addGraphicCopper && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
 			{
 				myEnvironment.createAtom(copperPrefab);
+				Potential.myPotential.calculateVerletRadius ();
 			}
 
 		
 			if(addGraphicGold && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
 			{
 				myEnvironment.createAtom(goldPrefab);
+				Potential.myPotential.calculateVerletRadius ();
 			}
 
 		
 			if(addGraphicPlatinum && Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
 			{
 				myEnvironment.createAtom(platinumPrefab);
+				Potential.myPotential.calculateVerletRadius ();
 			}
 					
 			addGraphicCopper = false;
