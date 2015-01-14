@@ -6,9 +6,10 @@ public class ReflectingBoundaryCondition : Boundary {
 	//reflect the atoms from the walls
 	public override void Apply()
 	{
-		Vector3 boxDimension = new Vector3 (CreateEnvironment.myEnvironment.width-2.0f * CreateEnvironment.myEnvironment.errorBuffer, CreateEnvironment.myEnvironment.height-2.0f * CreateEnvironment.myEnvironment.errorBuffer , CreateEnvironment.myEnvironment.depth-2.0f * CreateEnvironment.myEnvironment.errorBuffer);
-		boxDimension.y = boxDimension.x;
-		boxDimension.z = boxDimension.x;
+		Vector3 boxDimension = Vector3.zero;
+		boxDimension.x = CreateEnvironment.myEnvironment.width - 2.0f * CreateEnvironment.myEnvironment.errorBuffer;
+		boxDimension.y = CreateEnvironment.myEnvironment.height - 2.0f * CreateEnvironment.myEnvironment.errorBuffer;
+		boxDimension.z = CreateEnvironment.myEnvironment.depth - 2.0f * CreateEnvironment.myEnvironment.errorBuffer;
 		
 		for (int i = 0; i < Atom.AllAtoms.Count; i++)
 		{
