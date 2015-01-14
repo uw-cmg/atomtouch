@@ -417,6 +417,7 @@ public abstract class Atom : MonoBehaviour
 	}
 	
 	void OnMouseDrag(){
+		if(SettingsControl.GamePaused)return;
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
 			
 			if(Time.realtimeSinceStartup - dragStartTime > 0.1f){

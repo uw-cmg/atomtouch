@@ -32,7 +32,7 @@ public class SettingsControl : MonoBehaviour {
 	}
 	public void ResumeGame(){
 		Debug.Log("mio");
-		gamePaused = true;
+		gamePaused = false;
 		settingsCanvas.SetActive(false);
 		hudCanvas.SetActive(true);
 		//resume
@@ -40,7 +40,7 @@ public class SettingsControl : MonoBehaviour {
 	}
 
 	public void PauseGame(){
-		gamePaused = false;
+		gamePaused = true;
 		settingsCanvas.SetActive(true);
 		hudCanvas.SetActive(false);
 		//pause
