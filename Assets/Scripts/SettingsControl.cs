@@ -8,6 +8,10 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject hudCanvas;
 	public GameObject settingsButton;
 	public GameObject bondLineOn;
+	public GameObject lenJonesOn;
+	public GameObject buckinghamOn;
+	//waiting for Brenner to be done
+	public GameObject brennerOn;
 
 	private bool mouseExitsSettingsPanel; //aka, pause the game
 	private static bool gamePaused;
@@ -63,5 +67,13 @@ public class SettingsControl : MonoBehaviour {
 		//ri.texture = bondLine;
 		//StaticVariables.drawBondLines = !StaticVariables.drawBondLines;
 		StaticVariables.drawBondLines = bondLineOn.GetComponent<Toggle>().isOn;
+	}
+
+	public void OnChange_SimType(){
+		if(lenJonesOn.GetComponent<Toggle>().isOn){
+			Potential.currentPotential = Potential.potentialType.LennardJones;
+		}else if(buckinghamOn.GetComponent<Toggle>().isOn){
+			Potential.currentPotential = Potential.potentialType.Buckingham;
+		}
 	}
 }
