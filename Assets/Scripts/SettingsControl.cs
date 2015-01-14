@@ -9,7 +9,7 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject settingsButton;
 
 	private bool mouseExitsSettingsPanel;
-	
+
 	void Awake(){
 		mouseExitsSettingsPanel = false;
 	}
@@ -29,5 +29,10 @@ public class SettingsControl : MonoBehaviour {
 
 	public void OnClick_OutsideSettings(bool exits){
 		mouseExitsSettingsPanel = exits;
+	}
+
+	public void OnClick_SettingsButton(){
+		settingsCanvas.SetActive(true);
+		hudCanvas.SetActive(false);
 	}
 }
