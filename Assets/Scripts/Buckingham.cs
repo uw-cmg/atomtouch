@@ -4,14 +4,14 @@ using System.Collections;
 public class Buckingham : Potential {
 
 	//Cutoff distance for calculating Buckingham force. Beyond this distance the force is taken to be zero.
-	private float cutoff = 10.0f; //[Angstrom]
+	private float cutoff = 100.0f; //[Angstrom]
 	private float cutoffSqr;
 	
 	//Cutoff distance for using the spline interpolation function. Beyond this distance the force smoothed to zero.
 	private float rSpline; //[Angstrom]
 	
 	//The mesh size for pre-calculating Lennard Jones force.
-	private float dR = 0.0001f;
+	private float dR = 0.001f;
 	
 	//pre-calculated coefficients and forces for Buckingham potential
 	private float[, ,] preBuckinghamAcceleration;
@@ -192,13 +192,9 @@ public class Buckingham : Potential {
 		return potential;
 	}
 	
-	public override void calculateVerletRadius()
+	public override void calculateVerletRadius(Atom currAtom)
 	{
-		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
-		{
-			Atom currAtom = Atom.AllAtoms[i];
-			currAtom.verletRadius = cutoff + 1.0f;
-		}
+		currAtom.verletRadius = cutoff + 1.0f;
 	}
 	
 	//This function creates a list of all neighbor list for each atom

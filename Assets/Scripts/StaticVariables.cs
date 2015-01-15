@@ -29,14 +29,14 @@ public class StaticVariables {
 	
 	//Suppose every FixedUpdate physics interval (e.g. 0.02 seconds) is the
 	//Molecular Dynamics timestep of 0.5 * 10^-15 seconds
-	public static float fixedUpdateIntervalToRealTime = MDTimestep / Time.fixedDeltaTime;
+	//public static float fixedUpdateIntervalToRealTime = MDTimestep / Time.fixedDeltaTime;
 	
 	// This is the number of frames that the program enters a slow motion mode to avoid some gliches.
 	public static int slowMotionFrames = 20;
 	
 	//Suppose every Update physics interval (e.g. 0.02 seconds) is the
 	//Molecular Dynamics timestep of 0.5 * 10^-15 seconds
-	public static float updateIntervalToRealTime = MDTimestep;
+	//public static float updateIntervalToRealTime = MDTimestep;
 	
 	//do not scale temperature all at once
 	public static float alphaDrag = 0.1f;

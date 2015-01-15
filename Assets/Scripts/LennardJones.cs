@@ -149,13 +149,9 @@ public class LennardJones : Potential {
 		return potential;
 	}
 	
-	public override void calculateVerletRadius()
+	public override void calculateVerletRadius(Atom currAtom)
 	{
-		for (int i = 0; i < Atom.AllAtoms.Count; i++)
-		{
-			Atom currAtom = Atom.AllAtoms[i];
-			currAtom.verletRadius = cutoff + 1.0f;
-		}
+		currAtom.verletRadius = cutoff + 1.0f;
 	}
 	
 	//This function creates a list of all neighbor list for each atom

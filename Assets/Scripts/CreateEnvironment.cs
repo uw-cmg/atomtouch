@@ -292,7 +292,6 @@ public class CreateEnvironment : MonoBehaviour {
 				createAtom (molecules [1]);
 			}
 		}
-		Potential.myPotential.calculateVerletRadius ();
 		
 		//AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		atomTouchGUI.AllAtomsKick();
@@ -327,6 +326,7 @@ public class CreateEnvironment : MonoBehaviour {
 		currAtom.transform.position = currAtom.position;
 		//kick it
 		atomTouchGUI.AtomKick(i);
+		Potential.myPotential.calculateVerletRadius (currAtom);
 
 		if ((tryNumber == 100) && (proximityFlag == false)) 
 		{
