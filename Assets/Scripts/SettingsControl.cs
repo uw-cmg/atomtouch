@@ -10,6 +10,7 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject bondLineOn;
 	public GameObject lenJonesOn;
 	public GameObject buckinghamOn;
+	public GameObject nmOn;
 	//waiting for Brenner to be done
 	public GameObject brennerOn;
 	public AtomTouchGUI atomTouchGUI;
@@ -74,13 +75,15 @@ public class SettingsControl : MonoBehaviour {
 	}
 
 	public void OnToggle_Bondline(){
-		//RawImage ri = bondLineBtn.GetComponent<RawImage>();
-		//Texture bondLine = StaticVariables.drawBondLines ? bondLineUp : bondLineDown;
-		//ri.texture = bondLine;
-		//StaticVariables.drawBondLines = !StaticVariables.drawBondLines;
 		StaticVariables.drawBondLines = bondLineOn.GetComponent<Toggle>().isOn;
 	}
-
+	public void OnToggle_VolUnitNm(){
+		if(nmOn.GetComponent<Toggle>().isOn){
+			UpdateVolume.volUnit = UpdateVolume.VolUnitType.Nanometer;
+		}else{
+			UpdateVolume.volUnit = UpdateVolume.VolUnitType.Angstrom;
+		}
+	}
 	public void OnChange_SimType(){
 		if(lenJonesOn.GetComponent<Toggle>().isOn){
 			Potential.currentPotential = Potential.potentialType.LennardJones;
