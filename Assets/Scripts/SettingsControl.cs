@@ -12,8 +12,12 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject buckinghamOn;
 	//waiting for Brenner to be done
 	public GameObject brennerOn;
+	public AtomTouchGUI atomTouchGUI;
 
 	private bool mouseExitsSettingsPanel; //aka, pause the game
+	private static Potential.potentialType currentPotentialType;
+	private static bool simTypeChanged;
+
 	private static bool gamePaused;
     public static bool GamePaused
     {
@@ -23,6 +27,9 @@ public class SettingsControl : MonoBehaviour {
 	void Awake(){
 		mouseExitsSettingsPanel = false;
 		gamePaused = false;
+		currentPotentialType = Potential.potentialType.LennardJones;
+		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
+		simTypeChanged = false;
 	}
 	void Start () {
 		
@@ -42,6 +49,11 @@ public class SettingsControl : MonoBehaviour {
 		hudCanvas.SetActive(true);
 		//resume
 		StaticVariables.pauseTime = false;
+		//if sim type is changed, reset
+		if(simTypeChanged){
+			atomTouchGUI.ResetAll();
+			simTypeChanged = false;
+		}
 	}
 
 	public void PauseGame(){
@@ -72,8 +84,16 @@ public class SettingsControl : MonoBehaviour {
 	public void OnChange_SimType(){
 		if(lenJonesOn.GetComponent<Toggle>().isOn){
 			Potential.currentPotential = Potential.potentialType.LennardJones;
+			if(currentPotentialType != Potential.potentialType.LennardJones){
+				simTypeChanged = true;
+			}
+			currentPotentialType = Potential.potentialType.LennardJones;
 		}else if(buckinghamOn.GetComponent<Toggle>().isOn){
 			Potential.currentPotential = Potential.potentialType.Buckingham;
+			if(currentPotentialType != Potential.potentialType.Buckingham){
+				simTypeChanged = true;
+			}
+			currentPotentialType = Potential.potentialType.Buckingham;
 		}
 	}
 }
