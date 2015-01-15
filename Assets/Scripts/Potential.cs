@@ -19,6 +19,6 @@ public abstract class Potential {
 	abstract public void preCompute();
 	abstract public void getForce(Atom firstAtom, Atom secondAtom);
 	abstract public float getPotential(Atom firstAtom, Atom secondAtom);
-	abstract public void calculateVerletRadius();
+	abstract public void calculateVerletRadius(Atom currAtom);
 	abstract public void calculateNeighborList();
 }
