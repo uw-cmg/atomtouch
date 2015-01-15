@@ -112,6 +112,7 @@ public abstract class Atom : MonoBehaviour
 	//this function takes care of double tapping, collision detection, 
 	//and detecting OnMouseDown, OnMouseDrag, and OnMouseUp on iOS
 	void Update(){	
+		if(SettingsControl.GamePaused)return;
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			if(Input.touchCount > 0){
 				Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);

@@ -23,7 +23,7 @@ public class PinchZoom : MonoBehaviour {
 
 	//this function handles the zooming in and out of the camera. the camera actually doesnt zoom, its z-coorindate simply changes
 	void Update () {
-
+		if(SettingsControl.GamePaused)return;
 		bool beingHeld = false;
 		doubleTappedAtom = null;
 		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");

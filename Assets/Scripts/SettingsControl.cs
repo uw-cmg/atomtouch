@@ -13,8 +13,6 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject nmOn;
 	//waiting for Brenner to be done
 	public GameObject brennerOn;
-	public GameObject creditHolder;
-	public GameObject[] creditEntries;
 
 	public AtomTouchGUI atomTouchGUI;
 
@@ -36,8 +34,6 @@ public class SettingsControl : MonoBehaviour {
 		currentPotentialType = Potential.potentialType.LennardJones;
 		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
 		simTypeChanged = false;
-		//creditViewArea = creditHolder.GetComponent<RectTransform>().rect;
-		//creditEntries = GameObject.FindGameObjectsWithTag("Credit");
 	}
 	void Start () {
 		
@@ -90,23 +86,6 @@ public class SettingsControl : MonoBehaviour {
 		}else{
 			UpdateVolume.volUnit = UpdateVolume.VolUnitType.Angstrom;
 		}
-	}
-	public void OnScroll_Credit(){
-		//creditViewArea
-		foreach(GameObject entry in creditEntries){
-			Rect r = entry.GetComponent<RectTransform>().rect;
-			if(RectContains(ref creditViewArea, ref r)){
-				entry.SetActive(true);
-			}else{
-				entry.SetActive(false);
-			}
-		}
-	}
-	public static bool RectContains(ref Rect r1, ref Rect r2){
-		if(r2.yMin > r1.yMin || r2.yMin < r1.yMin){
-			return false;
-		}
-		return false;
 	}
 	public void OnChange_SimType(){
 		if(lenJonesOn.GetComponent<Toggle>().isOn){
