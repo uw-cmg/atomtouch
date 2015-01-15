@@ -25,10 +25,10 @@ public class UpdateVolume : MonoBehaviour {
 		//1 nm = 10 angstroms
 		if(volUnit == VolUnitType.Nanometer){
 			text.text =  "Vol" + System.Environment.NewLine + 
-			(createEnvironment.volume*0.1f*0.1f*0.1f).ToString("0.00")+ " nm^3";
+			(createEnvironment.volume*0.1f*0.1f*0.1f).ToString("0.00")+ " nm³";
 		}else if(volUnit == VolUnitType.Angstrom){
 			text.text = "Vol" + System.Environment.NewLine +
-			(createEnvironment.volume).ToString("0.00")+ " Å^3";
+			(createEnvironment.volume).ToString("0.00")+ " Å³";
 		}
 		
 		
