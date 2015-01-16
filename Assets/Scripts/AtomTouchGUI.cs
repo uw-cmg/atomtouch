@@ -1155,11 +1155,6 @@ public class AtomTouchGUI : MonoBehaviour {
 	}
 
 	public void ChangeAtomVolume(){
-		//GameObject[] volumetag = GameObject.FindGameObjectsWithTag("scrolltag1");
-		//GUI.Label (new Rect (volumetag.x + volumetag.width - 120.0f, (volumetag.y + (volumetag.height/2.0f)), 200.0f, 20), TemperatureCalc.desiredTemperature + "K" + " (" + (Math.Round(TemperatureCalc.desiredTemperature - 273.15, 2)).ToString() + "C)", tempNumberText);
-		
-		//Slider volumeSlider = null;
-		//GameObject volume = GameObject.FindWithTag ("Scrolltag2");
 		
 		CreateEnvironment createEnvironment = CreateEnvironment.myEnvironment;
 		//these are in angstroms

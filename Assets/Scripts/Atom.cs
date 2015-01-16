@@ -130,8 +130,8 @@ public abstract class Atom : MonoBehaviour
 							AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
 						}
 						//user touch an atom at this point
-						OnMouseDownIOS();
-						//OnTouch();
+						//OnMouseDownIOS();
+						OnTouch();
 						lastTapTime = Time.realtimeSinceStartup;
 					}
 				}
@@ -276,8 +276,8 @@ public abstract class Atom : MonoBehaviour
 	}
 	
 	//this is the equivalent of OnMouseDown, but for iOS
-	void OnMouseDownIOS(){
-	//void OnTouch(){
+	//void OnMouseDownIOS(){
+	void OnTouch(){
 		if (Application.platform != RuntimePlatform.IPhonePlayer)return;
 		dragStartTime = Time.realtimeSinceStartup;
 		dragCalled = false;
