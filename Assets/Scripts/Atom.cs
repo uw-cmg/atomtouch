@@ -113,6 +113,7 @@ public abstract class Atom : MonoBehaviour
 	//and detecting OnMouseDown, OnMouseDrag, and OnMouseUp on iOS
 	void Update(){	
 		if(SettingsControl.GamePaused)return;
+		if(StaticVariables.mouseClickProcessed)return;
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			if(Input.touchCount > 0){
 				Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
@@ -129,8 +130,8 @@ public abstract class Atom : MonoBehaviour
 							AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
 						}
 						//user touch an atom at this point
-						//OnMouseDownIOS();
-						OnTouch();
+						OnMouseDownIOS();
+						//OnTouch();
 						lastTapTime = Time.realtimeSinceStartup;
 					}
 				}
@@ -152,7 +153,7 @@ public abstract class Atom : MonoBehaviour
 			}
 		}
 		else{
-			if(Input.GetMouseButtonDown(0)){
+			if(Input.GetMouseButtonDown(0) ){
 				if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
 					//user double tapped an atom on PC
 					AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
@@ -165,7 +166,8 @@ public abstract class Atom : MonoBehaviour
 				Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
 				RaycastHit hitInfo;
 				if (Physics.Raycast( ray, out hitInfo )
-				 && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
+				 && hitInfo.transform.gameObject.tag == "Molecule" 
+				 && hitInfo.transform.gameObject == gameObject){
 					lastTapTime = Time.realtimeSinceStartup;
 					//if originally is not selected
 					if(!selected){
@@ -286,8 +288,8 @@ public abstract class Atom : MonoBehaviour
 	}
 	
 	//this is the equivalent of OnMouseDown, but for iOS
-	//void OnMouseDownIOS(){
-	void OnTouch(){
+	void OnMouseDownIOS(){
+	//void OnTouch(){
 		if (Application.platform != RuntimePlatform.IPhonePlayer)return;
 		dragStartTime = Time.realtimeSinceStartup;
 		dragCalled = false;
@@ -322,7 +324,9 @@ public abstract class Atom : MonoBehaviour
 	//controls for debugging on pc
 	void OnMouseDown (){
 		if(SettingsControl.GamePaused)return;
+
 		if (Application.platform == RuntimePlatform.IPhonePlayer)return;
+
 		dragStartTime = Time.realtimeSinceStartup;
 		dragCalled = false;
 		held = true;

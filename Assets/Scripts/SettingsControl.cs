@@ -16,12 +16,11 @@ public class SettingsControl : MonoBehaviour {
 
 	public AtomTouchGUI atomTouchGUI;
 
-	private bool mouseExitsSettingsPanel; //aka, pause the game
-	private Rect creditViewArea;
+	public static bool mouseExitsSettingsPanel; //aka, pause the game
 
 	private static Potential.potentialType currentPotentialType;
 	private static bool simTypeChanged;
-
+	
 	private static bool gamePaused;
     public static bool GamePaused
     {
@@ -40,15 +39,13 @@ public class SettingsControl : MonoBehaviour {
 	}
 	
 	void Update(){
-		if(Input.GetMouseButtonDown(0)){
-			if(mouseExitsSettingsPanel){
-				ResumeGame();
-			}
+		if(Input.GetMouseButtonDown(0) && mouseExitsSettingsPanel){
+			StaticVariables.mouseClickProcessed = true;
+			ResumeGame();
 		}
 	}
 	public void ResumeGame(){
 		Debug.Log("mio");
-		gamePaused = false;
 		settingsCanvas.SetActive(false);
 		hudCanvas.SetActive(true);
 		//resume
@@ -58,6 +55,8 @@ public class SettingsControl : MonoBehaviour {
 			atomTouchGUI.ResetAll();
 			simTypeChanged = false;
 		}
+		gamePaused = false;
+		StaticVariables.mouseClickProcessed = false;
 	}
 
 	public void PauseGame(){
@@ -71,6 +70,7 @@ public class SettingsControl : MonoBehaviour {
 
 	public void OnClick_OutsideSettings(bool exits){
 		mouseExitsSettingsPanel = exits;
+
 	}
 
 	public void OnClick_SettingsButton(){

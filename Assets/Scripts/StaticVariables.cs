@@ -20,6 +20,9 @@ using System.Collections.Generic;
 
 public class StaticVariables {
 	
+	//makes sure mouseClick is only processed by either Atom or SettingsControl callbacks
+	public static bool mouseClickProcessed = false;
+
 	public static float MDTimestep = 0.5f * Mathf.Pow (10, -15);
 	public static float MDTimestepSqr = MDTimestep * MDTimestep;
 	public static float MDTimestepInPicosecond = MDTimestep / Mathf.Pow (10, -12);

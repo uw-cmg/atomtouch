@@ -37,7 +37,8 @@ public class CameraScript : MonoBehaviour {
 
 	//this function handles the rotation of the camera
 	void Update () {
-
+		if(SettingsControl.GamePaused)return;
+		//if(SettingsControl.mouseExitsSettingsPanel)return;
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
