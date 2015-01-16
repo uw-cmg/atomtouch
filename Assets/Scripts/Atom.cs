@@ -169,14 +169,6 @@ public abstract class Atom : MonoBehaviour
 				 && hitInfo.transform.gameObject.tag == "Molecule" 
 				 && hitInfo.transform.gameObject == gameObject){
 					lastTapTime = Time.realtimeSinceStartup;
-					//if originally is not selected
-					if(!selected){
-						EnableSelectAtomGroup(true);
-					}else{
-						if(NumberofAtom.selectedAtoms <= 1){
-							EnableSelectAtomGroup(false);
-						}
-					}
 					
 				}
 
@@ -194,10 +186,6 @@ public abstract class Atom : MonoBehaviour
 	public static void EnableSelectAtomGroup(bool enable){
 		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
 		atomTouchGUI.selectAtomPanel.SetActive(enable);
-		atomTouchGUI.selectAtomGroup.SetActive(enable);
-		foreach (Transform child in atomTouchGUI.selectAtomGroup.transform){
-  			child.gameObject.SetActive(enable);
-		}
 	}
 	//another method for selecting atoms
 	void HandleRightClick(){
