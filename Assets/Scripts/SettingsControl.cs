@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class SettingsControl : MonoBehaviour {
+	public GameObject bottomLayer;
 	public GameObject settingsCanvas;
 	public GameObject settingsPanel;
 	public GameObject hudCanvas;
@@ -13,7 +14,7 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject nmOn;
 	//waiting for Brenner to be done
 	public GameObject brennerOn;
-
+	public static bool enteredHud = false;
 	public AtomTouchGUI atomTouchGUI;
 
 	public static bool mouseExitsSettingsPanel; //aka, pause the game
@@ -25,8 +26,7 @@ public class SettingsControl : MonoBehaviour {
 	private static bool tempUpdating;
 	private static bool volUpdating;
 
-    public static bool GamePaused
-    {
+    public static bool GamePaused{
     	get { return gamePaused; }
        	//set { this._Name = value; }  
     }
@@ -61,6 +61,7 @@ public class SettingsControl : MonoBehaviour {
 		Debug.Log("mio");
 		settingsCanvas.SetActive(false);
 		hudCanvas.SetActive(true);
+		bottomLayer.SetActive(true);
 		//resume
 		StaticVariables.pauseTime = false;
 		//if sim type is changed, reset
@@ -76,6 +77,8 @@ public class SettingsControl : MonoBehaviour {
 		gamePaused = true;
 		settingsCanvas.SetActive(true);
 		hudCanvas.SetActive(false);
+		bottomLayer.SetActive(false);
+		enteredHud = false;
 		//pause
 		AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
 		StaticVariables.pauseTime = true;
@@ -83,11 +86,11 @@ public class SettingsControl : MonoBehaviour {
 
 	public void OnClick_OutsideSettings(bool exits){
 		mouseExitsSettingsPanel = exits;
-
 	}
 
 	public void OnClick_SettingsButton(){
 		PauseGame();
+
 	}
 
 	public void OnToggle_Bondline(){

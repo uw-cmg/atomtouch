@@ -164,6 +164,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	}
 	
 	//this function creates all UI elements in the game EXCEPT for the graph
+	/*
 	void OnGUI(){
 		
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
@@ -707,25 +708,25 @@ public class AtomTouchGUI : MonoBehaviour {
 		timeText.normal.textColor = Color.white;
 		GUI.Label (new Rect (Screen.width - 75.0f, 10.0f, 70.0f, 40.0f), Math.Round(StaticVariables.currentTime, 1) + "ps");
 		
-		/*
-		if (slowMotionFrames > 0){
-			StaticVariables.MDTimestep = StaticVariables.MDTimestep / 5.0f;
-			StaticVariables.MDTimestepSqr = StaticVariables.MDTimestep * StaticVariables.MDTimestep;
-			StaticVariables.MDTimestepInPicosecond = StaticVariables.MDTimestep / Mathf.Pow (10, -12);
-			myEnvironment.preCompute();
-			slowMotionFrames --;
-		}else if (slowMotionFrames == 0){
-			StaticVariables.MDTimestep = StaticVariables.MDTimestep * 5.0f;
-			StaticVariables.MDTimestepSqr = StaticVariables.MDTimestep * StaticVariables.MDTimestep;
-			StaticVariables.MDTimestepInPicosecond = StaticVariables.MDTimestep / Mathf.Pow (10, -12);
-			myEnvironment.preCompute();
-			slowMotionFrames = -1;
-		}
-		*/
+		
+		//if (slowMotionFrames > 0){
+		//	StaticVariables.MDTimestep = StaticVariables.MDTimestep / 5.0f;
+		//	StaticVariables.MDTimestepSqr = StaticVariables.MDTimestep * StaticVariables.MDTimestep;
+		//	StaticVariables.MDTimestepInPicosecond = StaticVariables.MDTimestep / Mathf.Pow (10, -12);
+		//	myEnvironment.preCompute();
+		//	slowMotionFrames --;
+		//}else if (slowMotionFrames == 0){
+		//	StaticVariables.MDTimestep = StaticVariables.MDTimestep * 5.0f;
+		//	StaticVariables.MDTimestepSqr = StaticVariables.MDTimestep * StaticVariables.MDTimestep;
+		//	StaticVariables.MDTimestepInPicosecond = StaticVariables.MDTimestep / Mathf.Pow (10, -12);
+		//	myEnvironment.preCompute();
+		//	slowMotionFrames = -1;
+		//}
+		
 		
 		
 	}
-	
+	*/
 	//this function displays properties that are apart of the system as a whole,
 	// such as the number of atoms
 	void DisplaySystemProperties(Rect displayRect){
@@ -1031,7 +1032,10 @@ public class AtomTouchGUI : MonoBehaviour {
 	
 
 	}
-
+	public void OnEnter_Hud(){
+		SettingsControl.enteredHud = true;
+		Debug.Log("entered hud");
+	}
 	public void ResetAll(){
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		myEnvironment.InitAtoms ();
@@ -1137,15 +1141,10 @@ public class AtomTouchGUI : MonoBehaviour {
 		if(selectedAll)
 		{
 			SelectAllAtoms();
-			//selectAllText.text = "Deselect All";
-			//hide deselect button
-			//deselectButton.SetActive(false);
 		}
 		else
 		{
 			DeselectAllAtoms();
-			//selectAllText.text = "Select All";
-			//deselectButton.SetActive(true);
 		}
 
 	}

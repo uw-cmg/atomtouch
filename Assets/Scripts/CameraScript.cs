@@ -21,7 +21,11 @@ public class CameraScript : MonoBehaviour {
 
 	public float moveSpeed = 0.25f;
 	public float turnSpeed = .5f;
-	
+	public GameObject gameControl;
+
+	private AtomTouchGUI atomTouchGUI;
+	private SettingsControl settingsControl;
+
 	private Vector2 touchPrevPos;
 	private bool rotateAroundY = false;
 	private bool first = true;
@@ -31,6 +35,10 @@ public class CameraScript : MonoBehaviour {
 	private float greenValue = 0.0f;
 	private float blueValue = 0.0f;
 	
+	void Awake(){
+		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
+		settingsControl = gameControl.GetComponent<SettingsControl>();
+	}
 	void Start(){
 		colorStartTime = Time.realtimeSinceStartup;
 	}
@@ -38,8 +46,9 @@ public class CameraScript : MonoBehaviour {
 	//this function handles the rotation of the camera
 	void Update () {
 		if(SettingsControl.GamePaused)return;
-		//if either slider is being updated
 		if(SettingsControl.TempUpdating || SettingsControl.VolUpdating)return;
+		if(!SettingsControl.enteredHud)return;
+		
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
