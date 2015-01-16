@@ -1129,7 +1129,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		settingsActive = settingsCanvas.activeSelf;
 	}
 	public void test(){
-		Debug.Log("mio");
+		Debug.Log("mio, What is Mio??");
 	}
 	public void resetCamera(){
 		Camera.main.transform.position = new Vector3(0.0f, 0.0f, -40.0f);
