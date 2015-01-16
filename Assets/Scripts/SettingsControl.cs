@@ -22,10 +22,21 @@ public class SettingsControl : MonoBehaviour {
 	private static bool simTypeChanged;
 	
 	private static bool gamePaused;
+	private static bool tempUpdating;
+	private static bool volUpdating;
+
     public static bool GamePaused
     {
     	get { return gamePaused; }
        	//set { this._Name = value; }  
+    }
+    public static bool TempUpdating{
+    	get{return tempUpdating;}
+    	set{tempUpdating = value;}
+    }
+    public static bool VolUpdating{
+    	get{return volUpdating;}
+    	set{volUpdating = value;}
     }
 	void Awake(){
 		mouseExitsSettingsPanel = false;
@@ -33,6 +44,8 @@ public class SettingsControl : MonoBehaviour {
 		currentPotentialType = Potential.potentialType.LennardJones;
 		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
 		simTypeChanged = false;
+		tempUpdating = false;
+		volUpdating = false;
 	}
 	void Start () {
 		

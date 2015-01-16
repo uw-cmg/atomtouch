@@ -1254,12 +1254,17 @@ public class AtomTouchGUI : MonoBehaviour {
 		}
 		return true;
 	}
+	public void ToggleTempSliderSelected(bool selected){
+		SettingsControl.TempUpdating = selected;
+	}
+	public void ToggleVolSliderSelected(bool selected){
+		SettingsControl.VolUpdating = selected;
+	}
 	public void ChangeAtomTemperature(){
-		//Slider tempSliderComponent = null;
-		
-		//tempSliderComponent = tempSlider.GetComponent<Slider> ();
 		oldTemperaure = StaticVariables.desiredTemperature;
 		StaticVariables.desiredTemperature = Math.Abs(5000 - tempSliderComponent.value);
+		Debug.Log("temp changing");
+		//turn off camera
 		
 		if(oldTemperaure < 0){
 			return;
