@@ -68,6 +68,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject selectAtomPanel;
 	public GameObject selectAtomGroup;
 	public GameObject settingsCanvas;
+	public GameObject deselectButton;
+
 	public Text selectAllText;
 	private bool selectedAll;
 	private bool settingsActive;
@@ -853,6 +855,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	}
 
 
+
 	public void DeleteSelectedAtoms(){
 		Debug.Log("DeleteSelectedAtoms called");
 		for(int i=Atom.AllAtoms.Count-1; i >= 0;i--){
@@ -1134,12 +1137,15 @@ public class AtomTouchGUI : MonoBehaviour {
 		if(selectedAll)
 		{
 			SelectAllAtoms();
-			selectAllText.text = "Deselect All";
+			//selectAllText.text = "Deselect All";
+			//hide deselect button
+			//deselectButton.SetActive(false);
 		}
 		else
 		{
 			DeselectAllAtoms();
-			selectAllText.text = "Select All";
+			//selectAllText.text = "Select All";
+			//deselectButton.SetActive(true);
 		}
 
 	}
