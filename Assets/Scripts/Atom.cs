@@ -153,6 +153,7 @@ public abstract class Atom : MonoBehaviour
 			}
 		}
 		else{
+			//on pc
 			if(Input.GetMouseButtonDown(0) ){
 				if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
 					//user double tapped an atom on PC
