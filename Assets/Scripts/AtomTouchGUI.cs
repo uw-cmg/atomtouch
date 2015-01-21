@@ -73,6 +73,14 @@ public class AtomTouchGUI : MonoBehaviour {
 	public Text selectAllText;
 	private bool selectedAll;
 	private bool settingsActive;
+	//sliders
+	public GameObject tempFrontFill;
+	public GameObject tempBackFill;
+	public GameObject tempHandle;
+	public GameObject volFrontFill;
+	public GameObject volBackFill;
+	public GameObject volHandle;
+
 	//prefabs to spawn
 	public Rigidbody copperPrefab;
 	public Rigidbody goldPrefab;
@@ -152,6 +160,27 @@ public class AtomTouchGUI : MonoBehaviour {
 		settingsCanvas.SetActive(false);
 		selectedAll = false;
 		settingsActive = false;
+
+		if(Application.platform == RuntimePlatform.IPhonePlayer){
+		//if(1+1==2){
+			//make sliders larger
+			float tempFront = tempFrontFill.GetComponent<RectTransform>().localScale.y;
+			float tempBack = tempBackFill.GetComponent<RectTransform>().localScale.y;
+			float volFront = volFrontFill.GetComponent<RectTransform>().localScale.y;
+			float volBack = volBackFill.GetComponent<RectTransform>().localScale.y;
+
+			tempFrontFill.GetComponent<RectTransform>().localScale 
+				= new Vector3(1.0f, 2.0f*tempFront,1.0f);
+			tempBackFill.GetComponent<RectTransform>().localScale
+				= new Vector3(1.0f, 2.0f*tempBack,1.0f);
+			tempHandle.GetComponent<RectTransform>().localScale = new Vector3(1.5f,2.0f,1.0f);
+
+			volFrontFill.GetComponent<RectTransform>().localScale 
+				= new Vector3(1.0f, 2.0f*volFront,1.0f);
+			volBackFill.GetComponent<RectTransform>().localScale
+				= new Vector3(1.0f, 2.0f*volBack,1.0f);
+			volHandle.GetComponent<RectTransform>().localScale = new Vector3(1.5f,2.0f,1.0f);
+		}
 		//Debug.Log("Settings canvas enabled: " + SettingsCanvas.activeSelf);
 	}
 	void Start () {
