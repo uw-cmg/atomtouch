@@ -144,14 +144,10 @@ public class AtomTouchGUI : MonoBehaviour {
 		//set slider range
 		tempSliderComponent.minValue = StaticVariables.minTemp;
 		tempSliderComponent.maxValue = StaticVariables.maxTemp;
-		//tempSliderComponent.value = StaticVariables.defaultTemp;
 
 		volSliderComponent.minValue = StaticVariables.minVol * 0.1f; //to nm
 		volSliderComponent.maxValue = StaticVariables.maxVol * 0.1f; //to nm
-		//volSliderComponent.value = StaticVariables.defaultVol;
-
-		//tempSliderComponent.value = StaticVariables.defaultTemp;
-		//volSliderComponent.value = (StaticVariables.maxVol-StaticVariables.defaultVol) * 0.1f;
+		
 		Atom.EnableSelectAtomGroup(false);
 		settingsCanvas.SetActive(false);
 		selectedAll = false;

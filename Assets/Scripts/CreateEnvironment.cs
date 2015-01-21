@@ -209,8 +209,6 @@ public class CreateEnvironment : MonoBehaviour {
 		vz = new Vector3(0.0f,0.0f, depth);
 
 		CreatePlanes();
-		//create the lines that border the box and the text of width, height, and depth
-		//bottom line and text
 		
 		if(lineColor == null){
 			lineColor = new Color (Color.yellow.r, Color.yellow.g, Color.yellow.b, .6f);
