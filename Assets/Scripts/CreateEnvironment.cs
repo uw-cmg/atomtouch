@@ -41,9 +41,21 @@ public class CreateEnvironment : MonoBehaviour {
 	private TextMesh sideText;
 	private TextMesh depthText;
 
-	private TextMesh bottomTextDepth;// bottom +depth(z)
-	private TextMesh bottomTextSide;// bottom + side(y)
+	private TextMesh bottomPlusZText;
+	private TextMesh bottomPlusYText;
+	private TextMesh bottomPlusYZText;
 
+	private TextMesh sidePlusXText;
+	private TextMesh sidePlusZText;
+	private TextMesh sidePlusXZText;
+
+	private TextMesh depthPlusYText;
+	private TextMesh depthPlusZText;
+	private TextMesh depthPlusYZText;
+
+	private Vector3 vx;
+	private Vector3 vy;
+	private Vector3 vz;
 	//planes
 	public static GameObject bottomPlane;
 	public static GameObject topPlane;
@@ -110,6 +122,73 @@ public class CreateEnvironment : MonoBehaviour {
 		leftPlane.name = "LeftPlane";
 		leftPlane.tag = "Plane";
 	}
+	void CreateLine(ref GameObject plane, ref TextMesh tm, Vector3 positionOffset){
+		tm = Instantiate(textMeshPrefab, plane.transform.position + positionOffset, Quaternion.identity) as TextMesh;
+		tm.text = "";
+		LineRenderer line = tm.transform.gameObject.AddComponent<LineRenderer> ();
+		line.material = lineMat;
+		line.SetColors(lineColor, lineColor);
+		line.SetWidth(lineWidth, lineWidth);
+		line.SetVertexCount(2);
+	}
+	void UpdateLine(ref GameObject plane, ref TextMesh tm, Vector3 offset0, Vector3 offset1){
+		
+		LineRenderer line = tm.GetComponent<LineRenderer> ();
+		Vector3 v0
+			= plane.transform.position + offset0;
+
+		Vector3 v1 
+			= v0 + offset1;
+		line.SetPosition(0, v0);
+		line.SetPosition(1, v1);
+		line.SetWidth(lineWidth, lineWidth);
+		tm.transform.position  = (v0 + v1) /2.0f;
+		
+	}
+	void CreateAllLines(){
+		CreateLine(ref bottomPlane,ref bottomText, new Vector3(0.0f, 0.0f, -depth/2.0f));
+		CreateLine(ref bottomPlane, ref bottomPlusZText, new Vector3(0.0f, 0.0f, depth/2.0f));
+		CreateLine(ref bottomPlane, ref bottomPlusYText, new Vector3(0.0f, height, -depth/2.0f));
+		CreateLine(ref bottomPlane, ref bottomPlusYZText, new Vector3(0.0f, height, depth/2.0f));
+
+		CreateLine(ref frontPlane,ref sideText, new Vector3(-width/2.0f, 0.0f, 0.0f));
+		CreateLine(ref frontPlane,ref sidePlusXText, new Vector3(width/2.0f, 0.0f, 0.0f));
+		CreateLine(ref backPlane,ref sidePlusZText, new Vector3(0.0f, 0.0f,-depth/2.0f));
+		CreateLine(ref backPlane,ref sidePlusXZText, new Vector3(0.0f, 0.0f,depth/2.0f));
+
+		CreateLine(ref leftPlane, ref depthText, new Vector3(-height/2.0f, 0.0f, 0.0f));
+		CreateLine(ref leftPlane, ref depthPlusYText, new Vector3(height/2.0f,0.0f,0.0f));
+		CreateLine(ref rightPlane, ref depthPlusZText, new Vector3(0.0f,0.0f,depth/2.0f));
+		CreateLine(ref rightPlane, ref depthPlusYZText, new Vector3(0.0f,0.0f,-depth/2.0f));
+	}
+	void UpdateAllLines(){
+		UpdateLine(ref bottomPlane, ref bottomText, 
+			new Vector3(-width/2.0f,0.0f,-depth/2.0f), vx);
+		UpdateLine(ref bottomPlane, ref bottomPlusZText, 
+			new Vector3(-width/2.0f,0.0f,depth/2.0f), vx);
+		UpdateLine(ref bottomPlane, ref bottomPlusYText,
+			new Vector3(-width/2.0f,height,-depth/2.0f), vx);
+		UpdateLine(ref bottomPlane, ref bottomPlusYZText,
+			new Vector3(-width/2.0f,height,depth/2.0f), vx);
+
+		UpdateLine(ref frontPlane, ref sideText,
+			new Vector3(-width/2.0f,-height/2.0f,0.0f), vy);
+		UpdateLine(ref frontPlane, ref sidePlusXText,
+			new Vector3(width/2.0f,-height/2.0f,0.0f), vy);
+		UpdateLine(ref backPlane, ref sidePlusZText,
+			new Vector3(-width/2.0f, -height/2.0f, 0.0f), vy);
+		UpdateLine(ref backPlane, ref sidePlusXZText,
+			new Vector3(width/2.0f, -height/2.0f, 0.0f), vy);
+		
+		UpdateLine(ref leftPlane, ref depthText,
+			new Vector3(0.0f,-height/2.0f,-depth/2.0f), vz);
+		UpdateLine(ref leftPlane, ref depthPlusYText,
+			new Vector3(0.0f, height/2.0f, -depth/2.0f), vz);
+		UpdateLine(ref rightPlane, ref depthPlusZText,
+			new Vector3(0.0f,-height/2.0f, -depth/2.0f), vz);
+		UpdateLine(ref rightPlane, ref depthPlusYZText,
+			new Vector3(0.0f,height/2.0f, -depth/2.0f), vz);
+	}
 	void Start () {
 		// pre-compute coefficients used in various types of potentials so that we don't have to calculate them dynamically
 		preCompute ();
@@ -125,6 +204,10 @@ public class CreateEnvironment : MonoBehaviour {
 		height = Mathf.Pow (volume, (1.0f / 3.0f));
 		depth = Mathf.Pow (volume, (1.0f / 3.0f));
 		
+		vx  = new Vector3(width,0.0f,0.0f);
+		vy = new Vector3(0.0f,height, 0.0f);
+		vz = new Vector3(0.0f,0.0f, depth);
+
 		CreatePlanes();
 		//create the lines that border the box and the text of width, height, and depth
 		//bottom line and text
@@ -133,54 +216,9 @@ public class CreateEnvironment : MonoBehaviour {
 			lineColor = new Color (Color.yellow.r, Color.yellow.g, Color.yellow.b, .6f);
 		}
 		Vector3 bottomPlanePos = bottomPlane.transform.position;
-		bottomText = Instantiate(
-			textMeshPrefab, 
-			new Vector3(bottomPlanePos.x-2.0f, bottomPlanePos.y-1.0f, bottomPlanePos.z-(depth/2.0f)), 
-			Quaternion.identity
-			) as TextMesh;
-		//bottomText.text = width.ToString() + " Angstroms";
-		bottomText.text = "";
-		LineRenderer bottomLine = bottomText.transform.gameObject.AddComponent<LineRenderer> ();
-		bottomLine.material = lineMat;
-		bottomLine.SetColors(lineColor, lineColor);
-		bottomLine.SetWidth(lineWidth, lineWidth);
-		bottomLine.SetVertexCount(2);
-		/*
-		bottomTextDepth = Instantiate(
-			textMeshPrefab,
-			new Vector3(bottomText.transform.position.x, 
-				bottomText.transform.position.y, 
-				bottomText.transform.position.z+depth),
-			Quaternion.identity
-			) as TextMesh;
-		bottomTextDepth.text = "";
-		LineRenderer bottomLineDepth = bottomTextDepth.transform.gameObject.AddComponent<LineRenderer>();
-		bottomLineDepth.material = lineMat;
-		bottomLineDepth.SetColors(lineColor, lineColor);
-		bottomLineDepth.SetWidth(lineWidth, lineWidth);
-		bottomLineDepth.SetVertexCount(2);
-		*/
-		//side line and text
-		
-		sideText = Instantiate(textMeshPrefab, new Vector3(bottomPlanePos.x + (width/2.0f) + 1.0f, bottomPlanePos.y + (height*7/10.0f), bottomPlanePos.z - (depth/2.0f)), Quaternion.identity) as TextMesh;
-		//sideText.text = VerticalText(height.ToString() + " Angstroms");
-		sideText.text = "";
-		LineRenderer sideLine = sideText.transform.gameObject.AddComponent<LineRenderer> ();
-		sideLine.material = lineMat;
-		sideLine.SetColors(lineColor, lineColor);
-		sideLine.SetWidth(lineWidth, lineWidth);
-		sideLine.SetVertexCount(2);
-		
-		//depth line and text
-		depthText = Instantiate(textMeshPrefab, new Vector3(centerPos.x + (width/2.0f), bottomPlanePos.y - 1.0f, centerPos.z - 2.0f), Quaternion.Euler(0.0f, -90.0f, 0.0f)) as TextMesh;
-		//depthText.text = depth.ToString() + " Angstroms";
-		depthText.text = "";
-		LineRenderer depthLine = depthText.transform.gameObject.AddComponent<LineRenderer> ();
-		depthLine.material = lineMat;
-		depthLine.SetColors(lineColor, lineColor);
-		depthLine.SetWidth(lineWidth, lineWidth);
-		depthLine.SetVertexCount(2);
-		
+
+
+		CreateAllLines();
 		//give all of the atoms a random velocity on startup
 		atomTouchGUI.AllAtomsKick ();
 	}
@@ -192,40 +230,14 @@ public class CreateEnvironment : MonoBehaviour {
 		width = Mathf.Pow (volume, (1.0f / 3.0f));
 		height = Mathf.Pow (volume, (1.0f / 3.0f));
 		depth = Mathf.Pow (volume, (1.0f / 3.0f));
+
+		vx.x = width;
+		vy.y = height;
+		vz.z = depth;
+
+		UpdateAllLines();
 		
-		//change the position of the bottom line
-		LineRenderer bottomLine = bottomText.GetComponent<LineRenderer> ();
-		Vector3 bottomLineV0 = new Vector3(bottomPlane.transform.position.x-(width/2.0f), bottomPlane.transform.position.y, bottomText.transform.position.z);
-		Vector3 bottomLineV1 = new Vector3(bottomLineV0.x+width, bottomLineV0.y, bottomLineV0.z);
-		bottomLine.SetPosition(0, bottomLineV0);
-		bottomLine.SetPosition(1, bottomLineV1);
-		bottomLine.SetWidth(lineWidth, lineWidth);
-		/*
-		LineRenderer bottomLineDepth = bottomText.GetComponent<LineRenderer> ();
-		Vector3 bottomLineDepthV0 = new Vector3(bottomLineV0.x, bottomLineV0.y, bottomLineV0.z+depth);
-		Vector3 bottomLineDepthV1 = new Vector3(bottomLineDepthV0.x+width, bottomLineDepthV0.y, bottomLineDepthV0.z);
-		bottomLineDepth.SetPosition(0, bottomLineDepthV0);
-		bottomLineDepth.SetPosition(1, bottomLineDepthV1);
-		bottomLineDepth.SetWidth(lineWidth, lineWidth);
-		*/
-		//change the position of the side line
-		LineRenderer sideLine = sideText.GetComponent<LineRenderer> ();
-		sideLine.SetPosition (0, new Vector3 (bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, sideText.transform.position.z));
-		sideLine.SetPosition (1, new Vector3 (bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y + height, sideText.transform.position.z));
-		sideLine.SetWidth(lineWidth, lineWidth);
-		//change the position of the depth line
-		LineRenderer depthLine = depthText.GetComponent<LineRenderer> ();
-		depthLine.SetPosition(0, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, bottomPlane.transform.position.z - (depth/2.0f)));
-		depthLine.SetPosition(1, new Vector3(bottomPlane.transform.position.x + (width/2.0f), bottomPlane.transform.position.y, bottomPlane.transform.position.z + (depth/2.0f)));
-		depthLine.SetWidth(lineWidth, lineWidth);
-		//change the text of the labels and change their positions
-		//bottomText.text = width.ToString() + " Angstroms";
-		//sideText.text = VerticalText(height.ToString() + " Angstroms");
-		//depthText.text = depth.ToString() + " Angstroms";
-		sideText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f) + 1.0f, bottomPlane.transform.position.y + (height*7/10.0f), bottomPlane.transform.position.z - (depth / 2.0f));
-		depthText.transform.position = new Vector3 (bottomPlane.transform.position.x + (width / 2.0f), bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - 2.0f);
-		bottomText.transform.position = new Vector3 (bottomPlane.transform.position.x - 2.0f, bottomPlane.transform.position.y - 1.0f, bottomPlane.transform.position.z - (depth / 2.0f));
-		
+
 		//change the position of the box
 		rightPlane.transform.position = new Vector3 (initialCenterPos.x + (width/2.0f), initialCenterPos.y, initialCenterPos.z);
 		leftPlane.transform.position = new Vector3 (initialCenterPos.x - (width/2.0f), initialCenterPos.y, initialCenterPos.z);
