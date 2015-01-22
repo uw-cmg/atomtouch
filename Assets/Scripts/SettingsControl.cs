@@ -39,7 +39,7 @@ public class SettingsControl : MonoBehaviour {
     	set{volUpdating = value;}
     }
 	void Awake(){
-		mouseExitsSettingsPanel = false;
+		mouseExitsSettingsPanel = true;
 		gamePaused = false;
 		currentPotentialType = Potential.potentialType.LennardJones;
 		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
@@ -63,7 +63,8 @@ public class SettingsControl : MonoBehaviour {
 		hudCanvas.SetActive(true);
 		bottomLayer.SetActive(true);
 		//resume
-		StaticVariables.pauseTime = false;
+		Time.timeScale = 1.0f;
+
 		//if sim type is changed, reset
 		if(simTypeChanged){
 			CreateEnvironment.myEnvironment.preCompute();
@@ -81,8 +82,7 @@ public class SettingsControl : MonoBehaviour {
 		bottomLayer.SetActive(false);
 		enteredHud = false;
 		//pause
-		AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
-		StaticVariables.pauseTime = true;
+		Time.timeScale = 0.0f;
 	}
 
 	public void OnClick_OutsideSettings(bool exits){
