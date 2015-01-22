@@ -25,7 +25,7 @@ public class SettingsControl : MonoBehaviour {
 	private static bool gamePaused;
 	private static bool tempUpdating;
 	private static bool volUpdating;
-
+	private Toggle nmToggle;
     public static bool GamePaused{
     	get { return gamePaused; }
        	//set { this._Name = value; }  
@@ -43,6 +43,7 @@ public class SettingsControl : MonoBehaviour {
 		gamePaused = false;
 		currentPotentialType = Potential.potentialType.LennardJones;
 		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
+		nmToggle = nmOn.GetComponent<Toggle>();
 		simTypeChanged = false;
 		tempUpdating = false;
 		volUpdating = false;
@@ -98,7 +99,8 @@ public class SettingsControl : MonoBehaviour {
 		StaticVariables.drawBondLines = bondLineOn.GetComponent<Toggle>().isOn;
 	}
 	public void OnToggle_VolUnitNm(){
-		if(nmOn.GetComponent<Toggle>().isOn){
+		if(nmToggle.isOn){
+		//if(nmOn.GetComponent<Toggle>().isOn){
 			UpdateVolume.volUnit = UpdateVolume.VolUnitType.Nanometer;
 		}else{
 			UpdateVolume.volUnit = UpdateVolume.VolUnitType.Angstrom;

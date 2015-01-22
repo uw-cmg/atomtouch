@@ -160,7 +160,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		settingsCanvas.SetActive(false);
 		selectedAll = false;
 		settingsActive = false;
-
+/*
 		if(Application.platform == RuntimePlatform.IPhonePlayer){
 		//if(1+1==2){
 			//make sliders larger
@@ -181,6 +181,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				= new Vector3(1.0f, 2.0f*volBack,1.0f);
 			volHandle.GetComponent<RectTransform>().localScale = new Vector3(1.5f,2.0f,1.0f);
 		}
+		*/
 		//Debug.Log("Settings canvas enabled: " + SettingsCanvas.activeSelf);
 	}
 	void Start () {
