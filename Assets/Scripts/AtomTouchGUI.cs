@@ -529,6 +529,8 @@ public class AtomTouchGUI : MonoBehaviour {
 		if(currentTimeSpeed == StaticVariables.TimeSpeed.Normal){
 			currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
 			StaticVariables.pauseTime = true;
+
+
 			ri.texture = stoppedTimeButton;
 
 		}
@@ -536,6 +538,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
 			Time.timeScale = .05f;
 			StaticVariables.pauseTime = false;
+
 			ri.texture = slowTimeButton;
 		}
 		else if(currentTimeSpeed == StaticVariables.TimeSpeed.SlowMotion){

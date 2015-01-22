@@ -26,14 +26,13 @@ public class PinchZoom : MonoBehaviour {
 		if(SettingsControl.GamePaused)return;
 		bool beingHeld = false;
 		doubleTappedAtom = null;
-		GameObject[] allMolecules = GameObject.FindGameObjectsWithTag("Molecule");
-		for (int i = 0; i < allMolecules.Length; i++) {
-			Atom atomScript = allMolecules[i].GetComponent<Atom>();
-			if(atomScript.held){
+		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
+			Atom currAtom = Atom.AllAtoms[i];
+			if(currAtom.held){
 				beingHeld = true;
 			}
-			if(atomScript.doubleTapped){
-				doubleTappedAtom = allMolecules[i];
+			if(currAtom.doubleTapped){
+				doubleTappedAtom = Atom.AllAtoms[i].gameObject;
 			}
 		}
 
