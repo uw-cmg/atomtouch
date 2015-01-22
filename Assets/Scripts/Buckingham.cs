@@ -58,15 +58,13 @@ public class Buckingham : Potential {
 				for (int iR = 0; iR < nR; iR++)
 				{
 					float distance = (float)iR * dR;
-					if (distance < 0.7f)
-						distance = 0.7f;
+					if (distance < 1.1f)
+						distance = 1.1f;
 					preBuckinghamAcceleration[firstAtom.atomID,secondAtom.atomID,iR] = calcAcceleration(distance,firstAtom,secondAtom);
 					PreBuckinghamPotential[firstAtom.atomID, secondAtom.atomID, iR] = calcPotential(distance, firstAtom, secondAtom);
 				}
 			}
 		}
-		//WriteData.WritePotential(PreBuckinghamPotential);
-		//WriteData.WriteForce(preBuckinghamAcceleration);
 	}
 	
 	//the function returns the LennarJones force on the atom given the list of the atoms that are within range of it
