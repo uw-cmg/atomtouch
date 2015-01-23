@@ -64,7 +64,7 @@ public class SettingsControl : MonoBehaviour {
 		Debug.Log("mio");
 		settingsCanvas.SetActive(false);
 		hudCanvas.SetActive(true);
-		bottomLayer.SetActive(true);
+		//bottomLayer.SetActive(true);
 		//resume
 		Time.timeScale = 1.0f;
 
@@ -108,7 +108,7 @@ public class SettingsControl : MonoBehaviour {
 			UpdateVolume.volUnit = UpdateVolume.VolUnitType.Angstrom;
 		}
 	}
-	
+
 	public void bottomlayertest(){
 		Rect r = settingsPanel.GetComponent<RectTransform>().rect;
 		
