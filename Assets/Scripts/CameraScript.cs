@@ -47,7 +47,7 @@ public class CameraScript : MonoBehaviour {
 	void Update () {
 		if(SettingsControl.GamePaused)return;
 		if(SettingsControl.TempUpdating || SettingsControl.VolUpdating)return;
-		if(!SettingsControl.enteredHud)return;
+		//if(!SettingsControl.enteredHud)return;
 		
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 

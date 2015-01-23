@@ -53,10 +53,12 @@ public class SettingsControl : MonoBehaviour {
 	}
 	
 	void Update(){
+		/*
 		if(Input.GetMouseButtonDown(0) && mouseExitsSettingsPanel){
 			StaticVariables.mouseClickProcessed = true;
 			ResumeGame();
 		}
+		*/
 	}
 	public void ResumeGame(){
 		Debug.Log("mio");
@@ -80,7 +82,7 @@ public class SettingsControl : MonoBehaviour {
 		gamePaused = true;
 		settingsCanvas.SetActive(true);
 		hudCanvas.SetActive(false);
-		bottomLayer.SetActive(false);
+		//bottomLayer.SetActive(false);
 		enteredHud = false;
 		//pause
 		Time.timeScale = 0.0f;
@@ -106,6 +108,32 @@ public class SettingsControl : MonoBehaviour {
 			UpdateVolume.volUnit = UpdateVolume.VolUnitType.Angstrom;
 		}
 	}
+	
+	public void bottomlayertest(){
+		Rect r = settingsPanel.GetComponent<RectTransform>().rect;
+		
+		
+		Debug.Log("mouse position at bottom layer: " + Input.mousePosition);
+
+		Vector3 p = Vector3.zero;
+
+		Vector3 v = Input.mousePosition
+			+new Vector3(-Screen.width/2.0f,
+				-Screen.height/2.0f,0);
+		Debug.Log(Mathf.Abs(v.x));
+		Debug.Log(Mathf.Abs(v.y));
+		if(Mathf.Abs(v.x) < r.width*settingsCanvas.GetComponent<Canvas>().scaleFactor/2.0f 
+			&& Mathf.Abs(v.y) < r.height*settingsCanvas.GetComponent<Canvas>().scaleFactor/2.0f){
+			Debug.Log("IN RECT");
+
+		}else{
+			Debug.Log("OUT RECT");
+			StaticVariables.mouseClickProcessed = true;
+			ResumeGame();
+		}
+		
+	}
+
 	public void OnChange_SimType(){
 		if(lenJonesOn.GetComponent<Toggle>().isOn){
 			Potential.currentPotential = Potential.potentialType.LennardJones;
