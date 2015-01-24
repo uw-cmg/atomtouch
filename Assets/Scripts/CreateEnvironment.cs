@@ -81,6 +81,7 @@ public class CreateEnvironment : MonoBehaviour {
 		bottomPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
 		bottomPlane.name = "BottomPlane";
 		bottomPlane.tag = "Plane";
+		bottomPlane.collider.enabled = true;
 		
 		//create the top plane
 		Quaternion topPlaneRotation = Quaternion.Euler (0.0f, 180.0f, 180.0f);
@@ -89,6 +90,7 @@ public class CreateEnvironment : MonoBehaviour {
 		topPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
 		topPlane.name = "TopPlane";
 		topPlane.tag = "Plane";
+		topPlane.collider.enabled = true;
 		
 		//create the back plane
 		Quaternion backPlaneRotation = Quaternion.Euler (270.0f, 0.0f, 0.0f);
@@ -97,6 +99,7 @@ public class CreateEnvironment : MonoBehaviour {
 		backPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
 		backPlane.name = "BackPlane";
 		backPlane.tag = "Plane";
+		backPlane.collider.enabled = true;
 		
 		//create the front plane
 		Quaternion frontPlaneRotation = Quaternion.Euler (90.0f, 0.0f, 0.0f);
@@ -105,6 +108,7 @@ public class CreateEnvironment : MonoBehaviour {
 		frontPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
 		frontPlane.name = "FrontPlane";
 		frontPlane.tag = "Plane";
+		frontPlane.collider.enabled = true;
 		
 		//create the right plane
 		Quaternion rightPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 90.0f);
@@ -113,6 +117,7 @@ public class CreateEnvironment : MonoBehaviour {
 		rightPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
 		rightPlane.name = "RightPlane";
 		rightPlane.tag = "Plane";
+		rightPlane.collider.enabled = true;
 		
 		//create the left plane
 		Quaternion leftPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 270.0f);
@@ -121,6 +126,7 @@ public class CreateEnvironment : MonoBehaviour {
 		leftPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
 		leftPlane.name = "LeftPlane";
 		leftPlane.tag = "Plane";
+		leftPlane.collider.enabled = true;
 	}
 	void CreateLine(ref GameObject plane, ref TextMesh tm, Vector3 positionOffset){
 		tm = Instantiate(textMeshPrefab, plane.transform.position + positionOffset, Quaternion.identity) as TextMesh;
@@ -318,6 +324,7 @@ public class CreateEnvironment : MonoBehaviour {
 		int i = Atom.AllAtoms.Count-1;
 		Atom currAtom = Atom.AllAtoms[i];
 		currAtom.gameObject.name = i.ToString();
+		currAtom.rigidbody.freezeRotation = true;
 		
 		float realWidth = myEnvironment.width - 2.0f * myEnvironment.errorBuffer;
 		float realHeight = myEnvironment.height - 2.0f * myEnvironment.errorBuffer;
