@@ -525,6 +525,8 @@ public class AtomTouchGUI : MonoBehaviour {
 		if(currentTimeSpeed == StaticVariables.TimeSpeed.Normal){
 			currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
 			StaticVariables.pauseTime = true;
+			StaticVariables.MDTimestep = StaticVariables.MDTimestepStop;
+			StaticVariables.MDTimestepSqr = StaticVariables.MDTimestep * StaticVariables.MDTimestep;
 
 
 			ri.texture = stoppedTimeButton;
@@ -532,14 +534,20 @@ public class AtomTouchGUI : MonoBehaviour {
 		}
 		else if(currentTimeSpeed == StaticVariables.TimeSpeed.Stopped){
 			currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
-			Time.timeScale = .05f;
+
+			StaticVariables.MDTimestep = StaticVariables.MDTimestepSlow;
+			StaticVariables.MDTimestepSqr = StaticVariables.MDTimestep * StaticVariables.MDTimestep;
+
 			StaticVariables.pauseTime = false;
 
 			ri.texture = slowTimeButton;
 		}
 		else if(currentTimeSpeed == StaticVariables.TimeSpeed.SlowMotion){
 			currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
-			Time.timeScale = 1.0f;
+
+			StaticVariables.MDTimestep = StaticVariables.MDTimestepNormal;
+			StaticVariables.MDTimestepSqr = StaticVariables.MDTimestep * StaticVariables.MDTimestep;
+
 			StaticVariables.pauseTime = false;
 			ri.texture = normalTimeButton;
 		}	

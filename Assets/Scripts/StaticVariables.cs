@@ -23,9 +23,16 @@ public class StaticVariables {
 	//makes sure mouseClick is only processed by either Atom or SettingsControl callbacks
 	public static bool mouseClickProcessed = false;
 
-	public static float MDTimestep = 0.5f * Mathf.Pow (10, -15);
+	//MD time steps used in normal, slowmotion, and stop time mode.
+	public static float MDTimestepNormal = 0.5f * Mathf.Pow (10, -15);
+	public static float MDTimestepSlow = MDTimestepNormal / 10.0f ;
+	public static float MDTimestepStop = MDTimestepNormal / 50.0f ;
+
+	public static float MDTimestep = MDTimestepNormal;
 	public static float MDTimestepSqr = MDTimestep * MDTimestep;
 	public static float MDTimestepInPicosecond = MDTimestep / Mathf.Pow (10, -12);
+
+
 	
 	public static float clockTimeStart = 0.0f;
 	public static float clockTimeEnd = 0.0f;

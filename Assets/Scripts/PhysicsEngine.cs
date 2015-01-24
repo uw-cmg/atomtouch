@@ -45,8 +45,17 @@ public class PhysicsEngine : MonoBehaviour
 			StaticVariables.currentTime += StaticVariables.MDTimestepInPicosecond;
 			Graph.numMDStepSinceLastRecord ++;
 			StaticVariables.iTime ++;
-
-		
+		}
+		else
+		{
+			// update the position of all atoms then initialize the acceleration to be updated
+				for (int i=0; i< Atom.AllAtoms.Count; i++)
+			{
+				Atom currAtom = Atom.AllAtoms[i];
+				currAtom.transform.position = currAtom.position;
+			}
+			Boundary.myBoundary.Apply();
+			CalculateEnergy();
 		}
 	}
 
