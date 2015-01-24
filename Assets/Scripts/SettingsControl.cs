@@ -12,9 +12,9 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject lenJonesOn;
 	public GameObject buckinghamOn;
 	public GameObject nmOn;
+	public GameObject sliderPanel;
 	//waiting for Brenner to be done
 	public GameObject brennerOn;
-	public static bool enteredHud = false;
 	public AtomTouchGUI atomTouchGUI;
 
 	public static bool mouseExitsSettingsPanel; //aka, pause the game
@@ -23,20 +23,11 @@ public class SettingsControl : MonoBehaviour {
 	private static bool simTypeChanged;
 	
 	private static bool gamePaused;
-	private static bool tempUpdating;
-	private static bool volUpdating;
 	private Toggle nmToggle;
+
     public static bool GamePaused{
     	get { return gamePaused; }
        	//set { this._Name = value; }  
-    }
-    public static bool TempUpdating{
-    	get{return tempUpdating;}
-    	set{tempUpdating = value;}
-    }
-    public static bool VolUpdating{
-    	get{return volUpdating;}
-    	set{volUpdating = value;}
     }
 	void Awake(){
 		mouseExitsSettingsPanel = true;
@@ -45,26 +36,17 @@ public class SettingsControl : MonoBehaviour {
 		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
 		nmToggle = nmOn.GetComponent<Toggle>();
 		simTypeChanged = false;
-		tempUpdating = false;
-		volUpdating = false;
 	}
 	void Start () {
 		
 	}
 	
 	void Update(){
-		/*
-		if(Input.GetMouseButtonDown(0) && mouseExitsSettingsPanel){
-			StaticVariables.mouseClickProcessed = true;
-			ResumeGame();
-		}
-		*/
 	}
 	public void ResumeGame(){
 		Debug.Log("mio");
 		settingsCanvas.SetActive(false);
 		hudCanvas.SetActive(true);
-		//bottomLayer.SetActive(true);
 		//resume
 		Time.timeScale = 1.0f;
 
@@ -82,15 +64,11 @@ public class SettingsControl : MonoBehaviour {
 		gamePaused = true;
 		settingsCanvas.SetActive(true);
 		hudCanvas.SetActive(false);
-		//bottomLayer.SetActive(false);
-		enteredHud = false;
 		//pause
 		Time.timeScale = 0.0f;
 	}
 
-	public void OnClick_OutsideSettings(bool exits){
-		mouseExitsSettingsPanel = exits;
-	}
+	
 
 	public void OnClick_SettingsButton(){
 		PauseGame();
@@ -102,14 +80,14 @@ public class SettingsControl : MonoBehaviour {
 	}
 	public void OnToggle_VolUnitNm(){
 		if(nmToggle.isOn){
-		//if(nmOn.GetComponent<Toggle>().isOn){
 			UpdateVolume.volUnit = UpdateVolume.VolUnitType.Nanometer;
 		}else{
 			UpdateVolume.volUnit = UpdateVolume.VolUnitType.Angstrom;
 		}
 	}
 
-	public void bottomlayertest(){
+	//checks if mouse clicks outside the settings, if so, exit settings and resume
+	public void CheckExitSettings(){
 		Rect r = settingsPanel.GetComponent<RectTransform>().rect;
 		
 		

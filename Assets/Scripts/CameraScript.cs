@@ -22,6 +22,8 @@ public class CameraScript : MonoBehaviour {
 	public float moveSpeed = 0.25f;
 	public float turnSpeed = .5f;
 	public GameObject gameControl;
+	public GameObject sliderPanel;
+	public GameObject hudCanvas;
 
 	private AtomTouchGUI atomTouchGUI;
 	private SettingsControl settingsControl;
@@ -46,9 +48,6 @@ public class CameraScript : MonoBehaviour {
 	//this function handles the rotation of the camera
 	void Update () {
 		if(SettingsControl.GamePaused)return;
-		if(SettingsControl.TempUpdating || SettingsControl.VolUpdating)return;
-		//if(!SettingsControl.enteredHud)return;
-		
 		CreateEnvironment createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
@@ -90,19 +89,17 @@ public class CameraScript : MonoBehaviour {
 							}
 							first = false;
 						}
-
-						if(rotateAroundY){
-							Camera.main.transform.RotateAround(createEnvironment.centerPos, cameraRotation * Vector3.up, deltaTouchX);
-						}
-						else{
-							Camera.main.transform.RotateAround(createEnvironment.centerPos, cameraRotation * Vector3.right, deltaTouchY);
-						}
+						
+						RotateCam(ref createEnvironment, rotateAroundY, 
+							cameraRotation, deltaTouchX, deltaTouchY);
+						
 					}
 				}
 			}
 		}
 		else{
-			//the rotation of the camera is calculated by determining the difference in position of the touches on screen, and
+			//the rotation of the camera is calculated by determining 
+			//the difference in position of the touches on screen, and
 			//computing a magnitude based on the displacement
 			if(Input.GetMouseButtonUp(0)){
 				first = true;
@@ -138,16 +135,11 @@ public class CameraScript : MonoBehaviour {
 						first = false;
 					}
 
-					if(Input.mousePosition.x < (931-60))
-					{
-						if(rotateAroundY){
-							Camera.main.transform.RotateAround(createEnvironment.centerPos, cameraRotation * Vector3.up, deltaTouchX);
-						}
-						else{
-							Camera.main.transform.RotateAround(createEnvironment.centerPos, cameraRotation * Vector3.right, deltaTouchY);
-						}
-					}
+							
+					RotateCam(ref createEnvironment, rotateAroundY, cameraRotation, deltaTouchX, deltaTouchY);
+					
 				}
+				
 			}
 
 			touchPrevPos = Input.mousePosition;
@@ -163,7 +155,20 @@ public class CameraScript : MonoBehaviour {
 		createEnvironment.centerPos = objTransform.position;
 		transform.LookAt (objTransform);
 	}
-
+	public void RotateCam(ref CreateEnvironment createEnvironment, bool rotateAroundY, 
+		Quaternion cameraRotation, float deltaTouchX, float deltaTouchY){
+		if(Input.mousePosition.x < 
+			(Screen.width-sliderPanel.GetComponent<RectTransform>().rect.width
+				*hudCanvas.GetComponent<Canvas>().scaleFactor)){
+			if(rotateAroundY){
+				Camera.main.transform.RotateAround(
+					createEnvironment.centerPos, cameraRotation * Vector3.up, deltaTouchX);
+			}else{
+				Camera.main.transform.RotateAround(
+					createEnvironment.centerPos, cameraRotation * Vector3.right, deltaTouchY);
+			}
+		}
+	}
 	//this function will change the background color of the system randomly and dynamically
 	void ChangeBackgroundColor(){
 		if (Time.realtimeSinceStartup - colorStartTime > 10.0f) {
