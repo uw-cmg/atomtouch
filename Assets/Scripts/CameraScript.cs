@@ -71,7 +71,7 @@ public class CameraScript : MonoBehaviour {
 					AtomTouchGUI atomGUI = Camera.main.GetComponent<AtomTouchGUI>();
 					if(!holdingAtom && !atomGUI.addGraphicCopper 
 						&& !atomGUI.addGraphicGold && !atomGUI.addGraphicPlatinum 
-						&& !atomGUI.changingSlider){
+						&& !atomGUI.changingTemp && !atomGUI.changingVol){
 			
 						Quaternion cameraRotation = Camera.main.transform.rotation;
 						Vector2 touchPrevPos = touch.position - touch.deltaPosition;
@@ -108,11 +108,14 @@ public class CameraScript : MonoBehaviour {
 				first = true;
 			}
 			if(Input.GetMouseButton(0)){
+				/*
 				bool onSlider = Input.mousePosition.x >= 
 			Screen.width-sliderPanel.GetComponent<RectTransform>().rect.width
 				*hudCanvas.GetComponent<Canvas>().scaleFactor;
+				
 
 				if(onSlider)return;
+				*/
 				bool holdingAtom = false;
 				for (int i = 0; i < Atom.AllAtoms.Count; i++) {
 					Atom currAtom = Atom.AllAtoms[i];
@@ -125,7 +128,7 @@ public class CameraScript : MonoBehaviour {
 				AtomTouchGUI atomGUI = Camera.main.GetComponent<AtomTouchGUI>();
 				if(!holdingAtom && !atomGUI.addGraphicCopper 
 					&& !atomGUI.addGraphicGold && !atomGUI.addGraphicPlatinum 
-					&& !atomGUI.changingSlider){
+					&& !atomGUI.changingTemp && !atomGUI.changingVol){
 					Quaternion cameraRotation = Camera.main.transform.rotation;
 					float deltaMagnitudeDiffX = Input.mousePosition.x - touchPrevPos.x;
 					float deltaTouchX = deltaMagnitudeDiffX / 10.0f;

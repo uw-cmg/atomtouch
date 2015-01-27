@@ -137,7 +137,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GUISkin sliderControls;
 	private bool firstPass = true;
 	
-	[HideInInspector]public bool changingSlider = false;
+	[HideInInspector]public bool changingTemp = false;
+	[HideInInspector]public bool changingVol = false;
 	private float guiVolume;
 	
 	private int slowMotionFrames;
@@ -593,6 +594,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		//since slider is upside down...
 		float realVol = createEnvironment.width * 0.1f;
 		ChangePlaneMaterial(realVol);
+		changingVol = true;
 	}
 
 	public void ChangePlaneMaterial(float realVol){
@@ -686,9 +688,15 @@ public class AtomTouchGUI : MonoBehaviour {
 				AllAtomsKick();
 			}
 		}
+		changingTemp = true;
 		
 	}
-
+	public void OnPointerUp_TempSlider(){
+		changingTemp = false;
+	}
+	public void OnPointerUp_VolSlider(){
+		changingVol= false;
+	}
 	
 
 	/*
