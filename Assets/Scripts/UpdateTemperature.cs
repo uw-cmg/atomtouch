@@ -18,6 +18,6 @@ public class UpdateTemperature : MonoBehaviour {
 	}
 
 	public static float KToC(float k){
-		return k-272.15f;
+		return k-273.15f;
 	}
 }
