@@ -72,6 +72,8 @@ public class CreateEnvironment : MonoBehaviour {
 	void Awake(){
 		CreateEnvironment.myEnvironment = this;
 		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
+		//when first started, pause timer
+		StaticVariables.pauseTime = true;
 	}
 	void CreatePlanes(){
 		//create the bottom plane

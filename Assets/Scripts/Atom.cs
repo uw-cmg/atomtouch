@@ -159,7 +159,7 @@ public abstract class Atom : MonoBehaviour
 			//on pc
 			if(Input.GetMouseButtonDown(0) ){
 				//temporarily disable double click
-				/*
+				
 				if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
 					//user double tapped an atom on PC
 					AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
@@ -169,7 +169,7 @@ public abstract class Atom : MonoBehaviour
 					RemoveAllBondText();
 					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
 				}
-				*/
+				
 				Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
 				RaycastHit hitInfo;
 				if (Physics.Raycast( ray, out hitInfo )

@@ -143,7 +143,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	
 	private int slowMotionFrames;
 	
-	public static StaticVariables.TimeSpeed currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
+	public static StaticVariables.TimeSpeed currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
 	
 	private Slider tempSliderComponent;
 	private Slider volSliderComponent;
@@ -161,6 +161,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		settingsCanvas.SetActive(false);
 		selectedAll = false;
 		settingsActive = false;
+		
 /*
 		if(Application.platform == RuntimePlatform.IPhonePlayer){
 		//if(1+1==2){
@@ -188,6 +189,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	void Start () {
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		guiVolume = myEnvironment.volume;	
+
 	}
 	
 
