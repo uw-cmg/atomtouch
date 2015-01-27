@@ -13,6 +13,9 @@ public class UpdateTemperature : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//if(oldTemperature < 0)
+		if(StaticVariables.desiredTemperature < 0.001f){
+			StaticVariables.desiredTemperature = 0.001f;
+		}
 		text.text = "Temp" + System.Environment.NewLine +  StaticVariables.desiredTemperature + "K"
 		+ System.Environment.NewLine + "(" + KToC(StaticVariables.desiredTemperature).ToString("0.00") +"°C)";
 	}

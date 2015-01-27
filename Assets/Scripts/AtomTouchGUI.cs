@@ -161,7 +161,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		settingsCanvas.SetActive(false);
 		selectedAll = false;
 		settingsActive = false;
-		
+
 /*
 		if(Application.platform == RuntimePlatform.IPhonePlayer){
 		//if(1+1==2){
@@ -680,7 +680,7 @@ public class AtomTouchGUI : MonoBehaviour {
 
 	public void ChangeAtomTemperature(){
 		oldTemperaure = StaticVariables.desiredTemperature;
-		StaticVariables.desiredTemperature = Math.Abs(5000 - tempSliderComponent.value);
+		StaticVariables.desiredTemperature = Math.Abs(5000.000f - tempSliderComponent.value);
 		//Debug.Log("temp changing");
 		if(oldTemperaure < 0){
 			return;
