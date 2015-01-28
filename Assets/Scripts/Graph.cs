@@ -103,6 +103,7 @@ public class Graph : MonoBehaviour {
 	}
 	
 	//OnGUI will draw over this function, so the graph cannot be behind any GUI elements
+
 	void OnPostRender(){
 		
 		AtomTouchGUI atomGUI = Camera.main.GetComponent<AtomTouchGUI> ();

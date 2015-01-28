@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class SettingsControl : MonoBehaviour {
+
 	public GameObject bottomLayer;
 	public GameObject settingsCanvas;
 	public GameObject settingsPanel;
@@ -13,6 +14,8 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject buckinghamOn;
 	public GameObject nmOn;
 	public GameObject sliderPanel;
+	public GameObject graphOn;
+	public GameObject graphPanel;
 	//waiting for Brenner to be done
 	public GameObject brennerOn;
 	public AtomTouchGUI atomTouchGUI;
@@ -78,6 +81,11 @@ public class SettingsControl : MonoBehaviour {
 	public void OnToggle_Bondline(){
 		StaticVariables.drawBondLines = bondLineOn.GetComponent<Toggle>().isOn;
 	}
+	public void OnToggle_Graph(){
+		Chart.show = graphOn.GetComponent<Toggle>().isOn;
+		//enable graph if true
+		graphPanel.SetActive(Chart.show);
+	}
 	public void OnToggle_VolUnitNm(){
 		if(nmToggle.isOn){
 			UpdateVolume.volUnit = UpdateVolume.VolUnitType.Nanometer;
@@ -98,8 +106,8 @@ public class SettingsControl : MonoBehaviour {
 		Vector3 v = Input.mousePosition
 			+new Vector3(-Screen.width/2.0f,
 				-Screen.height/2.0f,0);
-		Debug.Log(Mathf.Abs(v.x));
-		Debug.Log(Mathf.Abs(v.y));
+		//Debug.Log(Mathf.Abs(v.x));
+		//Debug.Log(Mathf.Abs(v.y));
 		if(Mathf.Abs(v.x) < r.width*settingsCanvas.GetComponent<Canvas>().scaleFactor/2.0f 
 			&& Mathf.Abs(v.y) < r.height*settingsCanvas.GetComponent<Canvas>().scaleFactor/2.0f){
 			Debug.Log("IN RECT");
