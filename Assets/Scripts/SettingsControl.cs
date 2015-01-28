@@ -84,7 +84,7 @@ public class SettingsControl : MonoBehaviour {
 	public void OnToggle_Graph(){
 		Chart.show = graphOn.GetComponent<Toggle>().isOn;
 		//enable graph if true
-		graphPanel.SetActive(Chart.show);
+		
 	}
 	public void OnToggle_VolUnitNm(){
 		if(nmToggle.isOn){

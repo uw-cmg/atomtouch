@@ -4,12 +4,14 @@ using System.Collections;
 
 public class Chart : MonoBehaviour {
 	[HideInInspector]public static bool show = false;
+	public GameObject yMaxText;
 	public Material mat;
 
 	private float[] dataPointArray;
 	private float xSpacing;
 	private Rect graphRect;
 	private GameObject graphPanel;
+
 	private AtomTouchGUI atomTouchGUI;
 	private Vector2 graphOrigin;
 	private float yMax;
@@ -34,6 +36,7 @@ public class Chart : MonoBehaviour {
 
 	void OnPostRender(){
 		if(!show)return;
+		graphPanel.SetActive(show);
 		PlotGraph();
 
 	}
@@ -57,7 +60,7 @@ public class Chart : MonoBehaviour {
 		}
 
 		yMax = Mathf.Max(dataPointArray);
-
+		yMaxText.GetComponent<Text>().text = yMax.ToString("0.0");
 		if(yMax <= 0)return;
 		for(int i=0; i < dataPointArray.Length-1; i++){
 			
