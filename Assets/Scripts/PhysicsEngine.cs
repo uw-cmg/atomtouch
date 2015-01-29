@@ -17,8 +17,8 @@ public class PhysicsEngine : MonoBehaviour
 {
 	void FixedUpdate()
 	{
-		
-		if (!StaticVariables.pauseTime)
+		//turn off when dragging 
+		if (!StaticVariables.pauseTime && !StaticVariables.draggingAtoms) 
 		{
 
 			VelocityVerlet();

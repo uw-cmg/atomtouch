@@ -75,8 +75,9 @@ public class SettingsControl : MonoBehaviour {
 
 	public void OnClick_SettingsButton(){
 		PauseGame();
-
 	}
+
+	
 
 	public void OnToggle_Bondline(){
 		StaticVariables.drawBondLines = bondLineOn.GetComponent<Toggle>().isOn;

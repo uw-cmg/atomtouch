@@ -153,7 +153,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	[HideInInspector]public static AtomTouchGUI myAtomTouchGUI; 
 	void Awake(){
 		myAtomTouchGUI = this;
-		
+
 		tempSliderComponent = tempSlider.GetComponent<Slider> ();
 		volSliderComponent = volSlider.GetComponent<Slider>();
 		//set slider range
@@ -586,7 +586,6 @@ public class AtomTouchGUI : MonoBehaviour {
 	public void deselectAll(){
 		DeselectAllAtoms ();
 	}
-
 	public void ChangeAtomVolume(){
 		
 		CreateEnvironment createEnvironment = CreateEnvironment.myEnvironment;

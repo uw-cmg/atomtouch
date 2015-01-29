@@ -114,6 +114,8 @@ public abstract class Atom : MonoBehaviour
 	void Update(){	
 		if(SettingsControl.GamePaused)return;
 		if(StaticVariables.mouseClickProcessed)return;
+	
+		
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			if(Input.touchCount > 0){
 				Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
@@ -134,7 +136,7 @@ public abstract class Atom : MonoBehaviour
 						*/
 						//user touch an atom at this point
 						//OnMouseDownIOS();
-						OnTouch();
+						//OnTouch();
 						lastTapTime = Time.realtimeSinceStartup;
 					}
 				}
@@ -159,7 +161,7 @@ public abstract class Atom : MonoBehaviour
 			//on pc
 			if(Input.GetMouseButtonDown(0) ){
 				//temporarily disable double click
-				
+				/*
 				if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
 					//user double tapped an atom on PC
 					AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
@@ -169,7 +171,7 @@ public abstract class Atom : MonoBehaviour
 					RemoveAllBondText();
 					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
 				}
-				
+				*/
 				Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
 				RaycastHit hitInfo;
 				if (Physics.Raycast( ray, out hitInfo )
@@ -317,6 +319,7 @@ public abstract class Atom : MonoBehaviour
 	}
 	
 	//controls for debugging on pc
+	
 	void OnMouseDown (){
 		if(SettingsControl.GamePaused)return;
 
@@ -418,6 +421,7 @@ public abstract class Atom : MonoBehaviour
 	
 	void OnMouseDrag(){
 		if(SettingsControl.GamePaused)return;
+		StaticVariables.draggingAtoms = true;
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
 			
 			if(Time.realtimeSinceStartup - dragStartTime > 0.1f){
@@ -557,6 +561,7 @@ public abstract class Atom : MonoBehaviour
 	
 	void OnMouseUp (){
 		if(SettingsControl.GamePaused)return;
+		StaticVariables.draggingAtoms = false;
 		if (Application.platform != RuntimePlatform.IPhonePlayer) {
 			if(!dragCalled){
 				//this is executed if an atom is only tapped

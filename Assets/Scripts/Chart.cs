@@ -1,4 +1,10 @@
-﻿using UnityEngine;
+﻿/*
+Author: Yucheng Tu
+Desc:	Brand new graph with new Unity 4.6 UI
+*/
+
+
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
@@ -21,9 +27,7 @@ public class Chart : MonoBehaviour {
 	private float graphHeight;
 	private float canvasScale;
 	
-	//void Awake(){
-			
-	//}
+	
 	void Awake() {
 		atomTouchGUI = AtomTouchGUI.myAtomTouchGUI;
 		graphPanel = atomTouchGUI.graphPanel;
