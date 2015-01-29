@@ -4,6 +4,9 @@ using System.Collections;
 
 public class Chart : MonoBehaviour {
 	[HideInInspector]public static bool show = false;
+	[HideInInspector]public static Text yMaxTextComp;
+
+	private float yMax;
 	public GameObject yMaxText;
 	public Material mat;
 
@@ -14,13 +17,14 @@ public class Chart : MonoBehaviour {
 
 	private AtomTouchGUI atomTouchGUI;
 	private Vector2 graphOrigin;
-	private float yMax;
+	
 	private float graphHeight;
 	private float canvasScale;
-	void Awake(){
+	
+	//void Awake(){
 			
-	}
-	void Start () {
+	//}
+	void Awake() {
 		atomTouchGUI = AtomTouchGUI.myAtomTouchGUI;
 		graphPanel = atomTouchGUI.graphPanel;
 		graphRect = graphPanel.GetComponent<RectTransform>().rect;
@@ -31,15 +35,22 @@ public class Chart : MonoBehaviour {
 		float graphOriginY = graphPanel.GetComponent<RectTransform>().anchorMin.y * Screen.height;
 
 		graphOrigin = new Vector2(graphOriginX, graphOriginY);
-		//Debug.Log(graphOrigin.x + ", " + graphOrigin.y);
+		yMaxTextComp = yMaxText.GetComponent<Text>();
 	}
 
+	
 	void OnPostRender(){
-		if(!show)return;
 		graphPanel.SetActive(show);
+		if(!show)return;
+		if(Atom.AllAtoms.Count < 2){
+			yMax = 0.0f;
+			yMaxTextComp.text = "";
+			return;
+		}
 		PlotGraph();
-
+		yMaxTextComp.text = yMax.ToString("0.0");
 	}
+
 	void TestPlot(){
 		dataPointArray = PairDistributionFunction.PairDistributionAverage;
 		PlotManager.Instance.PlotCreate("MouseX", 0, 5, Color.green, new Vector2(100,100));
@@ -49,7 +60,6 @@ public class Chart : MonoBehaviour {
 		
 	}
 	void PlotGraph(){
-		if(Atom.AllAtoms.Count < 2)return;
 		Vector3 p1, p2;
 		Vector3 screenPos1, screenPos2;
 		dataPointArray = PairDistributionFunction.PairDistributionAverage;
@@ -60,7 +70,7 @@ public class Chart : MonoBehaviour {
 		}
 
 		yMax = Mathf.Max(dataPointArray);
-		yMaxText.GetComponent<Text>().text = yMax.ToString("0.0");
+
 		if(yMax <= 0)return;
 		for(int i=0; i < dataPointArray.Length-1; i++){
 			
