@@ -136,7 +136,7 @@ public abstract class Atom : MonoBehaviour
 						*/
 						//user touch an atom at this point
 						//OnMouseDownIOS();
-						//OnTouch();
+						OnTouch();
 						lastTapTime = Time.realtimeSinceStartup;
 					}
 				}

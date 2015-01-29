@@ -49,7 +49,7 @@ public class PhysicsEngine : MonoBehaviour
 		else
 		{
 			// update the position of all atoms then initialize the acceleration to be updated
-				for (int i=0; i< Atom.AllAtoms.Count; i++)
+			for (int i=0; i< Atom.AllAtoms.Count; i++)
 			{
 				Atom currAtom = Atom.AllAtoms[i];
 				currAtom.transform.position = currAtom.position;
