@@ -1,0 +1,375 @@
+fileFormatVersion: 2
+guid: 3951276a90bf44f2fb384109f397317b
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Circle001
+    100004: Circle002
+    100006: Circle003
+    100008: Circle004
+    100010: Circle005
+    100012: Circle006
+    100014: Circle007
+    100016: Circle008
+    100018: Circle009
+    100020: Circle010
+    100022: Circle011
+    100024: Circle012
+    100026: Circle013
+    100028: Circle014
+    100030: Circle015
+    100032: Circle016
+    100034: GeoSphere001
+    100036: GeoSphere002
+    100038: GeoSphere003
+    100040: GeoSphere004
+    100042: GeoSphere005
+    100044: GeoSphere006
+    100046: GeoSphere007
+    100048: GeoSphere008
+    100050: GeoSphere009
+    100052: GeoSphere010
+    100054: GeoSphere011
+    100056: GeoSphere012
+    100058: GeoSphere013
+    100060: GeoSphere014
+    100062: GeoSphere015
+    100064: GeoSphere016
+    100066: GeoSphere017
+    100068: GeoSphere018
+    100070: GeoSphere019
+    100072: GeoSphere020
+    100074: GeoSphere021
+    100076: GeoSphere022
+    100078: GeoSphere023
+    100080: GeoSphere024
+    100082: GeoSphere025
+    400000: //RootNode
+    400002: Circle001
+    400004: Circle002
+    400006: Circle003
+    400008: Circle004
+    400010: Circle005
+    400012: Circle006
+    400014: Circle007
+    400016: Circle008
+    400018: Circle009
+    400020: Circle010
+    400022: Circle011
+    400024: Circle012
+    400026: Circle013
+    400028: Circle014
+    400030: Circle015
+    400032: Circle016
+    400034: GeoSphere001
+    400036: GeoSphere002
+    400038: GeoSphere003
+    400040: GeoSphere004
+    400042: GeoSphere005
+    400044: GeoSphere006
+    400046: GeoSphere007
+    400048: GeoSphere008
+    400050: GeoSphere009
+    400052: GeoSphere010
+    400054: GeoSphere011
+    400056: GeoSphere012
+    400058: GeoSphere013
+    400060: GeoSphere014
+    400062: GeoSphere015
+    400064: GeoSphere016
+    400066: GeoSphere017
+    400068: GeoSphere018
+    400070: GeoSphere019
+    400072: GeoSphere020
+    400074: GeoSphere021
+    400076: GeoSphere022
+    400078: GeoSphere023
+    400080: GeoSphere024
+    400082: GeoSphere025
+    2300000: Circle009
+    2300002: Circle010
+    2300004: Circle011
+    2300006: Circle012
+    2300008: Circle013
+    2300010: Circle014
+    2300012: Circle015
+    2300014: Circle016
+    2300016: GeoSphere001
+    2300018: GeoSphere002
+    2300020: GeoSphere003
+    2300022: GeoSphere004
+    2300024: GeoSphere005
+    2300026: GeoSphere006
+    2300028: GeoSphere007
+    2300030: GeoSphere008
+    2300032: GeoSphere009
+    2300034: GeoSphere010
+    2300036: GeoSphere011
+    2300038: GeoSphere012
+    2300040: GeoSphere013
+    2300042: GeoSphere014
+    2300044: GeoSphere015
+    2300046: GeoSphere016
+    2300048: GeoSphere017
+    2300050: GeoSphere018
+    2300052: GeoSphere019
+    2300054: GeoSphere020
+    2300056: GeoSphere021
+    2300058: GeoSphere022
+    2300060: GeoSphere023
+    2300062: GeoSphere024
+    2300064: GeoSphere025
+    3300000: Circle009
+    3300002: Circle010
+    3300004: Circle011
+    3300006: Circle012
+    3300008: Circle013
+    3300010: Circle014
+    3300012: Circle015
+    3300014: Circle016
+    3300016: GeoSphere001
+    3300018: GeoSphere002
+    3300020: GeoSphere003
+    3300022: GeoSphere004
+    3300024: GeoSphere005
+    3300026: GeoSphere006
+    3300028: GeoSphere007
+    3300030: GeoSphere008
+    3300032: GeoSphere009
+    3300034: GeoSphere010
+    3300036: GeoSphere011
+    3300038: GeoSphere012
+    3300040: GeoSphere013
+    3300042: GeoSphere014
+    3300044: GeoSphere015
+    3300046: GeoSphere016
+    3300048: GeoSphere017
+    3300050: GeoSphere018
+    3300052: GeoSphere019
+    3300054: GeoSphere020
+    3300056: GeoSphere021
+    3300058: GeoSphere022
+    3300060: GeoSphere023
+    3300062: GeoSphere024
+    3300064: GeoSphere025
+    4300000: GeoSphere001
+    4300002: GeoSphere002
+    4300004: GeoSphere003
+    4300006: GeoSphere004
+    4300008: GeoSphere005
+    4300010: GeoSphere006
+    4300012: GeoSphere007
+    4300014: GeoSphere008
+    4300016: GeoSphere009
+    4300018: GeoSphere010
+    4300020: GeoSphere011
+    4300022: GeoSphere012
+    4300024: GeoSphere013
+    4300026: GeoSphere014
+    4300028: GeoSphere015
+    4300030: GeoSphere016
+    4300032: GeoSphere017
+    4300034: GeoSphere018
+    4300036: GeoSphere019
+    4300038: GeoSphere020
+    4300040: GeoSphere021
+    4300042: GeoSphere022
+    4300044: GeoSphere023
+    4300046: GeoSphere024
+    4300048: GeoSphere025
+    4300050: Circle009
+    4300052: Circle010
+    4300054: Circle011
+    4300056: Circle012
+    4300058: Circle013
+    4300060: Circle014
+    4300062: Circle015
+    4300064: Circle016
+    7400000: Orbit
+    9500000: //RootNode
+    11100000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    pivotNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Orbit
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 25
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 1
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves:
+      - name: Curve
+        curve:
+          serializedVersion: 2
+          curve:
+          - time: 0
+            value: 0
+            inSlope: 1
+            outSlope: 1
+            tangentMode: 10
+          - time: 1
+            value: 1
+            inSlope: 1
+            outSlope: 1
+            tangentMode: 10
+          preInfinity: 2
+          postInfinity: 2
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Circle001
+        weight: 1
+      - path: Circle002
+        weight: 1
+      - path: Circle003
+        weight: 1
+      - path: Circle004
+        weight: 1
+      - path: Circle005
+        weight: 1
+      - path: Circle006
+        weight: 1
+      - path: Circle007
+        weight: 1
+      - path: Circle008
+        weight: 1
+      - path: Circle009
+        weight: 1
+      - path: Circle010
+        weight: 1
+      - path: Circle011
+        weight: 1
+      - path: Circle012
+        weight: 1
+      - path: Circle013
+        weight: 1
+      - path: Circle014
+        weight: 1
+      - path: Circle015
+        weight: 1
+      - path: Circle016
+        weight: 1
+      - path: GeoSphere001
+        weight: 1
+      - path: GeoSphere002
+        weight: 1
+      - path: GeoSphere003
+        weight: 1
+      - path: GeoSphere004
+        weight: 1
+      - path: GeoSphere005
+        weight: 1
+      - path: GeoSphere006
+        weight: 1
+      - path: GeoSphere007
+        weight: 1
+      - path: GeoSphere008
+        weight: 1
+      - path: GeoSphere009
+        weight: 1
+      - path: GeoSphere010
+        weight: 1
+      - path: GeoSphere011
+        weight: 1
+      - path: GeoSphere012
+        weight: 1
+      - path: GeoSphere013
+        weight: 1
+      - path: GeoSphere014
+        weight: 1
+      - path: GeoSphere015
+        weight: 1
+      - path: GeoSphere016
+        weight: 1
+      - path: GeoSphere017
+        weight: 1
+      - path: GeoSphere018
+        weight: 1
+      - path: GeoSphere019
+        weight: 1
+      - path: GeoSphere020
+        weight: 1
+      - path: GeoSphere021
+        weight: 1
+      - path: GeoSphere022
+        weight: 1
+      - path: GeoSphere023
+        weight: 1
+      - path: GeoSphere024
+        weight: 1
+      - path: GeoSphere025
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 18
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
