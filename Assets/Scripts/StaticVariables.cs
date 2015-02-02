@@ -22,7 +22,7 @@ public class StaticVariables {
 	
 	//makes sure mouseClick is only processed by either Atom or SettingsControl callbacks
 	public static bool mouseClickProcessed = false;
-
+	public static bool draggingAtoms = false;
 	//MD time steps used in normal, slowmotion, and stop time mode.
 	public static float MDTimestepNormal = 0.5f * Mathf.Pow (10, -15);
 	public static float MDTimestepSlow = MDTimestepNormal / 10.0f ;

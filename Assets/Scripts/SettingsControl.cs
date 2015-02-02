@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class SettingsControl : MonoBehaviour {
+
 	public GameObject bottomLayer;
 	public GameObject settingsCanvas;
 	public GameObject settingsPanel;
@@ -13,6 +14,8 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject buckinghamOn;
 	public GameObject nmOn;
 	public GameObject sliderPanel;
+	public GameObject graphOn;
+	public GameObject graphPanel;
 	//waiting for Brenner to be done
 	public GameObject brennerOn;
 	public AtomTouchGUI atomTouchGUI;
@@ -25,6 +28,7 @@ public class SettingsControl : MonoBehaviour {
 	private static bool gamePaused;
 	private Toggle nmToggle;
 
+	private bool doResume = false;
     public static bool GamePaused{
     	get { return gamePaused; }
        	//set { this._Name = value; }  
@@ -41,10 +45,9 @@ public class SettingsControl : MonoBehaviour {
 		
 	}
 	
-	void Update(){
-	}
+	
 	public void ResumeGame(){
-		Debug.Log("mio");
+		//Debug.Log("mio");
 		settingsCanvas.SetActive(false);
 		hudCanvas.SetActive(true);
 		//resume
@@ -72,11 +75,15 @@ public class SettingsControl : MonoBehaviour {
 
 	public void OnClick_SettingsButton(){
 		PauseGame();
-
 	}
+
+	
 
 	public void OnToggle_Bondline(){
 		StaticVariables.drawBondLines = bondLineOn.GetComponent<Toggle>().isOn;
+	}
+	public void OnToggle_Graph(){
+		Chart.show = graphOn.GetComponent<Toggle>().isOn;
 	}
 	public void OnToggle_VolUnitNm(){
 		if(nmToggle.isOn){
@@ -88,20 +95,14 @@ public class SettingsControl : MonoBehaviour {
 
 	//checks if mouse clicks outside the settings, if so, exit settings and resume
 	public void CheckExitSettings(){
-		Rect r = settingsPanel.GetComponent<RectTransform>().rect;
 		
-		
-		Debug.Log("mouse position at bottom layer: " + Input.mousePosition);
+		Vector3 mp = Input.mousePosition;
 
-		Vector3 p = Vector3.zero;
-
-		Vector3 v = Input.mousePosition
-			+new Vector3(-Screen.width/2.0f,
-				-Screen.height/2.0f,0);
-		Debug.Log(Mathf.Abs(v.x));
-		Debug.Log(Mathf.Abs(v.y));
-		if(Mathf.Abs(v.x) < r.width*settingsCanvas.GetComponent<Canvas>().scaleFactor/2.0f 
-			&& Mathf.Abs(v.y) < r.height*settingsCanvas.GetComponent<Canvas>().scaleFactor/2.0f){
+		RectTransform rt = settingsPanel.GetComponent<RectTransform>();
+		if(mp.x > rt.anchorMin.x * Screen.width //lower left
+			&& mp.x < rt.anchorMax.x * Screen.width //upper right
+			&& mp.y > rt.anchorMin.y * Screen.height
+			&& mp.y < rt.anchorMax.y * Screen.height){ 
 			Debug.Log("IN RECT");
 
 		}else{

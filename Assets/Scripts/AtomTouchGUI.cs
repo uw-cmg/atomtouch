@@ -69,6 +69,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject selectAtomGroup;
 	public GameObject settingsCanvas;
 	public GameObject deselectButton;
+	public GameObject graphPanel;
+
 
 	public Text selectAllText;
 	private bool selectedAll;
@@ -147,7 +149,11 @@ public class AtomTouchGUI : MonoBehaviour {
 	
 	private Slider tempSliderComponent;
 	private Slider volSliderComponent;
+
+	[HideInInspector]public static AtomTouchGUI myAtomTouchGUI; 
 	void Awake(){
+		myAtomTouchGUI = this;
+
 		tempSliderComponent = tempSlider.GetComponent<Slider> ();
 		volSliderComponent = volSlider.GetComponent<Slider>();
 		//set slider range
@@ -580,7 +586,6 @@ public class AtomTouchGUI : MonoBehaviour {
 	public void deselectAll(){
 		DeselectAllAtoms ();
 	}
-
 	public void ChangeAtomVolume(){
 		
 		CreateEnvironment createEnvironment = CreateEnvironment.myEnvironment;
