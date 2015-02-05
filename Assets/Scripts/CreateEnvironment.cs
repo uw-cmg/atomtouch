@@ -14,6 +14,7 @@
  **/ 
 
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -319,6 +320,15 @@ public class CreateEnvironment : MonoBehaviour {
 	// this method creates a new atom from the type of the preFab and checks the position to have a far enough distance from other atoms
 	public void createAtom(Rigidbody preFab)
 	{
+		int preFabID = preFab.GetInstanceID();
+		if(preFabID == atomTouchGUI.copperPrefab.GetInstanceID()){
+			Copper.count++;
+			atomTouchGUI.copperCount.GetComponent<Text>().text = "Cu: " + Copper.count;
+		}else if(preFabID == atomTouchGUI.goldPrefab.GetInstanceID()){
+
+		}else if(preFabID == atomTouchGUI.platinumPrefab.GetInstanceID()){
+
+		}
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		Quaternion curRotation = Quaternion.Euler(0, 0, 0);
 		Instantiate(preFab, myEnvironment.centerPos, curRotation);

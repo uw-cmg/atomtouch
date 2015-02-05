@@ -70,7 +70,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject settingsCanvas;
 	public GameObject deselectButton;
 	public GameObject graphPanel;
-
+	public GameObject copperCount;
 
 	public Text selectAllText;
 	private bool selectedAll;
@@ -338,9 +338,14 @@ public class AtomTouchGUI : MonoBehaviour {
 				Debug.Log("deleting atom: " + i);
 				currAtom.selected = false;
 				currAtom.SetSelected(false);
-				//Atom.AllAtoms.RemoveAt(i);
+				
+				int instId = currAtom.gameObject.rigidbody.GetInstanceID();
+				if(currAtom is Copper){
+					Copper.count--;
+					copperCount.GetComponent<Text>().text = "Cu: " + Copper.count;
+				}
+				
 				Atom.UnregisterAtom(currAtom);
-				//delete the object
 				Destroy(currAtom.gameObject);
 			}
 		}
@@ -500,7 +505,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			
 		}
 
-	
+		
 	
 
 	}
