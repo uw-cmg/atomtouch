@@ -71,6 +71,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject deselectButton;
 	public GameObject graphPanel;
 	public GameObject copperCount;
+	public GameObject goldCount;
+	public GameObject platinumCount;
 
 	public Text selectAllText;
 	private bool selectedAll;
@@ -343,6 +345,12 @@ public class AtomTouchGUI : MonoBehaviour {
 				if(currAtom is Copper){
 					Copper.count--;
 					copperCount.GetComponent<Text>().text = "Cu: " + Copper.count;
+				}else if (currAtom is Gold){
+					Gold.count--;
+					goldCount.GetComponent<Text>().text = "Au: " + Gold.count;
+				}else if (currAtom is Platinum){
+					Platinum.count --;
+					platinumCount.GetComponent<Text>().text = "Pt: " + Platinum.count;
 				}
 				
 				Atom.UnregisterAtom(currAtom);

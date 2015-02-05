@@ -325,9 +325,11 @@ public class CreateEnvironment : MonoBehaviour {
 			Copper.count++;
 			atomTouchGUI.copperCount.GetComponent<Text>().text = "Cu: " + Copper.count;
 		}else if(preFabID == atomTouchGUI.goldPrefab.GetInstanceID()){
-
+			Gold.count++;
+			atomTouchGUI.goldCount.GetComponent<Text>().text = "Au: " + Gold.count;
 		}else if(preFabID == atomTouchGUI.platinumPrefab.GetInstanceID()){
-
+			Platinum.count++;
+			atomTouchGUI.platinumCount.GetComponent<Text>().text = "Pt: " + Platinum.count;
 		}
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		Quaternion curRotation = Quaternion.Euler(0, 0, 0);

@@ -34,7 +34,7 @@ using System;
 
 public abstract class Atom : MonoBehaviour
 {
-	//variables for computing where the atom goes when touched
+
 	private Vector3 offset;
 	private Vector3 screenPoint;
 	private Vector3 lastMousePosition;
