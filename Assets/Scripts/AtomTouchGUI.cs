@@ -73,6 +73,11 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject copperCount;
 	public GameObject goldCount;
 	public GameObject platinumCount;
+	public GameObject numAtomInput;
+
+	public GameObject cuBatchToggle;
+	public GameObject auBatchToggle;
+	public GameObject ptBatchToggle;
 
 	public Text selectAllText;
 	private bool selectedAll;
@@ -467,9 +472,59 @@ public class AtomTouchGUI : MonoBehaviour {
 		//}
 	}
 	
-	
+	public static int IntParseFast(string value)
+    {
+		// An optimized int parse method.
+		int result = 0;
+		for (int i = 0; i < value.Length; i++)
+		{
+		    result = 10 * result + (value[i] - 48);
+		}
+		return result;
+    }
 
+	public void BatchCreateAtoms(){
+		//sanity check 
+		//0-20
+		//TODO: detect selected toggle
+		int numToCreate = IntParseFast(numAtomInput.GetComponent<Text>().text);
+		if(numToCreate < 0 || numToCreate > 20)return; //too much
 
+		if(cuBatchToggle.GetComponent<Toggle>().isOn){
+			for(int i=0; i < numToCreate; i++) 
+				CreateEnvironment.myEnvironment.createAtom(copperPrefab);
+		}else if (auBatchToggle.GetComponent<Toggle>().isOn){
+			for(int i=0;i<numToCreate;i++)
+				CreateEnvironment.myEnvironment.createAtom(goldPrefab);
+		}else if (ptBatchToggle.GetComponent<Toggle>().isOn){
+			for(int i=0;i<numToCreate;i++)
+				CreateEnvironment.myEnvironment.createAtom(platinumPrefab);
+		}
+	}
+
+	public void BatchRemoveAtoms(){
+		int numToRemove = IntParseFast(numAtomInput.GetComponent<Text>().text);
+		Debug.Log(numToRemove);
+		if(cuBatchToggle.GetComponent<Toggle>().isOn){
+			if(numToRemove <= 0 || numToRemove > Copper.count)return;
+			for(int i=0; i<Atom.AllAtoms.Count && numToRemove > 0;i++){
+				Atom currAtom = Atom.AllAtoms[i];
+				if(currAtom is Copper){
+					Atom.UnregisterAtom(currAtom);
+					Destroy(currAtom.gameObject);
+					numToRemove--;
+					Copper.count--;
+				}
+			}
+			
+			
+		}else if (auBatchToggle.GetComponent<Toggle>().isOn){
+			
+		}else if (ptBatchToggle.GetComponent<Toggle>().isOn){
+			
+		}
+
+	}
 
 	public void AddPlatinumAtom(){
 		
