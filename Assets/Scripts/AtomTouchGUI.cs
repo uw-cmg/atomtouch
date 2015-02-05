@@ -504,9 +504,10 @@ public class AtomTouchGUI : MonoBehaviour {
 
 	public void BatchRemoveAtoms(){
 		int numToRemove = IntParseFast(numAtomInput.GetComponent<Text>().text);
-		Debug.Log(numToRemove);
+		if(numToRemove <= 0)return;
 		if(cuBatchToggle.GetComponent<Toggle>().isOn){
-			if(numToRemove <= 0 || numToRemove > Copper.count)return;
+			//TODO: error notice
+			if(numToRemove > Copper.count)return;
 			for(int i=0; i<Atom.AllAtoms.Count && numToRemove > 0;i++){
 				Atom currAtom = Atom.AllAtoms[i];
 				if(currAtom is Copper){
@@ -516,12 +517,29 @@ public class AtomTouchGUI : MonoBehaviour {
 					Copper.count--;
 				}
 			}
-			
-			
 		}else if (auBatchToggle.GetComponent<Toggle>().isOn){
+			if(numToRemove > Gold.count)return;
+			for(int i=0; i<Atom.AllAtoms.Count && numToRemove > 0;i++){
+				Atom currAtom = Atom.AllAtoms[i];
+				if(currAtom is Gold){
+					Atom.UnregisterAtom(currAtom);
+					Destroy(currAtom.gameObject);
+					numToRemove--;
+					Gold.count--;
+				}
+			}
 			
 		}else if (ptBatchToggle.GetComponent<Toggle>().isOn){
-			
+			if(numToRemove > Platinum.count)return;
+			for(int i=0; i<Atom.AllAtoms.Count && numToRemove > 0;i++){
+				Atom currAtom = Atom.AllAtoms[i];
+				if(currAtom is Platinum){
+					Atom.UnregisterAtom(currAtom);
+					Destroy(currAtom.gameObject);
+					numToRemove--;
+					Platinum.count--;
+				}
+			}
 		}
 
 	}
