@@ -657,6 +657,12 @@ public class AtomTouchGUI : MonoBehaviour {
 	}
 
 	public void ToggleSelectAll() {
+		if(NumberofAtom.selectedAtoms == Atom.AllAtoms.Count){
+			DeselectAllAtoms();
+		}else{
+			SelectAllAtoms();
+		}
+		/*
 		selectedAll = !selectedAll;
 		if(selectedAll)
 		{
@@ -666,6 +672,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		{
 			DeselectAllAtoms();
 		}
+		*/
 
 	}
 
