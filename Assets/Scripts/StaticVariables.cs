@@ -68,8 +68,12 @@ public class StaticVariables {
 	//Temperature slider bounds in K
 	public static float tempRangeLow = 0.001f;
 	public static float tempRangeHigh = 5000.0f; 
+	public static float tempDefault = 300.0f;
 	public static float desiredTemperature = 300.000f;
 	
+	public static float volRangeLow = 1.0f;
+	public static float volRangeHigh = 4.0f;
+	public static float volDefault = 1.0f;
 	//this variable causes the bond lines to either draw or not draw
 	public static bool drawBondLines = true;
 	//the variable pauses the simulation of physics

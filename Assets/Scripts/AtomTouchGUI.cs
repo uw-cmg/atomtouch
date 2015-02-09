@@ -595,6 +595,10 @@ public class AtomTouchGUI : MonoBehaviour {
 		myEnvironment.InitAtoms ();
 		slowMotionFrames = StaticVariables.slowMotionFrames;
 		Atom.EnableSelectAtomGroup(false);
+		//reset temp and vol
+		tempSliderComponent.value = StaticVariables.tempRangeHigh - StaticVariables.tempDefault;
+		volSliderComponent.value = StaticVariables.volRangeHigh - StaticVariables.volDefault;
+
 	}
 	//for the left panel
 	public void createBondline(){
