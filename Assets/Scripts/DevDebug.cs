@@ -105,8 +105,7 @@ public class DevDebug : MonoBehaviour {
 		string timescaleStr = timescaleInputVal.GetComponent<Text>().text;
 		float timescale = float.Parse(timescaleStr);
 		Debug.Log(timescale);
-
-		//Debug.Log(timestep);
+		
 		if(maxTime < timestep){
 			return;
 		}
