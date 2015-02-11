@@ -46,8 +46,8 @@ public abstract class Atom : MonoBehaviour
 	[HideInInspector]public bool selected = false;
 	[HideInInspector]public bool doubleTapped = false;
 	//these dictionaries are used when moving groups of atoms. The key is the atom's name: (i.e "0" or "1")
-	private Dictionary<String, Vector3> gameObjectOffsets;
-	private Dictionary<String, Vector3> gameObjectScreenPoints;
+	public static Dictionary<String, Vector3> gameObjectOffsets;
+	public static Dictionary<String, Vector3> gameObjectScreenPoints;
 	private float dragStartTime;
 	private bool dragCalled;
 	//dictionary for holding the TextMeshes of distances between atoms
@@ -118,6 +118,7 @@ public abstract class Atom : MonoBehaviour
 		
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			if(Input.touchCount > 0){
+				//OnTouch();
 				Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
 				RaycastHit hitInfo;
 				if(!held && Physics.Raycast(ray, out hitInfo) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
@@ -312,7 +313,10 @@ public abstract class Atom : MonoBehaviour
 						new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y - 15.0f, pointOnScreen.z));
 					currAtom.held = true;
 					gameObjectOffsets.Add(currAtom.name, atomOffset);
+
+					Debug.Log("added atom offset: " + currAtom.name + ", " + atomOffset);
 					gameObjectScreenPoints.Add(currAtom.name, pointOnScreen);
+					Debug.Log("added point on screen: " + currAtom.name + ", " + pointOnScreen);
 				}
 			}
 		}
@@ -335,7 +339,7 @@ public abstract class Atom : MonoBehaviour
 			//the -15.0 here is for moving the atom above your mouse
 			offset = transform.position - Camera.main.ScreenToWorldPoint(
 				new Vector3(Input.mousePosition.x, Input.mousePosition.y - 15.0f, screenPoint.z));
-			Debug.Log("mouse down, atom not selected");
+			//Debug.Log("mouse down, atom not selected");
 		}else{
 			//this is for a group of atoms
 			gameObjectOffsets = new Dictionary<String, Vector3>();
@@ -351,6 +355,7 @@ public abstract class Atom : MonoBehaviour
 					currAtom.held = true;
 					gameObjectOffsets.Add(currAtom.name, atomOffset);
 					gameObjectScreenPoints.Add(currAtom.name, pointOnScreen);
+					Debug.Log("miomiomio");
 				}
 			}
 		}
@@ -365,7 +370,9 @@ public abstract class Atom : MonoBehaviour
 			rigidbody.isKinematic = true;
 			if(!selected){
 				//this is for one atom
-				Vector3 diffVector = new Vector3(lastTouchPosition.x, lastTouchPosition.y) - new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y);
+				Vector3 diffVector 
+					= new Vector3(lastTouchPosition.x, lastTouchPosition.y) 
+					- new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y);
 				if(diffVector.magnitude > 0 && !doubleTapped && Input.touchCount == 1){
 					Vector3 curScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, screenPoint.z);
 					Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
@@ -392,8 +399,17 @@ public abstract class Atom : MonoBehaviour
 						Vector3 diffVector = new Vector3(lastTouchPosition.x, lastTouchPosition.y) - new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y);
 						if(diffVector.magnitude > 0 && !doubleTapped && currAtom.selected && Input.touchCount == 1){
 							if(gameObjectOffsets != null && gameObjectScreenPoints != null){
+								if(!gameObjectScreenPoints.ContainsKey(currAtom.name)){
+									Debug.Log("screen points key not found: " + currAtom.name);
+									return;
+								}
+								if(!gameObjectOffsets.ContainsKey(currAtom.name)){
+									Debug.Log("offsets key not found: " + currAtom.name);
+									return;
+								}
 								Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
 								Vector3 currOffset = gameObjectOffsets[currAtom.name];
+								
 								Vector3 objScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, currScreenPoint.z);
 								Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
 								newAtomPosition = CheckPosition(curPosition);
@@ -463,8 +479,17 @@ public abstract class Atom : MonoBehaviour
 							Atom currAtom = AllAtoms[i];
 							Vector3 newAtomPosition = currAtom.transform.position;
 							if((lastMousePosition - Input.mousePosition).magnitude > 0 && currAtom.selected){
+								if(!gameObjectScreenPoints.ContainsKey(currAtom.name)){
+									Debug.Log("screen points key not found");
+									return;
+								}
+								if(!gameObjectOffsets.ContainsKey(currAtom.name)){
+									Debug.Log("offsets key not found");
+									return;
+								}
 								Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
 								Vector3 currOffset = gameObjectOffsets[currAtom.name];
+
 								Vector3 objScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, currScreenPoint.z);
 								Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
 								newAtomPosition = CheckPosition(curPosition);
