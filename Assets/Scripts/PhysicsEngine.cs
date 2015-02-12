@@ -15,6 +15,7 @@ using System;
 
 public class PhysicsEngine : MonoBehaviour
 {
+	
 	void FixedUpdate()
 	{
 		//turn off when dragging 
@@ -59,7 +60,7 @@ public class PhysicsEngine : MonoBehaviour
 		}
 	}
 
-
+	
 	void VelocityVerlet()
 	{
 		// update the position of all atoms then initialize the acceleration to be updated

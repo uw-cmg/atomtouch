@@ -598,7 +598,8 @@ public class AtomTouchGUI : MonoBehaviour {
 		//reset temp and vol
 		tempSliderComponent.value = StaticVariables.tempRangeHigh - StaticVariables.tempDefault;
 		volSliderComponent.value = StaticVariables.volRangeHigh - StaticVariables.volDefault;
-
+		changingVol = false;
+		changingTemp = false;
 	}
 	//for the left panel
 	public void createBondline(){

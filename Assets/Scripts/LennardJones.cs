@@ -158,16 +158,40 @@ public class LennardJones : Potential {
 	public override void calculateNeighborList()
 	{
 		//clear the old neighborList
+		/*
 		for (int i = 0; i < Atom.AllAtoms.Count; i++)
 		{
 			Atom currAtom = Atom.AllAtoms[i];
 			currAtom.neighborList.Clear();
 		}
+		*/
+		/*
+		for(int i=0; i < Atom.AllAtoms.Count - 1;i++){
+			float r = 1.5f;
+			Atom currAtom = Atom.AllAtoms[i];
+			currAtom.neighborList.Clear();
+			Collider[] hits = Physics.OverlapSphere(currAtom.gameObject.transform.position, r);
+			foreach(Collider hit in hits){
+				Atom hitAtom = hit.gameObject.GetComponent<Atom>();
+				Vector3 deltaR 
+					= Boundary.myBoundary.deltaPosition(currAtom, hitAtom);
+				float distanceSqr = deltaR.sqrMagnitude;
+				float finalSigma = sigmaValues[currAtom.atomID, hitAtom.atomID];
+				float normDistanceSqr = distanceSqr / finalSigma / finalSigma; // this is normalized distanceSqr to the sigmaValue
+				if (normDistanceSqr < currAtom.verletRadius * hitAtom.verletRadius)
+					currAtom.neighborList.Add(hitAtom);
+				//currAtom.neighborList.Add(hitAtom);
+			}
+
+		}
+		*/
 		
 		//create the new neighborList
 		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
 		{
 			Atom firstAtom = Atom.AllAtoms[i];
+			firstAtom.neighborList.Clear();
+
 			for (int j = i + 1; j < Atom.AllAtoms.Count; j++)
 			{
 				Atom secondAtom = Atom.AllAtoms[j];
@@ -179,6 +203,8 @@ public class LennardJones : Potential {
 					firstAtom.neighborList.Add(secondAtom);
 			}
 		}
+		
+		
 	}	
 	
 }
