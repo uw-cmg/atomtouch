@@ -45,7 +45,9 @@ public class StaticVariables {
 	//public static float updateIntervalToRealTime = MDTimestep;
 	
 	//do not scale temperature all at once
-	public static float alphaDrag = 0.1f;
+	//public static float alphaDrag = 0.1f; original value
+	public static float alphaDrag = 0.5f;
+	public static float tempSensitivity = 1.0f; //to speed atoms up and improvae performance
 	
 	//Boltzmann constant in J/K
 	public static float kB = 1.381f * (float) Math.Pow(10,-23);

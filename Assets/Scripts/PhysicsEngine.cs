@@ -59,23 +59,29 @@ public class PhysicsEngine : MonoBehaviour
 			CalculateEnergy();
 		}
 	}
-
+	
 	
 	void VelocityVerlet()
 	{
 		// update the position of all atoms then initialize the acceleration to be updated
+		//if (StaticVariables.iTime % 10 != 0)return;
+		
 		for (int i=0; i< Atom.AllAtoms.Count; i++)
 		{
 			Atom currAtom = Atom.AllAtoms[i];
 			currAtom.position = currAtom.position + StaticVariables.MDTimestep * currAtom.velocity + 0.5f * StaticVariables.MDTimestepSqr * currAtom.accelerationNew;
 			currAtom.accelerationOld = currAtom.accelerationNew;
 			currAtom.accelerationNew = Vector3.zero;
+			if(currAtom.position.magnitude > 100){
+				Debug.Log(currAtom.position);
+			}
 			currAtom.transform.position = currAtom.position;
+
 		}
-
-
+		
 		if (StaticVariables.iTime % StaticVariables.nVerlet == 0) 
 		{
+			
 			Potential.myPotential.calculateNeighborList ();
 			PairDistributionFunction.calculateAveragePairDistribution();
 		}
@@ -95,9 +101,12 @@ public class PhysicsEngine : MonoBehaviour
 		for (int i = 0; i < Atom.AllAtoms.Count; i++)
 		{
 			Atom currAtom = Atom.AllAtoms[i];
-			currAtom.velocity = currAtom.velocity + 0.5f * StaticVariables.MDTimestep * (currAtom.accelerationOld + currAtom.accelerationNew);
+			currAtom.velocity = currAtom.velocity 
+			+ 0.5f * StaticVariables.MDTimestep * (currAtom.accelerationOld + currAtom.accelerationNew);
 			currAtom.velocity = StaticVariables.sqrtAlpha * currAtom.velocity;
-		}
+
+
+		}	
 	}
 
 	
@@ -137,19 +146,21 @@ public class PhysicsEngine : MonoBehaviour
 		{
 			draggedAlpha = 1.0f;
 		}
-		else if (StaticVariables.currentTemperature > 5000.0f)
+		else if (StaticVariables.currentTemperature > 5000.0f*2)
 		{
-			draggedAlpha = alpha;
+			draggedAlpha = alpha * StaticVariables.tempSensitivity;
 		}
 		else if (alpha > 1)
 		{
-			draggedTemperature = (StaticVariables.desiredTemperature - StaticVariables.currentTemperature) * StaticVariables.alphaDrag + StaticVariables.currentTemperature;
-			draggedAlpha = draggedTemperature / StaticVariables.currentTemperature;
+			draggedTemperature 
+				= (StaticVariables.desiredTemperature - StaticVariables.currentTemperature) 
+				* StaticVariables.alphaDrag + StaticVariables.currentTemperature;
+			draggedAlpha = draggedTemperature * StaticVariables.tempSensitivity / StaticVariables.currentTemperature;
 		}
 		else if (alpha < 1)
 		{
 			draggedTemperature = StaticVariables.currentTemperature - ((StaticVariables.currentTemperature - StaticVariables.desiredTemperature) * StaticVariables.alphaDrag);
-			draggedAlpha = draggedTemperature / StaticVariables.currentTemperature;
+			draggedAlpha = draggedTemperature * StaticVariables.tempSensitivity / StaticVariables.currentTemperature;
 		}
 		else
 		{
