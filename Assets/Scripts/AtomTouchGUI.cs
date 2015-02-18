@@ -783,7 +783,8 @@ public class AtomTouchGUI : MonoBehaviour {
 
 	public void ChangeAtomTemperature(){
 		oldTemperaure = StaticVariables.desiredTemperature;
-		StaticVariables.desiredTemperature = Math.Abs(5000.000f - tempSliderComponent.value)*10;
+		StaticVariables.desiredTemperature 
+		= Math.Abs(5000.000f - tempSliderComponent.value)*StaticVariables.tempScaler;
 		//Debug.Log("temp changing");
 		if(oldTemperaure < 0){
 			return;

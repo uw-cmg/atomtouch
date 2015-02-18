@@ -47,7 +47,6 @@ public class StaticVariables {
 	//do not scale temperature all at once
 	//public static float alphaDrag = 0.1f; original value
 	public static float alphaDrag = 0.5f;
-	public static float tempSensitivity = 1.0f; //to speed atoms up and improvae performance
 	
 	//Boltzmann constant in J/K
 	public static float kB = 1.381f * (float) Math.Pow(10,-23);
@@ -71,7 +70,8 @@ public class StaticVariables {
 	public static float tempRangeLow = 0.001f;
 	public static float tempRangeHigh = 5000.0f; 
 	public static float tempDefault = 300.0f;
-	public static float desiredTemperature = 300.000f;
+	public static float tempScaler = 10.0f; //for making atoms faster and increasing frame rate
+	public static float desiredTemperature = 300.000f * tempScaler;
 	
 	public static float volRangeLow = 1.0f;
 	public static float volRangeHigh = 4.0f;

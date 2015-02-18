@@ -146,21 +146,21 @@ public class PhysicsEngine : MonoBehaviour
 		{
 			draggedAlpha = 1.0f;
 		}
-		else if (StaticVariables.currentTemperature > 5000.0f*2)
+		else if (StaticVariables.currentTemperature > StaticVariables.tempRangeHigh * StaticVariables.tempScaler)
 		{
-			draggedAlpha = alpha * StaticVariables.tempSensitivity;
+			draggedAlpha = alpha;
 		}
 		else if (alpha > 1)
 		{
 			draggedTemperature 
 				= (StaticVariables.desiredTemperature - StaticVariables.currentTemperature) 
 				* StaticVariables.alphaDrag + StaticVariables.currentTemperature;
-			draggedAlpha = draggedTemperature * StaticVariables.tempSensitivity / StaticVariables.currentTemperature;
+			draggedAlpha = draggedTemperature / StaticVariables.currentTemperature;
 		}
 		else if (alpha < 1)
 		{
 			draggedTemperature = StaticVariables.currentTemperature - ((StaticVariables.currentTemperature - StaticVariables.desiredTemperature) * StaticVariables.alphaDrag);
-			draggedAlpha = draggedTemperature * StaticVariables.tempSensitivity / StaticVariables.currentTemperature;
+			draggedAlpha = draggedTemperature / StaticVariables.currentTemperature;
 		}
 		else
 		{
