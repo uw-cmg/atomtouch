@@ -15,55 +15,63 @@ using System;
 
 public class PhysicsEngine : MonoBehaviour
 {
+
 	void Awake(){
 		Application.targetFrameRate = 100;
 	}
+	void Start(){
+		StartCoroutine(DoPhysics());
+	}
+	//coroutine: I'm crazy
+	IEnumerator DoPhysics()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1f / 1000f);
+ 
+            if (!StaticVariables.pauseTime && !StaticVariables.draggingAtoms) 
+			{
+
+				VelocityVerlet();
+				Boundary.myBoundary.Apply();
+				CalculateEnergy();
+
+				if (StaticVariables.iTime == 0)
+				{
+					StaticVariables.clockTimeStart = Time.realtimeSinceStartup;
+					Debug.Log ("Start Time = " +  StaticVariables.clockTimeStart +" , iTime = " + StaticVariables.iTime);
+				}
+
+				if (StaticVariables.iTime == 5000)
+				{
+					StaticVariables.clockTimeEnd = Time.realtimeSinceStartup;
+					Debug.Log ("End Time = " +  StaticVariables.clockTimeEnd +" , iTime = " + StaticVariables.iTime);
+					float deltaTime = StaticVariables.clockTimeEnd - StaticVariables.clockTimeStart;
+					float timePerStep = deltaTime / (float)StaticVariables.iTime;
+					float timePerStepPerAtom = timePerStep / CreateEnvironment.myEnvironment.numMolecules;
+					Debug.Log ("Delta Time = " + deltaTime +" , iTime = " + StaticVariables.iTime + " , time per step = " + timePerStep + " , time per step per atom = " + timePerStepPerAtom);
+				}
+
+
+				StaticVariables.currentTime += StaticVariables.MDTimestepInPicosecond;
+				Graph.numMDStepSinceLastRecord ++;
+				StaticVariables.iTime ++;
+			}
+			else
+			{
+				// update the position of all atoms then initialize the acceleration to be updated
+				for (int i=0; i< Atom.AllAtoms.Count; i++)
+				{
+					Atom currAtom = Atom.AllAtoms[i];
+					currAtom.transform.position = currAtom.position;
+				}
+				Boundary.myBoundary.Apply();
+				CalculateEnergy();
+			}
+	    }
+     } 
 	void Update()
 	{
-		//turn off when dragging 
-		for(int t=0;t<10;t++){
-
-
-		if (!StaticVariables.pauseTime && !StaticVariables.draggingAtoms) 
-		{
-
-			VelocityVerlet();
-			Boundary.myBoundary.Apply();
-			CalculateEnergy();
-
-			if (StaticVariables.iTime == 0)
-			{
-				StaticVariables.clockTimeStart = Time.realtimeSinceStartup;
-				Debug.Log ("Start Time = " +  StaticVariables.clockTimeStart +" , iTime = " + StaticVariables.iTime);
-			}
-
-			if (StaticVariables.iTime == 5000)
-			{
-				StaticVariables.clockTimeEnd = Time.realtimeSinceStartup;
-				Debug.Log ("End Time = " +  StaticVariables.clockTimeEnd +" , iTime = " + StaticVariables.iTime);
-				float deltaTime = StaticVariables.clockTimeEnd - StaticVariables.clockTimeStart;
-				float timePerStep = deltaTime / (float)StaticVariables.iTime;
-				float timePerStepPerAtom = timePerStep / CreateEnvironment.myEnvironment.numMolecules;
-				Debug.Log ("Delta Time = " + deltaTime +" , iTime = " + StaticVariables.iTime + " , time per step = " + timePerStep + " , time per step per atom = " + timePerStepPerAtom);
-			}
-
-
-			StaticVariables.currentTime += StaticVariables.MDTimestepInPicosecond;
-			Graph.numMDStepSinceLastRecord ++;
-			StaticVariables.iTime ++;
-		}
-		else
-		{
-			// update the position of all atoms then initialize the acceleration to be updated
-			for (int i=0; i< Atom.AllAtoms.Count; i++)
-			{
-				Atom currAtom = Atom.AllAtoms[i];
-				currAtom.transform.position = currAtom.position;
-			}
-			Boundary.myBoundary.Apply();
-			CalculateEnergy();
-		}
-	}
 	}
 	
 	
