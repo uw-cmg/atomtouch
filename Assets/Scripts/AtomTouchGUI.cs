@@ -781,10 +781,29 @@ public class AtomTouchGUI : MonoBehaviour {
 		return true;
 	}
 
+	public void ChangeTimeScaleWithTemperature(float oldTemp){
+		float ratio = (StaticVariables.maxTimeScale-StaticVariables.baseTimeScale)
+						/(StaticVariables.maxTemp - StaticVariables.minTemp);
+		float tempChange = StaticVariables.desiredTemperature - StaticVariables.minTemp;
+		Time.timeScale = StaticVariables.baseTimeScale + ratio * tempChange;
+
+		//0.003, 0.03 at 300k
+		//0.01, 0.05 at 5000k
+		float timestepRatio = (0.01f-0.003f)/(5000.0f-300.0f);
+		Time.fixedDeltaTime = 0.003f + timestepRatio * tempChange;
+		float maxTimeRatio = (0.05f-0.03f)/(5000.0f-300.0f);
+		Time.maximumDeltaTime = 0.03f + maxTimeRatio*tempChange;
+		
+	}
+	//3 / 4700
+	//base Normal timeScale = 1.0f
+	//timeScale = baseTimeScale + (maxTimeScale-baseTimeScale)/(maxTemp-minTemp) * (desiredTemp-currTemp)
+	
 	public void ChangeAtomTemperature(){
 		oldTemperaure = StaticVariables.desiredTemperature;
 		StaticVariables.desiredTemperature 
-		= Math.Abs(5000.000f - tempSliderComponent.value)*StaticVariables.tempScaler;
+		= Math.Abs(StaticVariables.maxTemp - tempSliderComponent.value)*StaticVariables.tempScaler;
+		//ChangeTimeScaleWithTemperature(oldTemperaure);
 		//Debug.Log("temp changing");
 		if(oldTemperaure < 0){
 			return;

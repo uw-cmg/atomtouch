@@ -15,10 +15,11 @@ public class LennardJones : Potential {
 	//curves to a constant as r_ij goes to zero.
 	//Multiplier for transition between actual L-J potential and curve to constant
 	//This number will be multiplied by sigma to find the transition distance
-	private float rMinMultiplier = 0.75f;
+	//old val: 0.75
+	private float rMinMultiplier = 0.5f;
 	
 	//pre-calculated coefficients and forces for Lennard-Jones potential
-	private float[,] sigmaValues = new float[3, 3];
+	private static float[,] sigmaValues = new float[3, 3];
 	private float[,] accelCoefficient = new float[3, 3]; // this is the coefficient that is multiplied by the preLennardJones vector to get the acceleration of each atom for each combinations
 	private float[] preLennardJonesForce; //This is the pre-calculated value of LennardJones force for some mesh points.
 	private float[] preLennardJonesPotential; //This is the pre-calculated value of LennardJones potential for some mesh points.
@@ -27,7 +28,9 @@ public class LennardJones : Potential {
 	{
 		cutoffSqr = cutoff * cutoff;
 	}
-	
+	public static float[,] SigmaValues{
+		get{return sigmaValues;}
+	}
 	public override void preCompute()
 	{
 		//precompute sigma and acceleration coefficient for the LJ potential

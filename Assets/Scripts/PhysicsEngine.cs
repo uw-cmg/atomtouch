@@ -15,10 +15,15 @@ using System;
 
 public class PhysicsEngine : MonoBehaviour
 {
-	
-	void FixedUpdate()
+	void Awake(){
+		Application.targetFrameRate = 100;
+	}
+	void Update()
 	{
 		//turn off when dragging 
+		for(int t=0;t<10;t++){
+
+
 		if (!StaticVariables.pauseTime && !StaticVariables.draggingAtoms) 
 		{
 
@@ -59,6 +64,7 @@ public class PhysicsEngine : MonoBehaviour
 			CalculateEnergy();
 		}
 	}
+	}
 	
 	
 	void VelocityVerlet()
@@ -72,19 +78,19 @@ public class PhysicsEngine : MonoBehaviour
 			currAtom.position = currAtom.position + StaticVariables.MDTimestep * currAtom.velocity + 0.5f * StaticVariables.MDTimestepSqr * currAtom.accelerationNew;
 			currAtom.accelerationOld = currAtom.accelerationNew;
 			currAtom.accelerationNew = Vector3.zero;
-			if(currAtom.position.magnitude > 100){
-				Debug.Log(currAtom.position);
-			}
+			
 			currAtom.transform.position = currAtom.position;
 
 		}
-		
-		if (StaticVariables.iTime % StaticVariables.nVerlet == 0) 
-		{
-			
+		//if(!Mathf.Approximately(StaticVariables.currentTemperature
+		//	,StaticVariables.desiredTemperature)){
+			if (StaticVariables.iTime % (StaticVariables.nVerlet) == 0) 
+			{
 			Potential.myPotential.calculateNeighborList ();
-			PairDistributionFunction.calculateAveragePairDistribution();
-		}
+			//PairDistributionFunction.calculateAveragePairDistribution();
+			}
+		//}
+		
 		// update the acceleration of all atoms
 		for (int i=0; i< Atom.AllAtoms.Count; i++) 
 		{
