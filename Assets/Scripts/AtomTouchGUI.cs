@@ -778,11 +778,11 @@ public class AtomTouchGUI : MonoBehaviour {
 
 	public void ChangeTimeScaleWithTemperature(float oldTemp){
 
-		float ratio = (1f-0.5f)
+		float ratio = (1f-0.2f)
 						/(StaticVariables.maxTemp - StaticVariables.defaultTemp);
 		float tempChange = StaticVariables.desiredTemperature - StaticVariables.defaultTemp;
 		if(tempChange < 0)return;
-		Time.timeScale = 0.5f + ratio * tempChange;
+		Time.timeScale = 0.2f + ratio * tempChange;
 
 		//0.003, 0.03 at 300k
 		//0.01, 0.05 at 5000k

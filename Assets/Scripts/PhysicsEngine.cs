@@ -72,10 +72,11 @@ public class PhysicsEngine : MonoBehaviour
 			}
 	    //}
      } 
+     /*
 	void Update()
 	{
 		// check if atom velocity is below a minimum and kick it if necessary.
-		float tmpCoeff = Mathf.Sqrt(3.0f*StaticVariables.kB*StaticVariables.desiredTemperature/StaticVariables.amuToKg)/StaticVariables.angstromsToMeters;
+		
 		float minVelocity;
 		for(int i = 0; i < Atom.AllAtoms.Count; i++){
 			Atom currAtom = Atom.AllAtoms[i];
@@ -106,7 +107,7 @@ public class PhysicsEngine : MonoBehaviour
 			}
 		}
 	}
-	
+	*/
 	
 	void VelocityVerlet()
 	{
@@ -126,7 +127,6 @@ public class PhysicsEngine : MonoBehaviour
 			
 			currAtom.transform.position = currAtom.position;
 			
-			//currAtom.rigidbody.AddForce(new Vector3(0.5f, 0.3f, 0.2f) * 10);
 
 		}
 		
@@ -159,7 +159,34 @@ public class PhysicsEngine : MonoBehaviour
 			+ 0.5f * StaticVariables.MDTimestep * (currAtom.accelerationOld + currAtom.accelerationNew);
 			currAtom.velocity = StaticVariables.sqrtAlpha * currAtom.velocity;
 
-
+			//kick if atom looks still
+			//TODO: move to a coroutine in Atom.cs
+			float tmpCoeff = Mathf.Sqrt(3.0f*StaticVariables.kB*StaticVariables.desiredTemperature/StaticVariables.amuToKg)/StaticVariables.angstromsToMeters;
+			float minVelocity = tmpCoeff/Mathf.Sqrt(currAtom.massamu)/10.0f;
+			if (currAtom.velocity.magnitude < minVelocity)
+			{
+				//this is maximum random velocity.
+				float maxVelocity = 2.0f*minVelocity;
+				
+				if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
+					currAtom.velocity.x = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
+				}
+				else{
+					currAtom.velocity.x = UnityEngine.Random.Range(-5.0f * maxVelocity, -1.0f * maxVelocity);
+				}
+				if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
+					currAtom.velocity.y = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
+				}
+				else{
+					currAtom.velocity.y = UnityEngine.Random.Range(-5.0f * maxVelocity, -1.0f * maxVelocity);
+				}
+				if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
+					currAtom.velocity.z = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
+				}
+				else{
+					currAtom.velocity.z = UnityEngine.Random.Range(-5.0f * maxVelocity, -1.0f * maxVelocity);
+				}
+			}
 		}	
 		
 	}
