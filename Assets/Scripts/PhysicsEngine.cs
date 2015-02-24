@@ -20,14 +20,16 @@ public class PhysicsEngine : MonoBehaviour
 		Application.targetFrameRate = 100;
 	}
 	void Start(){
-		StartCoroutine(DoPhysics());
+		//StartCoroutine(DoPhysics());
 	}
 	//coroutine: I'm crazy
-	IEnumerator DoPhysics()
+	//TODO: when timer stopped or slowed down, lower/increase update rate
+	//IEnumerator DoPhysics()
+	void FixedUpdate()
     {
-        while (true)
-        {
-            yield return new WaitForSeconds(1f / 1000f);
+       // while (true)
+        //{
+          //  yield return new WaitForSeconds(1f / 100f);
  
             if (!StaticVariables.pauseTime && !StaticVariables.draggingAtoms) 
 			{
@@ -68,11 +70,9 @@ public class PhysicsEngine : MonoBehaviour
 				Boundary.myBoundary.Apply();
 				CalculateEnergy();
 			}
-	    }
+	    //}
      } 
-	void Update()
-	{
-	}
+
 	
 	
 	void VelocityVerlet()
@@ -83,20 +83,27 @@ public class PhysicsEngine : MonoBehaviour
 		for (int i=0; i< Atom.AllAtoms.Count; i++)
 		{
 			Atom currAtom = Atom.AllAtoms[i];
-			currAtom.position = currAtom.position + StaticVariables.MDTimestep * currAtom.velocity + 0.5f * StaticVariables.MDTimestepSqr * currAtom.accelerationNew;
+			
+			currAtom.position = currAtom.position 
+				+ StaticVariables.MDTimestep * currAtom.velocity 
+				+ 0.5f * StaticVariables.MDTimestepSqr * currAtom.accelerationNew;
+
 			currAtom.accelerationOld = currAtom.accelerationNew;
 			currAtom.accelerationNew = Vector3.zero;
 			
 			currAtom.transform.position = currAtom.position;
+			
+			//currAtom.rigidbody.AddForce(new Vector3(0.5f, 0.3f, 0.2f) * 10);
 
 		}
+		
 		//if(!Mathf.Approximately(StaticVariables.currentTemperature
 		//	,StaticVariables.desiredTemperature)){
-			if (StaticVariables.iTime % (StaticVariables.nVerlet) == 0) 
-			{
+		if (StaticVariables.iTime % (StaticVariables.nVerlet) == 0) 
+		{
 			Potential.myPotential.calculateNeighborList ();
 			//PairDistributionFunction.calculateAveragePairDistribution();
-			}
+		}
 		//}
 		
 		// update the acceleration of all atoms
@@ -121,6 +128,7 @@ public class PhysicsEngine : MonoBehaviour
 
 
 		}	
+		
 	}
 
 	

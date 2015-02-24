@@ -16,7 +16,7 @@ public class LennardJones : Potential {
 	//Multiplier for transition between actual L-J potential and curve to constant
 	//This number will be multiplied by sigma to find the transition distance
 	//old val: 0.75
-	private float rMinMultiplier = 0.5f;
+	private float rMinMultiplier = 0.75f;
 	
 	//pre-calculated coefficients and forces for Lennard-Jones potential
 	private static float[,] sigmaValues = new float[3, 3];
