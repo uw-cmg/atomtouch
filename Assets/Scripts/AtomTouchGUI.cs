@@ -432,44 +432,39 @@ public class AtomTouchGUI : MonoBehaviour {
 	}
 	public void AllAtomsKick(){
 		for(int i = 0; i < Atom.AllAtoms.Count; i++){
-			Atom currAtom = Atom.AllAtoms[i];
+			//Atom currAtom = Atom.AllAtoms[i];
 			AtomKick(i);
 		}
 	}
 
 	//kick only one atom
 	public void AtomKick(int i){
-		//for(int i = 0; i < Atom.AllAtoms.Count; i++){
-			Atom currAtom = Atom.AllAtoms[i];
-			float xVelocity = 0.0f;
-			float yVelocity = 0.0f;
-			float zVelocity = 0.0f;
-			//this is maximum random velocity and needs to be determined emperically.
-			//float maxVelocity = 0.05f / StaticVariables.MDTimestep; 
-			float maxVelocity = 2.0f*Mathf.Sqrt(3.0f*StaticVariables.kB*StaticVariables.desiredTemperature/currAtom.massamu/StaticVariables.amuToKg)/StaticVariables.angstromsToMeters; //this is maximum random velocity and needs to be determined emperically.
+		Atom currAtom = Atom.AllAtoms[i];
+		float xVelocity = 0.0f;
+		float yVelocity = 0.0f;
+		float zVelocity = 0.0f;
+		//this is maximum random velocity.
+		float maxVelocity = 2.0f*Mathf.Sqrt(3.0f*StaticVariables.kB*StaticVariables.desiredTemperature/currAtom.massamu/StaticVariables.amuToKg)/StaticVariables.angstromsToMeters;
 
-			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
-				xVelocity = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
-			}
-			else{
-				xVelocity = UnityEngine.Random.Range(-5.0f * maxVelocity, -1.0f * maxVelocity);
-			}
-			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
-				yVelocity = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
-			}
-			else{
-				yVelocity = UnityEngine.Random.Range(-5.0f * maxVelocity, -1.0f * maxVelocity);
-			}
-			if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
-				zVelocity = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
-			}
-			else{
-				zVelocity = UnityEngine.Random.Range(-5.0f * maxVelocity, -1.0f * maxVelocity);
-			}
-			currAtom.velocity = new Vector3(xVelocity, yVelocity, zVelocity);
-			//currAtom.accelerationOld = Vector3.zero;
-			//currAtom.accelerationNew = Vector3.zero;
-		//}
+		if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
+			xVelocity = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
+		}
+		else{
+			xVelocity = UnityEngine.Random.Range(-5.0f * maxVelocity, -1.0f * maxVelocity);
+		}
+		if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
+			yVelocity = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
+		}
+		else{
+			yVelocity = UnityEngine.Random.Range(-5.0f * maxVelocity, -1.0f * maxVelocity);
+		}
+		if(UnityEngine.Random.Range(0.0f, 1.0f) > .5f){
+			zVelocity = UnityEngine.Random.Range(1.0f * maxVelocity, 5.0f * maxVelocity);
+		}
+		else{
+			zVelocity = UnityEngine.Random.Range(-5.0f * maxVelocity, -1.0f * maxVelocity);
+		}
+		currAtom.velocity = new Vector3(xVelocity, yVelocity, zVelocity);
 	}
 	
 	public static int IntParseFast(string value)
