@@ -32,7 +32,7 @@ public class StaticVariables {
 	public static float MDTimestepSqr = MDTimestep * MDTimestep;
 	public static float MDTimestepInPicosecond = MDTimestep / Mathf.Pow (10, -12);
 
-	public static int maxAtoms = 50; //max number of atoms allowd
+	public static int maxAtoms = 50; //max number of atoms allowed
 	//scale timeScale with temp
 	public static float maxTimeScale = 4.0f;
 	public static float baseTimeScale = 0.8f;
@@ -102,9 +102,6 @@ public class StaticVariables {
 	public static float maxVol = 40.0f; //in angstroms
 	public static float minVol = 10.0f;
 	public static float defaultVol = 20.0f;
-
-	public static Color atomDisabledColor = new Color(80/255.0f, 80/255.0f, 80/255.0f,90/255.0f);
-	public static Color atomEnabledColor = new Color(23.0f/255.0f,160.0f/255.0f,242.0f/255.0f,1.0f);
 	//this is an enum of the different states that time can pass
 	public enum TimeSpeed{
 		Normal,
