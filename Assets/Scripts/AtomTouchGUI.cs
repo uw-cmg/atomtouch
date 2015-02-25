@@ -82,6 +82,10 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject AddCopperBtn;
 	public GameObject AddGoldBtn;
 	public GameObject AddPlatBtn;
+	//ADD ATOM button text
+	public GameObject copperText;
+	public GameObject goldText;
+	public GameObject platText;
 
 	public Text selectAllText;
 	private bool selectedAll;
@@ -551,6 +555,21 @@ public class AtomTouchGUI : MonoBehaviour {
 		AddCopperBtn.GetComponent<Button>().interactable = !tooMuch;
 		AddGoldBtn.GetComponent<Button>().interactable = !tooMuch;
 		AddPlatBtn.GetComponent<Button>().interactable = !tooMuch;
+
+		Text cuText = copperText.GetComponent<Text>();
+		Text auText = goldText.GetComponent<Text>();
+		Text ptText = platText.GetComponent<Text>();
+
+		if(tooMuch){
+			cuText.color = StaticVariables.atomDisabledColor;
+			auText.color = StaticVariables.atomDisabledColor;
+			ptText.color = StaticVariables.atomDisabledColor;
+
+		}else{
+			cuText.color = StaticVariables.atomEnabledColor;
+			auText.color = StaticVariables.atomEnabledColor;
+			ptText.color = StaticVariables.atomEnabledColor;
+		}
 			
 	}
 	public void AddPlatinumAtom(){
