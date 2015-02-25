@@ -32,6 +32,7 @@ public class StaticVariables {
 	public static float MDTimestepSqr = MDTimestep * MDTimestep;
 	public static float MDTimestepInPicosecond = MDTimestep / Mathf.Pow (10, -12);
 
+	public static int maxAtoms = 50; //max number of atoms allowed
 	//scale timeScale with temp
 	public static float maxTimeScale = 4.0f;
 	public static float baseTimeScale = 0.8f;

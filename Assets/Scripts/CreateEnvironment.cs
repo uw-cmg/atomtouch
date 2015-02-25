@@ -314,6 +314,7 @@ public class CreateEnvironment : MonoBehaviour {
 		
 		//AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		atomTouchGUI.AllAtomsKick();
+		AtomTouchGUI.myAtomTouchGUI.TryEnableAddAtomBtns();
 	}
 	
 	
@@ -337,7 +338,8 @@ public class CreateEnvironment : MonoBehaviour {
 
 		int i = Atom.AllAtoms.Count-1;
 		Atom currAtom = Atom.AllAtoms[i];
-		currAtom.gameObject.name = i.ToString();
+		currAtom.gameObject.name = currAtom.GetInstanceID().ToString();
+		Debug.Log(currAtom.GetInstanceID());
 		currAtom.rigidbody.freezeRotation = true;
 		
 		float realWidth = myEnvironment.width - 2.0f * myEnvironment.errorBuffer;

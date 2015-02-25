@@ -78,6 +78,10 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject cuBatchToggle;
 	public GameObject auBatchToggle;
 	public GameObject ptBatchToggle;
+	//add atom buttons
+	public GameObject AddCopperBtn;
+	public GameObject AddGoldBtn;
+	public GameObject AddPlatBtn;
 
 	public Text selectAllText;
 	private bool selectedAll;
@@ -174,6 +178,8 @@ public class AtomTouchGUI : MonoBehaviour {
 		settingsCanvas.SetActive(false);
 		selectedAll = false;
 		settingsActive = false;
+
+
 
 /*
 		if(Application.platform == RuntimePlatform.IPhonePlayer){
@@ -362,6 +368,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				Destroy(currAtom.gameObject);
 			}
 		}
+		AtomTouchGUI.myAtomTouchGUI.TryEnableAddAtomBtns();
 		Atom.EnableSelectAtomGroup(false);
 	}
 	//this function returns the number of atoms that are selected
@@ -538,7 +545,14 @@ public class AtomTouchGUI : MonoBehaviour {
 		}
 
 	}
-
+	public void TryEnableAddAtomBtns(){
+		bool tooMuch = Atom.AllAtoms.Count >= StaticVariables.maxAtoms;
+		
+		AddCopperBtn.GetComponent<Button>().interactable = !tooMuch;
+		AddGoldBtn.GetComponent<Button>().interactable = !tooMuch;
+		AddPlatBtn.GetComponent<Button>().interactable = !tooMuch;
+			
+	}
 	public void AddPlatinumAtom(){
 		
 		if(Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
@@ -550,7 +564,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			myEnvironment.createAtom(platinumPrefab);
 			
 		}
-	
+		TryEnableAddAtomBtns();
 	}
 
 	public void AddGoldAtom(){
@@ -564,7 +578,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			myEnvironment.createAtom(goldPrefab);
 			
 		}
-
+		TryEnableAddAtomBtns();
 	}
 
 	public void AddCopperAtom(){
@@ -580,7 +594,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			myEnvironment.createAtom(copperPrefab);
 			
 		}
-
+		TryEnableAddAtomBtns();
 		
 	
 
