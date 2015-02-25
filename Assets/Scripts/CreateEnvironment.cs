@@ -338,8 +338,9 @@ public class CreateEnvironment : MonoBehaviour {
 
 		int i = Atom.AllAtoms.Count-1;
 		Atom currAtom = Atom.AllAtoms[i];
+		//this makes sure the keys in the hashmap are unique
 		currAtom.gameObject.name = currAtom.GetInstanceID().ToString();
-		Debug.Log(currAtom.GetInstanceID());
+		//Debug.Log(currAtom.GetInstanceID());
 		currAtom.rigidbody.freezeRotation = true;
 		
 		float realWidth = myEnvironment.width - 2.0f * myEnvironment.errorBuffer;

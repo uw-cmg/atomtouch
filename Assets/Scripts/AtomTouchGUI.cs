@@ -83,6 +83,11 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject AddGoldBtn;
 	public GameObject AddPlatBtn;
 
+	public GameObject copperTxt;
+	public GameObject goldTxt;
+	public GameObject platTxt;
+	
+
 	public Text selectAllText;
 	private bool selectedAll;
 	private bool settingsActive;
@@ -548,9 +553,27 @@ public class AtomTouchGUI : MonoBehaviour {
 	public void TryEnableAddAtomBtns(){
 		bool tooMuch = Atom.AllAtoms.Count >= StaticVariables.maxAtoms;
 		
-		AddCopperBtn.GetComponent<Button>().interactable = !tooMuch;
-		AddGoldBtn.GetComponent<Button>().interactable = !tooMuch;
-		AddPlatBtn.GetComponent<Button>().interactable = !tooMuch;
+		Button copper = AddCopperBtn.GetComponent<Button>();
+		Button gold = AddGoldBtn.GetComponent<Button>();
+		Button plat = AddPlatBtn.GetComponent<Button>();
+
+		Text copperTxtComp = copperTxt.GetComponent<Text>();
+		Text goldTxtComp = goldTxt.GetComponent<Text>();
+		Text platTxtComp = platTxt.GetComponent<Text>();
+
+		copper.interactable = !tooMuch;
+		gold.interactable = !tooMuch;
+		plat.interactable = !tooMuch;
+
+		if(tooMuch){
+			copperTxtComp.color = StaticVariables.atomDisabledColor;
+			goldTxtComp.color = StaticVariables.atomDisabledColor;
+			platTxtComp.color = StaticVariables.atomDisabledColor;
+		}else{
+			copperTxtComp.color = StaticVariables.atomEnabledColor;
+			goldTxtComp.color = StaticVariables.atomEnabledColor;
+			platTxtComp.color = StaticVariables.atomEnabledColor;
+		}
 			
 	}
 	public void AddPlatinumAtom(){
