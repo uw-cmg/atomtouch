@@ -14,6 +14,7 @@
  **/ 
 
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -313,19 +314,32 @@ public class CreateEnvironment : MonoBehaviour {
 		
 		//AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		atomTouchGUI.AllAtomsKick();
+		AtomTouchGUI.myAtomTouchGUI.TryEnableAddAtomBtns();
 	}
 	
 	
 	// this method creates a new atom from the type of the preFab and checks the position to have a far enough distance from other atoms
 	public void createAtom(Rigidbody preFab)
 	{
+		int preFabID = preFab.GetInstanceID();
+		if(preFabID == atomTouchGUI.copperPrefab.GetInstanceID()){
+			Copper.count++;
+			atomTouchGUI.copperCount.GetComponent<Text>().text = "Cu: " + Copper.count;
+		}else if(preFabID == atomTouchGUI.goldPrefab.GetInstanceID()){
+			Gold.count++;
+			atomTouchGUI.goldCount.GetComponent<Text>().text = "Au: " + Gold.count;
+		}else if(preFabID == atomTouchGUI.platinumPrefab.GetInstanceID()){
+			Platinum.count++;
+			atomTouchGUI.platinumCount.GetComponent<Text>().text = "Pt: " + Platinum.count;
+		}
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		Quaternion curRotation = Quaternion.Euler(0, 0, 0);
 		Instantiate(preFab, myEnvironment.centerPos, curRotation);
 
 		int i = Atom.AllAtoms.Count-1;
 		Atom currAtom = Atom.AllAtoms[i];
-		currAtom.gameObject.name = i.ToString();
+		currAtom.gameObject.name = currAtom.GetInstanceID().ToString();
+		Debug.Log(currAtom.GetInstanceID());
 		currAtom.rigidbody.freezeRotation = true;
 		
 		float realWidth = myEnvironment.width - 2.0f * myEnvironment.errorBuffer;

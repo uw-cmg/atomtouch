@@ -20,6 +20,8 @@ public class Platinum : Atom {
 	public Material selectedMaterial;
 	public Material transparentMaterial;
 	
+	public static int count = 0;
+	
 	public override String atomName { 
 		get{ return "Platinum"; } 
 	}

@@ -24,7 +24,7 @@ public class StaticVariables {
 	public static bool mouseClickProcessed = false;
 	public static bool draggingAtoms = false;
 	//MD time steps used in normal, slowmotion, and stop time mode.
-	public static float MDTimestepNormal = 0.5f * Mathf.Pow (10, -15);
+	public static float MDTimestepNormal = 1.5f * Mathf.Pow (10, -15);
 	public static float MDTimestepSlow = MDTimestepNormal / 10.0f ;
 	public static float MDTimestepStop = MDTimestepNormal / 50.0f ;
 
@@ -32,7 +32,12 @@ public class StaticVariables {
 	public static float MDTimestepSqr = MDTimestep * MDTimestep;
 	public static float MDTimestepInPicosecond = MDTimestep / Mathf.Pow (10, -12);
 
-
+	public static int maxAtoms = 70; //max number of atoms allowed
+	public static Color atomEnabledColor = new Color(23/255.0f, 160/255.0f,242/255.0f, 1.0f);
+	public static Color atomDisabledColor = new Color(80/255.0f, 80/255.0f, 80/255.0f, 90/255.0f);
+	//scale timeScale with temp
+	public static float maxTimeScale = 4.0f;
+	public static float baseTimeScale = 0.8f;
 	
 	public static float clockTimeStart = 0.0f;
 	public static float clockTimeEnd = 0.0f;
@@ -45,6 +50,7 @@ public class StaticVariables {
 	//public static float updateIntervalToRealTime = MDTimestep;
 	
 	//do not scale temperature all at once
+	//public static float alphaDrag = 0.1f; original value
 	public static float alphaDrag = 0.1f;
 	
 	//Boltzmann constant in J/K
@@ -57,7 +63,8 @@ public class StaticVariables {
 	public static float amuToKg = 1.6605f * (float)Math.Pow(10, -27); 
 	
 	//Convert units of 100 amu to kg
-	public static float mass100amuToKg = 100f * amuToKg; 
+	public static float massScaler = 1f;
+	public static float mass100amuToKg = 100.0f* massScaler * amuToKg; 
 	
 	//Convert units of Angstroms to meters
 	public static float angstromsToMeters = (float) Math.Pow (10,-10);
@@ -68,8 +75,13 @@ public class StaticVariables {
 	//Temperature slider bounds in K
 	public static float tempRangeLow = 0.001f;
 	public static float tempRangeHigh = 5000.0f; 
-	public static float desiredTemperature = 300.000f;
+	public static float tempDefault = 300.0f;
+	public static float tempScaler = 1.0f; //for making atoms faster and increasing frame rate
+	public static float desiredTemperature = 300.000f * tempScaler;
 	
+	public static float volRangeLow = 1.0f;
+	public static float volRangeHigh = 4.0f;
+	public static float volDefault = 1.0f;
 	//this variable causes the bond lines to either draw or not draw
 	public static bool drawBondLines = true;
 	//the variable pauses the simulation of physics

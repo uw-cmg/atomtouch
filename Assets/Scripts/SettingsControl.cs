@@ -41,9 +41,6 @@ public class SettingsControl : MonoBehaviour {
 		nmToggle = nmOn.GetComponent<Toggle>();
 		simTypeChanged = false;
 	}
-	void Start () {
-		
-	}
 	
 	
 	public void ResumeGame(){

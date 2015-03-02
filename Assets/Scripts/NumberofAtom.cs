@@ -6,7 +6,7 @@ public class NumberofAtom : MonoBehaviour {
 
 
 	public static int selectedAtoms;
-
+	
 	public GameObject selectedText;
 	public AtomTouchGUI atomTouchGUI;
 	private Text text;
@@ -22,7 +22,7 @@ public class NumberofAtom : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		selectedAtoms = CountSelectedAtoms ();
-		Atom.EnableSelectAtomGroup(selectedAtoms>0);
+		Atom.EnableSelectAtomGroup(selectedAtoms > 0);
 		//if(selectedAtoms>0)Debug.Log(selectedAtoms);
 		text.text = selectedAtoms + " Atom(s) selected";
 

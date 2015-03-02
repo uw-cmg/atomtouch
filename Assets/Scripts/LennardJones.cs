@@ -15,10 +15,11 @@ public class LennardJones : Potential {
 	//curves to a constant as r_ij goes to zero.
 	//Multiplier for transition between actual L-J potential and curve to constant
 	//This number will be multiplied by sigma to find the transition distance
+	//old val: 0.75
 	private float rMinMultiplier = 0.75f;
 	
 	//pre-calculated coefficients and forces for Lennard-Jones potential
-	private float[,] sigmaValues = new float[3, 3];
+	private static float[,] sigmaValues = new float[3, 3];
 	private float[,] accelCoefficient = new float[3, 3]; // this is the coefficient that is multiplied by the preLennardJones vector to get the acceleration of each atom for each combinations
 	private float[] preLennardJonesForce; //This is the pre-calculated value of LennardJones force for some mesh points.
 	private float[] preLennardJonesPotential; //This is the pre-calculated value of LennardJones potential for some mesh points.
@@ -27,7 +28,9 @@ public class LennardJones : Potential {
 	{
 		cutoffSqr = cutoff * cutoff;
 	}
-	
+	public static float[,] SigmaValues{
+		get{return sigmaValues;}
+	}
 	public override void preCompute()
 	{
 		//precompute sigma and acceleration coefficient for the LJ potential
@@ -158,16 +161,40 @@ public class LennardJones : Potential {
 	public override void calculateNeighborList()
 	{
 		//clear the old neighborList
+		/*
 		for (int i = 0; i < Atom.AllAtoms.Count; i++)
 		{
 			Atom currAtom = Atom.AllAtoms[i];
 			currAtom.neighborList.Clear();
 		}
+		*/
+		/*
+		for(int i=0; i < Atom.AllAtoms.Count - 1;i++){
+			float r = 1.5f;
+			Atom currAtom = Atom.AllAtoms[i];
+			currAtom.neighborList.Clear();
+			Collider[] hits = Physics.OverlapSphere(currAtom.gameObject.transform.position, r);
+			foreach(Collider hit in hits){
+				Atom hitAtom = hit.gameObject.GetComponent<Atom>();
+				Vector3 deltaR 
+					= Boundary.myBoundary.deltaPosition(currAtom, hitAtom);
+				float distanceSqr = deltaR.sqrMagnitude;
+				float finalSigma = sigmaValues[currAtom.atomID, hitAtom.atomID];
+				float normDistanceSqr = distanceSqr / finalSigma / finalSigma; // this is normalized distanceSqr to the sigmaValue
+				if (normDistanceSqr < currAtom.verletRadius * hitAtom.verletRadius)
+					currAtom.neighborList.Add(hitAtom);
+				//currAtom.neighborList.Add(hitAtom);
+			}
+
+		}
+		*/
 		
 		//create the new neighborList
 		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
 		{
 			Atom firstAtom = Atom.AllAtoms[i];
+			firstAtom.neighborList.Clear();
+
 			for (int j = i + 1; j < Atom.AllAtoms.Count; j++)
 			{
 				Atom secondAtom = Atom.AllAtoms[j];
@@ -179,6 +206,8 @@ public class LennardJones : Potential {
 					firstAtom.neighborList.Add(secondAtom);
 			}
 		}
+		
+		
 	}	
 	
 }

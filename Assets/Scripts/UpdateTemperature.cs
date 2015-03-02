@@ -16,7 +16,8 @@ public class UpdateTemperature : MonoBehaviour {
 		if(StaticVariables.desiredTemperature < 0.001f){
 			StaticVariables.desiredTemperature = 0.001f;
 		}
-		text.text = "Temp" + System.Environment.NewLine +  StaticVariables.desiredTemperature + "K"
+		text.text = "Temp" + System.Environment.NewLine 
+		+  (StaticVariables.desiredTemperature / StaticVariables.tempScaler) + "K"
 		+ System.Environment.NewLine + "(" + KToC(StaticVariables.desiredTemperature).ToString("0.00") +"°C)";
 	}
 
