@@ -109,10 +109,10 @@ public class Graph : MonoBehaviour {
 		AtomTouchGUI atomGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		if (atomGUI.dataPanelActive) {
 			//draw the background for the graph
-			Vector3 upperLeft = camera.ScreenToWorldPoint (new Vector3 (xCoord, (yCoord+height), zDepth));
-			Vector3 lowerLeft = camera.ScreenToWorldPoint (new Vector3(xCoord, yCoord, zDepth));
-			Vector3 upperRight = camera.ScreenToWorldPoint (new Vector3 (xCoord + width, (yCoord+height), zDepth));
-			Vector3 lowerRight = camera.ScreenToWorldPoint (new Vector3(xCoord + width, yCoord, zDepth));
+			Vector3 upperLeft = GetComponent<Camera>().ScreenToWorldPoint (new Vector3 (xCoord, (yCoord+height), zDepth));
+			Vector3 lowerLeft = GetComponent<Camera>().ScreenToWorldPoint (new Vector3(xCoord, yCoord, zDepth));
+			Vector3 upperRight = GetComponent<Camera>().ScreenToWorldPoint (new Vector3 (xCoord + width, (yCoord+height), zDepth));
+			Vector3 lowerRight = GetComponent<Camera>().ScreenToWorldPoint (new Vector3(xCoord + width, yCoord, zDepth));
 			Color customColor = new Color (0.5f, 0.5f, 0.5f, 1.0f);
 			StaticVariables.DrawQuad (upperLeft, upperRight, lowerLeft, lowerRight, customColor, mat);
 			
@@ -126,8 +126,8 @@ public class Graph : MonoBehaviour {
 			int numTicks = (int)(highTime - lowTime) + 1;
 			float tickSpacing = (float)((width-10.0f) / numTicks);
 			for(int i = 0; i < numTicks+1; i++){
-				Vector3 top = camera.ScreenToWorldPoint(new Vector3(xCoord + (i*tickSpacing), yCoord + 10.0f, zDepth));
-				Vector3 bottom = camera.ScreenToWorldPoint(new Vector3(xCoord + (i*tickSpacing), yCoord - 10.0f, zDepth));
+				Vector3 top = GetComponent<Camera>().ScreenToWorldPoint(new Vector3(xCoord + (i*tickSpacing), yCoord + 10.0f, zDepth));
+				Vector3 bottom = GetComponent<Camera>().ScreenToWorldPoint(new Vector3(xCoord + (i*tickSpacing), yCoord - 10.0f, zDepth));
 				StaticVariables.DrawLine(top, bottom, Color.black, Color.black, lineWidth, mat);
 			}
 			
@@ -156,8 +156,8 @@ public class Graph : MonoBehaviour {
 				float firstYAddition = firstPercentage * height;
 				float secondYAddition = secondPercentage * height;
 				
-				Vector3 firstPoint = camera.ScreenToWorldPoint(new Vector3(xCoord + (i*spacing), yCoord + firstYAddition, zDepth));
-				Vector3 secondPoint = camera.ScreenToWorldPoint(new Vector3(xCoord + ((i+1)*spacing), yCoord + secondYAddition, zDepth));
+				Vector3 firstPoint = GetComponent<Camera>().ScreenToWorldPoint(new Vector3(xCoord + (i*spacing), yCoord + firstYAddition, zDepth));
+				Vector3 secondPoint = GetComponent<Camera>().ScreenToWorldPoint(new Vector3(xCoord + ((i+1)*spacing), yCoord + secondYAddition, zDepth));
 				StaticVariables.DrawLine(firstPoint, secondPoint, lineColor, lineColor, lineWidth, mat);
 			}
 		}

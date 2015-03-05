@@ -6,7 +6,9 @@ Job myJob;
      myJob = new Job();
      myJob.InData = new Vector3[10];
  
-     myJob.Start(); // Don't touch any data in the job class after you called Start until IsDone is true.
+     myJob.Start(); 
+     // Don't touch any data in the job class 
+     //after you called Start until IsDone is true.
  }
  
  void Update()

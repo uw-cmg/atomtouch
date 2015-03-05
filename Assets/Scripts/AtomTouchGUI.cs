@@ -274,7 +274,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 20.0f, 200, 30), "Element Name: " + elementName);
 		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 50.0f, 200, 30), "Element Symbol: " + elementSymbol);
 		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 80.0f, 200, 50), "Position: " + currAtom.transform.position.ToString("E0"));
-		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 130.0f, 200, 50), "Velocity: " + currAtom.transform.rigidbody.velocity.ToString("E0"));
+		GUI.Label (new Rect (displayRect.x + 10.0f, displayRect.y + 130.0f, 200, 50), "Velocity: " + currAtom.transform.GetComponent<Rigidbody>().velocity.ToString("E0"));
 		
 		DisplayBondProperties (currAtom, displayRect);
 		
@@ -356,7 +356,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				currAtom.selected = false;
 				currAtom.SetSelected(false);
 				
-				int instId = currAtom.gameObject.rigidbody.GetInstanceID();
+				int instId = currAtom.gameObject.GetComponent<Rigidbody>().GetInstanceID();
 				if(currAtom is Copper){
 					Copper.count--;
 					copperCount.GetComponent<Text>().text = "Cu: " + Copper.count;
@@ -800,7 +800,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	public bool CheckAllAtomsStatic(){
 		for(int i=0;i<Atom.AllAtoms.Count;i++){
 			Atom currentAtom = Atom.AllAtoms[i];
-			Vector3 atomVel = currentAtom.rigidbody.velocity;
+			Vector3 atomVel = currentAtom.GetComponent<Rigidbody>().velocity;
 			float diff = Vector3.Distance(atomVel, Vector3.zero);
 			if(!Mathf.Approximately(diff, 0.0f)){
 				return false;

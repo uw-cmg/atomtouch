@@ -55,7 +55,7 @@ public class DemoGlowEffect : MonoBehaviour {
 				glowMaterial.SetTexture("_Glow", blurB);
 			}
         }
-
+/*
 #if !UNITY_EDITOR && (UNITY_IPHONE || UNITY_ANDROID)
 		// this will be used as the target texture so it can be blitted to another camera
 		cameraRenderTexture = new RenderTexture(Screen.width, Screen.height, 16, RenderTextureFormat.ARGB32);
@@ -76,7 +76,7 @@ public class DemoGlowEffect : MonoBehaviour {
 		postEffectsRenderTexture.filterMode = FilterMode.Bilinear;
 		postEffectsRenderTexture.Create();
 #endif
-
+*/
         glowMaterial.SetFloat("_BlurSpread", blurSpread);
         glowMaterial.SetFloat("_GlowMultiplier", glowMultiplier);
         glowMaterial.SetColor("_GlowColorMultiplier", glowColorMultiplier);
@@ -90,7 +90,7 @@ public class DemoGlowEffect : MonoBehaviour {
 	public void OnPreRender()
 	{
 		if (!useAlphaChannelForGlow) {
-			shaderCamera.CopyFrom(camera);
+			shaderCamera.CopyFrom(GetComponent<Camera>());
 			shaderCamera.backgroundColor = Color.clear;
 			shaderCamera.clearFlags = CameraClearFlags.SolidColor;
 			shaderCamera.renderingPath = RenderingPath.Forward;
@@ -146,7 +146,7 @@ public class DemoGlowEffect : MonoBehaviour {
 				shaderCamera.gameObject.SetActive(true);
 #endif
 			} else {
-				shaderCamera = new GameObject("Glow Effect", typeof(Camera)).camera;
+				shaderCamera = new GameObject("Glow Effect", typeof(Camera)).GetComponent<Camera>();
 			}
 		}
 		updateGlowEffect(); 
@@ -155,7 +155,7 @@ public class DemoGlowEffect : MonoBehaviour {
 	public void OnDisable()
 	{
 		glowMaterial.mainTexture = null;
-		camera.targetTexture = null;
+		GetComponent<Camera>().targetTexture = null;
 		if (shaderCamera != null) {
 #if UNITY_3_5
 			shaderCamera.gameObject.SetActiveRecursively(false);

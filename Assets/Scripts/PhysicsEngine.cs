@@ -17,7 +17,7 @@ public class PhysicsEngine : MonoBehaviour
 {
 
 	void Awake(){
-		Application.targetFrameRate = 100;
+		Application.targetFrameRate = 70;
 	}
 	void Start(){
 		//StartCoroutine(DoPhysics());
