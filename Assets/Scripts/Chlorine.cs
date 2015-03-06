@@ -26,9 +26,9 @@ public class Chlorine : Atom
 		get{ return "Chlorine"; } 
 	}
 	
-	
+	//index of this atom prefab in molecules[] in CreateEnvironment
 	public override int atomID {
-		get{ return 1;}
+		get{ return 4;}
 	}
 	
 	public override float epsilon {

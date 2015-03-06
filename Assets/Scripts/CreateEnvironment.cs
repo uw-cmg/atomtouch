@@ -22,7 +22,7 @@ using System;
 public class CreateEnvironment : MonoBehaviour {
 	
 	public int numMolecules = 10;
-	public List<Rigidbody> molecules = new List<Rigidbody>();
+	public Rigidbody[] molecules = new Rigidbody[5];
 	public int moleculeToSpawn = 0;
 	public GameObject plane;
 	public Vector3 centerPos;
@@ -295,6 +295,7 @@ public class CreateEnvironment : MonoBehaviour {
 		//initialize the new atoms
 		if (Potential.currentPotential == Potential.potentialType.LennardJones)
 		{
+			Debug.Log(molecules[0].gameObject.name);
 			for (int i = 0; i < numMolecules; i++)
 			{
 				createAtom (molecules [0]);

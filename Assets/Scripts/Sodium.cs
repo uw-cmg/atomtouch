@@ -23,7 +23,7 @@ public class Sodium : Atom {
 	}
 	
 	public override int atomID {
-		get{ return 0;}
+		get{ return 3;}
 	}
 	
 	public override float epsilon{

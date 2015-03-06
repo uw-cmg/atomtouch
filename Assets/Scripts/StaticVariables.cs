@@ -24,7 +24,7 @@ public class StaticVariables {
 	public static bool mouseClickProcessed = false;
 	public static bool draggingAtoms = false;
 	//MD time steps used in normal, slowmotion, and stop time mode.
-	public static float MDTimestepNormal = 0.5f * Mathf.Pow (10, -15);
+	public static float MDTimestepNormal = 1.5f * Mathf.Pow (10, -15);
 	public static float MDTimestepSlow = MDTimestepNormal / 10.0f ;
 	public static float MDTimestepStop = MDTimestepNormal / 50.0f ;
 
@@ -36,10 +36,10 @@ public class StaticVariables {
 	public static Color atomEnabledColor = new Color(23/255.0f, 160/255.0f,242/255.0f, 1.0f);
 	public static Color atomDisabledColor = new Color(80/255.0f, 80/255.0f, 80/255.0f, 90/255.0f);
 	//scale timeScale with temp
-	public static float maxTimeScale = 0.7f;
+	public static float maxTimeScale = 1f;
 	public static float baseTimeScale = 0.1f;//when temp = 300k
 
-	public static float maxTimeScaleBuck = 0.4f;
+	public static float maxTimeScaleBuck = 0.7f;
 	public static float baseTimeScaleBuck = 0.1f;
 	
 	public static float clockTimeStart = 0.0f;
