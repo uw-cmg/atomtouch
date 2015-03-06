@@ -304,11 +304,13 @@ public class CreateEnvironment : MonoBehaviour {
 		{
 			for (int i = 0; i < numMolecules/2; i++)
 			{
-				createAtom (molecules [0]);
+				//sodium
+				createAtom (molecules [3]);
 			}
 			for (int i = numMolecules/2; i < numMolecules; i++)
 			{
-				createAtom (molecules [1]);
+				//chlorine
+				createAtom (molecules [4]);
 			}
 		}
 		
@@ -339,7 +341,7 @@ public class CreateEnvironment : MonoBehaviour {
 		int i = Atom.AllAtoms.Count-1;
 		Atom currAtom = Atom.AllAtoms[i];
 		currAtom.gameObject.name = currAtom.GetInstanceID().ToString();
-		Debug.Log(currAtom.GetInstanceID());
+		//Debug.Log(currAtom.GetInstanceID());
 		currAtom.GetComponent<Rigidbody>().freezeRotation = true;
 		
 		float realWidth = myEnvironment.width - 2.0f * myEnvironment.errorBuffer;
