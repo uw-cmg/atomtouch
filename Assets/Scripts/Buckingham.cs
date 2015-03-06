@@ -17,10 +17,10 @@ public class Buckingham : Potential {
 	private float[, ,] preBuckinghamAcceleration;
 	private float[, ,] PreBuckinghamPotential;
 	
-	private float[,] coeff_A = new float[3, 3];
-	private float[,] coeff_B = new float[3, 3];
-	private float[,] coeff_C = new float[3, 3];
-	private float[,] coeff_D = new float[3, 3];
+	private float[,] coeff_A = new float[5, 5];
+	private float[,] coeff_B = new float[5, 5];
+	private float[,] coeff_C = new float[5, 5];
+	private float[,] coeff_D = new float[5, 5];
 	
 	public Buckingham()
 	{
@@ -32,14 +32,14 @@ public class Buckingham : Potential {
 	{
 		// precalculate the LennardJones potential and store it in preLennarJones array.
 		int nR = (int)(cutoff / dR) + 1;
-		preBuckinghamAcceleration = new float[3,3,nR];
-		PreBuckinghamPotential = new float[3,3,nR];
+		preBuckinghamAcceleration = new float[5,5,nR];
+		PreBuckinghamPotential = new float[5,5,nR];
 		
 		//precompute sigma and acceleration coefficient for the Buckingham potential
-		for (int i = 0; i < CreateEnvironment.myEnvironment.molecules.Count; i++)
+		for (int i = 0; i < CreateEnvironment.myEnvironment.molecules.Length; i++)
 		{
 			Atom firstAtom = CreateEnvironment.myEnvironment.molecules[i].GetComponent<Atom>();
-			for (int j = 0; j < CreateEnvironment.myEnvironment.molecules.Count; j++)
+			for (int j = 0; j < CreateEnvironment.myEnvironment.molecules.Length; j++)
 			{
 				Atom secondAtom = CreateEnvironment.myEnvironment.molecules[j].GetComponent<Atom>();
 				

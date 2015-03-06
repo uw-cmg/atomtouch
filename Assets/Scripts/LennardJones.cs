@@ -19,8 +19,8 @@ public class LennardJones : Potential {
 	private float rMinMultiplier = 0.75f;
 	
 	//pre-calculated coefficients and forces for Lennard-Jones potential
-	private static float[,] sigmaValues = new float[3, 3];
-	private float[,] accelCoefficient = new float[3, 3]; // this is the coefficient that is multiplied by the preLennardJones vector to get the acceleration of each atom for each combinations
+	private static float[,] sigmaValues = new float[5, 5];
+	private float[,] accelCoefficient = new float[5, 5]; // this is the coefficient that is multiplied by the preLennardJones vector to get the acceleration of each atom for each combinations
 	private float[] preLennardJonesForce; //This is the pre-calculated value of LennardJones force for some mesh points.
 	private float[] preLennardJonesPotential; //This is the pre-calculated value of LennardJones potential for some mesh points.
 	
@@ -34,10 +34,10 @@ public class LennardJones : Potential {
 	public override void preCompute()
 	{
 		//precompute sigma and acceleration coefficient for the LJ potential
-		for (int i = 0; i < CreateEnvironment.myEnvironment.molecules.Count; i++)
+		for (int i = 0; i < CreateEnvironment.myEnvironment.molecules.Length; i++)
 		{
 			Atom firstAtom = CreateEnvironment.myEnvironment.molecules[i].GetComponent<Atom>();
-			for (int j = 0; j < CreateEnvironment.myEnvironment.molecules.Count; j++)
+			for (int j = 0; j < CreateEnvironment.myEnvironment.molecules.Length; j++)
 			{
 				Atom secondAtom = CreateEnvironment.myEnvironment.molecules[j].GetComponent<Atom>();
 				
