@@ -726,6 +726,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			createEnvironment.depth; //to nm^3
 		//since slider is upside down...
 		float realVol = createEnvironment.width * 0.1f;
+		
 		ChangePlaneMaterial(realVol);
 		changingVol = true;
 	}
