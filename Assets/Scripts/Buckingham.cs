@@ -198,17 +198,12 @@ public class Buckingham : Potential {
 	//This function creates a list of all neighbor list for each atom
 	public override void calculateNeighborList()
 	{
-		//clear the old neighborList
-		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
-		{
-			Atom currAtom = Atom.AllAtoms[i];
-			currAtom.neighborList.Clear();
-		}
 		
 		//create the new neighborList
 		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
 		{
 			Atom firstAtom = Atom.AllAtoms[i];
+			firstAtom.neighborList.Clear();
 			for (int j = i + 1; j < Atom.AllAtoms.Count; j++)
 			{
 				Atom secondAtom = Atom.AllAtoms[j];

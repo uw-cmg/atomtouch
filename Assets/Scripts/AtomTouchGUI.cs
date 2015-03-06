@@ -619,6 +619,13 @@ public class AtomTouchGUI : MonoBehaviour {
 
 	}
 	public void ResetAll(){
+		//reset timescale
+		if(Potential.currentPotential == Potential.potentialType.LennardJones){
+			Time.timeScale = StaticVariables.baseTimeScale;
+		}else if (Potential.currentPotential == Potential.potentialType.Buckingham){
+			Time.timeScale = StaticVariables.baseTimeScaleBuck;
+		}
+		
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		myEnvironment.InitAtoms ();
 		slowMotionFrames = StaticVariables.slowMotionFrames;
@@ -628,6 +635,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		volSliderComponent.value = StaticVariables.volRangeHigh - StaticVariables.volDefault;
 		changingVol = false;
 		changingTemp = false;
+
 	}
 	//for the left panel
 	public void createBondline(){
@@ -726,7 +734,7 @@ public class AtomTouchGUI : MonoBehaviour {
 			createEnvironment.depth; //to nm^3
 		//since slider is upside down...
 		float realVol = createEnvironment.width * 0.1f;
-		
+
 		ChangePlaneMaterial(realVol);
 		changingVol = true;
 	}
@@ -811,12 +819,22 @@ public class AtomTouchGUI : MonoBehaviour {
 	}
 
 	public void ChangeTimeScaleWithTemperature(float oldTemp){
+		if(Potential.currentPotential == Potential.potentialType.LennardJones){
 
-		float ratio = (1f-0.2f)
+			float ratio = (StaticVariables.maxTimeScale-StaticVariables.baseTimeScale)
 						/(StaticVariables.maxTemp - StaticVariables.defaultTemp);
-		float tempChange = StaticVariables.desiredTemperature - StaticVariables.defaultTemp;
-		if(tempChange < 0)return;
-		Time.timeScale = 0.2f + ratio * tempChange;
+			float tempChange = StaticVariables.desiredTemperature - StaticVariables.defaultTemp;
+			if(tempChange < 0)return;
+			Time.timeScale = StaticVariables.baseTimeScale + ratio * tempChange;
+
+		}else if(Potential.currentPotential == Potential.potentialType.Buckingham){
+			float ratio = (StaticVariables.maxTimeScaleBuck-StaticVariables.baseTimeScaleBuck)
+						/(StaticVariables.maxTemp - StaticVariables.defaultTemp);
+			float tempChange = StaticVariables.desiredTemperature - StaticVariables.defaultTemp;
+			if(tempChange < 0)return;
+			Time.timeScale = StaticVariables.baseTimeScaleBuck + ratio * tempChange;
+		}
+		
 
 		//0.003, 0.03 at 300k
 		//0.01, 0.05 at 5000k
