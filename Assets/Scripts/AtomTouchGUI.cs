@@ -102,6 +102,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	public Rigidbody copperPrefab;
 	public Rigidbody goldPrefab;
 	public Rigidbody platinumPrefab;
+	public Rigidbody sodiumPrefab;
+	public Rigidbody chlorinePrefab;
 	
 	//reset button
 	public Texture resetButtonUp;
@@ -614,8 +616,38 @@ public class AtomTouchGUI : MonoBehaviour {
 			
 		}
 		TryEnableAddAtomBtns();
+
+	}
+	public void AddSodiumAtom(){
 		
-	
+		if(Input.mousePosition.x < Screen.width 
+			&& Input.mousePosition.x > 0 && Input.mousePosition.y > 0 
+			&& Input.mousePosition.y < Screen.height){
+			//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
+			CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
+			Vector3 curPosition = new Vector3 (myEnvironment.centerPos.x - myEnvironment.width/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.y - myEnvironment.height/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.z - myEnvironment.depth/2.0f+myEnvironment.errorBuffer);
+			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+			//Instantiate(copperPrefab, curPosition, curRotation);
+			myEnvironment.createAtom(sodiumPrefab);
+			
+		}
+		TryEnableAddAtomBtns();
+
+	}
+	public void AddChlorineAtom(){
+		
+		if(Input.mousePosition.x < Screen.width 
+			&& Input.mousePosition.x > 0 && Input.mousePosition.y > 0 
+			&& Input.mousePosition.y < Screen.height){
+			//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
+			CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
+			Vector3 curPosition = new Vector3 (myEnvironment.centerPos.x - myEnvironment.width/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.y - myEnvironment.height/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.z - myEnvironment.depth/2.0f+myEnvironment.errorBuffer);
+			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+			//Instantiate(copperPrefab, curPosition, curRotation);
+			myEnvironment.createAtom(chlorinePrefab);
+			
+		}
+		TryEnableAddAtomBtns();
 
 	}
 	public void ResetAll(){
