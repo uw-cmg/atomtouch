@@ -12,7 +12,7 @@ GameObject:
   - 135: {fileID: 13500000}
   - 23: {fileID: 2300000}
   - 114: {fileID: 11400000}
-  - 54: {fileID: 5400000}
+  - 54: {fileID: 5420404}
   m_Layer: 8
   m_Name: Atom_CopperPrefab
   m_TagString: Molecule
@@ -63,7 +63,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!54 &5400000
+--- !u!54 &5420404
 Rigidbody:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}

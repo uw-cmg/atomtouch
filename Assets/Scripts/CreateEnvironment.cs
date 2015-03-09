@@ -199,6 +199,8 @@ public class CreateEnvironment : MonoBehaviour {
 			new Vector3(0.0f,height/2.0f, -depth/2.0f), vz);
 	}
 	void Start () {
+		//enable/disable atom buttons based on sim type
+		atomTouchGUI.SetAtomButtons();
 		// pre-compute coefficients used in various types of potentials so that we don't have to calculate them dynamically
 		preCompute ();
 		

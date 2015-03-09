@@ -82,6 +82,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject AddCopperBtn;
 	public GameObject AddGoldBtn;
 	public GameObject AddPlatBtn;
+	public GameObject AddSodiumBtn;
+	public GameObject AddChlorineBtn;
 	//ADD ATOM button text
 	public GameObject copperText;
 	public GameObject goldText;
@@ -587,7 +589,21 @@ public class AtomTouchGUI : MonoBehaviour {
 		}
 		TryEnableAddAtomBtns();
 	}
-
+	public void SetAtomButtons(){
+		if(Potential.currentPotential == Potential.potentialType.LennardJones){
+			AddCopperBtn.SetActive(true);
+			AddGoldBtn.SetActive(true);
+			AddPlatBtn.SetActive(true);
+			AddSodiumBtn.SetActive(false);
+			AddChlorineBtn.SetActive(false);
+		}else if(Potential.currentPotential == Potential.potentialType.Buckingham){
+			AddCopperBtn.SetActive(false);
+			AddGoldBtn.SetActive(false);
+			AddPlatBtn.SetActive(false);
+			AddSodiumBtn.SetActive(true);
+			AddChlorineBtn.SetActive(true);
+		}
+	}
 	public void AddGoldAtom(){
 		
 		if(Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
