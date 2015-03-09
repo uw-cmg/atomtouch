@@ -4,7 +4,7 @@ using System.Collections;
 //public abstract class Potential : MonoBehaviour {
 public abstract class Potential {
 	//this varaible keeps track of the current potential that is being used. (Note: only Lennard-Jones is currently implemented)
-	public static potentialType currentPotential = potentialType.LennardJones;
+	public static potentialType currentPotential = potentialType.Buckingham;
 
 	//Types of potential in the simulation
 	public enum potentialType
