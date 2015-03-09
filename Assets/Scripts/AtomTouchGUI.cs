@@ -713,6 +713,13 @@ public class AtomTouchGUI : MonoBehaviour {
 
 	}
 
+	public void SnapTempToInterval(float stepSize){
+		float rawVal = tempSliderComponent.value;
+		float floor = Mathf.Floor(rawVal / stepSize);
+		if(!Mathf.Approximately(rawVal / stepSize, floor))
+			tempSliderComponent.value = floor * stepSize + stepSize;
+	}
+
 	public void changeTimer(){
 		RawImage ri = timer.GetComponent<RawImage>();
 		if(currentTimeSpeed == StaticVariables.TimeSpeed.Normal){

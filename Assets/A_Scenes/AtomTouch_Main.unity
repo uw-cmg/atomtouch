@@ -95,6 +95,10 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 11427836, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 22427912, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -686,6 +690,42 @@ Prefab:
     - target: {fileID: 127860, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427836, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427836, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427836, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427836, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1960553280}
+    - target: {fileID: 11427836, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ChangeAtomTemperature
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427836, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427836, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SnapTempToInterval
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427836, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427836, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_FloatArgument
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
