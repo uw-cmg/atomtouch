@@ -2121,6 +2121,8 @@ MonoBehaviour:
   copperText: {fileID: 1379719948}
   goldText: {fileID: 1630135964}
   platText: {fileID: 77939248}
+  sodiumText: {fileID: 216181265}
+  chlorineText: {fileID: 1905159861}
   selectAllText: {fileID: 1245746084}
   tempFrontFill: {fileID: 1434891490}
   tempBackFill: {fileID: 1756289552}
@@ -2128,11 +2130,11 @@ MonoBehaviour:
   volFrontFill: {fileID: 0}
   volBackFill: {fileID: 0}
   volHandle: {fileID: 0}
-  copperPrefab: {fileID: 0}
-  goldPrefab: {fileID: 5400000, guid: 17c331a6c34304537ac078ad413c9482, type: 2}
-  platinumPrefab: {fileID: 5400000, guid: 8f78d3d61ec834464b4b7bf898e7ffa1, type: 2}
-  sodiumPrefab: {fileID: 5400000, guid: 45c29c1d5ee153b4297ce6d74fe6064e, type: 2}
-  chlorinePrefab: {fileID: 5400000, guid: 951d303c4fb9bae448746217ae65b51f, type: 2}
+  copperPrefab: {fileID: 100000, guid: f9a8bb58abb1a41bdb6417cf179a4de4, type: 2}
+  goldPrefab: {fileID: 100000, guid: 17c331a6c34304537ac078ad413c9482, type: 2}
+  platinumPrefab: {fileID: 100000, guid: 8f78d3d61ec834464b4b7bf898e7ffa1, type: 2}
+  sodiumPrefab: {fileID: 100000, guid: 45c29c1d5ee153b4297ce6d74fe6064e, type: 2}
+  chlorinePrefab: {fileID: 100000, guid: 951d303c4fb9bae448746217ae65b51f, type: 2}
   resetButtonUp: {fileID: 2800000, guid: 8238c94d957204ce6954e9784c0962af, type: 3}
   resetButtonDown: {fileID: 2800000, guid: d27005519c3414c0e9b0f83a935734c1, type: 3}
   cameraButtonUp: {fileID: 2800000, guid: 9c785519f494648fcbdb474f5622a4ab, type: 3}
@@ -2200,11 +2202,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numMolecules: 100
   molecules:
-  - {fileID: 5420404, guid: f9a8bb58abb1a41bdb6417cf179a4de4, type: 2}
-  - {fileID: 5400000, guid: 17c331a6c34304537ac078ad413c9482, type: 2}
-  - {fileID: 5400000, guid: 8f78d3d61ec834464b4b7bf898e7ffa1, type: 2}
-  - {fileID: 5400000, guid: 45c29c1d5ee153b4297ce6d74fe6064e, type: 2}
-  - {fileID: 5400000, guid: 951d303c4fb9bae448746217ae65b51f, type: 2}
+  - {fileID: 100000, guid: f9a8bb58abb1a41bdb6417cf179a4de4, type: 2}
+  - {fileID: 100000, guid: 17c331a6c34304537ac078ad413c9482, type: 2}
+  - {fileID: 100000, guid: 8f78d3d61ec834464b4b7bf898e7ffa1, type: 2}
+  - {fileID: 100000, guid: 45c29c1d5ee153b4297ce6d74fe6064e, type: 2}
+  - {fileID: 100000, guid: 951d303c4fb9bae448746217ae65b51f, type: 2}
   moleculeToSpawn: 0
   plane: {fileID: 100000, guid: a1841c570b7dc4d6496674b44e1e4f94, type: 2}
   centerPos: {x: 0, y: 0, z: 0}

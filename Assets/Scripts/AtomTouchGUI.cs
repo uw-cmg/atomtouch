@@ -88,6 +88,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject copperText;
 	public GameObject goldText;
 	public GameObject platText;
+	public GameObject sodiumText;
+	public GameObject chlorineText;
 
 	public Text selectAllText;
 	private bool selectedAll;
@@ -101,11 +103,11 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject volHandle;
 
 	//prefabs to spawn
-	public Rigidbody copperPrefab;
-	public Rigidbody goldPrefab;
-	public Rigidbody platinumPrefab;
-	public Rigidbody sodiumPrefab;
-	public Rigidbody chlorinePrefab;
+	public GameObject copperPrefab;
+	public GameObject goldPrefab;
+	public GameObject platinumPrefab;
+	public GameObject sodiumPrefab;
+	public GameObject chlorinePrefab;
 	
 	//reset button
 	public Texture resetButtonUp;
@@ -249,7 +251,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		GUI.Label (new Rect(displayRect.x + 10.0f, displayRect.y + 70.0f, 225, 30), "Gold Atoms: " + goldAtoms);
 		GUI.Label (new Rect(displayRect.x + 10.0f, displayRect.y + 100.0f, 225, 30), "Platinum Atoms: " + platinumAtoms);
 	}
-	
+	/*
 	//this function display the properties that are specific to one specific atom such as its position, velocity, and type
 	void DisplayAtomProperties(Atom currAtom, Rect displayRect){
 		
@@ -283,7 +285,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		DisplayBondProperties (currAtom, displayRect);
 		
 	}
-	
+	*/
 	//this function displays the angles of the bonds to other atoms
 	void DisplayBondProperties(Atom currAtom, Rect displayRect){
 		
@@ -360,7 +362,7 @@ public class AtomTouchGUI : MonoBehaviour {
 				currAtom.selected = false;
 				currAtom.SetSelected(false);
 				
-				int instId = currAtom.gameObject.GetComponent<Rigidbody>().GetInstanceID();
+				int instId = currAtom.gameObject.GetInstanceID();
 				if(currAtom is Copper){
 					Copper.count--;
 					copperCount.GetComponent<Text>().text = "Cu: " + Copper.count;
@@ -559,20 +561,28 @@ public class AtomTouchGUI : MonoBehaviour {
 		AddCopperBtn.GetComponent<Button>().interactable = !tooMuch;
 		AddGoldBtn.GetComponent<Button>().interactable = !tooMuch;
 		AddPlatBtn.GetComponent<Button>().interactable = !tooMuch;
+		AddSodiumBtn.GetComponent<Button>().interactable = !tooMuch;
+		AddChlorineBtn.GetComponent<Button>().interactable = !tooMuch;
 
 		Text cuText = copperText.GetComponent<Text>();
 		Text auText = goldText.GetComponent<Text>();
 		Text ptText = platText.GetComponent<Text>();
+		Text naText = sodiumText.GetComponent<Text>();
+		Text clText = chlorineText.GetComponent<Text>();
 
 		if(tooMuch){
 			cuText.color = StaticVariables.atomDisabledColor;
 			auText.color = StaticVariables.atomDisabledColor;
 			ptText.color = StaticVariables.atomDisabledColor;
+			naText.color = StaticVariables.atomDisabledColor;
+			clText.color = StaticVariables.atomDisabledColor;
 
 		}else{
 			cuText.color = StaticVariables.atomEnabledColor;
 			auText.color = StaticVariables.atomEnabledColor;
 			ptText.color = StaticVariables.atomEnabledColor;
+			naText.color = StaticVariables.atomEnabledColor;
+			clText.color = StaticVariables.atomEnabledColor;
 		}
 			
 	}
@@ -854,6 +864,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		}
 	}
 	//check if all of the atoms are static
+	/*
 	public bool CheckAllAtomsStatic(){
 		for(int i=0;i<Atom.AllAtoms.Count;i++){
 			Atom currentAtom = Atom.AllAtoms[i];
@@ -865,7 +876,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		}
 		return true;
 	}
-
+	*/
 	public void ChangeTimeScaleWithTemperature(float oldTemp){
 		if(Potential.currentPotential == Potential.potentialType.LennardJones){
 
@@ -906,9 +917,9 @@ public class AtomTouchGUI : MonoBehaviour {
 			return;
 		}else if(Mathf.Approximately(oldTemperaure, 0.0f)){
 			//if all atoms are static, kick all
-			if(CheckAllAtomsStatic()){
-				AllAtomsKick();
-			}
+			//if(CheckAllAtomsStatic()){
+			//	AllAtomsKick();
+			//}
 		}
 		changingTemp = true;
 		

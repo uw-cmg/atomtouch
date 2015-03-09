@@ -22,7 +22,7 @@ using System;
 public class CreateEnvironment : MonoBehaviour {
 	
 	public int numMolecules = 10;
-	public Rigidbody[] molecules = new Rigidbody[5];
+	public GameObject[] molecules = new GameObject[5];
 	public int moleculeToSpawn = 0;
 	public GameObject plane;
 	public Vector3 centerPos;
@@ -324,7 +324,7 @@ public class CreateEnvironment : MonoBehaviour {
 	
 	
 	// this method creates a new atom from the type of the preFab and checks the position to have a far enough distance from other atoms
-	public void createAtom(Rigidbody preFab)
+	public void createAtom(GameObject preFab)
 	{
 		int preFabID = preFab.GetInstanceID();
 		if(preFabID == atomTouchGUI.copperPrefab.GetInstanceID()){
@@ -345,7 +345,7 @@ public class CreateEnvironment : MonoBehaviour {
 		Atom currAtom = Atom.AllAtoms[i];
 		currAtom.gameObject.name = currAtom.GetInstanceID().ToString();
 		//Debug.Log(currAtom.GetInstanceID());
-		currAtom.GetComponent<Rigidbody>().freezeRotation = true;
+//		currAtom.GetComponent<Rigidbody>().freezeRotation = true;
 		
 		float realWidth = myEnvironment.width - 2.0f * myEnvironment.errorBuffer;
 		float realHeight = myEnvironment.height - 2.0f * myEnvironment.errorBuffer;
