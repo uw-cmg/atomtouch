@@ -353,12 +353,11 @@ public class AtomTouchGUI : MonoBehaviour {
 
 
 	public void DeleteSelectedAtoms(){
-		Debug.Log("DeleteSelectedAtoms called");
 		for(int i=Atom.AllAtoms.Count-1; i >= 0;i--){
 			Atom currAtom = Atom.AllAtoms[i];
 			if(currAtom.selected){
 				//delete this atom from the list
-				Debug.Log("deleting atom: " + i);
+//				Debug.Log("deleting atom: " + i);
 				currAtom.selected = false;
 				currAtom.SetSelected(false);
 				

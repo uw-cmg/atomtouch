@@ -36,7 +36,7 @@ public class StaticVariables {
 	public static Color atomEnabledColor = new Color(23/255.0f, 160/255.0f,242/255.0f, 1.0f);
 	public static Color atomDisabledColor = new Color(80/255.0f, 80/255.0f, 80/255.0f, 90/255.0f);
 	//scale timeScale with temp
-	public static float maxTimeScale = 1f;
+	public static float maxTimeScale = 0.8f;
 	public static float baseTimeScale = 0.1f;//when temp = 300k
 
 	public static float maxTimeScaleBuck = 0.5f;
