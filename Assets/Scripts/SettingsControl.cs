@@ -36,20 +36,22 @@ public class SettingsControl : MonoBehaviour {
 	void Awake(){
 		mouseExitsSettingsPanel = true;
 		gamePaused = false;
-		currentPotentialType = Potential.potentialType.LennardJones;
+		
 		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
 		nmToggle = nmOn.GetComponent<Toggle>();
 		simTypeChanged = false;
 	}
-	
+	void Start(){
+		currentPotentialType = Potential.currentPotential;
+	}
 	
 	public void ResumeGame(){
 		//Debug.Log("mio");
 		settingsCanvas.SetActive(false);
 		hudCanvas.SetActive(true);
 		//resume
-		Time.timeScale = 1.0f;
-
+		//Time.timeScale = 1.0f;
+		atomTouchGUI.ChangeAtomTemperature();
 		//if sim type is changed, reset
 		if(simTypeChanged){
 			CreateEnvironment.myEnvironment.preCompute();

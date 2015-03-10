@@ -651,12 +651,6 @@ public class AtomTouchGUI : MonoBehaviour {
 
 	}
 	public void ResetAll(){
-		//reset timescale
-		if(Potential.currentPotential == Potential.potentialType.LennardJones){
-			Time.timeScale = StaticVariables.baseTimeScale;
-		}else if (Potential.currentPotential == Potential.potentialType.Buckingham){
-			Time.timeScale = StaticVariables.baseTimeScaleBuck;
-		}
 		
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		myEnvironment.InitAtoms ();
@@ -665,6 +659,12 @@ public class AtomTouchGUI : MonoBehaviour {
 		//reset temp and vol
 		tempSliderComponent.value = StaticVariables.tempRangeHigh - StaticVariables.tempDefault;
 		volSliderComponent.value = StaticVariables.volRangeHigh - StaticVariables.volDefault;
+
+		SnapTempToInterval(10.0f);
+		SnapVolumeToInterval(0.5f);
+
+		//ChangeTimeScaleWithTemperature(oldTemperaure);
+		
 		changingVol = false;
 		changingTemp = false;
 	}
@@ -676,6 +676,13 @@ public class AtomTouchGUI : MonoBehaviour {
 		StaticVariables.drawBondLines = !StaticVariables.drawBondLines;
 	}
 
+	public void SnapTempToInterval(float stepSize){
+		float rawVal = tempSliderComponent.value;
+		float floor = Mathf.Floor(rawVal / stepSize);
+		if(!Mathf.Approximately(rawVal / stepSize, floor))
+			tempSliderComponent.value = floor * stepSize + stepSize;
+
+	}
 	//for volume slider
 	//range: 1.5 - 4.5 nm 
 	//step size: 0.5
