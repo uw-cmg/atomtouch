@@ -692,7 +692,6 @@ public class AtomTouchGUI : MonoBehaviour {
 		volSliderComponent.value = StaticVariables.volRangeHigh - StaticVariables.volDefault;
 		changingVol = false;
 		changingTemp = false;
-
 	}
 	//for the left panel
 	public void createBondline(){
