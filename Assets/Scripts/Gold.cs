@@ -90,7 +90,8 @@ public class Gold : Atom
 		//make the atom its original color to start
 		SetSelected (false);
 		//scale the atom according to sigma
-		gameObject.transform.localScale = new Vector3(sigma * .5f, sigma * .5f, sigma * .5f);
+		//gameObject.transform.localScale = new Vector3(sigma * .5f, sigma * .5f, sigma * .5f);
+		gameObject.transform.localScale = new Vector3(1.35f, 1.35f, 1.35f);
 	}
 }
 

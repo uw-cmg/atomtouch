@@ -126,5 +126,6 @@ public class SettingsControl : MonoBehaviour {
 			}
 			currentPotentialType = Potential.potentialType.Buckingham;
 		}
+		atomTouchGUI.SetAtomBtnsVisibility();
 	}
 }

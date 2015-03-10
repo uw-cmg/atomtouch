@@ -82,10 +82,14 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject AddCopperBtn;
 	public GameObject AddGoldBtn;
 	public GameObject AddPlatBtn;
+	public GameObject AddSodiumBtn;
+	public GameObject AddChlorineBtn;
 	//ADD ATOM button text
 	public GameObject copperText;
 	public GameObject goldText;
 	public GameObject platText;
+	public GameObject sodiumText;
+	public GameObject chlorineText;
 
 	public Text selectAllText;
 	private bool selectedAll;
@@ -551,26 +555,50 @@ public class AtomTouchGUI : MonoBehaviour {
 		}
 
 	}
+
+	public void SetAtomBtnsVisibility(){
+		if(Potential.currentPotential == Potential.potentialType.Buckingham){
+			AddCopperBtn.SetActive(false);
+			AddGoldBtn.SetActive(false);
+			AddPlatBtn.SetActive(false);
+			AddSodiumBtn.SetActive(true);
+			AddChlorineBtn.SetActive(true);
+		}else if(Potential.currentPotential == Potential.potentialType.LennardJones){
+			AddCopperBtn.SetActive(true);
+			AddGoldBtn.SetActive(true);
+			AddPlatBtn.SetActive(true);
+			AddSodiumBtn.SetActive(false);
+			AddChlorineBtn.SetActive(false);
+		}
+	}
 	public void TryEnableAddAtomBtns(){
 		bool tooMuch = Atom.AllAtoms.Count >= StaticVariables.maxAtoms;
 		
 		AddCopperBtn.GetComponent<Button>().interactable = !tooMuch;
 		AddGoldBtn.GetComponent<Button>().interactable = !tooMuch;
 		AddPlatBtn.GetComponent<Button>().interactable = !tooMuch;
+		AddSodiumBtn.GetComponent<Button>().interactable = !tooMuch;
+		AddChlorineBtn.GetComponent<Button>().interactable = !tooMuch;
 
 		Text cuText = copperText.GetComponent<Text>();
 		Text auText = goldText.GetComponent<Text>();
 		Text ptText = platText.GetComponent<Text>();
+		Text naText = sodiumText.GetComponent<Text>();
+		Text clText = chlorineText.GetComponent<Text>();
 
 		if(tooMuch){
 			cuText.color = StaticVariables.atomDisabledColor;
 			auText.color = StaticVariables.atomDisabledColor;
 			ptText.color = StaticVariables.atomDisabledColor;
+			naText.color = StaticVariables.atomDisabledColor;
+			clText.color = StaticVariables.atomDisabledColor;
 
 		}else{
 			cuText.color = StaticVariables.atomEnabledColor;
 			auText.color = StaticVariables.atomEnabledColor;
 			ptText.color = StaticVariables.atomEnabledColor;
+			naText.color = StaticVariables.atomEnabledColor;
+			clText.color = StaticVariables.atomEnabledColor;
 		}
 			
 	}
