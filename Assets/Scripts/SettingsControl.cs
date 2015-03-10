@@ -36,7 +36,7 @@ public class SettingsControl : MonoBehaviour {
 	void Awake(){
 		mouseExitsSettingsPanel = true;
 		gamePaused = false;
-		currentPotentialType = Potential.potentialType.Buckingham;
+		currentPotentialType = Potential.potentialType.LennardJones;
 		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
 		nmToggle = nmOn.GetComponent<Toggle>();
 		simTypeChanged = false;
@@ -124,6 +124,5 @@ public class SettingsControl : MonoBehaviour {
 			}
 			currentPotentialType = Potential.potentialType.Buckingham;
 		}
-		atomTouchGUI.SetAtomButtons();
 	}
 }

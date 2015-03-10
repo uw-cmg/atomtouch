@@ -1,0 +1,7 @@
+temperature=400
+volume=1000
+time=normal
+potential=buckingham
+x,y,z,vx,vy,vz,atomID
+-1,0,0,0,0,0,4
++1,0,0,0,0,0,3

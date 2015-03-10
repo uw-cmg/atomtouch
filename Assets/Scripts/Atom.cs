@@ -307,7 +307,7 @@ public abstract class Atom : MonoBehaviour
 			for(int i = 0; i < AllAtoms.Count; i++){
 				Atom currAtom = AllAtoms[i];
 				if(currAtom.selected){
-					//currAtom.GetComponent<Rigidbody>().isKinematic = true;
+					currAtom.GetComponent<Rigidbody>().isKinematic = true;
 					Vector3 pointOnScreen = Camera.main.WorldToScreenPoint(currAtom.transform.position);
 					//the -15.0f here is for moving the atom above your finger
 					Vector3 atomOffset = currAtom.transform.position - Camera.main.ScreenToWorldPoint(
@@ -348,7 +348,7 @@ public abstract class Atom : MonoBehaviour
 			for(int i = 0; i < AllAtoms.Count; i++){
 				Atom currAtom = AllAtoms[i];
 				if(currAtom.selected){
-					//currAtom.GetComponent<Rigidbody>().isKinematic = true;
+					currAtom.GetComponent<Rigidbody>().isKinematic = true;
 					Vector3 pointOnScreen = Camera.main.WorldToScreenPoint(currAtom.transform.position);
 					//the -15.0 here is for moving the atom above your mouse
 					Vector3 atomOffset = currAtom.transform.position - Camera.main.ScreenToWorldPoint(
@@ -368,7 +368,7 @@ public abstract class Atom : MonoBehaviour
 		if (Time.realtimeSinceStartup - dragStartTime > 0.1f) {
 			dragCalled = true;
 			ApplyTransparency();
-//			GetComponent<Rigidbody>().isKinematic = true;
+			GetComponent<Rigidbody>().isKinematic = true;
 			if(!selected){
 				//this is for one atom
 				Vector3 diffVector 
@@ -445,7 +445,7 @@ public abstract class Atom : MonoBehaviour
 				dragCalled = true;
 				Quaternion cameraRotation = Camera.main.transform.rotation;
 				ApplyTransparency();
-//				GetComponent<Rigidbody>().isKinematic = true;
+				GetComponent<Rigidbody>().isKinematic = true;
 				
 				if(!selected){
 					//this is for one atom
@@ -541,12 +541,12 @@ public abstract class Atom : MonoBehaviour
 			//if the user only tapped the atom, this is executed
 			selected = !selected;
 			SetSelected(selected);
-//			GetComponent<Rigidbody>().isKinematic = false;
+			GetComponent<Rigidbody>().isKinematic = false;
 		}
 		else{
 			if(!selected){
 				//this is for one atom
-				//GetComponent<Rigidbody>().isKinematic = false;
+				GetComponent<Rigidbody>().isKinematic = false;
 				
 				Quaternion cameraRotation = Camera.main.transform.rotation;
 				Vector3 direction = cameraRotation * (new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - new Vector3(lastTouchPosition.x, lastTouchPosition.y, 0.0f));
@@ -594,12 +594,12 @@ public abstract class Atom : MonoBehaviour
 				selected = !selected;
 				SetSelected(selected);
 
-//				GetComponent<Rigidbody>().isKinematic = false;
+				GetComponent<Rigidbody>().isKinematic = false;
 			}
 			else{
 				if(!selected){
 					//this is for one atom
-					//GetComponent<Rigidbody>().isKinematic = false;
+					GetComponent<Rigidbody>().isKinematic = false;
 					
 					Quaternion cameraRotation = Camera.main.transform.rotation;
 					Vector2 direction = cameraRotation * (Input.mousePosition - lastMousePosition);
@@ -612,7 +612,7 @@ public abstract class Atom : MonoBehaviour
 					for(int i = 0; i < AllAtoms.Count; i++){
 						Atom currAtom = AllAtoms[i];
 						if(currAtom.selected){
-//							currAtom.GetComponent<Rigidbody>().isKinematic = false;
+							currAtom.GetComponent<Rigidbody>().isKinematic = false;
 							currAtom.held = false;
 							
 							Quaternion cameraRotation = Camera.main.transform.rotation;

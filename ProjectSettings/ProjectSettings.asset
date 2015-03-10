@@ -5,14 +5,14 @@ PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 6
   AndroidProfiler: 0
-  defaultScreenOrientation: 3
+  defaultScreenOrientation: 4
   targetDevice: 2
   targetGlesGraphics: 1
-  targetIOSGraphics: 2
+  targetIOSGraphics: -1
   targetResolution: 0
   accelerometerFrequency: 60
-  companyName: Field Day Lab
-  productName: AtomTouch:3
+  companyName: DefaultCompany
+  productName: atomtouch
   cloudProjectId: 
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
@@ -46,7 +46,7 @@ PlayerSettings:
   Prepare IOS For Recording: 0
   submitAnalytics: 1
   usePlayerLog: 1
-  bakeCollisionMeshes: 1
+  bakeCollisionMeshes: 0
   forceSingleInstance: 0
   resizableWindow: 0
   useMacAppStoreValidation: 0
@@ -74,8 +74,8 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleIdentifier: com.fieldday.atomtouch
-  bundleVersion: 1.2.5
+  bundleIdentifier: com.Company.ProductName
+  bundleVersion: 1.0
   preloadedAssets: []
   metroEnableIndependentInputSource: 0
   metroEnableLowLatencyPresentationAPI: 0
@@ -87,13 +87,13 @@ PlayerSettings:
   aotOptions: 
   apiCompatibilityLevel: 2
   iPhoneStrippingLevel: 0
-  iPhoneScriptCallOptimization: 1
+  iPhoneScriptCallOptimization: 0
   ForceInternetPermission: 0
   ForceSDCardPermission: 0
   CreateWallpaper: 0
   APKExpansionFiles: 0
-  preloadShaders: 1
-  StripUnusedMeshComponents: 1
+  preloadShaders: 0
+  StripUnusedMeshComponents: 0
   iPhoneSdkVersion: 988
   iPhoneTargetOSVersion: 22
   uIPrerenderedIcon: 0
@@ -384,7 +384,7 @@ PlayerSettings:
   WebGL::exceptionSupport: 0
   WebGL::memorySize: 256
   iOS::Architecture: 2
-  iOS::ScriptingBackend: 1
+  iOS::ScriptingBackend: 0
   boolPropertyNames:
   - WebGL::dataCaching
   WebGL::dataCaching: 0

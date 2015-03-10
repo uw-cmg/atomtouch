@@ -34,7 +34,10 @@ public class Buckingham : Potential {
 		int nR = (int)(cutoff / dR) + 1;
 		preBuckinghamAcceleration = new float[5,5,nR];
 		PreBuckinghamPotential = new float[5,5,nR];
-		
+
+		//float time1 = Time.realtimeSinceStartup; //for debugging purposes
+
+
 		//precompute sigma and acceleration coefficient for the Buckingham potential
 		for (int i = 0; i < CreateEnvironment.myEnvironment.molecules.Length; i++)
 		{
@@ -42,29 +45,47 @@ public class Buckingham : Potential {
 			for (int j = 0; j < CreateEnvironment.myEnvironment.molecules.Length; j++)
 			{
 				Atom secondAtom = CreateEnvironment.myEnvironment.molecules[j].GetComponent<Atom>();
-				
-				float currentA = Mathf.Sqrt(firstAtom.buck_A * secondAtom.buck_A);
-				coeff_A[firstAtom.atomID, secondAtom.atomID] = currentA;
-				
-				float currentB = Mathf.Sqrt(firstAtom.buck_B * secondAtom.buck_B);
-				coeff_B[firstAtom.atomID, secondAtom.atomID] = currentB;
-				
-				float currentC = Mathf.Sqrt(firstAtom.buck_C * secondAtom.buck_C);
-				coeff_C[firstAtom.atomID, secondAtom.atomID] = currentC;
-				
-				float currentD = Mathf.Sqrt(firstAtom.buck_D * secondAtom.buck_D);
-				coeff_D[firstAtom.atomID, secondAtom.atomID] = currentD;
-				
-				for (int iR = 0; iR < nR; iR++)
+
+				if((firstAtom.atomID > 2) && (secondAtom.atomID > 2))
 				{
-					float distance = (float)iR * dR;
-					if (distance < 1.1f)
-						distance = 1.1f;
-					preBuckinghamAcceleration[firstAtom.atomID,secondAtom.atomID,iR] = calcAcceleration(distance,firstAtom,secondAtom);
-					PreBuckinghamPotential[firstAtom.atomID, secondAtom.atomID, iR] = calcPotential(distance, firstAtom, secondAtom);
+					
+					float currentA = Mathf.Sqrt(firstAtom.buck_A * secondAtom.buck_A);
+					coeff_A[firstAtom.atomID, secondAtom.atomID] = currentA;
+					
+					float currentB = Mathf.Sqrt(firstAtom.buck_B * secondAtom.buck_B);
+					coeff_B[firstAtom.atomID, secondAtom.atomID] = currentB;
+					
+					float currentC = Mathf.Sqrt(firstAtom.buck_C * secondAtom.buck_C);
+					coeff_C[firstAtom.atomID, secondAtom.atomID] = currentC;
+					
+					float currentD = Mathf.Sqrt(firstAtom.buck_D * secondAtom.buck_D);
+					coeff_D[firstAtom.atomID, secondAtom.atomID] = currentD;
+					
+					for (int iR = 0; iR < nR; iR++)
+					{
+						float distance = (float)iR * dR;
+						if (distance < 1.1f)
+							distance = 1.1f;
+						preBuckinghamAcceleration[firstAtom.atomID,secondAtom.atomID,iR] = calcAcceleration(distance,firstAtom,secondAtom);
+						PreBuckinghamPotential[firstAtom.atomID, secondAtom.atomID, iR] = calcPotential(distance, firstAtom, secondAtom);
+					}
 				}
 			}
 		}
+
+		//InputOutput.WritePotential (PreBuckinghamPotential);
+		//InputOutput.WriteForce (preBuckinghamAcceleration);
+
+
+
+		//InputOutput.ReadPotential (PreBuckinghamPotential);
+		//InputOutput.ReadForce (preBuckinghamAcceleration);
+
+
+		//float time2 = Time.realtimeSinceStartup; //for debugging purposes
+		//float time3 = time2 - time1; //for debugging purposes
+		//Debug.Log ("Time spent calculating Buckingham = " + time3); //for debugging purposes
+
 	}
 	
 	//the function returns the LennarJones force on the atom given the list of the atoms that are within range of it

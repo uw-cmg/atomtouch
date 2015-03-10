@@ -82,14 +82,10 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject AddCopperBtn;
 	public GameObject AddGoldBtn;
 	public GameObject AddPlatBtn;
-	public GameObject AddSodiumBtn;
-	public GameObject AddChlorineBtn;
 	//ADD ATOM button text
 	public GameObject copperText;
 	public GameObject goldText;
 	public GameObject platText;
-	public GameObject sodiumText;
-	public GameObject chlorineText;
 
 	public Text selectAllText;
 	private bool selectedAll;
@@ -103,11 +99,11 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject volHandle;
 
 	//prefabs to spawn
-	public GameObject copperPrefab;
-	public GameObject goldPrefab;
-	public GameObject platinumPrefab;
-	public GameObject sodiumPrefab;
-	public GameObject chlorinePrefab;
+	public Rigidbody copperPrefab;
+	public Rigidbody goldPrefab;
+	public Rigidbody platinumPrefab;
+	public Rigidbody sodiumPrefab;
+	public Rigidbody chlorinePrefab;
 	
 	//reset button
 	public Texture resetButtonUp;
@@ -251,7 +247,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		GUI.Label (new Rect(displayRect.x + 10.0f, displayRect.y + 70.0f, 225, 30), "Gold Atoms: " + goldAtoms);
 		GUI.Label (new Rect(displayRect.x + 10.0f, displayRect.y + 100.0f, 225, 30), "Platinum Atoms: " + platinumAtoms);
 	}
-	/*
+	
 	//this function display the properties that are specific to one specific atom such as its position, velocity, and type
 	void DisplayAtomProperties(Atom currAtom, Rect displayRect){
 		
@@ -285,7 +281,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		DisplayBondProperties (currAtom, displayRect);
 		
 	}
-	*/
+	
 	//this function displays the angles of the bonds to other atoms
 	void DisplayBondProperties(Atom currAtom, Rect displayRect){
 		
@@ -353,15 +349,16 @@ public class AtomTouchGUI : MonoBehaviour {
 
 
 	public void DeleteSelectedAtoms(){
+		Debug.Log("DeleteSelectedAtoms called");
 		for(int i=Atom.AllAtoms.Count-1; i >= 0;i--){
 			Atom currAtom = Atom.AllAtoms[i];
 			if(currAtom.selected){
 				//delete this atom from the list
-//				Debug.Log("deleting atom: " + i);
+				Debug.Log("deleting atom: " + i);
 				currAtom.selected = false;
 				currAtom.SetSelected(false);
 				
-				int instId = currAtom.gameObject.GetInstanceID();
+				int instId = currAtom.gameObject.GetComponent<Rigidbody>().GetInstanceID();
 				if(currAtom is Copper){
 					Copper.count--;
 					copperCount.GetComponent<Text>().text = "Cu: " + Copper.count;
@@ -560,28 +557,20 @@ public class AtomTouchGUI : MonoBehaviour {
 		AddCopperBtn.GetComponent<Button>().interactable = !tooMuch;
 		AddGoldBtn.GetComponent<Button>().interactable = !tooMuch;
 		AddPlatBtn.GetComponent<Button>().interactable = !tooMuch;
-		AddSodiumBtn.GetComponent<Button>().interactable = !tooMuch;
-		AddChlorineBtn.GetComponent<Button>().interactable = !tooMuch;
 
 		Text cuText = copperText.GetComponent<Text>();
 		Text auText = goldText.GetComponent<Text>();
 		Text ptText = platText.GetComponent<Text>();
-		Text naText = sodiumText.GetComponent<Text>();
-		Text clText = chlorineText.GetComponent<Text>();
 
 		if(tooMuch){
 			cuText.color = StaticVariables.atomDisabledColor;
 			auText.color = StaticVariables.atomDisabledColor;
 			ptText.color = StaticVariables.atomDisabledColor;
-			naText.color = StaticVariables.atomDisabledColor;
-			clText.color = StaticVariables.atomDisabledColor;
 
 		}else{
 			cuText.color = StaticVariables.atomEnabledColor;
 			auText.color = StaticVariables.atomEnabledColor;
 			ptText.color = StaticVariables.atomEnabledColor;
-			naText.color = StaticVariables.atomEnabledColor;
-			clText.color = StaticVariables.atomEnabledColor;
 		}
 			
 	}
@@ -598,21 +587,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		}
 		TryEnableAddAtomBtns();
 	}
-	public void SetAtomButtons(){
-		if(Potential.currentPotential == Potential.potentialType.LennardJones){
-			AddCopperBtn.SetActive(true);
-			AddGoldBtn.SetActive(true);
-			AddPlatBtn.SetActive(true);
-			AddSodiumBtn.SetActive(false);
-			AddChlorineBtn.SetActive(false);
-		}else if(Potential.currentPotential == Potential.potentialType.Buckingham){
-			AddCopperBtn.SetActive(false);
-			AddGoldBtn.SetActive(false);
-			AddPlatBtn.SetActive(false);
-			AddSodiumBtn.SetActive(true);
-			AddChlorineBtn.SetActive(true);
-		}
-	}
+
 	public void AddGoldAtom(){
 		
 		if(Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
@@ -710,13 +685,6 @@ public class AtomTouchGUI : MonoBehaviour {
 		if(!Mathf.Approximately(rawVal / stepSize, floor))
 			volSliderComponent.value = floor * stepSize + stepSize;
 
-	}
-
-	public void SnapTempToInterval(float stepSize){
-		float rawVal = tempSliderComponent.value;
-		float floor = Mathf.Floor(rawVal / stepSize);
-		if(!Mathf.Approximately(rawVal / stepSize, floor))
-			tempSliderComponent.value = floor * stepSize + stepSize;
 	}
 
 	public void changeTimer(){
@@ -869,7 +837,6 @@ public class AtomTouchGUI : MonoBehaviour {
 		}
 	}
 	//check if all of the atoms are static
-	/*
 	public bool CheckAllAtomsStatic(){
 		for(int i=0;i<Atom.AllAtoms.Count;i++){
 			Atom currentAtom = Atom.AllAtoms[i];
@@ -881,7 +848,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		}
 		return true;
 	}
-	*/
+
 	public void ChangeTimeScaleWithTemperature(float oldTemp){
 		if(Potential.currentPotential == Potential.potentialType.LennardJones){
 
@@ -922,9 +889,9 @@ public class AtomTouchGUI : MonoBehaviour {
 			return;
 		}else if(Mathf.Approximately(oldTemperaure, 0.0f)){
 			//if all atoms are static, kick all
-			//if(CheckAllAtomsStatic()){
-			//	AllAtomsKick();
-			//}
+			if(CheckAllAtomsStatic()){
+				AllAtomsKick();
+			}
 		}
 		changingTemp = true;
 		

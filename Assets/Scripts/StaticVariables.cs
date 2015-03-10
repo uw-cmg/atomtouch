@@ -32,14 +32,14 @@ public class StaticVariables {
 	public static float MDTimestepSqr = MDTimestep * MDTimestep;
 	public static float MDTimestepInPicosecond = MDTimestep / Mathf.Pow (10, -12);
 
-	public static int maxAtoms = 100; //max number of atoms allowed
+	public static int maxAtoms = 70; //max number of atoms allowed
 	public static Color atomEnabledColor = new Color(23/255.0f, 160/255.0f,242/255.0f, 1.0f);
 	public static Color atomDisabledColor = new Color(80/255.0f, 80/255.0f, 80/255.0f, 90/255.0f);
 	//scale timeScale with temp
-	public static float maxTimeScale = 0.8f;
+	public static float maxTimeScale = 1f;
 	public static float baseTimeScale = 0.1f;//when temp = 300k
 
-	public static float maxTimeScaleBuck = 0.4f;
+	public static float maxTimeScaleBuck = 0.5f;
 	public static float baseTimeScaleBuck = 0.1f;
 	
 	public static float clockTimeStart = 0.0f;

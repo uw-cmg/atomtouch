@@ -22,7 +22,7 @@ using System;
 public class CreateEnvironment : MonoBehaviour {
 	
 	public int numMolecules = 10;
-	public GameObject[] molecules = new GameObject[5];
+	public Rigidbody[] molecules = new Rigidbody[5];
 	public int moleculeToSpawn = 0;
 	public GameObject plane;
 	public Vector3 centerPos;
@@ -199,8 +199,6 @@ public class CreateEnvironment : MonoBehaviour {
 			new Vector3(0.0f,height/2.0f, -depth/2.0f), vz);
 	}
 	void Start () {
-		//enable/disable atom buttons based on sim type
-		atomTouchGUI.SetAtomButtons();
 		// pre-compute coefficients used in various types of potentials so that we don't have to calculate them dynamically
 		preCompute ();
 		
@@ -293,10 +291,95 @@ public class CreateEnvironment : MonoBehaviour {
 			Atom.UnregisterAtom(currAtom);
 			Destroy (currAtom.gameObject);
 		}
+
+		//CreatePresetConfiguration ();
+		CreateRandomConfiguration();
+
+		AtomTouchGUI.myAtomTouchGUI.TryEnableAddAtomBtns();
+	}
+
+	private void CreatePresetConfiguration()
+	{
+		//string allLines;
+		string [] lineArray;
+		string[] textArray;
+		string dummyString;
 		
+		lineArray = System.IO.File.ReadAllLines ("PresetAtomConfigurations/dimer.txt");
+		int numAtoms = lineArray.Length-5;
+		
+		textArray = lineArray[0].Split('=');
+		StaticVariables.desiredTemperature = float.Parse(textArray[1]);
+		
+		
+		textArray = lineArray[1].Split('=');
+		myEnvironment.volume = float.Parse(textArray[1]);
+		
+		textArray = lineArray[2].Split('=');
+		textArray [1] = textArray [1].ToLower();
+		if (textArray [1].Equals("stopped"))
+			AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
+		if (textArray [1].Equals("slowmotion"))
+			AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
+		if (textArray [1].Equals("normal"))
+			AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
+		
+		
+		textArray = lineArray[3].Split('=');
+		textArray [1] = textArray [1].ToLower();
+		if (textArray [1].Equals("buckingham"))
+			Potential.currentPotential = Potential.potentialType.Buckingham;
+		if (textArray [1].Equals("lennardjones"))
+			Potential.currentPotential = Potential.potentialType.LennardJones;
+		
+		// skip the fifth line (index=4)
+		
+		for (int iLine=5; iLine < lineArray.Length; iLine++)
+		{
+			textArray = lineArray[iLine].Split(',');
+			Vector3 pos = new Vector3(float.Parse(textArray[0]), float.Parse(textArray[1]), float.Parse(textArray[2]));
+			Vector3 vel = new Vector3(float.Parse(textArray[3]), float.Parse(textArray[4]), float.Parse(textArray[5]));
+			
+			int atomID = int.Parse(textArray[6]);
+			
+			Rigidbody preFab = molecules[atomID];
+			
+			int preFabID = preFab.GetInstanceID();
+			if(preFabID == atomTouchGUI.copperPrefab.GetInstanceID()){
+				Copper.count++;
+				atomTouchGUI.copperCount.GetComponent<Text>().text = "Cu: " + Copper.count;
+			}else if(preFabID == atomTouchGUI.goldPrefab.GetInstanceID()){
+				Gold.count++;
+				atomTouchGUI.goldCount.GetComponent<Text>().text = "Au: " + Gold.count;
+			}else if(preFabID == atomTouchGUI.platinumPrefab.GetInstanceID()){
+				Platinum.count++;
+				atomTouchGUI.platinumCount.GetComponent<Text>().text = "Pt: " + Platinum.count;
+			}
+			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+			Instantiate(preFab, myEnvironment.centerPos, curRotation);
+			
+			int i = Atom.AllAtoms.Count-1;
+			Atom currAtom = Atom.AllAtoms[i];
+			currAtom.gameObject.name = currAtom.GetInstanceID().ToString();
+			currAtom.GetComponent<Rigidbody>().freezeRotation = true;
+			
+			currAtom.position =  pos;
+			currAtom.transform.position = currAtom.position;
+			//kick it
+			currAtom.velocity = vel;
+			Potential.myPotential.calculateVerletRadius (currAtom);
+		}
+		
+		preCompute ();
+		
+	}
+
+	private void CreateRandomConfiguration()
+	{
 		//initialize the new atoms
 		if (Potential.currentPotential == Potential.potentialType.LennardJones)
 		{
+			Debug.Log(molecules[0].gameObject.name);
 			for (int i = 0; i < numMolecules; i++)
 			{
 				createAtom (molecules [0]);
@@ -315,15 +398,11 @@ public class CreateEnvironment : MonoBehaviour {
 				createAtom (molecules [4]);
 			}
 		}
-		
-		//AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		atomTouchGUI.AllAtomsKick();
-		AtomTouchGUI.myAtomTouchGUI.TryEnableAddAtomBtns();
 	}
 	
-	
 	// this method creates a new atom from the type of the preFab and checks the position to have a far enough distance from other atoms
-	public void createAtom(GameObject preFab)
+	public void createAtom(Rigidbody preFab)
 	{
 		int preFabID = preFab.GetInstanceID();
 		if(preFabID == atomTouchGUI.copperPrefab.GetInstanceID()){
@@ -344,7 +423,7 @@ public class CreateEnvironment : MonoBehaviour {
 		Atom currAtom = Atom.AllAtoms[i];
 		currAtom.gameObject.name = currAtom.GetInstanceID().ToString();
 		//Debug.Log(currAtom.GetInstanceID());
-//		currAtom.GetComponent<Rigidbody>().freezeRotation = true;
+		currAtom.GetComponent<Rigidbody>().freezeRotation = true;
 		
 		float realWidth = myEnvironment.width - 2.0f * myEnvironment.errorBuffer;
 		float realHeight = myEnvironment.height - 2.0f * myEnvironment.errorBuffer;
@@ -392,5 +471,4 @@ public class CreateEnvironment : MonoBehaviour {
 		}
 		return proximityFlag;
 	}
-	
 }
