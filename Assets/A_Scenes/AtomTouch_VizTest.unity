@@ -1922,6 +1922,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: .25
   turnSpeed: .699999988
+  rotateSensitivity: 10
   gameControl: {fileID: 1809991220}
   sliderPanel: {fileID: 90571006}
   hudCanvas: {fileID: 1707300351}
@@ -1971,9 +1972,13 @@ MonoBehaviour:
   AddCopperBtn: {fileID: 1316912550}
   AddGoldBtn: {fileID: 659692368}
   AddPlatBtn: {fileID: 236365817}
+  AddSodiumBtn: {fileID: 0}
+  AddChlorineBtn: {fileID: 0}
   copperText: {fileID: 1379719948}
   goldText: {fileID: 1630135964}
   platText: {fileID: 77939248}
+  sodiumText: {fileID: 0}
+  chlorineText: {fileID: 0}
   selectAllText: {fileID: 1245746084}
   tempFrontFill: {fileID: 1434891490}
   tempBackFill: {fileID: 1756289552}
