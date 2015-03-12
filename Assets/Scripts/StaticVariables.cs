@@ -39,8 +39,8 @@ public class StaticVariables {
 	public static float maxTimeScale = 0.8f;
 	public static float baseTimeScale = 0.2f;//when temp = 300k
 
-	public static float maxTimeScaleBuck = 0.5f;
-	public static float baseTimeScaleBuck = 0.2f;
+	public static float maxTimeScaleBuck = 0.65f;
+	public static float baseTimeScaleBuck = 0.25f;
 	
 	public static float clockTimeStart = 0.0f;
 	public static float clockTimeEnd = 0.0f;
