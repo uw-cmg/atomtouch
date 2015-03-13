@@ -25,7 +25,7 @@ public class CameraScript : MonoBehaviour {
 	public GameObject gameControl;
 	public GameObject sliderPanel;
 	public GameObject hudCanvas;
-
+	
 	private AtomTouchGUI atomTouchGUI;
 	private SettingsControl settingsControl;
 
@@ -66,8 +66,11 @@ public class CameraScript : MonoBehaviour {
 	}
 	//this function handles the rotation of the camera
 	void Update () {
-		if(SettingsControl.GamePaused)return;
-		
+		if(SettingsControl.GamePaused){
+		//	Debug.Log("gamepaused");
+			return;
+		}
+		//Debug.Log("resumed");
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			if(Input.touchCount == 1){
 				Touch touch = Input.GetTouch (0);	

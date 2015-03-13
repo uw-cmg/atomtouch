@@ -57,6 +57,8 @@ public class SettingsControl : MonoBehaviour {
 		//resume
 		//Time.timeScale = 1.0f;
 		atomTouchGUI.ChangeAtomTemperature();
+		atomTouchGUI.changingTemp = false;
+		atomTouchGUI.changingVol = false;
 		//if sim type is changed, reset
 		if(simTypeChanged){
 			CreateEnvironment.myEnvironment.preCompute();
