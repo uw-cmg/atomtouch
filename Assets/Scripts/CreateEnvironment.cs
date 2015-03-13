@@ -424,7 +424,8 @@ public class CreateEnvironment : MonoBehaviour {
 		currAtom.gameObject.name = currAtom.GetInstanceID().ToString();
 		//Debug.Log(currAtom.GetInstanceID());
 		currAtom.GetComponent<Rigidbody>().freezeRotation = true;
-		
+		currAtom.GetComponent<TrailRenderer>().enabled = SettingsControl.mySettings.trailsToggle.isOn;
+
 		float realWidth = myEnvironment.width - 2.0f * myEnvironment.errorBuffer;
 		float realHeight = myEnvironment.height - 2.0f * myEnvironment.errorBuffer;
 		float realDepth = myEnvironment.depth - 2.0f * myEnvironment.errorBuffer;
