@@ -1047,6 +1047,26 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11423960, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_Text
+      value: 'Lead Unity Software Engineer '
+      objectReference: {fileID: 0}
+    - target: {fileID: 401716, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 249
+      objectReference: {fileID: 0}
+    - target: {fileID: 401716, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401738, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: -57.0999985
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401738, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -9.80000019
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11401758, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
