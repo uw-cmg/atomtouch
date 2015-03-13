@@ -1572,7 +1572,7 @@ MonoBehaviour:
   depth: 20
   volume: 8000
   textMeshPrefab: {fileID: 10200000, guid: 1dd69dec5d0da4133b23662642bdeff7, type: 2}
-  atomTouchGUI: {fileID: 0}
+  atomTouchGUI: {fileID: 1960553280}
   initialCenterPos: {x: 0, y: 0, z: 0}
 --- !u!114 &1960553286
 MonoBehaviour:
