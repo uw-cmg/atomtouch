@@ -55,14 +55,7 @@ public class Chart : MonoBehaviour {
 		yMaxTextComp.text = yMax.ToString("0.0");
 	}
 
-	void TestPlot(){
-		dataPointArray = PairDistributionFunction.PairDistributionAverage;
-		PlotManager.Instance.PlotCreate("MouseX", 0, 5, Color.green, new Vector2(100,100));
-		for(int i=1; i < dataPointArray.Length; i++){
-			PlotManager.Instance.PlotAdd("MouseX", graphHeight * dataPointArray[i]/yMax );
-		}
-		
-	}
+	
 	void PlotGraph(){
 		Vector3 p1, p2;
 		Vector3 screenPos1, screenPos2;
