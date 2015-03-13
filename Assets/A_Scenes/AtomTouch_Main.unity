@@ -34,7 +34,7 @@ RenderSettings:
   m_DefaultReflectionMode: 1
   m_DefaultReflectionResolution: 128
   m_ReflectionBounces: 2
-  m_ReflectionIntensity: .800000012
+  m_ReflectionIntensity: .899999976
   m_CustomReflection: {fileID: 8900000, guid: 2e49736c05dfd433bbf4cd0296134856, type: 2}
   m_Sun: {fileID: 0}
 --- !u!127 &3
@@ -63,7 +63,7 @@ LightmapSettings:
     m_TextureHeight: 1024
     m_AOMaxDistance: 1
     m_Padding: 2
-    m_CompAOExponent: .101999998
+    m_CompAOExponent: .70599997
     m_LightmapParameters: {fileID: 0}
     m_TextureCompression: 0
     m_FinalGather: 0
@@ -568,7 +568,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!108 &275708121
 Light:
@@ -823,7 +823,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!108 &588189261
 Light:
@@ -1537,11 +1537,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 401716, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 249
+      value: 154.5
       objectReference: {fileID: 0}
     - target: {fileID: 401716, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 32
+      value: 43.4000015
       objectReference: {fileID: 0}
     - target: {fileID: 22401738, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -1549,7 +1549,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22401738, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -9.80000019
+      value: -19.8999996
       objectReference: {fileID: 0}
     - target: {fileID: 101852, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
       propertyPath: m_IsActive
@@ -1558,6 +1558,38 @@ Prefab:
     - target: {fileID: 193690, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 401726, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 181.800003
+      objectReference: {fileID: 0}
+    - target: {fileID: 22423960, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -8.80000019
+      objectReference: {fileID: 0}
+    - target: {fileID: 401720, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -25.6000004
+      objectReference: {fileID: 0}
+    - target: {fileID: 401732, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -64.1999969
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401718, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: -57.0999985
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401718, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -8.10000038
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401804, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: -57.0999985
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401804, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -8.69999981
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11401758, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
@@ -1596,7 +1628,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1452764526
 Transform:
