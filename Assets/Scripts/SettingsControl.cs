@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class SettingsControl : MonoBehaviour {
+	public static SettingsControl mySettings;
 
 	public GameObject bottomLayer;
 	public GameObject settingsCanvas;
@@ -13,6 +14,7 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject lenJonesOn;
 	public GameObject buckinghamOn;
 	public GameObject nmOn;
+	public GameObject trailsOn;
 	public GameObject sliderPanel;
 	public GameObject graphOn;
 	public GameObject graphPanel;
@@ -27,6 +29,7 @@ public class SettingsControl : MonoBehaviour {
 	
 	private static bool gamePaused;
 	private Toggle nmToggle;
+	[HideInInspector]public Toggle trailsToggle;
 
 	private bool doResume = false;
     public static bool GamePaused{
@@ -36,9 +39,11 @@ public class SettingsControl : MonoBehaviour {
 	void Awake(){
 		mouseExitsSettingsPanel = true;
 		gamePaused = false;
-		
+		mySettings = this;
+
 		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
 		nmToggle = nmOn.GetComponent<Toggle>();
+		trailsToggle = trailsOn.GetComponent<Toggle>();
 		simTypeChanged = false;
 	}
 	void Start(){
@@ -91,7 +96,13 @@ public class SettingsControl : MonoBehaviour {
 			UpdateVolume.volUnit = UpdateVolume.VolUnitType.Angstrom;
 		}
 	}
-
+	//turn trail renderers on/off
+	public void OnToggle_Trails(){
+		for(int i=0; i<Atom.AllAtoms.Count;i++){
+			Atom currAtom = Atom.AllAtoms[i];
+			currAtom.gameObject.GetComponent<TrailRenderer>().enabled = trailsToggle.isOn;
+		}
+	}
 	//checks if mouse clicks outside the settings, if so, exit settings and resume
 	public void CheckExitSettings(){
 		
