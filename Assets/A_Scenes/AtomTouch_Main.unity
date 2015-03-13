@@ -2285,7 +2285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8aa57d716302f4384b09534d662e978b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numMolecules: 100
+  numMolecules: 1
   molecules:
   - {fileID: 5400000, guid: f9a8bb58abb1a41bdb6417cf179a4de4, type: 2}
   - {fileID: 5400000, guid: 17c331a6c34304537ac078ad413c9482, type: 2}
