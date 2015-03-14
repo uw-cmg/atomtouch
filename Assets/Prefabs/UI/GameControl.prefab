@@ -11,6 +11,7 @@ GameObject:
   - 114: {fileID: 11417634}
   - 114: {fileID: 11459236}
   - 114: {fileID: 11488794}
+  - 114: {fileID: 11448284}
   m_Layer: 0
   m_Name: GameControl
   m_TagString: Untagged
@@ -50,11 +51,26 @@ MonoBehaviour:
   lenJonesOn: {fileID: 0}
   buckinghamOn: {fileID: 0}
   nmOn: {fileID: 0}
+  trailsOn: {fileID: 0}
   sliderPanel: {fileID: 0}
   graphOn: {fileID: 0}
   graphPanel: {fileID: 0}
   brennerOn: {fileID: 0}
   atomTouchGUI: {fileID: 0}
+  trailsToggle: {fileID: 0}
+--- !u!114 &11448284
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 117634}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c04dc46e4b34b18a37365fd7b95179, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fpsText: {fileID: 0}
+  updateInterval: .100000001
 --- !u!114 &11459236
 MonoBehaviour:
   m_ObjectHideFlags: 1
