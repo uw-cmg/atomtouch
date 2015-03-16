@@ -783,11 +783,7 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 11401808, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1809991221}
-    - target: {fileID: 11493702, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+    - target: {fileID: 11410670, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1809991221}
@@ -795,11 +791,7 @@ Prefab:
       propertyPath: delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1809991221}
-    - target: {fileID: 11401782, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1809991221}
-    - target: {fileID: 11401780, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+    - target: {fileID: 11401802, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1809991221}
@@ -807,18 +799,22 @@ Prefab:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1809991221}
-    - target: {fileID: 11401802, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+    - target: {fileID: 11401780, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1809991221}
-    - target: {fileID: 11410670, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+    - target: {fileID: 11401782, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1809991221}
-    - target: {fileID: 22401746, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
-      propertyPath: m_AnchoredPosition.y
-      value: -21.1000004
-      objectReference: {fileID: 0}
+    - target: {fileID: 11493702, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1809991221}
+    - target: {fileID: 11401808, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1809991221}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
   m_IsPrefabParent: 0
