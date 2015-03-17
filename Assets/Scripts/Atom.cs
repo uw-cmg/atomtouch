@@ -117,7 +117,7 @@ public abstract class Atom : MonoBehaviour
 		if(StaticVariables.mouseClickProcessed)return;
 	
 		
-		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+		if (Application.isMobilePlatform ) {
 			if(Input.touchCount > 0){
 				//OnTouch();
 				Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
@@ -289,7 +289,7 @@ public abstract class Atom : MonoBehaviour
 	//this is the equivalent of OnMouseDown, but for iOS
 	//void OnMouseDownIOS(){
 	void OnTouch(){
-		if (Application.platform != RuntimePlatform.IPhonePlayer)return;
+		if (!Application.isMobilePlatform)return;
 		dragStartTime = Time.realtimeSinceStartup;
 		dragCalled = false;
 		held = true;
@@ -328,7 +328,7 @@ public abstract class Atom : MonoBehaviour
 	void OnMouseDown (){
 		if(SettingsControl.GamePaused)return;
 
-		if (Application.platform == RuntimePlatform.IPhonePlayer)return;
+		if (Application.isMobilePlatform)return;
 
 		dragStartTime = Time.realtimeSinceStartup;
 		dragCalled = false;
@@ -439,7 +439,7 @@ public abstract class Atom : MonoBehaviour
 	void OnMouseDrag(){
 		if(SettingsControl.GamePaused)return;
 		StaticVariables.draggingAtoms = true;
-		if (Application.platform != RuntimePlatform.IPhonePlayer) {
+		if (!Application.isMobilePlatform) {
 			
 			if(Time.realtimeSinceStartup - dragStartTime > 0.1f){
 				dragCalled = true;
@@ -588,7 +588,7 @@ public abstract class Atom : MonoBehaviour
 	void OnMouseUp (){
 		if(SettingsControl.GamePaused)return;
 		StaticVariables.draggingAtoms = false;
-		if (Application.platform != RuntimePlatform.IPhonePlayer) {
+		if (!Application.isMobilePlatform) {
 			if(!dragCalled){
 				//this is executed if an atom is only tapped
 				selected = !selected;

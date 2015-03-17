@@ -36,7 +36,7 @@ public class PinchZoom : MonoBehaviour {
 			}
 		}
 
-		if (Application.platform == RuntimePlatform.IPhonePlayer && Input.touchCount == 2 && !beingHeld) {
+		if (Application.isMobilePlatform && Input.touchCount == 2 && !beingHeld) {
 			Touch touchZero = Input.GetTouch (0);
 			Touch touchOne = Input.GetTouch (1);
 
@@ -86,7 +86,7 @@ public class PinchZoom : MonoBehaviour {
 				}
 			}
 		}
-		else if(Application.platform != RuntimePlatform.IPhonePlayer && !beingHeld){
+		else if(!Application.isMobilePlatform && !beingHeld){
 			float deltaMagnitudeDiff = Input.GetAxis("Mouse ScrollWheel");
 			Quaternion cameraRotation = GetComponent<Camera>().transform.rotation;
 			if(doubleTappedAtom != null){

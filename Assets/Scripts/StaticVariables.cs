@@ -113,13 +113,12 @@ public class StaticVariables {
 		Stopped
 	};
 	
-	//this function will draw a line from startinPos to endingPos. 
-	//The atom colors will color each side of the line.
-	//Note: this function can only be called within OnPostRender(). 
-	//It will not display if called from a different function
+	//draws bond as billboards
+	//c1 : atom1 center
+	//c2 : atom2 center
 	// s1--------s2
 	// |		  |
-	// s4_________s5
+	// s4_________s3
 	public static void DrawLine(Vector3 c1, Vector3 c2, 
 		Color atomColor1, Color atomColor2, float lineWidth, Material mat){
 
