@@ -11,7 +11,7 @@ GameObject:
   - 23: {fileID: 2300000}
   - 102: {fileID: 10200000}
   m_Layer: 0
-  m_Name: Text
+  m_Name: OuterRenderLines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -38,10 +38,6 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_LightmapIndex: 255
-  m_LightmapIndexDynamic: 255
-  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
-  m_LightmapTilingOffsetDynamic: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
   - {fileID: 2100000, guid: 9633ce7cf9b7b4e45a63e7e4a2456b74, type: 3}
   m_SubsetIndices: 

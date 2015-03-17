@@ -1237,7 +1237,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: .25
   turnSpeed: .699999988
-  rotateSensitivity: 2
+  rotateSensitivityUpDown: 6
+  rotateSensitivityLeftRight: 10
   gameControl: {fileID: 1809991220}
   sliderPanel: {fileID: 90571006}
   hudCanvas: {fileID: 1707300351}

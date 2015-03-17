@@ -21,7 +21,8 @@ public class CameraScript : MonoBehaviour {
 
 	public float moveSpeed = 0.25f;
 	public float turnSpeed = .5f;
-	public float rotateSensitivity = 10.0f;
+	public float rotateSensitivityUpDown = 6.0f;
+	public float rotateSensitivityLeftRight = 10.0f;
 	public GameObject gameControl;
 	public GameObject sliderPanel;
 	public GameObject hudCanvas;
@@ -100,8 +101,8 @@ public class CameraScript : MonoBehaviour {
 		float x = Input.GetAxis("Mouse X");
 		float y = Input.GetAxis("Mouse Y");
 
-		Camera.main.transform.RotateAround(Vector3.zero, Camera.main.transform.rotation * Vector3.up, rotateSensitivity *x);
-		Camera.main.transform.RotateAround(Vector3.zero, Camera.main.transform.rotation * Vector3.left, rotateSensitivity *y);
+		Camera.main.transform.RotateAround(Vector3.zero, Camera.main.transform.rotation * Vector3.up, rotateSensitivityUpDown *x);
+		Camera.main.transform.RotateAround(Vector3.zero, Camera.main.transform.rotation * Vector3.left, rotateSensitivityLeftRight *y);
 	
 	
 	}

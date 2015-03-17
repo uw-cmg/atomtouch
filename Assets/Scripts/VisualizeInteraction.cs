@@ -30,7 +30,7 @@ public class VisualizeInteraction : MonoBehaviour {
 						//draw a line from currAtom to atomNeighbor
 						if(bondColor == null)bondColor = Color.clear;
 						StaticVariables.DrawLine (currAtom.transform.position, 
-							neighborAtom.transform.position, bondColor, bondColor, .05f, mat);
+							neighborAtom.transform.position, bondColor, bondColor, 0.05f, mat);
 					}
 				}
 			}

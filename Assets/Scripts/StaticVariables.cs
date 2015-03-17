@@ -119,16 +119,18 @@ public class StaticVariables {
 	//It will not display if called from a different function
 	public static void DrawLine(Vector3 startingPos, Vector3 endingPos, 
 		Color atomColor1, Color atomColor2, float lineWidth, Material mat){
-		
+		Vector3 camRot = Camera.main.gameObject.transform.eulerAngles;
+
 		Vector3 startingPos2 = (startingPos - endingPos);
 		startingPos2.Normalize ();
+		//startingPos2 = Quaternion.Euler (new Vector3 (0.0f, 0.0f, -90.0f)) * startingPos2;
 		startingPos2 = Quaternion.Euler (new Vector3 (0.0f, 0.0f, -90.0f)) * startingPos2;
 		startingPos2 *= -lineWidth;
 		startingPos2 += startingPos;
 		
 		Vector3 endingPos2 = (endingPos - startingPos);
 		endingPos2.Normalize ();
-		endingPos2 = Quaternion.Euler (new Vector3 (0.0f, 0.0f, -90.0f)) * endingPos2;
+		//endingPos2 = Quaternion.Euler (new Vector3 (0.0f, 0.0f, -90.0f)) * endingPos2;
 		endingPos2 *= lineWidth;
 		endingPos2 += endingPos;
 		
