@@ -121,8 +121,8 @@ PlayerSettings:
   iOSLaunchScreenCustomXibPath: 
   AndroidTargetDevice: 0
   AndroidSplashScreenScale: 0
-  AndroidKeystoreName: 
-  AndroidKeyaliasName: 
+  AndroidKeystoreName: /Users/Tyler/Documents/Development/atomtouch/user.keystore
+  AndroidKeyaliasName: field day
   AndroidTVCompatibility: 1
   AndroidIsGame: 1
   androidEnableBanner: 1
