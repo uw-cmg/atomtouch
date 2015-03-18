@@ -351,6 +351,27 @@ Prefab:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11427862, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_FontData.m_RichText
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427880, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_FontData.m_RichText
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427880, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    - target: {fileID: 11427862, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: 9633ce7cf9b7b4e45a63e7e4a2456b74,
+        type: 3}
+    - target: {fileID: 11427862, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_FontData.m_FontStyle
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
   m_IsPrefabParent: 0
@@ -870,6 +891,10 @@ Prefab:
     - target: {fileID: 22469208, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
       propertyPath: m_AnchoredPosition.x
       value: 209.600006
+      objectReference: {fileID: 0}
+    - target: {fileID: 11401720, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_FontData.m_FontStyle
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
