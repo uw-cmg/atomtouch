@@ -72,7 +72,7 @@ public class CameraScript : MonoBehaviour {
 			return;
 		}
 		//Debug.Log("resumed");
-		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+		if (Application.isMobilePlatform) {
 			if(Input.touchCount == 1){
 				Touch touch = Input.GetTouch (0);	
 				if (touch.phase == TouchPhase.Moved) {

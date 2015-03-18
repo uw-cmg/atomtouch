@@ -105,6 +105,10 @@ public class SettingsControl : MonoBehaviour {
 			currAtom.gameObject.GetComponent<TrailRenderer>().enabled = trailsToggle.isOn;
 		}
 	}
+	//turn on/off mesh renderer
+	public void OnToggle_AtomRenderer(){
+		
+	}
 	//checks if mouse clicks outside the settings, if so, exit settings and resume
 	public void CheckExitSettings(){
 		
