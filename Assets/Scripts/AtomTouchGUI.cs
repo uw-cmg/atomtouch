@@ -695,6 +695,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		
 		changingVol = false;
 		changingTemp = false;
+		//SettingsControl.renderAtoms = true;
 	}
 	//for the left panel
 	public void createBondline(){
