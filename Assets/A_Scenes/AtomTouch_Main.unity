@@ -313,43 +313,43 @@ Prefab:
       objectReference: {fileID: 1960553280}
     - target: {fileID: 22427862, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
       propertyPath: m_AnchorMax.x
-      value: .939999998
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22427862, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22427924, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
       propertyPath: m_AnchorMin.x
-      value: .939999998
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22427924, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
       propertyPath: m_AnchorMax.x
-      value: .939999998
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22427924, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22427892, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
       propertyPath: m_AnchorMax.x
-      value: .666666687
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22427892, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22427884, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
       propertyPath: m_AnchorMin.x
-      value: .666666687
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22427884, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
       propertyPath: m_AnchorMax.x
-      value: .666666687
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22427884, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11427862, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
       propertyPath: m_FontData.m_RichText
@@ -357,12 +357,13 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11427880, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
       propertyPath: m_FontData.m_RichText
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11427880, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
       propertyPath: m_FontData.m_Font
       value: 
-      objectReference: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+      objectReference: {fileID: 12800000, guid: 9633ce7cf9b7b4e45a63e7e4a2456b74,
+        type: 3}
     - target: {fileID: 11427862, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
       propertyPath: m_FontData.m_Font
       value: 
@@ -372,6 +373,20 @@ Prefab:
       propertyPath: m_FontData.m_FontStyle
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11427880, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_FontData.m_BestFit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427828, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: 9633ce7cf9b7b4e45a63e7e4a2456b74,
+        type: 3}
+    - target: {fileID: 11427874, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: 9633ce7cf9b7b4e45a63e7e4a2456b74,
+        type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
   m_IsPrefabParent: 0
