@@ -15,6 +15,7 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject buckinghamOn;
 	public GameObject nmOn;
 	public GameObject trailsOn;
+	public GameObject atomRendererOn;
 	public GameObject sliderPanel;
 	public GameObject graphOn;
 	public GameObject graphPanel;
@@ -22,6 +23,7 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject brennerOn;
 	public AtomTouchGUI atomTouchGUI;
 
+	public static bool renderAtoms = true;
 	public static bool mouseExitsSettingsPanel; //aka, pause the game
 
 	private static Potential.potentialType currentPotentialType;
@@ -29,6 +31,8 @@ public class SettingsControl : MonoBehaviour {
 	
 	private static bool gamePaused;
 	private Toggle nmToggle;
+	private Toggle atomRendererToggle;
+
 	[HideInInspector]public Toggle trailsToggle;
 
 	private bool doResume = false;
@@ -44,6 +48,7 @@ public class SettingsControl : MonoBehaviour {
 		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
 		nmToggle = nmOn.GetComponent<Toggle>();
 		trailsToggle = trailsOn.GetComponent<Toggle>();
+		atomRendererToggle = atomRendererOn.GetComponent<Toggle>();
 		simTypeChanged = false;
 	}
 	void Start(){
@@ -107,7 +112,25 @@ public class SettingsControl : MonoBehaviour {
 	}
 	//turn on/off mesh renderer
 	public void OnToggle_AtomRenderer(){
-		
+		if(atomRendererToggle.isOn){
+			if(!renderAtoms){
+				//update atom mesh renderers only if settings has been changed
+				renderAtoms = true;
+			}else{
+				return;
+			}	
+		}else{
+			if(renderAtoms){
+				renderAtoms = false;
+			}else{
+				return;
+			}
+		}
+		//update renderers
+		for(int i=0; i < Atom.AllAtoms.Count;i++){
+			Atom.AllAtoms[i].gameObject.GetComponent<MeshRenderer>().enabled = renderAtoms;
+		}
+
 	}
 	//checks if mouse clicks outside the settings, if so, exit settings and resume
 	public void CheckExitSettings(){
