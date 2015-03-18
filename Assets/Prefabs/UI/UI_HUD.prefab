@@ -2009,7 +2009,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: .0906682238, g: .629050195, b: .948529422, a: 1}
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 9633ce7cf9b7b4e45a63e7e4a2456b74, type: 3}
     m_FontSize: 33
     m_FontStyle: 1
     m_BestFit: 0
@@ -2578,7 +2578,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: .529411793, g: .752941191, b: .823529422, a: 1}
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 9633ce7cf9b7b4e45a63e7e4a2456b74, type: 3}
     m_FontSize: 22
     m_FontStyle: 1
     m_BestFit: 0
@@ -3025,7 +3025,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: .0906682238, g: .629050195, b: .948529422, a: 1}
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 9633ce7cf9b7b4e45a63e7e4a2456b74, type: 3}
     m_FontSize: 33
     m_FontStyle: 1
     m_BestFit: 0
@@ -3243,7 +3243,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: .533333361, g: .752941191, b: .823529422, a: 1}
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 9633ce7cf9b7b4e45a63e7e4a2456b74, type: 3}
     m_FontSize: 22
     m_FontStyle: 1
     m_BestFit: 0
@@ -3301,7 +3301,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: .0906682238, g: .629050195, b: .948529422, a: 1}
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 9633ce7cf9b7b4e45a63e7e4a2456b74, type: 3}
     m_FontSize: 33
     m_FontStyle: 1
     m_BestFit: 0
@@ -3447,7 +3447,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: .0906682238, g: .629050195, b: .948529422, a: 1}
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 9633ce7cf9b7b4e45a63e7e4a2456b74, type: 3}
     m_FontSize: 33
     m_FontStyle: 1
     m_BestFit: 0
@@ -4475,7 +4475,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: .0906682238, g: .629050195, b: .948529422, a: 1}
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 9633ce7cf9b7b4e45a63e7e4a2456b74, type: 3}
     m_FontSize: 33
     m_FontStyle: 1
     m_BestFit: 0
