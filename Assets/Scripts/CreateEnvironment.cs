@@ -417,8 +417,8 @@ public class CreateEnvironment : MonoBehaviour {
 		}
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-		preFab.gameObject.GetComponent<MeshRenderer>.enabled = AtomTouchGUI.renderAtoms;
-		
+		//preFab.gameObject.GetComponent<MeshRenderer>.enabled = SettingsControl.renderAtoms;
+
 		Instantiate(preFab, myEnvironment.centerPos, curRotation);
 
 		int i = Atom.AllAtoms.Count-1;
