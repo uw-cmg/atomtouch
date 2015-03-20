@@ -1290,6 +1290,78 @@ Prefab:
       propertyPath: m_SizeDelta.x
       value: 28
       objectReference: {fileID: 0}
+    - target: {fileID: 22401828, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 71.4000015
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401796, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -58.2999992
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401750, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -59.5999985
+      objectReference: {fileID: 0}
+    - target: {fileID: 22416964, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 3.79999995
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401820, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 88.0999985
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401824, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -65.6999969
+      objectReference: {fileID: 0}
+    - target: {fileID: 22493706, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -57.4000015
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401826, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -10.1999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401746, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 88.2900009
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401752, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -61.3050003
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401752, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 179.409988
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401752, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401784, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchorMin.y
+      value: .0340000018
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401784, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401784, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_SizeDelta.y
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401816, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: .224992752
+      objectReference: {fileID: 0}
+    - target: {fileID: 22401816, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 69.9499817
+      objectReference: {fileID: 0}
+    - target: {fileID: 11423960, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_Text
+      value: Unity Software Engineer Lead
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
   m_IsPrefabParent: 0
