@@ -34,7 +34,7 @@ using System;
 
 public abstract class Atom : MonoBehaviour
 {
-
+	[HideInInspector]public AtomTouchGUI atomTouchGUI;
 	private Vector3 offset;
 	private Vector3 screenPoint;
 	private Vector3 lastMousePosition;
@@ -85,6 +85,7 @@ public abstract class Atom : MonoBehaviour
 	void Awake(){
 		RegisterAtom (this);
 		bondDistanceText = new Dictionary<String, TextMesh> ();
+		atomTouchGUI = Camera.main.gameObject.GetComponent<AtomTouchGUI>();
 	}
 	
 	//void OnDestroy(){
@@ -161,32 +162,14 @@ public abstract class Atom : MonoBehaviour
 				}
 
 			}
-			HandleRightClick();
-		}
-		if (doubleTapped) {
-			//this is what happens when double tapped is true
-			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
-			cameraScript.setCameraCoordinates(transform);
-			UpdateBondText();
-			ApplyTransparency();
+			//HandleRightClick();
 		}
 	}
 	public static void EnableSelectAtomGroup(bool enable){
 		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
 		atomTouchGUI.selectAtomPanel.SetActive(enable);
 	}
-	//another method for selecting atoms
-	void HandleRightClick(){
-		//hide selectpanel
-		if (Input.GetMouseButtonDown (1)) {
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hitInfo;
-			if(Physics.Raycast(ray, out hitInfo) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
-				selected = !selected;
-				SetSelected(selected);
-			}
-		}
-	}
+
 	
 	//this function gives the user the ability to control the z-axis of the atom on iOS
 	void HandleZAxisTouch(){
@@ -267,6 +250,7 @@ public abstract class Atom : MonoBehaviour
 	//void OnMouseDownIOS(){
 	void OnTouch(){
 		if (!Application.isMobilePlatform)return;
+		if(SettingsControl.GamePaused)return;
 		dragStartTime = Time.realtimeSinceStartup;
 		dragCalled = false;
 		held = true;
@@ -304,7 +288,6 @@ public abstract class Atom : MonoBehaviour
 	
 	void OnMouseDown (){
 		if(SettingsControl.GamePaused)return;
-
 		if (Application.isMobilePlatform)return;
 
 		dragStartTime = Time.realtimeSinceStartup;
@@ -342,6 +325,8 @@ public abstract class Atom : MonoBehaviour
 	
 	//this is the equivalent of OnMouseDrag for iOS
 	void OnMouseDragIOS(){
+		if(SettingsControl.GamePaused)return;
+		if(atomTouchGUI.changingTemp || atomTouchGUI.changingVol)return;
 		if (Time.realtimeSinceStartup - dragStartTime > 0.1f) {
 			dragCalled = true;
 			ApplyTransparency();
@@ -415,6 +400,7 @@ public abstract class Atom : MonoBehaviour
 	
 	void OnMouseDrag(){
 		if(SettingsControl.GamePaused)return;
+		if(atomTouchGUI.changingTemp || atomTouchGUI.changingVol)return;
 		StaticVariables.draggingAtoms = true;
 		if (!Application.isMobilePlatform) {
 			
@@ -514,6 +500,7 @@ public abstract class Atom : MonoBehaviour
 	
 	//this function is the equivalent of OnMouseUp for iOS
 	void OnMouseUpIOS(){
+		if(atomTouchGUI.eventSystem.IsPointerOverGameObject())return;
 		if (!dragCalled) {
 			//if the user only tapped the atom, this is executed
 			selected = !selected;
@@ -564,6 +551,7 @@ public abstract class Atom : MonoBehaviour
 	
 	void OnMouseUp (){
 		if(SettingsControl.GamePaused)return;
+		if(atomTouchGUI.eventSystem.IsPointerOverGameObject())return;
 		StaticVariables.draggingAtoms = false;
 		if (!Application.isMobilePlatform) {
 			if(!dragCalled){

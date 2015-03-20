@@ -29,6 +29,7 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class AtomTouchGUI : MonoBehaviour {
 	
@@ -102,7 +103,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	
 	[HideInInspector]public bool changingTemp = false;
 	[HideInInspector]public bool changingVol = false;
-	
+	public EventSystem eventSystem;
 	private int slowMotionFrames;
 	
 	public static StaticVariables.TimeSpeed currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
@@ -127,7 +128,7 @@ public class AtomTouchGUI : MonoBehaviour {
 		settingsCanvas.SetActive(false);
 		selectedAll = false;
 		settingsActive = false;
-
+		eventSystem = GameObject.Find("EventSystem").gameObject.GetComponent<EventSystem>();
 
 	}
 	void Start () {
@@ -488,6 +489,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	
 
 	public void SnapTempToInterval(float stepSize){
+		changingTemp = true;
 		float rawVal = tempSliderComponent.value;
 		float floor = Mathf.Floor(rawVal / stepSize);
 		if(!Mathf.Approximately(rawVal / stepSize, floor))

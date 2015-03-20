@@ -135,6 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1dc6df8310614f2a85335a105f79699, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  atomTouchGUI: {fileID: 0}
   selected: 0
   doubleTapped: 0
   textMeshPrefab: {fileID: 0}

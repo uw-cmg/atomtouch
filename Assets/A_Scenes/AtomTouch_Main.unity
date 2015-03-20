@@ -1517,7 +1517,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc8e076317b354c95b61c124ecb407d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataPanelActive: 0
   matPlane1: {fileID: 2100000, guid: 6caeb595fd208064e9241450baf2b5be, type: 2}
   matPlane1_5: {fileID: 2100000, guid: f283477ca49c74b60bffc66538836f34, type: 2}
   matPlane2: {fileID: 2100000, guid: cae177c280a0049fabe27780b6b42137, type: 2}
@@ -1558,18 +1557,9 @@ MonoBehaviour:
   platinumPrefab: {fileID: 5400000, guid: 8f78d3d61ec834464b4b7bf898e7ffa1, type: 2}
   sodiumPrefab: {fileID: 5400000, guid: 45c29c1d5ee153b4297ce6d74fe6064e, type: 2}
   chlorinePrefab: {fileID: 5400000, guid: 951d303c4fb9bae448746217ae65b51f, type: 2}
-  resetButtonUp: {fileID: 2800000, guid: 8238c94d957204ce6954e9784c0962af, type: 3}
-  resetButtonDown: {fileID: 2800000, guid: d27005519c3414c0e9b0f83a935734c1, type: 3}
-  bondLineUp: {fileID: 2800000, guid: ba45c803b47484b80a2df782f85f64f8, type: 3}
-  bondLineDown: {fileID: 2800000, guid: 388d68cdb89574d9886cbd806563277f, type: 3}
   normalTimeButton: {fileID: 2800000, guid: 6d3ea8af682ac4e7998a1963b422afd3, type: 3}
   slowTimeButton: {fileID: 2800000, guid: aaa6c863b2a8b4e199ea4979a5ab8673, type: 3}
   stoppedTimeButton: {fileID: 2800000, guid: 8cc2dcc1021bb4012bbef939c58d5616, type: 3}
-  holdTime: .0500000007
-  addGraphicCopper: 0
-  addGraphicGold: 0
-  addGraphicPlatinum: 0
-  sliderControls: {fileID: 0}
   changingTemp: 0
   changingVol: 0
 --- !u!114 &1960553281
@@ -1617,7 +1607,6 @@ MonoBehaviour:
   - {fileID: 5400000, guid: 8f78d3d61ec834464b4b7bf898e7ffa1, type: 2}
   - {fileID: 5400000, guid: 45c29c1d5ee153b4297ce6d74fe6064e, type: 2}
   - {fileID: 5400000, guid: 951d303c4fb9bae448746217ae65b51f, type: 2}
-  moleculeToSpawn: 0
   plane: {fileID: 100000, guid: a1841c570b7dc4d6496674b44e1e4f94, type: 2}
   centerPos: {x: 0, y: 0, z: 0}
   errorBuffer: .5
