@@ -81,33 +81,14 @@ public class Graph : MonoBehaviour {
 	}
 	*/
 	
-	void OnGUI(){
-		
-		float minRadius = 0.0f;
-		float maxRadius = PairDistributionFunction.maxR;
-		
-		//this function puts the labels of the graph on screen
-		GUIStyle graphText = GUI.skin.label;
-		graphText.alignment = TextAnchor.MiddleLeft;
-		graphText.fontSize = 14;
-		graphText.normal.textColor = Color.white;
-		AtomTouchGUI atomGUI = Camera.main.GetComponent<AtomTouchGUI> ();
-		if (atomGUI.dataPanelActive) {
-			GUI.Label (new Rect (xCoord + width/2.0f - 60, Screen.height - yCoord, 200, 20), graphLabel);
-			GUI.Label (new Rect (xCoord - 32, Screen.height - (Screen.height * .27f), 100, 20), (dataMaximum).ToString () + yUnitLabel);
-			GUI.Label (new Rect (xCoord - 53, Screen.height - yCoord - 15, 100, 20), (PairDistributionFunction.numberOfCalculations).ToString () + yUnitLabel);
-			GUI.Label (new Rect (xCoord - 5, Screen.height - yCoord, 100, 20), minRadius.ToString () + xUnitLabel);
-			GUI.Label (new Rect (xCoord + width - 35.0f, Screen.height - yCoord, 100, 20), maxRadius.ToString() + xUnitLabel);
-		}
-		
-	}
+
 	
 	//OnGUI will draw over this function, so the graph cannot be behind any GUI elements
 
 	void OnPostRender(){
 		
 		AtomTouchGUI atomGUI = Camera.main.GetComponent<AtomTouchGUI> ();
-		if (atomGUI.dataPanelActive) {
+		
 			//draw the background for the graph
 			Vector3 upperLeft = GetComponent<Camera>().ScreenToWorldPoint (new Vector3 (xCoord, (yCoord+height), zDepth));
 			Vector3 lowerLeft = GetComponent<Camera>().ScreenToWorldPoint (new Vector3(xCoord, yCoord, zDepth));
@@ -160,7 +141,7 @@ public class Graph : MonoBehaviour {
 				Vector3 secondPoint = GetComponent<Camera>().ScreenToWorldPoint(new Vector3(xCoord + ((i+1)*spacing), yCoord + secondYAddition, zDepth));
 				StaticVariables.DrawLine(firstPoint, secondPoint, lineColor, lineColor, lineWidth, mat);
 			}
-		}
+		
 		
 		
 		

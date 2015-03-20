@@ -56,8 +56,7 @@ public class CameraScript : MonoBehaviour {
 	}
 	public void UpdateCamera(){
 		bool holdingAtom = HasAtomHeld();
-		if(!holdingAtom && !atomTouchGUI.addGraphicCopper 
-			&& !atomTouchGUI.addGraphicGold && !atomTouchGUI.addGraphicPlatinum 
+		if(!holdingAtom
 			&& !atomTouchGUI.changingTemp && !atomTouchGUI.changingVol){
 			
 			Vector3 center = createEnvironment.centerPos;

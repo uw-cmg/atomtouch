@@ -124,20 +124,7 @@ public abstract class Atom : MonoBehaviour
 				RaycastHit hitInfo;
 				if(!held && Physics.Raycast(ray, out hitInfo) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
 					if(Input.GetTouch(0).phase == TouchPhase.Began){
-						//temporarily disable double click
-						
-						//if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
-							//user double tapped an atom on iOS
-						//	AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
-						//	atomTouchGUI.SetDoubleClicked();
-						//	ResetDoubleTapped();
-						//	doubleTapped = true;
-						//	RemoveAllBondText();
-						//	AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
-						//}
-						
-						//user touch an atom at this point
-						//OnMouseDownIOS();
+					
 						OnTouch();
 						lastTapTime = Time.realtimeSinceStartup;
 					}
@@ -162,17 +149,7 @@ public abstract class Atom : MonoBehaviour
 		else{
 			//on pc
 			if(Input.GetMouseButtonDown(0) ){
-				//temporarily disable double click
 				
-				//if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
-					//user double tapped an atom on PC
-				//	AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
-				//	atomTouchGUI.SetDoubleClicked();
-				//	ResetDoubleTapped();
-				//	doubleTapped = true;
-				//	RemoveAllBondText();
-				//	AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
-				//}
 				
 				Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
 				RaycastHit hitInfo;

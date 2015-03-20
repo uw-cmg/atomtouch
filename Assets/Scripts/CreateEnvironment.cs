@@ -21,21 +21,21 @@ using System;
 
 public class CreateEnvironment : MonoBehaviour {
 	
-	public int numMolecules = 10;
+	public int numMolecules = 1;
 	public Rigidbody[] molecules = new Rigidbody[5];
-	public int moleculeToSpawn = 0;
+	
 	public GameObject plane;
 	public Vector3 centerPos;
-	public float errorBuffer = 0.5f;
+	[HideInInspector]public float errorBuffer = 0.5f;
 	//line
 	public Material lineMat; 
 	public Color lineColor;
 	public float lineWidth = 0.2f;
 	//cube
-	public float width;
-	public float height;
-	public float depth;
-	public float volume = 8000.0f;
+	[HideInInspector]public float width;
+	[HideInInspector]public float height;
+	[HideInInspector]public float depth;
+	[HideInInspector]public float volume = 8000.0f;
 
 	public TextMesh textMeshPrefab;
 	private TextMesh bottomText;
@@ -64,7 +64,7 @@ public class CreateEnvironment : MonoBehaviour {
 	public static GameObject frontPlane;
 	public static GameObject rightPlane;
 	public static GameObject leftPlane;
-	public AtomTouchGUI atomTouchGUI;
+	[HideInInspector]public AtomTouchGUI atomTouchGUI;
 	public Vector3 initialCenterPos;
 	
 	//this variables points to the instance of the create environment

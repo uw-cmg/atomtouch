@@ -720,10 +720,6 @@ GameObject:
 GameObject:
   m_PrefabParentObject: {fileID: 146838, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
   m_PrefabInternal: {fileID: 3023706}
---- !u!1 &1434891490
-GameObject:
-  m_PrefabParentObject: {fileID: 127858, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
-  m_PrefabInternal: {fileID: 3023706}
 --- !u!1 &1446827209
 GameObject:
   m_PrefabParentObject: {fileID: 193702, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
@@ -780,10 +776,6 @@ GameObject:
 --- !u!1 &1630135964
 GameObject:
   m_PrefabParentObject: {fileID: 199284, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
-  m_PrefabInternal: {fileID: 3023706}
---- !u!1 &1643642541
-GameObject:
-  m_PrefabParentObject: {fileID: 127924, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
   m_PrefabInternal: {fileID: 3023706}
 --- !u!1001 &1675502264
 Prefab:
@@ -1369,10 +1361,6 @@ Prefab:
 GameObject:
   m_PrefabParentObject: {fileID: 127916, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
   m_PrefabInternal: {fileID: 3023706}
---- !u!1 &1756289552
-GameObject:
-  m_PrefabParentObject: {fileID: 127890, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
-  m_PrefabInternal: {fileID: 3023706}
 --- !u!1 &1777502625
 GameObject:
   m_PrefabParentObject: {fileID: 132186, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}
@@ -1537,13 +1525,6 @@ MonoBehaviour:
   matPlane3: {fileID: 2100000, guid: e96bd4b23ea934d8ab298fe3922e3238, type: 2}
   matPlane3_5: {fileID: 2100000, guid: b78dac62791804837ab7f67178de74ae, type: 2}
   matPlane4: {fileID: 2100000, guid: e4d7cb7bd768147c5aee673e30a1f5ac, type: 2}
-  lightBackground: {fileID: 2800000, guid: f6528816a03fa45dab1f076875a9bad5, type: 3}
-  darkBackground: {fileID: 2800000, guid: 0145a5e6551f246cdb038016d624e2a5, type: 3}
-  darkBlueBackground: {fileID: 2800000, guid: e74846f2724774f47bf8cf17caf30d72, type: 3}
-  lightBlueBackground: {fileID: 2800000, guid: 66f0d7c06f12e44b8a63efdf761109cf, type: 3}
-  whiteCornerArrow: {fileID: 2800000, guid: 16c6a133b83a140829f94523c86ae417, type: 3}
-  downArrow: {fileID: 2800000, guid: 6877ac237c0a748cdbb8e72cf6d0f119, type: 3}
-  upArrow: {fileID: 2800000, guid: d817206d84863414dae6026405d0e5ff, type: 3}
   hud: {fileID: 1707300351}
   timer: {fileID: 1957530759}
   tempSlider: {fileID: 548209792}
@@ -1572,12 +1553,6 @@ MonoBehaviour:
   sodiumText: {fileID: 1194972008}
   chlorineText: {fileID: 570083911}
   selectAllText: {fileID: 1245746084}
-  tempFrontFill: {fileID: 1434891490}
-  tempBackFill: {fileID: 1756289552}
-  tempHandle: {fileID: 1643642541}
-  volFrontFill: {fileID: 0}
-  volBackFill: {fileID: 0}
-  volHandle: {fileID: 0}
   copperPrefab: {fileID: 5400000, guid: f9a8bb58abb1a41bdb6417cf179a4de4, type: 2}
   goldPrefab: {fileID: 5400000, guid: 17c331a6c34304537ac078ad413c9482, type: 2}
   platinumPrefab: {fileID: 5400000, guid: 8f78d3d61ec834464b4b7bf898e7ffa1, type: 2}
@@ -1585,24 +1560,11 @@ MonoBehaviour:
   chlorinePrefab: {fileID: 5400000, guid: 951d303c4fb9bae448746217ae65b51f, type: 2}
   resetButtonUp: {fileID: 2800000, guid: 8238c94d957204ce6954e9784c0962af, type: 3}
   resetButtonDown: {fileID: 2800000, guid: d27005519c3414c0e9b0f83a935734c1, type: 3}
-  cameraButtonUp: {fileID: 2800000, guid: 9c785519f494648fcbdb474f5622a4ab, type: 3}
-  cameraButtonDown: {fileID: 2800000, guid: 15a43246d91334da797f8d51a89d435c, type: 3}
   bondLineUp: {fileID: 2800000, guid: ba45c803b47484b80a2df782f85f64f8, type: 3}
   bondLineDown: {fileID: 2800000, guid: 388d68cdb89574d9886cbd806563277f, type: 3}
-  atomKickUp: {fileID: 2800000, guid: 7a7f89afb5ade4cfabe454bfe2e32d47, type: 3}
-  atomKickDown: {fileID: 2800000, guid: 116d7c13663e54718b857a273dedb4b3, type: 3}
   normalTimeButton: {fileID: 2800000, guid: 6d3ea8af682ac4e7998a1963b422afd3, type: 3}
   slowTimeButton: {fileID: 2800000, guid: aaa6c863b2a8b4e199ea4979a5ab8673, type: 3}
   stoppedTimeButton: {fileID: 2800000, guid: 8cc2dcc1021bb4012bbef939c58d5616, type: 3}
-  redXButton: {fileID: 2800000, guid: 54098dad68f414af2beaee7e0a893595, type: 3}
-  copperTexture: {fileID: 2800000, guid: d2fc8311161de4c708c64cbaf54451a2, type: 3}
-  goldTexture: {fileID: 2800000, guid: f9528e0ec9d3b45649ffc041795b6754, type: 3}
-  platinumTexture: {fileID: 2800000, guid: e71338714eda94568961a947af7c51e1, type: 3}
-  copperTextureAdd: {fileID: 2800000, guid: d2fc8311161de4c708c64cbaf54451a2, type: 3}
-  goldTextureAdd: {fileID: 2800000, guid: f9528e0ec9d3b45649ffc041795b6754, type: 3}
-  platinumTextureAdd: {fileID: 2800000, guid: e71338714eda94568961a947af7c51e1, type: 3}
-  garbageTexture: {fileID: 2800000, guid: 88b964cb824b54a77ba13f6f19722fbe, type: 3}
-  garbageTextureDown: {fileID: 2800000, guid: ab7116d3eabc142a79476099d0561c99, type: 3}
   holdTime: .0500000007
   addGraphicCopper: 0
   addGraphicGold: 0
