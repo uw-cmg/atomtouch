@@ -21,8 +21,8 @@ public class CameraScript : MonoBehaviour {
 
 	public float moveSpeed = 0.25f;
 	public float turnSpeed = .5f;
-	public float rotateSensitivityUpDown = 6.0f;
-	public float rotateSensitivityLeftRight = 10.0f;
+	public float rotateSensitivityLeftRight = 6.0f;
+	public float rotateSensitivityUpDown = 10.0f;
 	public GameObject gameControl;
 	public GameObject sliderPanel;
 	public GameObject hudCanvas;
