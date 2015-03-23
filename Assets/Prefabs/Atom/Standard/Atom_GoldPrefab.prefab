@@ -14,7 +14,7 @@ GameObject:
   - 114: {fileID: 11400000}
   - 54: {fileID: 5400000}
   - 96: {fileID: 9654540}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Atom_GoldPrefab
   m_TagString: Molecule
   m_Icon: {fileID: 0}
@@ -135,6 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4465d7e084ac34586baadc6cd14c40dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  atomTouchGUI: {fileID: 0}
   selected: 0
   doubleTapped: 0
   textMeshPrefab: {fileID: 10200000, guid: e0c19431a83a34054b4e5ee48e8429c2, type: 2}

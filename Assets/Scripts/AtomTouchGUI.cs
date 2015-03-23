@@ -59,6 +59,7 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject goldCount;
 	public GameObject platinumCount;
 	public GameObject numAtomInput;
+	public GameObject buttonPanel;
 
 	public GameObject cuBatchToggle;
 	public GameObject auBatchToggle;

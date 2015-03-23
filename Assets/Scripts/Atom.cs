@@ -82,12 +82,15 @@ public abstract class Atom : MonoBehaviour
 	public Vector3 accelerationNew = Vector3.zero;
 	public Vector3 accelerationOld = Vector3.zero;
 	
+	private GameObject buttonPanel;
 	void Awake(){
 		RegisterAtom (this);
 		bondDistanceText = new Dictionary<String, TextMesh> ();
 		atomTouchGUI = Camera.main.gameObject.GetComponent<AtomTouchGUI>();
 	}
-	
+	void Start(){
+		buttonPanel = AtomTouchGUI.myAtomTouchGUI.buttonPanel;
+	}
 	//void OnDestroy(){
 	//	UnregisterAtom (this);
 	//}
@@ -251,6 +254,16 @@ public abstract class Atom : MonoBehaviour
 	void OnTouch(){
 		if (!Application.isMobilePlatform)return;
 		if(SettingsControl.GamePaused)return;
+		/*
+		RectTransform rt = AtomTouchGUI.myAtomTouchGUI.buttonPanel.GetComponent<RectTransform>();
+
+		if(Input.mousePosition.x < 
+			rt.rect.width *  AtomTouchGUI.myAtomTouchGUI.hud.GetComponent<Canvas>().scaleFactor
+			|| Input.mousePosition.x > 
+			Screen.width-rt.rect.width * AtomTouchGUI.myAtomTouchGUI.hud.GetComponent<Canvas>().scaleFactor){
+			return;
+		}
+		*/
 		dragStartTime = Time.realtimeSinceStartup;
 		dragCalled = false;
 		held = true;
@@ -289,7 +302,17 @@ public abstract class Atom : MonoBehaviour
 	void OnMouseDown (){
 		if(SettingsControl.GamePaused)return;
 		if (Application.isMobilePlatform)return;
+		/*
+		RectTransform rt = AtomTouchGUI.myAtomTouchGUI.buttonPanel.GetComponent<RectTransform>();
 
+
+		if(Input.mousePosition.x < 
+			rt.rect.width *  AtomTouchGUI.myAtomTouchGUI.hud.GetComponent<Canvas>().scaleFactor
+			|| Input.mousePosition.x > 
+			Screen.width-rt.rect.width * AtomTouchGUI.myAtomTouchGUI.hud.GetComponent<Canvas>().scaleFactor){
+			return;
+		}
+		*/
 		dragStartTime = Time.realtimeSinceStartup;
 		dragCalled = false;
 		held = true;
@@ -327,6 +350,15 @@ public abstract class Atom : MonoBehaviour
 	void OnMouseDragIOS(){
 		if(SettingsControl.GamePaused)return;
 		if(atomTouchGUI.changingTemp || atomTouchGUI.changingVol)return;
+		/*
+		RectTransform rt = AtomTouchGUI.myAtomTouchGUI.buttonPanel.GetComponent<RectTransform>();
+
+		if(Input.mousePosition.x < 
+			rt.rect.width *  AtomTouchGUI.myAtomTouchGUI.hud.GetComponent<Canvas>().scaleFactor ){
+			
+			return;
+		}
+		*/
 		if (Time.realtimeSinceStartup - dragStartTime > 0.1f) {
 			dragCalled = true;
 			ApplyTransparency();
@@ -401,6 +433,16 @@ public abstract class Atom : MonoBehaviour
 	void OnMouseDrag(){
 		if(SettingsControl.GamePaused)return;
 		if(atomTouchGUI.changingTemp || atomTouchGUI.changingVol)return;
+		/*
+		RectTransform rt = AtomTouchGUI.myAtomTouchGUI.buttonPanel.GetComponent<RectTransform>();
+
+		if(Input.mousePosition.x < 
+			rt.rect.width *  AtomTouchGUI.myAtomTouchGUI.hud.GetComponent<Canvas>().scaleFactor
+			|| Input.mousePosition.x > 
+			Screen.width-rt.rect.width * AtomTouchGUI.myAtomTouchGUI.hud.GetComponent<Canvas>().scaleFactor){
+			return;
+		}
+		*/
 		StaticVariables.draggingAtoms = true;
 		if (!Application.isMobilePlatform) {
 			
@@ -500,7 +542,6 @@ public abstract class Atom : MonoBehaviour
 	
 	//this function is the equivalent of OnMouseUp for iOS
 	void OnMouseUpIOS(){
-		if(atomTouchGUI.eventSystem.IsPointerOverGameObject())return;
 		if (!dragCalled) {
 			//if the user only tapped the atom, this is executed
 			selected = !selected;
@@ -551,7 +592,6 @@ public abstract class Atom : MonoBehaviour
 	
 	void OnMouseUp (){
 		if(SettingsControl.GamePaused)return;
-		if(atomTouchGUI.eventSystem.IsPointerOverGameObject())return;
 		StaticVariables.draggingAtoms = false;
 		if (!Application.isMobilePlatform) {
 			if(!dragCalled){
