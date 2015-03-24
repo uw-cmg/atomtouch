@@ -206,7 +206,8 @@ public class Buckingham : Potential {
 		if (distanceSqr <= cutoffSqr)
 		{
 			int iR = (int)(Mathf.Sqrt(distanceSqr) / (dR));
-			potential = (PreBuckinghamPotential[firstAtom.atomID, secondAtom.atomID,iR] + PreBuckinghamPotential[firstAtom.atomID, secondAtom.atomID,iR]) / 2.0f ;
+			potential = (PreBuckinghamPotential[firstAtom.atomID, secondAtom.atomID,iR] 
+				+ PreBuckinghamPotential[firstAtom.atomID, secondAtom.atomID,iR]) / 2.0f ;
 		}
 		return potential;
 	}
