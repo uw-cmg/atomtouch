@@ -300,48 +300,69 @@ public class CreateEnvironment : MonoBehaviour {
 
 	private void CreatePresetConfiguration()
 	{
-		//string allLines;
-		string [] lineArray;
-		string[] textArray;
-		string dummyString;
+		Debug.Log ("Uploading text file!");
+		TextAsset textFile = Resources.Load ("dimer") as TextAsset;
+		Debug.Log("text file uploaded!");
+		string allLines = textFile.text;
+		allLines = allLines.ToLower ();
+		string[] lineArray = allLines.Split ("\r\n".ToCharArray (), StringSplitOptions.RemoveEmptyEntries);
+
+		string[] textArray1;
+		string[] textArray2;
 		
-		lineArray = System.IO.File.ReadAllLines ("PresetAtomConfigurations/dimer.txt");
-		int numAtoms = lineArray.Length-5;
-		
-		textArray = lineArray[0].Split('=');
-		StaticVariables.desiredTemperature = float.Parse(textArray[1]);
-		
-		
-		textArray = lineArray[1].Split('=');
-		myEnvironment.volume = float.Parse(textArray[1]);
-		
-		textArray = lineArray[2].Split('=');
-		textArray [1] = textArray [1].ToLower();
-		if (textArray [1].Equals("stopped"))
-			AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
-		if (textArray [1].Equals("slowmotion"))
-			AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
-		if (textArray [1].Equals("normal"))
-			AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
-		
-		
-		textArray = lineArray[3].Split('=');
-		textArray [1] = textArray [1].ToLower();
-		if (textArray [1].Equals("buckingham"))
-			Potential.currentPotential = Potential.potentialType.Buckingham;
-		if (textArray [1].Equals("lennardjones"))
-			Potential.currentPotential = Potential.potentialType.LennardJones;
-		
-		// skip the fifth line (index=4)
-		
-		for (int iLine=5; iLine < lineArray.Length; iLine++)
+		int numAtoms = int.Parse(lineArray[0]);
+
+		textArray1 = lineArray[1].Split(',');
+
+		for (int i=0; i<textArray1.Length; i++)
 		{
-			textArray = lineArray[iLine].Split(',');
-			Vector3 pos = new Vector3(float.Parse(textArray[0]), float.Parse(textArray[1]), float.Parse(textArray[2]));
-			Vector3 vel = new Vector3(float.Parse(textArray[3]), float.Parse(textArray[4]), float.Parse(textArray[5]));
-			
-			int atomID = int.Parse(textArray[6]);
-			
+			textArray2 = textArray1[i].Split('=');
+			if (textArray2 [0].Equals("potential"))
+			{
+				if (textArray2 [1].Equals("buckingham"))
+					Potential.currentPotential = Potential.potentialType.Buckingham;
+				if (textArray2 [1].Equals("lennardjones"))
+					Potential.currentPotential = Potential.potentialType.LennardJones;
+			}
+			else if (textArray2 [0].Equals("temperature"))
+			{
+				StaticVariables.desiredTemperature = float.Parse(textArray2[1]);
+			}
+			else if (textArray2 [0].Equals("volume"))
+			{
+				myEnvironment.volume = float.Parse(textArray2[1]);
+			}
+			else if (textArray2 [0].Equals("timespeed"))
+			{
+				if (textArray2 [1].Equals("stopped"))
+					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
+				if (textArray2 [1].Equals("slowmotion"))
+					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
+				if (textArray2 [1].Equals("normal"))
+					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
+			}
+
+		}
+		
+		for (int iLine=2; iLine < 2+numAtoms; iLine++)
+		{
+			textArray1 = lineArray[iLine].Split('\t');
+			Vector3 pos = new Vector3(float.Parse(textArray1[1]), float.Parse(textArray1[2]), float.Parse(textArray1[3]));
+			Vector3 vel = new Vector3(float.Parse(textArray1[4]), float.Parse(textArray1[5]), float.Parse(textArray1[6]));
+
+			int atomID = 0;
+
+			if (textArray1[0].Equals("cu"))
+				atomID = 0;
+			if (textArray1[0].Equals("au"))
+				atomID = 1;
+			if (textArray1[0].Equals("pt"))
+				atomID = 2;
+			if (textArray1[0].Equals("na"))
+				atomID = 3;
+			if (textArray1[0].Equals("cl"))
+				atomID = 4;
+
 			Rigidbody preFab = molecules[atomID];
 			
 			int preFabID = preFab.GetInstanceID();
