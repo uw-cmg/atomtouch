@@ -119,7 +119,6 @@ public class Environment : MonoBehaviour {
 		{
 			for (int i = 0; i < numMolecules; i++)
 			{
-				Debug.Log("HERE");
 				createAtom (molecules [0]);
 			}
 		}
