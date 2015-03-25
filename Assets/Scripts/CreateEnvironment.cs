@@ -292,16 +292,17 @@ public class CreateEnvironment : MonoBehaviour {
 			Destroy (currAtom.gameObject);
 		}
 
-		//CreatePresetConfiguration ();
-		CreateRandomConfiguration();
+		CreatePresetConfiguration ();
+		//CreateRandomConfiguration();
 
 		AtomTouchGUI.myAtomTouchGUI.TryEnableAddAtomBtns();
 	}
 
+	// Create atoms by reading the information from an text input file in Resources folder. The file format is XYZ.
 	private void CreatePresetConfiguration()
 	{
 		Debug.Log ("Uploading text file!");
-		TextAsset textFile = Resources.Load ("dimer") as TextAsset;
+		TextAsset textFile = Resources.Load ("box") as TextAsset;
 		Debug.Log("text file uploaded!");
 		string allLines = textFile.text;
 		allLines = allLines.ToLower ();

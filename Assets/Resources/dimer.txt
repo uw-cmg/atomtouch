@@ -1,4 +1,0 @@
-2
-dimer molecule, potential=buckinghma, temperature=400, volume=1000, timespeed=normal
-Na	-1	0	0	0	0	0
-Cl	+1	0	0	0	0	0
