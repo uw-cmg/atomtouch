@@ -21,21 +21,21 @@ using System;
 
 public class CreateEnvironment : MonoBehaviour {
 	
-	public int numMolecules = 10;
-	public List<Rigidbody> molecules = new List<Rigidbody>();
-	public int moleculeToSpawn = 0;
+	public int numMolecules = 1;
+	public Rigidbody[] molecules = new Rigidbody[5];
+	
 	public GameObject plane;
 	public Vector3 centerPos;
-	public float errorBuffer = 0.5f;
+	[HideInInspector]public float errorBuffer = 0.5f;
 	//line
 	public Material lineMat; 
 	public Color lineColor;
 	public float lineWidth = 0.2f;
 	//cube
-	public float width;
-	public float height;
-	public float depth;
-	public float volume = 8000.0f;
+	[HideInInspector]public float width;
+	[HideInInspector]public float height;
+	[HideInInspector]public float depth;
+	[HideInInspector]public float volume = 8000.0f;
 
 	public TextMesh textMeshPrefab;
 	private TextMesh bottomText;
@@ -64,7 +64,7 @@ public class CreateEnvironment : MonoBehaviour {
 	public static GameObject frontPlane;
 	public static GameObject rightPlane;
 	public static GameObject leftPlane;
-	public AtomTouchGUI atomTouchGUI;
+	[HideInInspector]public AtomTouchGUI atomTouchGUI;
 	public Vector3 initialCenterPos;
 	
 	//this variables points to the instance of the create environment
@@ -84,7 +84,7 @@ public class CreateEnvironment : MonoBehaviour {
 		bottomPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
 		bottomPlane.name = "BottomPlane";
 		bottomPlane.tag = "Plane";
-		bottomPlane.collider.enabled = true;
+		bottomPlane.GetComponent<Collider>().enabled = true;
 		
 		//create the top plane
 		Quaternion topPlaneRotation = Quaternion.Euler (0.0f, 180.0f, 180.0f);
@@ -93,7 +93,7 @@ public class CreateEnvironment : MonoBehaviour {
 		topPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
 		topPlane.name = "TopPlane";
 		topPlane.tag = "Plane";
-		topPlane.collider.enabled = true;
+		topPlane.GetComponent<Collider>().enabled = true;
 		
 		//create the back plane
 		Quaternion backPlaneRotation = Quaternion.Euler (270.0f, 0.0f, 0.0f);
@@ -102,7 +102,7 @@ public class CreateEnvironment : MonoBehaviour {
 		backPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
 		backPlane.name = "BackPlane";
 		backPlane.tag = "Plane";
-		backPlane.collider.enabled = true;
+		backPlane.GetComponent<Collider>().enabled = true;
 		
 		//create the front plane
 		Quaternion frontPlaneRotation = Quaternion.Euler (90.0f, 0.0f, 0.0f);
@@ -111,7 +111,7 @@ public class CreateEnvironment : MonoBehaviour {
 		frontPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
 		frontPlane.name = "FrontPlane";
 		frontPlane.tag = "Plane";
-		frontPlane.collider.enabled = true;
+		frontPlane.GetComponent<Collider>().enabled = true;
 		
 		//create the right plane
 		Quaternion rightPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 90.0f);
@@ -120,7 +120,7 @@ public class CreateEnvironment : MonoBehaviour {
 		rightPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
 		rightPlane.name = "RightPlane";
 		rightPlane.tag = "Plane";
-		rightPlane.collider.enabled = true;
+		rightPlane.GetComponent<Collider>().enabled = true;
 		
 		//create the left plane
 		Quaternion leftPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 270.0f);
@@ -129,7 +129,7 @@ public class CreateEnvironment : MonoBehaviour {
 		leftPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
 		leftPlane.name = "LeftPlane";
 		leftPlane.tag = "Plane";
-		leftPlane.collider.enabled = true;
+		leftPlane.GetComponent<Collider>().enabled = true;
 	}
 	void CreateLine(ref GameObject plane, ref TextMesh tm, Vector3 positionOffset){
 		tm = Instantiate(textMeshPrefab, plane.transform.position + positionOffset, Quaternion.identity) as TextMesh;
@@ -291,10 +291,117 @@ public class CreateEnvironment : MonoBehaviour {
 			Atom.UnregisterAtom(currAtom);
 			Destroy (currAtom.gameObject);
 		}
+
+		CreatePresetConfiguration ();
+		//CreateRandomConfiguration();
+
+		AtomTouchGUI.myAtomTouchGUI.TryEnableAddAtomBtns();
+	}
+
+	// Create atoms by reading the information from an text input file in Resources folder. The file format is XYZ.
+	private void CreatePresetConfiguration()
+	{
+		Debug.Log ("Uploading text file!");
+		TextAsset textFile = Resources.Load ("box") as TextAsset;
+		Debug.Log("text file uploaded!");
+		string allLines = textFile.text;
+		allLines = allLines.ToLower ();
+		string[] lineArray = allLines.Split ("\r\n".ToCharArray (), StringSplitOptions.RemoveEmptyEntries);
+
+		string[] textArray1;
+		string[] textArray2;
 		
+		int numAtoms = int.Parse(lineArray[0]);
+
+		textArray1 = lineArray[1].Split(',');
+
+		for (int i=0; i<textArray1.Length; i++)
+		{
+			textArray2 = textArray1[i].Split('=');
+			if (textArray2 [0].Equals("potential"))
+			{
+				if (textArray2 [1].Equals("buckingham"))
+					Potential.currentPotential = Potential.potentialType.Buckingham;
+				if (textArray2 [1].Equals("lennardjones"))
+					Potential.currentPotential = Potential.potentialType.LennardJones;
+			}
+			else if (textArray2 [0].Equals("temperature"))
+			{
+				StaticVariables.desiredTemperature = float.Parse(textArray2[1]);
+			}
+			else if (textArray2 [0].Equals("volume"))
+			{
+				myEnvironment.volume = float.Parse(textArray2[1]);
+			}
+			else if (textArray2 [0].Equals("timespeed"))
+			{
+				if (textArray2 [1].Equals("stopped"))
+					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
+				if (textArray2 [1].Equals("slowmotion"))
+					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
+				if (textArray2 [1].Equals("normal"))
+					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
+			}
+
+		}
+		
+		for (int iLine=2; iLine < 2+numAtoms; iLine++)
+		{
+			textArray1 = lineArray[iLine].Split('\t');
+			Vector3 pos = new Vector3(float.Parse(textArray1[1]), float.Parse(textArray1[2]), float.Parse(textArray1[3]));
+			Vector3 vel = new Vector3(float.Parse(textArray1[4]), float.Parse(textArray1[5]), float.Parse(textArray1[6]));
+
+			int atomID = 0;
+
+			if (textArray1[0].Equals("cu"))
+				atomID = 0;
+			if (textArray1[0].Equals("au"))
+				atomID = 1;
+			if (textArray1[0].Equals("pt"))
+				atomID = 2;
+			if (textArray1[0].Equals("na"))
+				atomID = 3;
+			if (textArray1[0].Equals("cl"))
+				atomID = 4;
+
+			Rigidbody preFab = molecules[atomID];
+			
+			int preFabID = preFab.GetInstanceID();
+			if(preFabID == atomTouchGUI.copperPrefab.GetInstanceID()){
+				Copper.count++;
+				atomTouchGUI.copperCount.GetComponent<Text>().text = "Cu: " + Copper.count;
+			}else if(preFabID == atomTouchGUI.goldPrefab.GetInstanceID()){
+				Gold.count++;
+				atomTouchGUI.goldCount.GetComponent<Text>().text = "Au: " + Gold.count;
+			}else if(preFabID == atomTouchGUI.platinumPrefab.GetInstanceID()){
+				Platinum.count++;
+				atomTouchGUI.platinumCount.GetComponent<Text>().text = "Pt: " + Platinum.count;
+			}
+			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+			Instantiate(preFab, myEnvironment.centerPos, curRotation);
+			
+			int i = Atom.AllAtoms.Count-1;
+			Atom currAtom = Atom.AllAtoms[i];
+			currAtom.gameObject.name = currAtom.GetInstanceID().ToString();
+			currAtom.GetComponent<Rigidbody>().freezeRotation = true;
+			
+			currAtom.position =  pos;
+			currAtom.transform.position = currAtom.position;
+			//kick it
+			currAtom.velocity = vel;
+			Potential.myPotential.calculateVerletRadius (currAtom);
+		}
+		
+		preCompute ();
+		
+	}
+
+	private void CreateRandomConfiguration()
+	{
 		//initialize the new atoms
 		if (Potential.currentPotential == Potential.potentialType.LennardJones)
 		{
+			Debug.Log(molecules[0].gameObject.name);
 			for (int i = 0; i < numMolecules; i++)
 			{
 				createAtom (molecules [0]);
@@ -304,19 +411,17 @@ public class CreateEnvironment : MonoBehaviour {
 		{
 			for (int i = 0; i < numMolecules/2; i++)
 			{
-				createAtom (molecules [0]);
+				//sodium
+				createAtom (molecules [3]);
 			}
 			for (int i = numMolecules/2; i < numMolecules; i++)
 			{
-				createAtom (molecules [1]);
+				//chlorine
+				createAtom (molecules [4]);
 			}
 		}
-		
-		//AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
 		atomTouchGUI.AllAtomsKick();
-		AtomTouchGUI.myAtomTouchGUI.TryEnableAddAtomBtns();
 	}
-	
 	
 	// this method creates a new atom from the type of the preFab and checks the position to have a far enough distance from other atoms
 	public void createAtom(Rigidbody preFab)
@@ -334,14 +439,17 @@ public class CreateEnvironment : MonoBehaviour {
 		}
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		Quaternion curRotation = Quaternion.Euler(0, 0, 0);
+		preFab.gameObject.GetComponent<MeshRenderer>().enabled = SettingsControl.renderAtoms;
+
 		Instantiate(preFab, myEnvironment.centerPos, curRotation);
 
 		int i = Atom.AllAtoms.Count-1;
 		Atom currAtom = Atom.AllAtoms[i];
 		currAtom.gameObject.name = currAtom.GetInstanceID().ToString();
-		Debug.Log(currAtom.GetInstanceID());
-		currAtom.rigidbody.freezeRotation = true;
-		
+		//Debug.Log(currAtom.GetInstanceID());
+		currAtom.GetComponent<Rigidbody>().freezeRotation = true;
+		currAtom.GetComponent<TrailRenderer>().enabled = SettingsControl.mySettings.trailsToggle.isOn;
+
 		float realWidth = myEnvironment.width - 2.0f * myEnvironment.errorBuffer;
 		float realHeight = myEnvironment.height - 2.0f * myEnvironment.errorBuffer;
 		float realDepth = myEnvironment.depth - 2.0f * myEnvironment.errorBuffer;
@@ -388,5 +496,4 @@ public class CreateEnvironment : MonoBehaviour {
 		}
 		return proximityFlag;
 	}
-	
 }

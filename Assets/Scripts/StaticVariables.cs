@@ -32,19 +32,21 @@ public class StaticVariables {
 	public static float MDTimestepSqr = MDTimestep * MDTimestep;
 	public static float MDTimestepInPicosecond = MDTimestep / Mathf.Pow (10, -12);
 
-	public static int maxAtoms = 70; //max number of atoms allowed
+	public static int maxAtoms = 100; //max number of atoms allowed
 	public static Color atomEnabledColor = new Color(23/255.0f, 160/255.0f,242/255.0f, 1.0f);
 	public static Color atomDisabledColor = new Color(80/255.0f, 80/255.0f, 80/255.0f, 90/255.0f);
 	//scale timeScale with temp
-	public static float maxTimeScale = 4.0f;
-	public static float baseTimeScale = 0.8f;
+	public static float maxTimeScale = 0.8f;
+	public static float baseTimeScale = 0.2f;//when temp = 300k
+
+	public static float maxTimeScaleBuck = 0.65f;
+	public static float baseTimeScaleBuck = 0.25f;
 	
 	public static float clockTimeStart = 0.0f;
 	public static float clockTimeEnd = 0.0f;
 	
 	// This is the number of frames that the program enters a slow motion mode to avoid some gliches.
 	public static int slowMotionFrames = 20;
-	
 	//Suppose every Update physics interval (e.g. 0.02 seconds) is the
 	//Molecular Dynamics timestep of 0.5 * 10^-15 seconds
 	//public static float updateIntervalToRealTime = MDTimestep;
@@ -111,49 +113,26 @@ public class StaticVariables {
 		Stopped
 	};
 	
-	//this function will draw a line from startinPos to endingPos. 
-	//The atom colors will color each side of the line.
-	//Note: this function can only be called within OnPostRender(). 
-	//It will not display if called from a different function
-	public static void DrawLine(Vector3 startingPos, Vector3 endingPos, 
+	//draws bond as billboards
+	//c1 : atom1 center
+	//c2 : atom2 center
+	// s1--------s2
+	// |		  |
+	// s4_________s3
+	public static void DrawLine(Vector3 c1, Vector3 c2, 
 		Color atomColor1, Color atomColor2, float lineWidth, Material mat){
+
+		Vector3 camPos = Camera.main.gameObject.transform.position;
+
 		
-		Vector3 startingPos2 = (startingPos - endingPos);
-		startingPos2.Normalize ();
-		startingPos2 = Quaternion.Euler (new Vector3 (0.0f, 0.0f, -90.0f)) * startingPos2;
-		startingPos2 *= -lineWidth;
-		startingPos2 += startingPos;
-		
-		Vector3 endingPos2 = (endingPos - startingPos);
-		endingPos2.Normalize ();
-		endingPos2 = Quaternion.Euler (new Vector3 (0.0f, 0.0f, -90.0f)) * endingPos2;
-		endingPos2 *= lineWidth;
-		endingPos2 += endingPos;
-		
-		Vector3 startingPos3 = (startingPos - endingPos);
-		startingPos3.Normalize ();
-		startingPos3 = Quaternion.Euler (new Vector3 (0.0f, -90.0f, 0.0f)) * startingPos3;
-		startingPos3 *= -lineWidth;
-		startingPos3 += startingPos;
-		
-		Vector3 endingPos3 = (endingPos - startingPos);
-		endingPos3.Normalize ();
-		endingPos3 = Quaternion.Euler (new Vector3 (0.0f, -90.0f, 0.0f)) * endingPos3;
-		endingPos3 *= lineWidth;
-		endingPos3 += endingPos;
-		
-		Vector3 startingPos4 = (startingPos - endingPos);
-		startingPos4.Normalize ();
-		startingPos4 = Quaternion.Euler (new Vector3 (-90.0f, 00.0f, 0.0f)) * startingPos4;
-		startingPos4 *= -lineWidth;
-		startingPos4 += startingPos;
-		
-		Vector3 endingPos4 = (endingPos - startingPos);
-		endingPos4.Normalize ();
-		endingPos4 = Quaternion.Euler (new Vector3 (-90.0f, 00.0f, 0.0f)) * endingPos4;
-		endingPos4 *= lineWidth;
-		endingPos4 += endingPos;
-		
+		Vector3 c2ToCam = camPos-c2;
+		Vector3 c2ToS3 = Vector3.Cross(c1-c2, c2ToCam);
+		c2ToS3.Normalize();
+		Vector3 s1 = c1 - c2ToS3*lineWidth/2.0f;
+		Vector3 s2 = c2 - c2ToS3*lineWidth/2.0f;
+		Vector3 s3 = c2 + c2ToS3 * lineWidth/2.0f; 
+		Vector3 s4 = s3 + (s1-s2);
+	
 		if (!mat) {
 			return;
 		}
@@ -163,26 +142,12 @@ public class StaticVariables {
 		GL.Begin (GL.QUADS);
 		
 		GL.Color (atomColor1);
-		GL.Vertex (startingPos);
+		GL.Vertex (s1);
 		GL.Color (atomColor2);
-		GL.Vertex (endingPos);
-		GL.Vertex (endingPos2);
+		GL.Vertex (s2);
+		GL.Vertex (s3);
 		GL.Color (atomColor1);
-		GL.Vertex (startingPos2);
-		
-		GL.Vertex (startingPos);
-		GL.Color (atomColor2);
-		GL.Vertex (endingPos);
-		GL.Vertex (endingPos3);
-		GL.Color (atomColor1);
-		GL.Vertex (startingPos3);
-		
-		GL.Vertex (startingPos);
-		GL.Color (atomColor2);
-		GL.Vertex (endingPos);
-		GL.Vertex (endingPos4);
-		GL.Color (atomColor1);
-		GL.Vertex (startingPos4);
+		GL.Vertex (s4);
 		
 		GL.End ();
 		GL.PopMatrix();

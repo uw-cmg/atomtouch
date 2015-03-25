@@ -67,10 +67,10 @@ public class Gold : Atom
 	
 	public override void SetSelected (bool selected){
 		if (selected) {
-			gameObject.renderer.material = selectedMaterial;
+			gameObject.GetComponent<Renderer>().material = selectedMaterial;
 		}
 		else{
-			gameObject.renderer.material = goldMaterial;
+			gameObject.GetComponent<Renderer>().material = goldMaterial;
 		}
 		//Atom.EnableSelectAtomGroup(NumberofAtom.selectedAtoms>0);
 //		Debug.Log("selected atoms: " + NumberofAtom.selectedAtoms);
@@ -78,10 +78,10 @@ public class Gold : Atom
 	
 	public override void SetTransparent(bool transparent){
 		if (transparent) {
-			gameObject.renderer.material = transparentMaterial;
+			gameObject.GetComponent<Renderer>().material = transparentMaterial;
 		}
 		else{
-			gameObject.renderer.material = goldMaterial;
+			gameObject.GetComponent<Renderer>().material = goldMaterial;
 		}
 	}
 	
@@ -90,7 +90,8 @@ public class Gold : Atom
 		//make the atom its original color to start
 		SetSelected (false);
 		//scale the atom according to sigma
-		gameObject.transform.localScale = new Vector3(sigma * .5f, sigma * .5f, sigma * .5f);
+		//gameObject.transform.localScale = new Vector3(sigma * .5f, sigma * .5f, sigma * .5f);
+		gameObject.transform.localScale = new Vector3(1.35f, 1.35f, 1.35f);
 	}
 }
 

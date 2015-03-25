@@ -21,10 +21,12 @@ public class CameraScript : MonoBehaviour {
 
 	public float moveSpeed = 0.25f;
 	public float turnSpeed = .5f;
+	public float rotateSensitivityLeftRight = 6.0f;
+	public float rotateSensitivityUpDown = 10.0f;
 	public GameObject gameControl;
 	public GameObject sliderPanel;
 	public GameObject hudCanvas;
-
+	
 	private AtomTouchGUI atomTouchGUI;
 	private SettingsControl settingsControl;
 
@@ -54,8 +56,7 @@ public class CameraScript : MonoBehaviour {
 	}
 	public void UpdateCamera(){
 		bool holdingAtom = HasAtomHeld();
-		if(!holdingAtom && !atomTouchGUI.addGraphicCopper 
-			&& !atomTouchGUI.addGraphicGold && !atomTouchGUI.addGraphicPlatinum 
+		if(!holdingAtom
 			&& !atomTouchGUI.changingTemp && !atomTouchGUI.changingVol){
 			
 			Vector3 center = createEnvironment.centerPos;
@@ -65,9 +66,12 @@ public class CameraScript : MonoBehaviour {
 	}
 	//this function handles the rotation of the camera
 	void Update () {
-		if(SettingsControl.GamePaused)return;
-		
-		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+		if(SettingsControl.GamePaused){
+		//	Debug.Log("gamepaused");
+			return;
+		}
+		//Debug.Log("resumed");
+		if (Application.isMobilePlatform) {
 			if(Input.touchCount == 1){
 				Touch touch = Input.GetTouch (0);	
 				if (touch.phase == TouchPhase.Moved) {
@@ -96,8 +100,8 @@ public class CameraScript : MonoBehaviour {
 		float x = Input.GetAxis("Mouse X");
 		float y = Input.GetAxis("Mouse Y");
 
-		Camera.main.transform.RotateAround(Vector3.zero, Camera.main.transform.rotation * Vector3.up, x);
-		Camera.main.transform.RotateAround(Vector3.zero, Camera.main.transform.rotation * Vector3.left, y);
+		Camera.main.transform.RotateAround(Vector3.zero, Camera.main.transform.rotation * Vector3.up, rotateSensitivityUpDown *x);
+		Camera.main.transform.RotateAround(Vector3.zero, Camera.main.transform.rotation * Vector3.left, rotateSensitivityLeftRight *y);
 	
 	
 	}
@@ -144,24 +148,24 @@ public class CameraScript : MonoBehaviour {
 		
 		float colorMaximum = .37f;
 		float colorMinimum = 0.1f;
-		camera.backgroundColor = new Color(camera.backgroundColor.r + redValue, camera.backgroundColor.g + greenValue, camera.backgroundColor.b + blueValue);
-		if (camera.backgroundColor.r > colorMaximum) {
-			camera.backgroundColor = new Color(colorMaximum, camera.backgroundColor.g, camera.backgroundColor.b);
+		GetComponent<Camera>().backgroundColor = new Color(GetComponent<Camera>().backgroundColor.r + redValue, GetComponent<Camera>().backgroundColor.g + greenValue, GetComponent<Camera>().backgroundColor.b + blueValue);
+		if (GetComponent<Camera>().backgroundColor.r > colorMaximum) {
+			GetComponent<Camera>().backgroundColor = new Color(colorMaximum, GetComponent<Camera>().backgroundColor.g, GetComponent<Camera>().backgroundColor.b);
 		}
-		else if (camera.backgroundColor.r < colorMinimum) {
-			camera.backgroundColor = new Color(colorMinimum, camera.backgroundColor.g, camera.backgroundColor.b);
+		else if (GetComponent<Camera>().backgroundColor.r < colorMinimum) {
+			GetComponent<Camera>().backgroundColor = new Color(colorMinimum, GetComponent<Camera>().backgroundColor.g, GetComponent<Camera>().backgroundColor.b);
 		}
-		if (camera.backgroundColor.g > colorMaximum) {
-			camera.backgroundColor = new Color(camera.backgroundColor.r, colorMaximum, camera.backgroundColor.b);
+		if (GetComponent<Camera>().backgroundColor.g > colorMaximum) {
+			GetComponent<Camera>().backgroundColor = new Color(GetComponent<Camera>().backgroundColor.r, colorMaximum, GetComponent<Camera>().backgroundColor.b);
 		}
-		else if (camera.backgroundColor.g < colorMinimum) {
-			camera.backgroundColor = new Color(camera.backgroundColor.r, colorMinimum, camera.backgroundColor.b);
+		else if (GetComponent<Camera>().backgroundColor.g < colorMinimum) {
+			GetComponent<Camera>().backgroundColor = new Color(GetComponent<Camera>().backgroundColor.r, colorMinimum, GetComponent<Camera>().backgroundColor.b);
 		}
-		if (camera.backgroundColor.b > colorMaximum) {
-			camera.backgroundColor = new Color(camera.backgroundColor.r, camera.backgroundColor.g, colorMaximum);
+		if (GetComponent<Camera>().backgroundColor.b > colorMaximum) {
+			GetComponent<Camera>().backgroundColor = new Color(GetComponent<Camera>().backgroundColor.r, GetComponent<Camera>().backgroundColor.g, colorMaximum);
 		}
-		else if (camera.backgroundColor.b < colorMinimum) {
-			camera.backgroundColor = new Color(camera.backgroundColor.r, camera.backgroundColor.g, colorMinimum);
+		else if (GetComponent<Camera>().backgroundColor.b < colorMinimum) {
+			GetComponent<Camera>().backgroundColor = new Color(GetComponent<Camera>().backgroundColor.r, GetComponent<Camera>().backgroundColor.g, colorMinimum);
 		}
 	}
 

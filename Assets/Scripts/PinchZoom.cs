@@ -36,7 +36,7 @@ public class PinchZoom : MonoBehaviour {
 			}
 		}
 
-		if (Application.platform == RuntimePlatform.IPhonePlayer && Input.touchCount == 2 && !beingHeld) {
+		if (Application.isMobilePlatform && Input.touchCount == 2 && !beingHeld) {
 			Touch touchZero = Input.GetTouch (0);
 			Touch touchOne = Input.GetTouch (1);
 
@@ -47,10 +47,10 @@ public class PinchZoom : MonoBehaviour {
 			float touchDeltaMag = (touchZero.position - touchOne.position).magnitude;
 
 			float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
-			Quaternion cameraRotation = camera.transform.rotation;
+			Quaternion cameraRotation = GetComponent<Camera>().transform.rotation;
 
 			if(doubleTappedAtom != null){
-				Vector3 projectPosition = camera.transform.position;
+				Vector3 projectPosition = GetComponent<Camera>().transform.position;
 				float zChange = deltaMagnitudeDiff * touchPerspectiveZoomSpeed;
 				//enforce a maximum value that the camera can move in one frame
 				//this is to avoid going "through" the minimum and maximum distances of the box
@@ -63,11 +63,11 @@ public class PinchZoom : MonoBehaviour {
 				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, zChange));
 				//enforce a minimum and maximum distance from the center of the box that the user can scroll
 				if(Vector3.Distance(projectPosition, doubleTappedAtom.transform.position) > 1.0f){
-					camera.transform.position = projectPosition;
+					GetComponent<Camera>().transform.position = projectPosition;
 				}
 			}
 			else{
-				Vector3 projectPosition = camera.transform.position;
+				Vector3 projectPosition = GetComponent<Camera>().transform.position;
 				float zChange = deltaMagnitudeDiff * touchPerspectiveZoomSpeed;
 				//enforce a maximum value that the camera can move in one frame
 				//this is to avoid going "through" the minimum and maximum distances of the box
@@ -82,15 +82,15 @@ public class PinchZoom : MonoBehaviour {
 				Vector3 centerPos = new Vector3(CreateEnvironment.bottomPlane.transform.position.x, CreateEnvironment.bottomPlane.transform.position.y + (createEnvironment.height/2.0f), CreateEnvironment.bottomPlane.transform.position.z);
 				//enforce a minimum and maximum distance from the center of the box that the user can scroll
 				if(Vector3.Distance(projectPosition, centerPos) < 70.0f && Vector3.Distance(projectPosition, centerPos) > 10.0f){
-					camera.transform.position = projectPosition;
+					GetComponent<Camera>().transform.position = projectPosition;
 				}
 			}
 		}
-		else if(Application.platform != RuntimePlatform.IPhonePlayer && !beingHeld){
+		else if(!Application.isMobilePlatform && !beingHeld){
 			float deltaMagnitudeDiff = Input.GetAxis("Mouse ScrollWheel");
-			Quaternion cameraRotation = camera.transform.rotation;
+			Quaternion cameraRotation = GetComponent<Camera>().transform.rotation;
 			if(doubleTappedAtom != null){
-				Vector3 projectPosition = camera.transform.position;
+				Vector3 projectPosition = GetComponent<Camera>().transform.position;
 				float zChange = deltaMagnitudeDiff * pcPerspectiveZoomSpeed;
 				//enforce a maximum value that the camera can move in one frame
 				//this is to avoid going "through" the minimum and maximum distances of the box
@@ -103,11 +103,11 @@ public class PinchZoom : MonoBehaviour {
 				projectPosition -= (cameraRotation * new Vector3(0.0f, 0.0f, zChange));
 				//enforce a minimum and maximum distance from the center of the box that the user can scroll
 				if(Vector3.Distance(projectPosition, doubleTappedAtom.transform.position) > 1.0f){
-					camera.transform.position = projectPosition;
+					GetComponent<Camera>().transform.position = projectPosition;
 				}
 			}
 			else{
-				Vector3 projectPosition = camera.transform.position;
+				Vector3 projectPosition = GetComponent<Camera>().transform.position;
 				float zChange = deltaMagnitudeDiff * pcPerspectiveZoomSpeed;
 				//enforce a maximum value that the camera can move in one frame
 				//this is to avoid going "through" the minimum and maximum distances of the box
@@ -123,7 +123,7 @@ public class PinchZoom : MonoBehaviour {
 					+ (createEnvironment.height/2.0f), CreateEnvironment.bottomPlane.transform.position.z);
 				//enforce a minimum and maximum distance from the center of the box that the user can scroll
 				if(Vector3.Distance(projectPosition, centerPos) < 70.0f && Vector3.Distance(projectPosition, centerPos) > 10.0f){
-					camera.transform.position = projectPosition;
+					GetComponent<Camera>().transform.position = projectPosition;
 				}
 			}
 		}

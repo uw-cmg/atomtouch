@@ -34,7 +34,7 @@ using System;
 
 public abstract class Atom : MonoBehaviour
 {
-
+	[HideInInspector]public AtomTouchGUI atomTouchGUI;
 	private Vector3 offset;
 	private Vector3 screenPoint;
 	private Vector3 lastMousePosition;
@@ -82,11 +82,15 @@ public abstract class Atom : MonoBehaviour
 	public Vector3 accelerationNew = Vector3.zero;
 	public Vector3 accelerationOld = Vector3.zero;
 	
+	private GameObject buttonPanel;
 	void Awake(){
 		RegisterAtom (this);
 		bondDistanceText = new Dictionary<String, TextMesh> ();
+		atomTouchGUI = Camera.main.gameObject.GetComponent<AtomTouchGUI>();
 	}
-	
+	void Start(){
+		buttonPanel = AtomTouchGUI.myAtomTouchGUI.buttonPanel;
+	}
 	//void OnDestroy(){
 	//	UnregisterAtom (this);
 	//}
@@ -117,27 +121,14 @@ public abstract class Atom : MonoBehaviour
 		if(StaticVariables.mouseClickProcessed)return;
 	
 		
-		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+		if (Application.isMobilePlatform ) {
 			if(Input.touchCount > 0){
 				//OnTouch();
 				Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
 				RaycastHit hitInfo;
 				if(!held && Physics.Raycast(ray, out hitInfo) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
 					if(Input.GetTouch(0).phase == TouchPhase.Began){
-						//temporarily disable double click
-						
-						//if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
-							//user double tapped an atom on iOS
-						//	AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
-						//	atomTouchGUI.SetDoubleClicked();
-						//	ResetDoubleTapped();
-						//	doubleTapped = true;
-						//	RemoveAllBondText();
-						//	AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
-						//}
-						
-						//user touch an atom at this point
-						//OnMouseDownIOS();
+					
 						OnTouch();
 						lastTapTime = Time.realtimeSinceStartup;
 					}
@@ -162,17 +153,7 @@ public abstract class Atom : MonoBehaviour
 		else{
 			//on pc
 			if(Input.GetMouseButtonDown(0) ){
-				//temporarily disable double click
 				
-				//if((Time.realtimeSinceStartup - lastTapTime) < tapTime){
-					//user double tapped an atom on PC
-				//	AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
-				//	atomTouchGUI.SetDoubleClicked();
-				//	ResetDoubleTapped();
-				//	doubleTapped = true;
-				//	RemoveAllBondText();
-				//	AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
-				//}
 				
 				Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
 				RaycastHit hitInfo;
@@ -184,32 +165,14 @@ public abstract class Atom : MonoBehaviour
 				}
 
 			}
-			HandleRightClick();
-		}
-		if (doubleTapped) {
-			//this is what happens when double tapped is true
-			CameraScript cameraScript = Camera.main.GetComponent<CameraScript>();
-			cameraScript.setCameraCoordinates(transform);
-			UpdateBondText();
-			ApplyTransparency();
+			//HandleRightClick();
 		}
 	}
 	public static void EnableSelectAtomGroup(bool enable){
 		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
 		atomTouchGUI.selectAtomPanel.SetActive(enable);
 	}
-	//another method for selecting atoms
-	void HandleRightClick(){
-		//hide selectpanel
-		if (Input.GetMouseButtonDown (1)) {
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hitInfo;
-			if(Physics.Raycast(ray, out hitInfo) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
-				selected = !selected;
-				SetSelected(selected);
-			}
-		}
-	}
+
 	
 	//this function gives the user the ability to control the z-axis of the atom on iOS
 	void HandleZAxisTouch(){
@@ -289,7 +252,18 @@ public abstract class Atom : MonoBehaviour
 	//this is the equivalent of OnMouseDown, but for iOS
 	//void OnMouseDownIOS(){
 	void OnTouch(){
-		if (Application.platform != RuntimePlatform.IPhonePlayer)return;
+		if (!Application.isMobilePlatform)return;
+		if(SettingsControl.GamePaused)return;
+		/*
+		RectTransform rt = AtomTouchGUI.myAtomTouchGUI.buttonPanel.GetComponent<RectTransform>();
+
+		if(Input.mousePosition.x < 
+			rt.rect.width *  AtomTouchGUI.myAtomTouchGUI.hud.GetComponent<Canvas>().scaleFactor
+			|| Input.mousePosition.x > 
+			Screen.width-rt.rect.width * AtomTouchGUI.myAtomTouchGUI.hud.GetComponent<Canvas>().scaleFactor){
+			return;
+		}
+		*/
 		dragStartTime = Time.realtimeSinceStartup;
 		dragCalled = false;
 		held = true;
@@ -307,7 +281,7 @@ public abstract class Atom : MonoBehaviour
 			for(int i = 0; i < AllAtoms.Count; i++){
 				Atom currAtom = AllAtoms[i];
 				if(currAtom.selected){
-					currAtom.rigidbody.isKinematic = true;
+					currAtom.GetComponent<Rigidbody>().isKinematic = true;
 					Vector3 pointOnScreen = Camera.main.WorldToScreenPoint(currAtom.transform.position);
 					//the -15.0f here is for moving the atom above your finger
 					Vector3 atomOffset = currAtom.transform.position - Camera.main.ScreenToWorldPoint(
@@ -327,9 +301,18 @@ public abstract class Atom : MonoBehaviour
 	
 	void OnMouseDown (){
 		if(SettingsControl.GamePaused)return;
+		if (Application.isMobilePlatform)return;
+		/*
+		RectTransform rt = AtomTouchGUI.myAtomTouchGUI.buttonPanel.GetComponent<RectTransform>();
 
-		if (Application.platform == RuntimePlatform.IPhonePlayer)return;
 
+		if(Input.mousePosition.x < 
+			rt.rect.width *  AtomTouchGUI.myAtomTouchGUI.hud.GetComponent<Canvas>().scaleFactor
+			|| Input.mousePosition.x > 
+			Screen.width-rt.rect.width * AtomTouchGUI.myAtomTouchGUI.hud.GetComponent<Canvas>().scaleFactor){
+			return;
+		}
+		*/
 		dragStartTime = Time.realtimeSinceStartup;
 		dragCalled = false;
 		held = true;
@@ -348,7 +331,7 @@ public abstract class Atom : MonoBehaviour
 			for(int i = 0; i < AllAtoms.Count; i++){
 				Atom currAtom = AllAtoms[i];
 				if(currAtom.selected){
-					currAtom.rigidbody.isKinematic = true;
+					currAtom.GetComponent<Rigidbody>().isKinematic = true;
 					Vector3 pointOnScreen = Camera.main.WorldToScreenPoint(currAtom.transform.position);
 					//the -15.0 here is for moving the atom above your mouse
 					Vector3 atomOffset = currAtom.transform.position - Camera.main.ScreenToWorldPoint(
@@ -365,10 +348,21 @@ public abstract class Atom : MonoBehaviour
 	
 	//this is the equivalent of OnMouseDrag for iOS
 	void OnMouseDragIOS(){
+		if(SettingsControl.GamePaused)return;
+		if(atomTouchGUI.changingTemp || atomTouchGUI.changingVol)return;
+		/*
+		RectTransform rt = AtomTouchGUI.myAtomTouchGUI.buttonPanel.GetComponent<RectTransform>();
+
+		if(Input.mousePosition.x < 
+			rt.rect.width *  AtomTouchGUI.myAtomTouchGUI.hud.GetComponent<Canvas>().scaleFactor ){
+			
+			return;
+		}
+		*/
 		if (Time.realtimeSinceStartup - dragStartTime > 0.1f) {
 			dragCalled = true;
 			ApplyTransparency();
-			rigidbody.isKinematic = true;
+			GetComponent<Rigidbody>().isKinematic = true;
 			if(!selected){
 				//this is for one atom
 				Vector3 diffVector 
@@ -438,14 +432,25 @@ public abstract class Atom : MonoBehaviour
 	
 	void OnMouseDrag(){
 		if(SettingsControl.GamePaused)return;
+		if(atomTouchGUI.changingTemp || atomTouchGUI.changingVol)return;
+		/*
+		RectTransform rt = AtomTouchGUI.myAtomTouchGUI.buttonPanel.GetComponent<RectTransform>();
+
+		if(Input.mousePosition.x < 
+			rt.rect.width *  AtomTouchGUI.myAtomTouchGUI.hud.GetComponent<Canvas>().scaleFactor
+			|| Input.mousePosition.x > 
+			Screen.width-rt.rect.width * AtomTouchGUI.myAtomTouchGUI.hud.GetComponent<Canvas>().scaleFactor){
+			return;
+		}
+		*/
 		StaticVariables.draggingAtoms = true;
-		if (Application.platform != RuntimePlatform.IPhonePlayer) {
+		if (!Application.isMobilePlatform) {
 			
 			if(Time.realtimeSinceStartup - dragStartTime > 0.1f){
 				dragCalled = true;
 				Quaternion cameraRotation = Camera.main.transform.rotation;
 				ApplyTransparency();
-				rigidbody.isKinematic = true;
+				GetComponent<Rigidbody>().isKinematic = true;
 				
 				if(!selected){
 					//this is for one atom
@@ -541,12 +546,12 @@ public abstract class Atom : MonoBehaviour
 			//if the user only tapped the atom, this is executed
 			selected = !selected;
 			SetSelected(selected);
-			rigidbody.isKinematic = false;
+			GetComponent<Rigidbody>().isKinematic = false;
 		}
 		else{
 			if(!selected){
 				//this is for one atom
-				rigidbody.isKinematic = false;
+				GetComponent<Rigidbody>().isKinematic = false;
 				
 				Quaternion cameraRotation = Camera.main.transform.rotation;
 				Vector3 direction = cameraRotation * (new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, 0.0f) - new Vector3(lastTouchPosition.x, lastTouchPosition.y, 0.0f));
@@ -561,7 +566,7 @@ public abstract class Atom : MonoBehaviour
 				for(int i = 0; i < AllAtoms.Count; i++){
 					Atom currAtom = AllAtoms[i];
 					if(currAtom.selected){
-						currAtom.rigidbody.isKinematic = false;
+						currAtom.GetComponent<Rigidbody>().isKinematic = false;
 						currAtom.held = false;
 						
 						Quaternion cameraRotation = Camera.main.transform.rotation;
@@ -588,18 +593,18 @@ public abstract class Atom : MonoBehaviour
 	void OnMouseUp (){
 		if(SettingsControl.GamePaused)return;
 		StaticVariables.draggingAtoms = false;
-		if (Application.platform != RuntimePlatform.IPhonePlayer) {
+		if (!Application.isMobilePlatform) {
 			if(!dragCalled){
 				//this is executed if an atom is only tapped
 				selected = !selected;
 				SetSelected(selected);
 
-				rigidbody.isKinematic = false;
+				GetComponent<Rigidbody>().isKinematic = false;
 			}
 			else{
 				if(!selected){
 					//this is for one atom
-					rigidbody.isKinematic = false;
+					GetComponent<Rigidbody>().isKinematic = false;
 					
 					Quaternion cameraRotation = Camera.main.transform.rotation;
 					Vector2 direction = cameraRotation * (Input.mousePosition - lastMousePosition);
@@ -612,7 +617,7 @@ public abstract class Atom : MonoBehaviour
 					for(int i = 0; i < AllAtoms.Count; i++){
 						Atom currAtom = AllAtoms[i];
 						if(currAtom.selected){
-							currAtom.rigidbody.isKinematic = false;
+							currAtom.GetComponent<Rigidbody>().isKinematic = false;
 							currAtom.held = false;
 							
 							Quaternion cameraRotation = Camera.main.transform.rotation;

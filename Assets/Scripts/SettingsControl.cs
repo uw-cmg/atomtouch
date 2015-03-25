@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class SettingsControl : MonoBehaviour {
+	public static SettingsControl mySettings;
 
 	public GameObject bottomLayer;
 	public GameObject settingsCanvas;
@@ -13,6 +14,8 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject lenJonesOn;
 	public GameObject buckinghamOn;
 	public GameObject nmOn;
+	public GameObject trailsOn;
+	public GameObject atomRendererOn;
 	public GameObject sliderPanel;
 	public GameObject graphOn;
 	public GameObject graphPanel;
@@ -20,6 +23,7 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject brennerOn;
 	public AtomTouchGUI atomTouchGUI;
 
+	public static bool renderAtoms = true;
 	public static bool mouseExitsSettingsPanel; //aka, pause the game
 
 	private static Potential.potentialType currentPotentialType;
@@ -27,6 +31,9 @@ public class SettingsControl : MonoBehaviour {
 	
 	private static bool gamePaused;
 	private Toggle nmToggle;
+	private Toggle atomRendererToggle;
+
+	[HideInInspector]public Toggle trailsToggle;
 
 	private bool doResume = false;
     public static bool GamePaused{
@@ -36,20 +43,27 @@ public class SettingsControl : MonoBehaviour {
 	void Awake(){
 		mouseExitsSettingsPanel = true;
 		gamePaused = false;
-		currentPotentialType = Potential.potentialType.LennardJones;
+		mySettings = this;
+
 		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
 		nmToggle = nmOn.GetComponent<Toggle>();
+		trailsToggle = trailsOn.GetComponent<Toggle>();
+		atomRendererToggle = atomRendererOn.GetComponent<Toggle>();
 		simTypeChanged = false;
 	}
-	
+	void Start(){
+		currentPotentialType = Potential.currentPotential;
+	}
 	
 	public void ResumeGame(){
 		//Debug.Log("mio");
 		settingsCanvas.SetActive(false);
 		hudCanvas.SetActive(true);
 		//resume
-		Time.timeScale = 1.0f;
-
+		//Time.timeScale = 1.0f;
+		atomTouchGUI.ChangeAtomTemperature();
+		atomTouchGUI.changingTemp = false;
+		atomTouchGUI.changingVol = false;
 		//if sim type is changed, reset
 		if(simTypeChanged){
 			CreateEnvironment.myEnvironment.preCompute();
@@ -89,7 +103,35 @@ public class SettingsControl : MonoBehaviour {
 			UpdateVolume.volUnit = UpdateVolume.VolUnitType.Angstrom;
 		}
 	}
+	//turn trail renderers on/off
+	public void OnToggle_Trails(){
+		for(int i=0; i<Atom.AllAtoms.Count;i++){
+			Atom currAtom = Atom.AllAtoms[i];
+			currAtom.gameObject.GetComponent<TrailRenderer>().enabled = trailsToggle.isOn;
+		}
+	}
+	//turn on/off mesh renderer
+	public void OnToggle_AtomRenderer(){
+		if(atomRendererToggle.isOn){
+			if(!renderAtoms){
+				//update atom mesh renderers only if settings has been changed
+				renderAtoms = true;
+			}else{
+				return;
+			}	
+		}else{
+			if(renderAtoms){
+				renderAtoms = false;
+			}else{
+				return;
+			}
+		}
+		//update renderers
+		for(int i=0; i < Atom.AllAtoms.Count;i++){
+			Atom.AllAtoms[i].gameObject.GetComponent<MeshRenderer>().enabled = renderAtoms;
+		}
 
+	}
 	//checks if mouse clicks outside the settings, if so, exit settings and resume
 	public void CheckExitSettings(){
 		
@@ -124,5 +166,6 @@ public class SettingsControl : MonoBehaviour {
 			}
 			currentPotentialType = Potential.potentialType.Buckingham;
 		}
+		atomTouchGUI.SetAtomBtnsVisibility();
 	}
 }

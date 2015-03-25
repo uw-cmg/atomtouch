@@ -81,38 +81,19 @@ public class Graph : MonoBehaviour {
 	}
 	*/
 	
-	void OnGUI(){
-		
-		float minRadius = 0.0f;
-		float maxRadius = PairDistributionFunction.maxR;
-		
-		//this function puts the labels of the graph on screen
-		GUIStyle graphText = GUI.skin.label;
-		graphText.alignment = TextAnchor.MiddleLeft;
-		graphText.fontSize = 14;
-		graphText.normal.textColor = Color.white;
-		AtomTouchGUI atomGUI = Camera.main.GetComponent<AtomTouchGUI> ();
-		if (atomGUI.dataPanelActive) {
-			GUI.Label (new Rect (xCoord + width/2.0f - 60, Screen.height - yCoord, 200, 20), graphLabel);
-			GUI.Label (new Rect (xCoord - 32, Screen.height - (Screen.height * .27f), 100, 20), (dataMaximum).ToString () + yUnitLabel);
-			GUI.Label (new Rect (xCoord - 53, Screen.height - yCoord - 15, 100, 20), (PairDistributionFunction.numberOfCalculations).ToString () + yUnitLabel);
-			GUI.Label (new Rect (xCoord - 5, Screen.height - yCoord, 100, 20), minRadius.ToString () + xUnitLabel);
-			GUI.Label (new Rect (xCoord + width - 35.0f, Screen.height - yCoord, 100, 20), maxRadius.ToString() + xUnitLabel);
-		}
-		
-	}
+
 	
 	//OnGUI will draw over this function, so the graph cannot be behind any GUI elements
 
 	void OnPostRender(){
 		
 		AtomTouchGUI atomGUI = Camera.main.GetComponent<AtomTouchGUI> ();
-		if (atomGUI.dataPanelActive) {
+		
 			//draw the background for the graph
-			Vector3 upperLeft = camera.ScreenToWorldPoint (new Vector3 (xCoord, (yCoord+height), zDepth));
-			Vector3 lowerLeft = camera.ScreenToWorldPoint (new Vector3(xCoord, yCoord, zDepth));
-			Vector3 upperRight = camera.ScreenToWorldPoint (new Vector3 (xCoord + width, (yCoord+height), zDepth));
-			Vector3 lowerRight = camera.ScreenToWorldPoint (new Vector3(xCoord + width, yCoord, zDepth));
+			Vector3 upperLeft = GetComponent<Camera>().ScreenToWorldPoint (new Vector3 (xCoord, (yCoord+height), zDepth));
+			Vector3 lowerLeft = GetComponent<Camera>().ScreenToWorldPoint (new Vector3(xCoord, yCoord, zDepth));
+			Vector3 upperRight = GetComponent<Camera>().ScreenToWorldPoint (new Vector3 (xCoord + width, (yCoord+height), zDepth));
+			Vector3 lowerRight = GetComponent<Camera>().ScreenToWorldPoint (new Vector3(xCoord + width, yCoord, zDepth));
 			Color customColor = new Color (0.5f, 0.5f, 0.5f, 1.0f);
 			StaticVariables.DrawQuad (upperLeft, upperRight, lowerLeft, lowerRight, customColor, mat);
 			
@@ -126,8 +107,8 @@ public class Graph : MonoBehaviour {
 			int numTicks = (int)(highTime - lowTime) + 1;
 			float tickSpacing = (float)((width-10.0f) / numTicks);
 			for(int i = 0; i < numTicks+1; i++){
-				Vector3 top = camera.ScreenToWorldPoint(new Vector3(xCoord + (i*tickSpacing), yCoord + 10.0f, zDepth));
-				Vector3 bottom = camera.ScreenToWorldPoint(new Vector3(xCoord + (i*tickSpacing), yCoord - 10.0f, zDepth));
+				Vector3 top = GetComponent<Camera>().ScreenToWorldPoint(new Vector3(xCoord + (i*tickSpacing), yCoord + 10.0f, zDepth));
+				Vector3 bottom = GetComponent<Camera>().ScreenToWorldPoint(new Vector3(xCoord + (i*tickSpacing), yCoord - 10.0f, zDepth));
 				StaticVariables.DrawLine(top, bottom, Color.black, Color.black, lineWidth, mat);
 			}
 			
@@ -156,11 +137,11 @@ public class Graph : MonoBehaviour {
 				float firstYAddition = firstPercentage * height;
 				float secondYAddition = secondPercentage * height;
 				
-				Vector3 firstPoint = camera.ScreenToWorldPoint(new Vector3(xCoord + (i*spacing), yCoord + firstYAddition, zDepth));
-				Vector3 secondPoint = camera.ScreenToWorldPoint(new Vector3(xCoord + ((i+1)*spacing), yCoord + secondYAddition, zDepth));
+				Vector3 firstPoint = GetComponent<Camera>().ScreenToWorldPoint(new Vector3(xCoord + (i*spacing), yCoord + firstYAddition, zDepth));
+				Vector3 secondPoint = GetComponent<Camera>().ScreenToWorldPoint(new Vector3(xCoord + ((i+1)*spacing), yCoord + secondYAddition, zDepth));
 				StaticVariables.DrawLine(firstPoint, secondPoint, lineColor, lineColor, lineWidth, mat);
 			}
-		}
+		
 		
 		
 		
