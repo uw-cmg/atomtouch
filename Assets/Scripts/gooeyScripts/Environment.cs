@@ -58,68 +58,14 @@ public class Environment : MonoBehaviour {
 	public static Environment myEnvironment;
 	
 	void Awake(){
+		initialCenterPos = Vector3.zero;
 		Environment.myEnvironment = this;
 		//when first started, pause timer
 		StaticVariables.pauseTime = false;
 		//figure out the dimensions of the box based on the volume
-		width = Mathf.Pow (volume, (1.0f / 3.0f));
-		height = Mathf.Pow (volume, (1.0f / 3.0f));
-		depth = Mathf.Pow (volume, (1.0f / 3.0f));
-	}
-	void CreatePlanes(){
-		//create the bottom plane
-		Quaternion bottonPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 0.0f);
-		Vector3 bottomPlanePos = new Vector3 (centerPos.x, centerPos.y - (height/2.0f), centerPos.z);
-		bottomPlane = Instantiate (plane, bottomPlanePos, bottonPlaneRotation) as GameObject;
-		bottomPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
-		bottomPlane.name = "BottomPlane";
-		bottomPlane.tag = "Plane";
-		bottomPlane.GetComponent<Collider>().enabled = true;
-		
-		//create the top plane
-		Quaternion topPlaneRotation = Quaternion.Euler (0.0f, 180.0f, 180.0f);
-		Vector3 topPlanePos = new Vector3 (centerPos.x, centerPos.y + (height/2.0f), centerPos.z);
-		topPlane = Instantiate (plane, topPlanePos, topPlaneRotation) as GameObject;
-		topPlane.transform.localScale = new Vector3 (width / 10.0f, height / 10.0f, depth / 10.0f);
-		topPlane.name = "TopPlane";
-		topPlane.tag = "Plane";
-		topPlane.GetComponent<Collider>().enabled = true;
-		
-		//create the back plane
-		Quaternion backPlaneRotation = Quaternion.Euler (270.0f, 0.0f, 0.0f);
-		Vector3 backPlanePos = new Vector3 (centerPos.x, centerPos.y, centerPos.z + (depth/2.0f));
-		backPlane = Instantiate (plane, backPlanePos, backPlaneRotation) as GameObject;
-		backPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
-		backPlane.name = "BackPlane";
-		backPlane.tag = "Plane";
-		backPlane.GetComponent<Collider>().enabled = true;
-		
-		//create the front plane
-		Quaternion frontPlaneRotation = Quaternion.Euler (90.0f, 0.0f, 0.0f);
-		Vector3 frontPlanePos = new Vector3 (centerPos.x, centerPos.y, centerPos.z - (depth/2.0f));
-		frontPlane = Instantiate (plane, frontPlanePos, frontPlaneRotation) as GameObject;
-		frontPlane.transform.localScale = new Vector3 (width / 10.0f, depth / 10.0f, height / 10.0f);
-		frontPlane.name = "FrontPlane";
-		frontPlane.tag = "Plane";
-		frontPlane.GetComponent<Collider>().enabled = true;
-		
-		//create the right plane
-		Quaternion rightPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 90.0f);
-		Vector3 rightPlanePos = new Vector3 (centerPos.x + (width/2.0f), centerPos.y, centerPos.z);
-		rightPlane = Instantiate (plane, rightPlanePos, rightPlaneRotation) as GameObject;
-		rightPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
-		rightPlane.name = "RightPlane";
-		rightPlane.tag = "Plane";
-		rightPlane.GetComponent<Collider>().enabled = true;
-		
-		//create the left plane
-		Quaternion leftPlaneRotation = Quaternion.Euler (0.0f, 0.0f, 270.0f);
-		Vector3 leftPlanePos = new Vector3 (centerPos.x - (width/2.0f), centerPos.y, centerPos.z);
-		leftPlane = Instantiate (plane, leftPlanePos, leftPlaneRotation) as GameObject;
-		leftPlane.transform.localScale = new Vector3 (height / 10.0f, width / 10.0f, depth / 10.0f);
-		leftPlane.name = "LeftPlane";
-		leftPlane.tag = "Plane";
-		leftPlane.GetComponent<Collider>().enabled = true;
+		width = 20f;
+		height = 10f;
+		depth = 10f;
 	}
 	void Start () {
 		// pre-compute coefficients used in various types of potentials so that we don't have to calculate them dynamically
