@@ -11,6 +11,8 @@ TagManager:
   - Scrolltag1
   - Scrolltag2
   - Credit
+  - Na
+  - Cl
   layers:
   - Default
   - TransparentFX

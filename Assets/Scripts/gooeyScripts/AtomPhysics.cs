@@ -2,38 +2,36 @@
 using System.Collections;
 
 public class AtomPhysics : MonoBehaviour {
-	public GameObject anotherAtom;
-	public GameObject[] allAtoms;
+	public GameObject[] sameTypeAtoms;
 	[HideInInspector]public Rigidbody rb;
 	void Awake(){
 		rb = GetComponent<Rigidbody>();
-		allAtoms = GameObject.FindGameObjectsWithTag("Molecule");
+		//find objects with of the same type
+		sameTypeAtoms = GameObject.FindGameObjectsWithTag(gameObject.tag);
+		
 	}
 	// Use this for initialization
 	void Start () {
-		//set init vel
-		/*
-		rb.velocity = 5f* new Vector3(UnityEngine.Random.Range(-0.5f,0.5f),
-			UnityEngine.Random.Range(-0.5f,0.5f),
-			0);
-		Debug.Log("init vel: " + gameObject.name + ": " + rb.velocity);
-		*/
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
-		foreach (GameObject other in allAtoms){
-			if(Vector3.Distance(other.transform.position, 
-				gameObject.transform.position) > 0.3f){
+		foreach (GameObject other in sameTypeAtoms){
+			if(other == gameObject)return;
+			float distance = Vector3.Distance(other.transform.position, 
+				gameObject.transform.position);
+			if( distance > 5f){
 				continue;
 			}
 			Rigidbody rbOther = other.GetComponent<Rigidbody>();
 
 			Vector3 forceDireciton = transform.position-other.transform.position;
 			Vector3 force = (rb.mass * rb.velocity - rbOther.mass * rbOther.velocity)/Time.deltaTime;
+			//Debug.Log(force);
+			forceDireciton.Normalize();
 			//other.GetComponent<Rigidbody>().AddForce(force);
-			rbOther.velocity += force/rbOther.mass * Time.deltaTime; 
+			rbOther.velocity += (forceDireciton /distance )* Time.deltaTime; 
 		}
 		
 	}

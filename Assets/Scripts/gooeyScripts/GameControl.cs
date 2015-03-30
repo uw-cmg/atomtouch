@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 public class GameControl : MonoBehaviour{
 	public static GameControl self;
-	public Environment env;
 	public enum GameState{
 		Running,
 		AddingAtom
@@ -18,7 +17,6 @@ public class GameControl : MonoBehaviour{
 
 	}
 	void Start(){
-		env = Environment.myEnvironment;
 		gameState = (int)GameState.Running;
 		atomToBeAdded = null;
 	}
@@ -52,8 +50,8 @@ public class GameControl : MonoBehaviour{
 	//register atom and stuff
 	public void FinishAddingAtom(){
 		atomToBeAdded.name = atomToBeAdded.GetInstanceID().ToString();
-		env.AtomKick(Atom.AllAtoms.Count-1);
-		Potential.myPotential.calculateVerletRadius (atomToBeAdded.GetComponent<Atom>());
+		
+		//Potential.myPotential.calculateVerletRadius (atomToBeAdded.GetComponent<Atom>());
 
 		SetGameStateRunning();
 	}
