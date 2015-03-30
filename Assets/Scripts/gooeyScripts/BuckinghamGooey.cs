@@ -225,10 +225,12 @@ public class BuckinghamGooey : Potential {
 		for (int i = 0; i < Atom.AllAtoms.Count - 1; i++)
 		{
 			Atom firstAtom = Atom.AllAtoms[i];
+			//if(firstAtom == GameControl.self.AtomToBeAdded)continue;
 			firstAtom.neighborList.Clear();
 			for (int j = i + 1; j < Atom.AllAtoms.Count; j++)
 			{
 				Atom secondAtom = Atom.AllAtoms[j];
+				//if(secondAtom == GameControl.self.AtomToBeAdded)continue;
 				Vector3 deltaR = Boundary.myBoundary.deltaPosition(firstAtom, secondAtom);
 				float distanceSqr = deltaR.sqrMagnitude;
 				if (distanceSqr < firstAtom.verletRadius * firstAtom.verletRadius)

@@ -24,22 +24,7 @@ public class Environment : MonoBehaviour {
 	[HideInInspector]public float depth;
 	[HideInInspector]public float volume = 8000.0f;
 
-	public TextMesh textMeshPrefab;
-	private TextMesh bottomText;
-	private TextMesh sideText;
-	private TextMesh depthText;
 
-	private TextMesh bottomPlusZText;
-	private TextMesh bottomPlusYText;
-	private TextMesh bottomPlusYZText;
-
-	private TextMesh sidePlusXText;
-	private TextMesh sidePlusZText;
-	private TextMesh sidePlusXZText;
-
-	private TextMesh depthPlusYText;
-	private TextMesh depthPlusZText;
-	private TextMesh depthPlusYZText;
 
 	private Vector3 vx;
 	private Vector3 vy;
@@ -64,8 +49,8 @@ public class Environment : MonoBehaviour {
 		StaticVariables.pauseTime = false;
 		//figure out the dimensions of the box based on the volume
 		width = 20f;
-		height = 10f;
-		depth = 10f;
+		height = 5f;
+		depth = 8f;
 	}
 	void Start () {
 		// pre-compute coefficients used in various types of potentials so that we don't have to calculate them dynamically
@@ -127,13 +112,11 @@ public class Environment : MonoBehaviour {
 			for (int i = 0; i < numMolecules/2; i++)
 			{
 				//sodium
-				Debug.Log("HERE");
 				createAtom (molecules [3]);
 			}
 			for (int i = numMolecules/2; i < numMolecules; i++)
 			{
 				//chlorine
-				Debug.Log("HERE");
 				createAtom (molecules [4]);
 			}
 		}

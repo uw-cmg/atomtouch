@@ -300,6 +300,7 @@ public abstract class Atom : MonoBehaviour
 	//controls for debugging on pc
 	
 	void OnMouseDown (){
+		if(Application.loadedLevelName == "gooeyTouch")return;
 		if(SettingsControl.GamePaused)return;
 		if (Application.isMobilePlatform)return;
 		/*
@@ -431,6 +432,7 @@ public abstract class Atom : MonoBehaviour
 	}
 	
 	void OnMouseDrag(){
+		if(Application.loadedLevelName == "gooeyTouch")return;
 		if(SettingsControl.GamePaused)return;
 		if(atomTouchGUI.changingTemp || atomTouchGUI.changingVol)return;
 		/*
@@ -591,6 +593,7 @@ public abstract class Atom : MonoBehaviour
 	}
 	
 	void OnMouseUp (){
+		if(Application.loadedLevelName == "gooeyTouch")return;
 		if(SettingsControl.GamePaused)return;
 		StaticVariables.draggingAtoms = false;
 		if (!Application.isMobilePlatform) {

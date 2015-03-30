@@ -82,7 +82,7 @@ public class PhysicsEngineGooey : MonoBehaviour
 		for (int i=0; i< Atom.AllAtoms.Count; i++)
 		{
 			Atom currAtom = Atom.AllAtoms[i];
-			
+			//if(currAtom == GameControl.self.AtomToBeAdded)continue;
 			currAtom.position = currAtom.position 
 				+ StaticVariables.MDTimestep * currAtom.velocity 
 				+ 0.5f * StaticVariables.MDTimestepSqr * currAtom.accelerationNew;
@@ -108,9 +108,11 @@ public class PhysicsEngineGooey : MonoBehaviour
 		for (int i=0; i< Atom.AllAtoms.Count; i++) 
 		{
 			Atom firstAtom = Atom.AllAtoms[i];
+			//if(firstAtom == GameControl.self.AtomToBeAdded)continue;
 			for (int j = 0; j < firstAtom.neighborList.Count; j++)
 			{
 				Atom secondAtom = firstAtom.neighborList[j];
+				if(secondAtom == GameControl.self.AtomToBeAdded)continue;
 				Potential.myPotential.getForce(firstAtom, secondAtom);
 			}
 		}
@@ -120,6 +122,7 @@ public class PhysicsEngineGooey : MonoBehaviour
 		for (int i = 0; i < Atom.AllAtoms.Count; i++)
 		{
 			Atom currAtom = Atom.AllAtoms[i];
+			//if(currAtom == GameControl.self.AtomToBeAdded)continue; 
 			currAtom.velocity = currAtom.velocity 
 			+ 0.5f * StaticVariables.MDTimestep * (currAtom.accelerationOld + currAtom.accelerationNew);
 			currAtom.velocity = StaticVariables.sqrtAlpha * currAtom.velocity;
@@ -166,7 +169,7 @@ public class PhysicsEngineGooey : MonoBehaviour
 		for (int i = 0; i < Atom.AllAtoms.Count; i++)
 		{
 			Atom firstAtom = Atom.AllAtoms[i];
-			
+			//if(firstAtom == GameControl.self.AtomToBeAdded)continue; 
 			// calculate kinetic energy of each atom
 			float velocitySqr = firstAtom.velocity.sqrMagnitude;
 			StaticVariables.kineticEnergy += 0.5f * firstAtom.massamu * StaticVariables.amuToKg * velocitySqr * StaticVariables.angstromsToMeters * StaticVariables.angstromsToMeters;
@@ -175,6 +178,7 @@ public class PhysicsEngineGooey : MonoBehaviour
 			for (int j = 0; j < firstAtom.neighborList.Count; j++)
 			{
 				Atom secondAtom = firstAtom.neighborList[j];
+				//if(secondAtom == GameControl.self.AtomToBeAdded)continue; 
 				StaticVariables.potentialEnergy += Potential.myPotential.getPotential(firstAtom, secondAtom);
 			}
 		}
