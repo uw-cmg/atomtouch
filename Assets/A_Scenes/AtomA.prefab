@@ -12,8 +12,7 @@ GameObject:
   - 135: {fileID: 13504992}
   - 23: {fileID: 2395544}
   - 54: {fileID: 5479648}
-  - 114: {fileID: 11481006}
-  - 114: {fileID: 11435096}
+  - 114: {fileID: 11400988}
   m_Layer: 0
   m_Name: AtomA
   m_TagString: Na
@@ -28,7 +27,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 128434}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.449999988, y: 1.48000002, z: -1.99000001}
+  m_LocalPosition: {x: -1.34000003, y: .949999988, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -79,7 +78,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &11435096
+--- !u!114 &11400988
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -87,24 +86,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 128434}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9215ff37a7c88456cbc476ca2e6a8358, type: 3}
+  m_Script: {fileID: 11500000, guid: 1363a20e8e77d4964adb3c1934a789c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sameTypeAtoms: []
-  rb: {fileID: 0}
---- !u!114 &11481006
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 128434}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9215ff37a7c88456cbc476ca2e6a8358, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sameTypeAtoms: []
-  rb: {fileID: 0}
+  type: 0
+  charge: 0
 --- !u!135 &13504992
 SphereCollider:
   m_ObjectHideFlags: 1
