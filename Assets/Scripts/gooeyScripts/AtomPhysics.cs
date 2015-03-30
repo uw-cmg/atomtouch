@@ -23,19 +23,23 @@ public class AtomPhysics : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		//return;
 		for(int i=0; i < NaCls.Count;i++){
-			AtomGooey curr = NaCls[i].GetComponent<AtomGooey>();
+			NaCls[i].GetComponent<AtomGooey>().vel = Vector3.zero;
+		}
+		AtomGooey curr;
+		AtomGooey other;
+		for(int i=0; i < NaCls.Count;i++){
+			curr = NaCls[i].GetComponent<AtomGooey>();
 			Rigidbody currRb = NaCls[i].GetComponent<Rigidbody>();
 
 			for(int j=i+1; j < NaCls.Count;j++){
-				AtomGooey other = NaCls[j].GetComponent<AtomGooey>();
+				other = NaCls[j].GetComponent<AtomGooey>();
 				Rigidbody otherRb = NaCls[j].GetComponent<Rigidbody>();
 
 				float distance = Vector3.Distance(curr.gameObject.transform.position, 
 				other.gameObject.transform.position);
 				//repel
-				Vector3 forceDireciton = -curr.gameObject.transform.position + other.gameObject.transform.position;
+				Vector3 forceDireciton = curr.gameObject.transform.position - other.gameObject.transform.position;
 				//attract
 				if(curr.charge * other.charge < 0){
 					forceDireciton *= -1;
@@ -43,28 +47,12 @@ public class AtomPhysics : MonoBehaviour {
 				float c = 9 * Mathf.Pow(10, 9) * 1.602f *1.602f * Mathf.Pow(10,-11);
 				Vector3 force = (currRb.mass * currRb.velocity - otherRb.mass * otherRb.velocity)/Time.deltaTime;
 				forceDireciton.Normalize();
-				otherRb.velocity = (forceDireciton * c / distance/distance) ;
-				//Debug.Log(otherRb.velocity);
-				currRb.velocity = -1 * otherRb.velocity; 
-			}
-		}
-		/*
-		foreach (GameObject other in sameTypeAtoms){
-			if(other == gameObject)return;
-			float distance = Vector3.Distance(other.transform.position, 
-				gameObject.transform.position);
-			if( distance > 5f){
-				continue;
-			}
-			Rigidbody rbOther = other.GetComponent<Rigidbody>();
 
-			Vector3 forceDireciton = transform.position-other.transform.position;
-			Vector3 force = (rb.mass * rb.velocity - rbOther.mass * rbOther.velocity)/Time.deltaTime;
-			//Debug.Log(force);
-			forceDireciton.Normalize();
-			//other.GetComponent<Rigidbody>().AddForce(force);
-			rbOther.velocity += (forceDireciton /distance )* Time.deltaTime; 
+				curr.vel += (forceDireciton * c / distance/distance) ;
+				//Debug.Log(otherRb.velocity);
+				other.vel += -1 * curr.vel; 
+			}
+			currRb.velocity = curr.vel;
 		}
-		*/
 	}
 }

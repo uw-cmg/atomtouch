@@ -11,7 +11,7 @@ public class AtomGooey : MonoBehaviour {
 	}
 	public int type;
 	public int charge;
-
+	public Vector3 vel;
 	void Awake(){
 		self = this;
 	}
