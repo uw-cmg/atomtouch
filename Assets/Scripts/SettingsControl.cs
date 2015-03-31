@@ -137,7 +137,6 @@ public class SettingsControl : MonoBehaviour {
 	public void CheckExitSettings(){
 		
 		Vector3 mp = Input.mousePosition;
-
 		RectTransform rt = settingsPanel.GetComponent<RectTransform>();
 		if(mp.x > rt.anchorMin.x * Screen.width //lower left
 			&& mp.x < rt.anchorMax.x * Screen.width //upper right

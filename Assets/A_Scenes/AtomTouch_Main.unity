@@ -1782,6 +1782,10 @@ Prefab:
       propertyPath: m_Text
       value: Unity Software Engineer Lead
       objectReference: {fileID: 0}
+    - target: {fileID: 22401792, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 40
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
   m_IsPrefabParent: 0
