@@ -21,39 +21,45 @@ public class GameControl : MonoBehaviour{
 		atomToBeAdded = null;
 	}
 	void Update(){
-		if(gameState == (int)GameState.Running && atomToBeAdded != null){
-			//do nothing
-			Vector3 dir = atomToBeAdded.transform.position - Camera.main.gameObject.transform.position;
-			ray = new Ray(Camera.main.gameObject.transform.position, dir);
-			Debug.DrawRay(ray.origin, ray.direction * dir.magnitude, Color.yellow);
-		}else if(gameState == (int)GameState.AddingAtom){
-			
-			Vector3 mouseposWithDistance = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0.1f);
-			//mouseposWithDistance.z = 10f ;
-			Vector3 atomPos = Camera.main.ScreenToWorldPoint(mouseposWithDistance);
-			ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			Debug.DrawRay(ray.origin, ray.direction * 10, Color.yellow);
-			Vector3 dir = ray.direction;
-			Debug.Log("ray dir: " + dir);
-			atomPos = ray.origin + ray.direction * 10f;
-			atomToBeAdded.transform.position = atomPos;
-			atomToBeAdded.GetComponent<Rigidbody>().velocity = Vector3.zero;
-			//if on non mobile: mouse left click
-			if(Input.GetMouseButtonDown(0)){
-				FinishAddingAtom();
-				return;
-			}
-			//if on mobile: mouse up
+			if(gameState == (int)GameState.Running && atomToBeAdded != null){
+				//do nothing
+				Vector3 dir = atomToBeAdded.transform.position - Camera.main.gameObject.transform.position;
+				ray = new Ray(Camera.main.gameObject.transform.position, dir);
+				Debug.DrawRay(ray.origin, ray.direction * dir.magnitude, Color.yellow);
+			}else if(gameState == (int)GameState.AddingAtom){
 
-		}
+				Vector3 mouseposWithDistance = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0.1f);
+				//mouseposWithDistance.z = 10f ;
+				Vector3 atomPos = Camera.main.ScreenToWorldPoint(mouseposWithDistance);
+				ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				Debug.DrawRay(ray.origin, ray.direction * 10, Color.yellow);
+				Vector3 dir = ray.direction;
+				//Debug.Log("ray dir: " + dir);
+				atomPos = ray.origin + ray.direction * 10f;
+				atomToBeAdded.transform.position = atomPos;
+				atomToBeAdded.GetComponent<Rigidbody>().velocity = Vector3.zero;
+				//if on non mobile: mouse left click
+				if(Input.GetMouseButtonDown(0)){
+					FinishAddingAtom();
+					//yield return new WaitForSeconds(1f);
+					AtomPhysics.self.Ions.Add(atomToBeAdded);
+					SetGameStateRunning();
+				}
+				//if on mobile: mouse up
+
+			}
+		
+		
+		
 	}
 	//register atom and stuff
-	public void FinishAddingAtom(){
-		atomToBeAdded.name = atomToBeAdded.GetInstanceID().ToString();
-		
-		//Potential.myPotential.calculateVerletRadius (atomToBeAdded.GetComponent<Atom>());
-
-		SetGameStateRunning();
+	void FinishAddingAtom(){
+		atomToBeAdded.name = "Atom" + atomToBeAdded.GetInstanceID().ToString();
+		//add to NaCl list
+		atomToBeAdded.GetComponent<AtomGooey>().Kick();
+		//yield return new WaitForSeconds(3f);
+		//AtomPhysics.self.Ions.Add(atomToBeAdded);
+		//SetGameStateRunning();
 	}
 	public void OnAddAtom(GameObject atomPrefab){
 		StaticVariables.pauseTime = true;

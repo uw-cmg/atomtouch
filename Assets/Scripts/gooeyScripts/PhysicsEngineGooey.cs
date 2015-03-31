@@ -17,7 +17,7 @@ public class PhysicsEngineGooey : MonoBehaviour
 {
 
 	void Awake(){
-		Application.targetFrameRate = 100;
+		//Application.targetFrameRate = 100;
 	}
 	void Start(){
 		//StartCoroutine(DoPhysics());
