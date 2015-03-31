@@ -291,9 +291,10 @@ public class CreateEnvironment : MonoBehaviour {
 			Atom.UnregisterAtom(currAtom);
 			Destroy (currAtom.gameObject);
 		}
-
-		CreatePresetConfiguration ();
-		//CreateRandomConfiguration();
+		if(Potential.currentPotential == Potential.potentialType.Buckingham)
+			CreatePresetConfiguration ();
+		else
+			CreateRandomConfiguration();
 
 		AtomTouchGUI.myAtomTouchGUI.TryEnableAddAtomBtns();
 	}

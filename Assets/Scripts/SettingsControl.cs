@@ -67,6 +67,7 @@ public class SettingsControl : MonoBehaviour {
 		//if sim type is changed, reset
 		if(simTypeChanged){
 			CreateEnvironment.myEnvironment.preCompute();
+			//CreateEnvironment.myEnvironment.InitAtoms();
 			atomTouchGUI.ResetAll();
 			simTypeChanged = false;
 		}
