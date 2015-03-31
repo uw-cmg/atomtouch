@@ -545,8 +545,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	
 	
 	public void resetCamera(){
-		Camera.main.transform.position = new Vector3(27.0f, 0.0f, -34.0f);
-		Camera.main.transform.rotation = Quaternion.Euler(0.0f, 320.0f, 0.0f);
+		Camera.main.transform.position = new Vector3(0.0f, 0.0f, -40.0f);
+		Camera.main.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 	}
 
 	public void ToggleSelectAll() {
