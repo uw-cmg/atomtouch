@@ -30,11 +30,6 @@ public class CameraScript : MonoBehaviour {
 	private AtomTouchGUI atomTouchGUI;
 	private SettingsControl settingsControl;
 
-	private float colorStartTime;
-	private float colorChangeRate = .001f;
-	private float redValue = 0.0f;
-	private float greenValue = 0.0f;
-	private float blueValue = 0.0f;
 	private CreateEnvironment createEnvironment;
 	void Awake(){
 		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
@@ -42,7 +37,6 @@ public class CameraScript : MonoBehaviour {
 		createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 	}
 	void Start(){
-		colorStartTime = Time.realtimeSinceStartup;
 	}
 
 	public bool HasAtomHeld(){
@@ -77,6 +71,24 @@ public class CameraScript : MonoBehaviour {
 				if (touch.phase == TouchPhase.Moved) {
 					UpdateCamera();
 				}
+			}else if(Input.touchCount == 2){
+				//Two finger rotation
+				//how to differentiate rotate from zoom?
+				
+				Touch finger0 = Input.GetTouch(0);
+				Touch finger1 = Input.GetTouch(1);
+				if(finger0.phase == TouchPhase.Moved
+					|| finger1.phase == TouchPhase.Moved){
+					
+					Vector2 oldFinger0 = finger0.position - finger0.deltaPosition;
+					Vector2 oldFinger1 = finger1.position - finger1.deltaPosition;
+					float angle = Vector2.Angle(oldFinger1-oldFinger0, finger1.position - finger0.position);
+					Debug.Log(angle);
+					if(angle < 5)return;
+					Camera.main.gameObject.transform.eulerAngles
+						+= new Vector3(0,0,angle);
+				}
+				
 			}
 		}
 		else{
@@ -106,67 +118,6 @@ public class CameraScript : MonoBehaviour {
 	
 	}
 
-	//this function will change the background color of the system randomly and dynamically
-	void ChangeBackgroundColor(){
-		if (Time.realtimeSinceStartup - colorStartTime > 10.0f) {
-			if (UnityEngine.Random.Range (0.0f, 1.0f) > .5f) {
-				if(UnityEngine.Random.Range (0.0f, 1.0f) > .5f){
-					redValue = -colorChangeRate;
-				}
-				else{
-					redValue = colorChangeRate;
-				}
-			}
-			else{
-				redValue = 0.0f;
-			}
-			if (UnityEngine.Random.Range (0.0f, 1.0f) > .5f) {
-				if (UnityEngine.Random.Range (0.0f, 1.0f) > .5f){
-					greenValue = -colorChangeRate;
-				}
-				else{
-					greenValue = colorChangeRate;
-				}
-			}
-			else{
-				greenValue = 0.0f;
-			}
-			if (UnityEngine.Random.Range (0.0f, 1.0f) > .5f) {
-				if (UnityEngine.Random.Range (0.0f, 1.0f) > .5f){
-					blueValue = -colorChangeRate;
-				}
-				else{
-					blueValue = colorChangeRate;
-				}
-			}
-			else{
-				blueValue = 0.0f;
-			}
-			colorStartTime = Time.realtimeSinceStartup;
-		}
-		
-		
-		float colorMaximum = .37f;
-		float colorMinimum = 0.1f;
-		GetComponent<Camera>().backgroundColor = new Color(GetComponent<Camera>().backgroundColor.r + redValue, GetComponent<Camera>().backgroundColor.g + greenValue, GetComponent<Camera>().backgroundColor.b + blueValue);
-		if (GetComponent<Camera>().backgroundColor.r > colorMaximum) {
-			GetComponent<Camera>().backgroundColor = new Color(colorMaximum, GetComponent<Camera>().backgroundColor.g, GetComponent<Camera>().backgroundColor.b);
-		}
-		else if (GetComponent<Camera>().backgroundColor.r < colorMinimum) {
-			GetComponent<Camera>().backgroundColor = new Color(colorMinimum, GetComponent<Camera>().backgroundColor.g, GetComponent<Camera>().backgroundColor.b);
-		}
-		if (GetComponent<Camera>().backgroundColor.g > colorMaximum) {
-			GetComponent<Camera>().backgroundColor = new Color(GetComponent<Camera>().backgroundColor.r, colorMaximum, GetComponent<Camera>().backgroundColor.b);
-		}
-		else if (GetComponent<Camera>().backgroundColor.g < colorMinimum) {
-			GetComponent<Camera>().backgroundColor = new Color(GetComponent<Camera>().backgroundColor.r, colorMinimum, GetComponent<Camera>().backgroundColor.b);
-		}
-		if (GetComponent<Camera>().backgroundColor.b > colorMaximum) {
-			GetComponent<Camera>().backgroundColor = new Color(GetComponent<Camera>().backgroundColor.r, GetComponent<Camera>().backgroundColor.g, colorMaximum);
-		}
-		else if (GetComponent<Camera>().backgroundColor.b < colorMinimum) {
-			GetComponent<Camera>().backgroundColor = new Color(GetComponent<Camera>().backgroundColor.r, GetComponent<Camera>().backgroundColor.g, colorMinimum);
-		}
-	}
+	
 
 }
