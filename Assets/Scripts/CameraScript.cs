@@ -29,7 +29,7 @@ public class CameraScript : MonoBehaviour {
 	
 	private AtomTouchGUI atomTouchGUI;
 	private SettingsControl settingsControl;
-
+	private bool twoFingerRotating = false;
 	private CreateEnvironment createEnvironment;
 	void Awake(){
 		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
@@ -65,10 +65,24 @@ public class CameraScript : MonoBehaviour {
 			return;
 		}
 		//Debug.Log("resumed");
-		if (Application.isMobilePlatform) {
-			if(Input.touchCount == 1){
-				Touch touch = Input.GetTouch (0);	
-				if (touch.phase == TouchPhase.Moved) {
+		if(true){
+		//if (Application.isMobilePlatform) {
+			if(Input.touchCount == 1 ){
+				Debug.Log("ONE FINGER");
+				Touch touch = Input.GetTouch (0);
+				//if one finger lifed up during two finger rotation,
+				//ignore the remaining finger
+				//until it ends too
+				if(twoFingerRotating){
+					if(touch.phase != TouchPhase.Ended 
+						&& touch.phase != TouchPhase.Canceled ){
+						return;
+					}else{
+						twoFingerRotating = false;
+						return;
+					}
+				}
+				else if (touch.phase == TouchPhase.Moved) {
 					UpdateCamera();
 				}
 			}else if(Input.touchCount == 2){
@@ -79,14 +93,48 @@ public class CameraScript : MonoBehaviour {
 				Touch finger1 = Input.GetTouch(1);
 				if(finger0.phase == TouchPhase.Moved
 					|| finger1.phase == TouchPhase.Moved){
+				
+					Vector2 oldFingerLeft, oldFingerRight;
+					Vector2 newFingerLeft, newFingerRight;
+					//determine left and right
+					if(finger1.position.x-finger1.deltaPosition.x
+						> finger0.position.x-finger0.deltaPosition.x){
+
+						newFingerLeft = finger0.position;
+						newFingerRight = finger1.position;
+						oldFingerLeft = finger0.position - finger0.deltaPosition;
+						oldFingerRight = finger1.position - finger1.deltaPosition;
+					}else{
+						newFingerLeft = finger1.position;
+						newFingerRight = finger0.position;
+						oldFingerLeft = finger1.position - finger1.deltaPosition;
+						oldFingerRight = finger0.position - finger0.deltaPosition;
+					}
+
+					float diffX = oldFingerLeft.x - oldFingerRight.x;
+					if(Mathf.Abs(diffX) < Screen.width * 0.35f){
+						return;
+					}
+					twoFingerRotating = true;
+					Vector2 v_old = oldFingerRight-oldFingerLeft;
+					Vector2 v_new = newFingerRight-newFingerLeft;
 					
-					Vector2 oldFinger0 = finger0.position - finger0.deltaPosition;
-					Vector2 oldFinger1 = finger1.position - finger1.deltaPosition;
-					float angle = Vector2.Angle(oldFinger1-oldFinger0, finger1.position - finger0.position);
-					Debug.Log(angle);
-					if(angle < 5)return;
-					Camera.main.gameObject.transform.eulerAngles
+
+					float angle = Vector2.Angle(v_old, v_new);
+					if(newFingerRight.y > oldFingerRight.y
+						&& newFingerLeft.y < oldFingerLeft.y){
+						//counterclockwise
+						angle *= -1;
+						Camera.main.gameObject.transform.eulerAngles
 						+= new Vector3(0,0,angle);
+					}else if(newFingerRight.y < oldFingerRight.y
+						&& newFingerLeft.y > oldFingerLeft.y){
+						//clockwise
+						Camera.main.gameObject.transform.eulerAngles
+						+= new Vector3(0,0,angle);
+					}
+					Debug.Log("Angle: " + angle);
+					
 				}
 				
 			}
