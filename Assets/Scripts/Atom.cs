@@ -154,7 +154,7 @@ public abstract class Atom : MonoBehaviour
 	}
 
 	public void ShowHelpTip(string msg){
-		StartCoroutine(Tooltip.self.Fade());
+		StartCoroutine(Tooltip.self.Fade(msg));
 	}
 	//this function gives the user the ability to control the z-axis of the atom on iOS
 	void HandleZAxisTouch(){
@@ -343,7 +343,7 @@ public abstract class Atom : MonoBehaviour
 		*/
 		if (Time.realtimeSinceStartup - dragStartTime > 0.1f) {
 			dragCalled = true;
-			ShowHelpTip("blabala");
+			ShowHelpTip("Tap another finger to move atoms back and forward");
 			ApplyTransparency();
 			GetComponent<Rigidbody>().isKinematic = true;
 			if(!selected){
@@ -417,7 +417,7 @@ public abstract class Atom : MonoBehaviour
 		if(SettingsControl.GamePaused)return;
 		if(atomTouchGUI.changingTemp || atomTouchGUI.changingVol)return;
 		if(!Tooltip.fadePlayed)
-			ShowHelpTip("blabala");
+			ShowHelpTip("Scroll mouse wheel to move atoms back and forward");
 		/*
 		RectTransform rt = AtomTouchGUI.myAtomTouchGUI.buttonPanel.GetComponent<RectTransform>();
 
