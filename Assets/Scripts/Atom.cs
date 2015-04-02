@@ -41,7 +41,7 @@ public abstract class Atom : MonoBehaviour
 	private Vector3 lastTouchPosition;
 	private float deltaTouch2 = 0.0f;
 	private bool moveZDirection = false;
-	private float lastTapTime;
+
 	private float tapTime = .35f;
 	[HideInInspector]public bool selected = false;
 	[HideInInspector]public bool doubleTapped = false;
@@ -83,6 +83,9 @@ public abstract class Atom : MonoBehaviour
 	public Vector3 accelerationOld = Vector3.zero;
 	
 	private GameObject buttonPanel;
+
+	//if the tip for move along z has been shown
+	private bool moveAlongZHelpShown = false;
 	void Awake(){
 		RegisterAtom (this);
 		bondDistanceText = new Dictionary<String, TextMesh> ();
@@ -119,61 +122,40 @@ public abstract class Atom : MonoBehaviour
 	void Update(){	
 		if(SettingsControl.GamePaused)return;
 		if(StaticVariables.mouseClickProcessed)return;
-	
-		
-		if (Application.isMobilePlatform ) {
-			if(Input.touchCount > 0){
-				//OnTouch();
-				Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-				RaycastHit hitInfo;
-				if(!held && Physics.Raycast(ray, out hitInfo) && hitInfo.transform.gameObject.tag == "Molecule" && hitInfo.transform.gameObject == gameObject){
-					if(Input.GetTouch(0).phase == TouchPhase.Began){
-					
-						OnTouch();
-						lastTapTime = Time.realtimeSinceStartup;
-					}
-				}
-				else if(held){
-					if(Input.GetTouch(0).phase == TouchPhase.Moved && Input.touchCount == 1){
-						//user is now dragging an atom
-						OnMouseDragIOS();
-					}
-					else if(Input.touchCount == 2){
-						//handle z axis movement
-						HandleZAxisTouch();
-					}
-					else if(Input.GetTouch(0).phase == TouchPhase.Canceled || Input.GetTouch(0).phase == TouchPhase.Ended){
-						//user let go of the atom
-						OnMouseUpIOS();
-					}
-					lastTouchPosition = Input.GetTouch(0).position;
-				}
-			}
-		}
-		else{
-			//on pc
-			if(Input.GetMouseButtonDown(0) ){
-				
-				
-				Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
-				RaycastHit hitInfo;
-				if (Physics.Raycast( ray, out hitInfo )
-				 && hitInfo.transform.gameObject.tag == "Molecule" 
-				 && hitInfo.transform.gameObject == gameObject){
-					lastTapTime = Time.realtimeSinceStartup;
-					
-				}
 
+		if(Input.touchCount > 0){
+			//OnTouch();
+			Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+			RaycastHit hitInfo;
+
+			if(held && Physics.Raycast(ray, out hitInfo) 
+				&& hitInfo.transform.gameObject.tag == "Molecule" 
+				&& hitInfo.transform.gameObject == gameObject){
+
+				if(Input.GetTouch(0).phase == TouchPhase.Moved && Input.touchCount == 1){
+					//user is now dragging an atom
+					OnMouseDragIOS();
+				}
+				else if(Input.touchCount == 2){
+					//handle z axis movement
+					HandleZAxisTouch();
+				}
+				else if(Input.GetTouch(0).phase == TouchPhase.Canceled || Input.GetTouch(0).phase == TouchPhase.Ended){
+					//user let go of the atom
+					OnMouseUpIOS();
+				}
+				lastTouchPosition = Input.GetTouch(0).position;
 			}
-			//HandleRightClick();
-		}
+			}
 	}
 	public static void EnableSelectAtomGroup(bool enable){
 		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
 		atomTouchGUI.selectAtomPanel.SetActive(enable);
 	}
 
-	
+	public void ShowHelpTip(string msg){
+		StartCoroutine(Tooltip.self.Fade());
+	}
 	//this function gives the user the ability to control the z-axis of the atom on iOS
 	void HandleZAxisTouch(){
 		if(Input.touchCount == 2){
@@ -361,6 +343,7 @@ public abstract class Atom : MonoBehaviour
 		*/
 		if (Time.realtimeSinceStartup - dragStartTime > 0.1f) {
 			dragCalled = true;
+			ShowHelpTip("blabala");
 			ApplyTransparency();
 			GetComponent<Rigidbody>().isKinematic = true;
 			if(!selected){
@@ -433,6 +416,8 @@ public abstract class Atom : MonoBehaviour
 	void OnMouseDrag(){
 		if(SettingsControl.GamePaused)return;
 		if(atomTouchGUI.changingTemp || atomTouchGUI.changingVol)return;
+		if(!Tooltip.fadePlayed)
+			ShowHelpTip("blabala");
 		/*
 		RectTransform rt = AtomTouchGUI.myAtomTouchGUI.buttonPanel.GetComponent<RectTransform>();
 

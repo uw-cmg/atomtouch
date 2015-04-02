@@ -225,18 +225,6 @@ public class AtomTouchGUI : MonoBehaviour {
 	}
 	
 	
-	//kick all selected atoms or all if none is selected
-	public void SelectedAtomsKick(){
-		bool hasAtomSelected = false;
-		for(int i = 0; i < Atom.AllAtoms.Count; i++){
-			Atom currAtom = Atom.AllAtoms[i];
-			if(currAtom.selected){
-				hasAtomSelected = true;
-				AtomKick(i);
-			}
-		}
-		if(!hasAtomSelected)AllAtomsKick();
-	}
 	public void AllAtomsKick(){
 		for(int i = 0; i < Atom.AllAtoms.Count; i++){
 			//Atom currAtom = Atom.AllAtoms[i];
