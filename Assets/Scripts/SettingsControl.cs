@@ -32,6 +32,7 @@ public class SettingsControl : MonoBehaviour {
 	private static bool gamePaused;
 	private Toggle nmToggle;
 	private Toggle atomRendererToggle;
+	public Toggle texturedToggle;
 
 	[HideInInspector]public Toggle trailsToggle;
 
@@ -89,7 +90,13 @@ public class SettingsControl : MonoBehaviour {
 		PauseGame();
 	}
 
-	
+	public void OnToggle_textured(){
+		if(texturedToggle.isOn){
+
+		}else{
+
+		}
+	}
 
 	public void OnToggle_Bondline(){
 		StaticVariables.drawBondLines = bondLineOn.GetComponent<Toggle>().isOn;
