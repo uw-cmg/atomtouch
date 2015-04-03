@@ -28,7 +28,7 @@ public class VisualizeInteraction : MonoBehaviour {
 					if((currAtom.transform.position - neighborAtom.transform.position).magnitude 
 						< currAtom.BondDistance(neighborAtom)){
 						//draw a line from currAtom to atomNeighbor
-						if(bondColor == null)bondColor = Color.clear;
+						//if(bondColor == null)bondColor = Color.clear;
 						StaticVariables.DrawLine (currAtom.transform.position, 
 							neighborAtom.transform.position, bondColor, bondColor, 0.05f, mat);
 					}

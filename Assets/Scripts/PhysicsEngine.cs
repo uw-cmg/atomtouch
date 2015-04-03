@@ -56,7 +56,7 @@ public class PhysicsEngine : MonoBehaviour
 
 
 				StaticVariables.currentTime += StaticVariables.MDTimestepInPicosecond;
-				Graph.numMDStepSinceLastRecord ++;
+				
 				StaticVariables.iTime ++;
 			}
 			else

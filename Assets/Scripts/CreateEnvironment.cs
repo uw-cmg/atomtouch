@@ -219,10 +219,6 @@ public class CreateEnvironment : MonoBehaviour {
 
 		CreatePlanes();
 		
-		if(lineColor == null){
-			lineColor = new Color (Color.yellow.r, Color.yellow.g, Color.yellow.b, .6f);
-		}
-		Vector3 bottomPlanePos = bottomPlane.transform.position;
 
 
 		CreateAllLines();

@@ -33,10 +33,9 @@ public class SettingsControl : MonoBehaviour {
 	private Toggle nmToggle;
 	private Toggle atomRendererToggle;
 	public Toggle texturedToggle;
-
+	public static bool textureOn = true;
 	[HideInInspector]public Toggle trailsToggle;
 
-	private bool doResume = false;
     public static bool GamePaused{
     	get { return gamePaused; }
        	//set { this._Name = value; }  
@@ -91,10 +90,33 @@ public class SettingsControl : MonoBehaviour {
 	}
 
 	public void OnToggle_textured(){
+		MeshRenderer mr;
 		if(texturedToggle.isOn){
-
+			textureOn = true;
+			for(int i=0; i < Atom.AllAtoms.Count; i++){
+				Atom atom = Atom.AllAtoms[i];
+				mr = atom.gameObject.GetComponent<MeshRenderer>();
+				if(atom.selected){
+					mr.material = atom.selectedMaterial;
+				}else if(atom.isTransparent){
+					mr.material = atom.transparentMaterial;
+				}else{
+					mr.material = atom.defaultMaterial;
+				}
+			}
 		}else{
-
+			textureOn = false;
+			for(int i=0; i < Atom.AllAtoms.Count; i++){
+				Atom atom = Atom.AllAtoms[i];
+				mr = atom.gameObject.GetComponent<MeshRenderer>();
+				if(atom.selected){
+					mr.material = atom.untexturedSelectedMaterial;
+				}else if(atom.isTransparent){
+					mr.material = atom.untexturedTransparentMaterial;
+				}else{
+					mr.material = atom.untexturedDefaultMaterial;
+				}
+			}
 		}
 	}
 

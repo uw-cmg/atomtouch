@@ -28,12 +28,10 @@ public class CameraScript : MonoBehaviour {
 	public GameObject hudCanvas;
 	
 	private AtomTouchGUI atomTouchGUI;
-	private SettingsControl settingsControl;
 	private bool twoFingerRotating = false;
 	private CreateEnvironment createEnvironment;
 	void Awake(){
 		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
-		settingsControl = gameControl.GetComponent<SettingsControl>();
 		createEnvironment = Camera.main.GetComponent<CreateEnvironment> ();
 	}
 	void Start(){

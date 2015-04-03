@@ -41,8 +41,7 @@ public abstract class Atom : MonoBehaviour
 	private Vector3 lastTouchPosition;
 	private float deltaTouch2 = 0.0f;
 	private bool moveZDirection = false;
-
-	private float tapTime = .35f;
+	public bool isTransparent = false;
 	[HideInInspector]public bool selected = false;
 	[HideInInspector]public bool doubleTapped = false;
 	//these dictionaries are used when moving groups of atoms. The key is the atom's name: (i.e "0" or "1")
@@ -50,20 +49,59 @@ public abstract class Atom : MonoBehaviour
 	public static Dictionary<String, Vector3> gameObjectScreenPoints;
 	private float dragStartTime;
 	private bool dragCalled;
-	//dictionary for holding the TextMeshes of distances between atoms
-	private Dictionary<String, TextMesh> bondDistanceText;
 	
 	protected static List<Atom> m_AllAtoms = new List<Atom> ();
 	
 	public TextMesh textMeshPrefab;
+	//Materials
+	public Material untexturedDefaultMaterial;
+	public Material untexturedSelectedMaterial;
+	public Material untexturedTransparentMaterial;
+	public Material defaultMaterial;
+	public Material selectedMaterial;
+	public Material transparentMaterial;
+	//public Material 
 	public bool held { get; set; }
 	
 	//variables that must be implemented because they are declared as abstract in the base class
 	public abstract float epsilon{ get; } // J
 	public abstract float sigma { get; }
 	public abstract float massamu{ get; } //amu
-	public abstract void SetSelected (bool selected);
-	public abstract void SetTransparent (bool transparent);
+	//change material
+	public void SetSelected (bool selected){
+		MeshRenderer mr = GetComponent<MeshRenderer>();
+		if(SettingsControl.textureOn){
+			if(selected){
+				mr.material = selectedMaterial;
+			}else{
+				mr.material = defaultMaterial;
+			}
+		}else{
+			if(selected){
+				mr.material = untexturedSelectedMaterial;
+			}else{
+				mr.material = untexturedDefaultMaterial;
+			}
+		}
+	}
+	public void SetTransparent (bool transparent){
+		MeshRenderer mr = GetComponent<MeshRenderer>();
+		if(SettingsControl.textureOn){
+			if(transparent){
+				isTransparent = true;
+				mr.material = transparentMaterial;
+			}else{
+				mr.material = defaultMaterial;
+			}
+		}else{
+			if(transparent){
+				isTransparent = false;
+				mr.material = untexturedTransparentMaterial;
+			}else{
+				mr.material = untexturedDefaultMaterial;
+			}
+		}
+	}
 	public abstract String atomName { get; }
 	public abstract int atomID { get;}
 	
@@ -82,17 +120,12 @@ public abstract class Atom : MonoBehaviour
 	public Vector3 accelerationNew = Vector3.zero;
 	public Vector3 accelerationOld = Vector3.zero;
 	
-	private GameObject buttonPanel;
 
-	//if the tip for move along z has been shown
-	private bool moveAlongZHelpShown = false;
 	void Awake(){
 		RegisterAtom (this);
-		bondDistanceText = new Dictionary<String, TextMesh> ();
 		atomTouchGUI = Camera.main.gameObject.GetComponent<AtomTouchGUI>();
 	}
 	void Start(){
-		buttonPanel = AtomTouchGUI.myAtomTouchGUI.buttonPanel;
 	}
 	//void OnDestroy(){
 	//	UnregisterAtom (this);
@@ -684,72 +717,6 @@ public abstract class Atom : MonoBehaviour
 			else{
 				currAtom.SetTransparent(false);
 			}
-		}
-	}
-	
-	//this functions creates, moves, and destroys bond distance text depending on the distance to other atoms in the system
-	void UpdateBondText(){
-		Quaternion cameraRotation = Camera.main.transform.rotation;
-		Vector3 right = cameraRotation * Vector3.right;
-		
-		for (int i = 0; i < AllAtoms.Count; i++) {
-			Atom atomNeighbor = AllAtoms[i];
-			if(atomNeighbor.gameObject == gameObject) continue;
-			float distance = Vector3.Distance(gameObject.transform.position, atomNeighbor.transform.position);
-			if(distance < BondDistance(atomNeighbor)){
-				
-				TextMesh bondDistance = null;
-				
-				Vector3 midpoint = new Vector3((gameObject.transform.position.x + atomNeighbor.transform.position.x) / 2.0f, (gameObject.transform.position.y + atomNeighbor.transform.position.y) / 2.0f, (gameObject.transform.position.z + atomNeighbor.transform.position.z) / 2.0f);
-				
-				if(atomNeighbor.transform.position.x > gameObject.transform.position.x){
-					Vector3 direction = gameObject.transform.position - atomNeighbor.transform.position;
-					float angle = Vector3.Angle(direction, right);
-					float percentToChange = (angle - 90) / 90.0f;
-					midpoint += (direction * (.15f * percentToChange));
-				}
-				else{
-					Vector3 direction = atomNeighbor.transform.position - gameObject.transform.position;
-					float angle = Vector3.Angle(direction, right);
-					float percentToChange = (angle - 90) / 90.0f;
-					midpoint += (direction * (.15f * percentToChange));
-				}
-				
-				try{
-					bondDistance = bondDistanceText[atomNeighbor.name];
-					bondDistance.transform.rotation = cameraRotation;
-					bondDistance.transform.position = midpoint;
-				}catch (KeyNotFoundException){
-					bondDistance = Instantiate(textMeshPrefab, midpoint, cameraRotation) as TextMesh;
-					bondDistanceText.Add(atomNeighbor.name, bondDistance);
-				}
-				bondDistance.text = (Math.Round(distance, 1)).ToString();
-			}
-			else{
-				//we need to check if there is text and if there is, remove it. Otherwise dont do anything
-				try{
-					TextMesh bondDistance = bondDistanceText[atomNeighbor.name];
-					Destroy(bondDistance);
-					bondDistanceText.Remove(atomNeighbor.name);
-				}catch(KeyNotFoundException){} //dont do anything with the caught exception
-			}
-		}
-		
-	}
-	
-	public void RemoveBondText(){
-		foreach (KeyValuePair<String, TextMesh> keyValue in bondDistanceText) {
-			TextMesh bondDistance = keyValue.Value;
-			Destroy(bondDistance);
-		}
-		bondDistanceText.Clear ();
-	}
-	
-	//this function destroys all bond distance text in the scene
-	void RemoveAllBondText(){
-		for (int i = 0; i < AllAtoms.Count; i++) {
-			Atom currAtom = AllAtoms[i];
-			currAtom.RemoveBondText();
 		}
 	}
 	
