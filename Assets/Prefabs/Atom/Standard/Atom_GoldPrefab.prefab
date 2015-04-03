@@ -136,18 +136,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   atomTouchGUI: {fileID: 0}
+  isTransparent: 0
   selected: 0
   doubleTapped: 0
   textMeshPrefab: {fileID: 10200000, guid: e0c19431a83a34054b4e5ee48e8429c2, type: 2}
+  untexturedDefaultMaterial: {fileID: 2100000, guid: c597cb0db05fb472ebfd367cf13e6ea3,
+    type: 2}
+  untexturedSelectedMaterial: {fileID: 2100000, guid: 17a29da87aaa6466f9e1cb66abcd2c99,
+    type: 2}
+  untexturedTransparentMaterial: {fileID: 2100000, guid: 662ffe88e154248299aa7a43b1b6e7db,
+    type: 2}
+  defaultMaterial: {fileID: 2100000, guid: cb71d8804ab4744ac804fac9c6cdb4f7, type: 2}
+  selectedMaterial: {fileID: 2100000, guid: c4dcca39f7d134f3683d98e26e2fa50b, type: 2}
+  transparentMaterial: {fileID: 2100000, guid: 662ffe88e154248299aa7a43b1b6e7db, type: 2}
   verletRadius: 0
   neighborList: []
   velocity: {x: 0, y: 0, z: 0}
   position: {x: 0, y: 0, z: 0}
   accelerationNew: {x: 0, y: 0, z: 0}
   accelerationOld: {x: 0, y: 0, z: 0}
-  goldMaterial: {fileID: 2100000, guid: cb71d8804ab4744ac804fac9c6cdb4f7, type: 2}
-  selectedMaterial: {fileID: 2100000, guid: c4dcca39f7d134f3683d98e26e2fa50b, type: 2}
-  transparentMaterial: {fileID: 2100000, guid: 662ffe88e154248299aa7a43b1b6e7db, type: 2}
 --- !u!135 &13500000
 SphereCollider:
   m_ObjectHideFlags: 1

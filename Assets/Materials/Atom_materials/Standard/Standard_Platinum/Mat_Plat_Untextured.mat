@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Mat_Copper_Selected_Untextured
+  m_Name: Mat_Plat_Untextured
   m_Shader: {fileID: 22, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
@@ -92,7 +92,7 @@ Material:
       data:
         first:
           name: _Shininess
-        second: .0399999991
+        second: 1
       data:
         first:
           name: _SrcBlend
@@ -112,7 +112,7 @@ Material:
       data:
         first:
           name: _Glossiness
-        second: .785000026
+        second: .5
       data:
         first:
           name: _BumpScale
@@ -140,20 +140,20 @@ Material:
       data:
         first:
           name: _Metallic
-        second: .944999993
+        second: 0
     m_Colors:
       data:
         first:
           name: _EmissionColor
-        second: {r: 0, g: 0, b: 0, a: 0}
+        second: {r: 0, g: 0, b: 0, a: 1}
       data:
         first:
           name: _Color
-        second: {r: .117647059, g: .0824730992, b: .011534025, a: 1}
+        second: {r: .431372553, g: .431372553, b: .450980395, a: 1}
       data:
         first:
           name: _SpecColor
-        second: {r: .70588237, g: .353924274, b: 0, a: 1}
+        second: {r: .960784316, g: .960784316, b: .960784316, a: 1}
       data:
         first:
           name: _EmissionColorUI
@@ -161,4 +161,4 @@ Material:
       data:
         first:
           name: _ReflectColor
-        second: {r: .784313738, g: .58987385, b: 0, a: .501960814}
+        second: {r: .941176474, g: .941176474, b: .941176474, a: 1}
