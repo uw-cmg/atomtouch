@@ -23,6 +23,9 @@ public class CameraGooey : MonoBehaviour {
 	public float turnSpeed = .5f;
 	public float rotateSensitivityLeftRight = 6.0f;
 	public float rotateSensitivityUpDown = 10.0f;
+	public float forwardSpeed = 2.5f;
+	public float sideSpeed = 1.5f;
+
 	public GameObject gameControl;
 	public GameObject sliderPanel;
 	public GameObject hudCanvas;
@@ -79,6 +82,7 @@ public class CameraGooey : MonoBehaviour {
 			}
 		}
 		else{
+			Navigate();
 			if(Input.GetMouseButton(0)){
 				UpdateCamera();
 			}
@@ -86,7 +90,15 @@ public class CameraGooey : MonoBehaviour {
 		}
 
 	}
+	public void Navigate(){
+		float fb = Input.GetAxis("Vertical");
+		float lr = Input.GetAxis("Horizontal");
 
+		float deltaFB = forwardSpeed * fb * Time.deltaTime;
+		float deltaLR = sideSpeed * lr * Time.deltaTime;
+		transform.position += transform.forward * deltaFB;
+		transform.position += transform.right * deltaLR;
+	}
 	public void RotateCam(ref Vector3 center){
 		
 		float x = Input.GetAxis("Mouse X");

@@ -3583,6 +3583,8 @@ MonoBehaviour:
   turnSpeed: .5
   rotateSensitivityLeftRight: 6
   rotateSensitivityUpDown: 10
+  forwardSpeed: 1.5
+  sideSpeed: .5
   gameControl: {fileID: 0}
   sliderPanel: {fileID: 0}
   hudCanvas: {fileID: 0}
