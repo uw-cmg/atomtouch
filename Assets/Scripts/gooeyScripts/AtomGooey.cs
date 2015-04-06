@@ -4,7 +4,7 @@ using System.Collections;
 
 public class AtomGooey : MonoBehaviour {
 	public static AtomGooey self;
-
+	public bool touchingBox = false;
 	public enum Type{
 		Na,
 		Cu,

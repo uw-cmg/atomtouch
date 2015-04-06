@@ -28,7 +28,8 @@ public class GameControl : MonoBehaviour{
 				Debug.DrawRay(ray.origin, ray.direction * dir.magnitude, Color.yellow);
 			}else if(gameState == (int)GameState.AddingAtom){
 
-				Vector3 mouseposWithDistance = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0.1f);
+				Vector3 mouseposWithDistance 
+					= new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0.1f);
 				//mouseposWithDistance.z = 10f ;
 				Vector3 atomPos = Camera.main.ScreenToWorldPoint(mouseposWithDistance);
 				ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -36,8 +37,30 @@ public class GameControl : MonoBehaviour{
 				Vector3 dir = ray.direction;
 				//Debug.Log("ray dir: " + dir);
 				atomPos = ray.origin + ray.direction * 10f;
-				atomToBeAdded.transform.position = atomPos;
+				//check collision
+				float r = atomToBeAdded.GetComponent<SphereCollider>().radius ;
+				Vector3 sphereCastDir = atomPos-atomToBeAdded.transform.position;
+				dir.Normalize();
+				RaycastHit[] hits
+					= Physics.SphereCastAll(atomPos, r, sphereCastDir, sphereCastDir.magnitude);
+				bool hitsBox = false;
+				foreach(RaycastHit hit in hits){
+					if(hit.collider.gameObject.name == "Cube"){
+						hitsBox = true;
+						break;
+					}
+				}
+
+				if(!hitsBox ){
+					atomToBeAdded.transform.position = atomPos;
+				}
+				
 				atomToBeAdded.GetComponent<Rigidbody>().velocity = Vector3.zero;
+				Color solidColor = 
+					atomToBeAdded.GetComponent<MeshRenderer>().material.color;
+				atomToBeAdded.GetComponent<MeshRenderer>().material.color
+					= new Color(solidColor.r, solidColor.g, solidColor.b, 60/255);
+				Debug.Log(atomToBeAdded.GetComponent<MeshRenderer>().material.color);
 				//if on non mobile: mouse left click
 				if(Input.GetMouseButtonDown(0)){
 					FinishAddingAtom();

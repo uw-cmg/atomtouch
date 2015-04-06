@@ -61,7 +61,7 @@ public class AtomPhysics : MonoBehaviour {
 				if(curr.charge * other.charge < 0){
 					forceDireciton *= -1;
 				}
-				float otherToCurr = 9 * Mathf.Pow(10, 9) * 1.602f *1.602f 
+				float otherToCurr = 2*9 * Mathf.Pow(10, 9) * 1.602f *1.602f 
 					* Mathf.Abs(other.charge) * Mathf.Abs(curr.charge) * Mathf.Pow(10,-8);
 				float currToOther = otherToCurr;
 				//Vector3 force = (currRb.mass * currRb.velocity - otherRb.mass * otherRb.velocity)/Time.deltaTime;
