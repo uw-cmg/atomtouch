@@ -54,7 +54,6 @@ public class SettingsControl : MonoBehaviour {
 	void Start(){
 		currentPotentialType = Potential.currentPotential;
 	}
-	
 	public void ResumeGame(){
 		//Debug.Log("mio");
 		settingsCanvas.SetActive(false);

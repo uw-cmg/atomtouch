@@ -2816,6 +2816,7 @@ MonoBehaviour:
   allowedTime: 300
   timeRemaining: 0
   timer: {fileID: 81345690}
+  atomOrigin: {x: 0, y: 0, z: 0}
 --- !u!4 &1573797691
 Transform:
   m_ObjectHideFlags: 0
