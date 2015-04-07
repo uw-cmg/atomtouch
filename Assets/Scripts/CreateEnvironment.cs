@@ -288,18 +288,30 @@ public class CreateEnvironment : MonoBehaviour {
 			Destroy (currAtom.gameObject);
 		}
 		if(Potential.currentPotential == Potential.potentialType.Buckingham)
-			CreatePresetConfiguration ();
+			CreatePresetConfiguration ("box");
 		else
 			CreateRandomConfiguration();
 
 		AtomTouchGUI.myAtomTouchGUI.TryEnableAddAtomBtns();
 	}
-
+	//scene selector callback
+	public void LoadPresetAtoms(string filename){
+		//destroy and unregister all the current atoms
+		for (int i = Atom.AllAtoms.Count-1; i >= 0; i--)
+		{
+			Atom currAtom = Atom.AllAtoms [i];
+			Atom.UnregisterAtom(currAtom);
+			Destroy (currAtom.gameObject);
+		}
+		CreatePresetConfiguration (filename);
+		
+		AtomTouchGUI.myAtomTouchGUI.TryEnableAddAtomBtns();
+	}
 	// Create atoms by reading the information from an text input file in Resources folder. The file format is XYZ.
-	private void CreatePresetConfiguration()
+	public void CreatePresetConfiguration(string filename)
 	{
 		Debug.Log ("Uploading text file!");
-		TextAsset textFile = Resources.Load ("box") as TextAsset;
+		TextAsset textFile = Resources.Load (filename) as TextAsset;
 		Debug.Log("text file uploaded!");
 		string allLines = textFile.text;
 		allLines = allLines.ToLower ();

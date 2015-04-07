@@ -53,6 +53,7 @@ public abstract class Atom : MonoBehaviour
 	protected static List<Atom> m_AllAtoms = new List<Atom> ();
 	
 	public TextMesh textMeshPrefab;
+	
 	//Materials
 	public Material untexturedDefaultMaterial;
 	public Material untexturedSelectedMaterial;

@@ -88,7 +88,11 @@ public class SettingsControl : MonoBehaviour {
 	public void OnClick_SettingsButton(){
 		PauseGame();
 	}
-
+	//scene selector callback
+	public void OnLoad_PresetAtoms(string filename){
+		CreateEnvironment env = CreateEnvironment.myEnvironment;
+		env.LoadPresetAtoms(filename);
+	}
 	public void OnToggle_textured(){
 		MeshRenderer mr;
 		if(texturedToggle.isOn){

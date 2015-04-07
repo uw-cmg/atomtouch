@@ -46,7 +46,7 @@ Material:
       data:
         first:
           name: _Shininess
-        second: .200000003
+        second: 1
       data:
         first:
           name: _Smoothness
@@ -67,7 +67,7 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: .313725501, g: .14425993, b: .0307574011, a: 1}
+        second: {r: .293103456, g: .14425993, b: .0307574011, a: 1}
       data:
         first:
           name: _SpecColor
@@ -79,4 +79,4 @@ Material:
       data:
         first:
           name: _ReflectColor
-        second: {r: .816176474, g: .732820511, b: .702151835, a: .501960814}
+        second: {r: .816176474, g: .732820511, b: .702151835, a: 1}
