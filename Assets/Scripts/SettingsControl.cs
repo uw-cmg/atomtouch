@@ -19,6 +19,10 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject sliderPanel;
 	public GameObject graphOn;
 	public GameObject graphPanel;
+
+	public GameObject preferences;
+	public GameObject credits;
+	public GameObject sceneLoader;
 	//waiting for Brenner to be done
 	public GameObject brennerOn;
 	public AtomTouchGUI atomTouchGUI;
@@ -87,6 +91,9 @@ public class SettingsControl : MonoBehaviour {
 
 	public void OnClick_SettingsButton(){
 		PauseGame();
+		sceneLoader.SetActive(false);
+		credits.SetActive(true);
+		preferences.SetActive(true);
 	}
 	//scene selector callback
 	public void OnLoad_PresetAtoms(string filename){
@@ -200,5 +207,18 @@ public class SettingsControl : MonoBehaviour {
 			currentPotentialType = Potential.potentialType.Buckingham;
 		}
 		atomTouchGUI.SetAtomBtnsVisibility();
+	}
+	/*
+	public void OpenScreenLoader(){
+		PauseGame();
+	}
+	*/
+	public void OnClick_SceneLoader(){
+		PauseGame();
+		sceneLoader.SetActive(true);
+		credits.SetActive(false);
+		preferences.SetActive(false);
+		//pause
+		
 	}
 }
