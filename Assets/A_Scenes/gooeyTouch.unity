@@ -3841,6 +3841,3 @@ MonoBehaviour:
   rotateSensitivityUpDown: 10
   forwardSpeed: 4
   sideSpeed: 4
-  gameControl: {fileID: 0}
-  sliderPanel: {fileID: 0}
-  hudCanvas: {fileID: 0}

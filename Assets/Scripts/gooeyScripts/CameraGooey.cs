@@ -26,9 +26,6 @@ public class CameraGooey : MonoBehaviour {
 	public float forwardSpeed = 2.5f;
 	public float sideSpeed = 1.5f;
 
-	public GameObject gameControl;
-	public GameObject sliderPanel;
-	public GameObject hudCanvas;
 	
 	private AtomTouchGUI atomTouchGUI;
 	private SettingsControl settingsControl;
@@ -40,7 +37,7 @@ public class CameraGooey : MonoBehaviour {
 	private float blueValue = 0.0f;
 	private Environment env;
 	void Awake(){
-		env = GameObject.Find("Environment").gameObject.GetComponent<Environment> ();
+		//env = GameObject.Find("Environment").gameObject.GetComponent<Environment> ();
 	}
 	void Start(){
 		colorStartTime = Time.realtimeSinceStartup;

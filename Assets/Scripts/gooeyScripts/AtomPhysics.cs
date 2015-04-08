@@ -67,9 +67,9 @@ public class AtomPhysics : MonoBehaviour {
 				//Vector3 force = (currRb.mass * currRb.velocity - otherRb.mass * otherRb.velocity)/Time.deltaTime;
 				forceDireciton.Normalize();
 
-				curr.totalForce += forceDireciton * otherToCurr / distance;
+				curr.totalForce += forceDireciton * otherToCurr / distance / distance;
 				//Debug.Log(otherRb.velocity);
-				other.totalForce += -forceDireciton * currToOther / distance; 
+				other.totalForce += -forceDireciton * currToOther / distance / distance; 
 			}
 			//currRb.velocity = curr.vel;
 			currRb.velocity = Vector3.zero;
