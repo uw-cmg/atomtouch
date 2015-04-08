@@ -78,8 +78,6 @@ public class AtomTouchGUI : MonoBehaviour {
 	public GameObject chlorineText;
 
 	public Text selectAllText;
-	private bool selectedAll;
-	private bool settingsActive;
 
 	//prefabs to spawn
 	public Rigidbody copperPrefab;
@@ -96,16 +94,10 @@ public class AtomTouchGUI : MonoBehaviour {
 	public Texture stoppedTimeButton;
 	
 	
-
-	private bool clicked = false;
-	private float startTime = 0.0f;
-	private bool first = true;
-
 	
 	[HideInInspector]public bool changingTemp = false;
 	[HideInInspector]public bool changingVol = false;
 	public EventSystem eventSystem;
-	private int slowMotionFrames;
 	
 	public static StaticVariables.TimeSpeed currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
 	
@@ -127,13 +119,10 @@ public class AtomTouchGUI : MonoBehaviour {
 		
 		Atom.EnableSelectAtomGroup(false);
 		settingsCanvas.SetActive(false);
-		selectedAll = false;
-		settingsActive = false;
 		eventSystem = GameObject.Find("EventSystem").gameObject.GetComponent<EventSystem>();
 
 	}
 	void Start () {
-		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 
 	}
 	
@@ -170,7 +159,6 @@ public class AtomTouchGUI : MonoBehaviour {
 				currAtom.selected = false;
 				currAtom.SetSelected(false);
 				
-				int instId = currAtom.gameObject.GetComponent<Rigidbody>().GetInstanceID();
 				if(currAtom is Copper){
 					Copper.count--;
 					copperCount.GetComponent<Text>().text = "Cu: " + Copper.count;
@@ -225,18 +213,6 @@ public class AtomTouchGUI : MonoBehaviour {
 	}
 	
 	
-	//kick all selected atoms or all if none is selected
-	public void SelectedAtomsKick(){
-		bool hasAtomSelected = false;
-		for(int i = 0; i < Atom.AllAtoms.Count; i++){
-			Atom currAtom = Atom.AllAtoms[i];
-			if(currAtom.selected){
-				hasAtomSelected = true;
-				AtomKick(i);
-			}
-		}
-		if(!hasAtomSelected)AllAtomsKick();
-	}
 	public void AllAtomsKick(){
 		for(int i = 0; i < Atom.AllAtoms.Count; i++){
 			//Atom currAtom = Atom.AllAtoms[i];
@@ -397,9 +373,6 @@ public class AtomTouchGUI : MonoBehaviour {
 		if(Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
 			//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
 			CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
-			Vector3 curPosition = new Vector3 (myEnvironment.centerPos.x - myEnvironment.width/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.y - myEnvironment.height/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.z - myEnvironment.depth/2.0f+myEnvironment.errorBuffer);
-			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-			//Instantiate(platinumPrefab, curPosition, curRotation);
 			myEnvironment.createAtom(platinumPrefab);
 			
 		}
@@ -411,9 +384,6 @@ public class AtomTouchGUI : MonoBehaviour {
 		if(Input.mousePosition.x < Screen.width && Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height){
 			//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
 			CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
-			Vector3 curPosition = new Vector3 (myEnvironment.centerPos.x - myEnvironment.width/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.y - myEnvironment.height/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.z - myEnvironment.depth/2.0f+myEnvironment.errorBuffer);
-			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-			//Instantiate(goldPrefab, curPosition, curRotation);
 			myEnvironment.createAtom(goldPrefab);
 			
 		}
@@ -427,9 +397,6 @@ public class AtomTouchGUI : MonoBehaviour {
 			&& Input.mousePosition.y < Screen.height){
 			//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
 			CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
-			Vector3 curPosition = new Vector3 (myEnvironment.centerPos.x - myEnvironment.width/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.y - myEnvironment.height/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.z - myEnvironment.depth/2.0f+myEnvironment.errorBuffer);
-			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-			//Instantiate(copperPrefab, curPosition, curRotation);
 			myEnvironment.createAtom(copperPrefab);
 			
 		}
@@ -443,9 +410,6 @@ public class AtomTouchGUI : MonoBehaviour {
 			&& Input.mousePosition.y < Screen.height){
 			//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
 			CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
-			Vector3 curPosition = new Vector3 (myEnvironment.centerPos.x - myEnvironment.width/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.y - myEnvironment.height/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.z - myEnvironment.depth/2.0f+myEnvironment.errorBuffer);
-			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-			//Instantiate(copperPrefab, curPosition, curRotation);
 			myEnvironment.createAtom(sodiumPrefab);
 			
 		}
@@ -459,9 +423,6 @@ public class AtomTouchGUI : MonoBehaviour {
 			&& Input.mousePosition.y < Screen.height){
 			//Vector3 curPosition = new Vector3 (createEnvironment.centerPos.x + (UnityEngine.Random.Range (-(createEnvironment.width / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.width / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.y + (UnityEngine.Random.Range (-(createEnvironment.height / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.height / 2.0f) - createEnvironment.errorBuffer)), createEnvironment.centerPos.z + (UnityEngine.Random.Range (-(createEnvironment.depth / 2.0f) + createEnvironment.errorBuffer, (createEnvironment.depth / 2.0f) - createEnvironment.errorBuffer)));
 			CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
-			Vector3 curPosition = new Vector3 (myEnvironment.centerPos.x - myEnvironment.width/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.y - myEnvironment.height/2.0f+myEnvironment.errorBuffer, myEnvironment.centerPos.z - myEnvironment.depth/2.0f+myEnvironment.errorBuffer);
-			Quaternion curRotation = Quaternion.Euler(0, 0, 0);
-			//Instantiate(copperPrefab, curPosition, curRotation);
 			myEnvironment.createAtom(chlorinePrefab);
 			
 		}
@@ -472,7 +433,6 @@ public class AtomTouchGUI : MonoBehaviour {
 		
 		CreateEnvironment myEnvironment = CreateEnvironment.myEnvironment;
 		myEnvironment.InitAtoms ();
-		slowMotionFrames = StaticVariables.slowMotionFrames;
 		Atom.EnableSelectAtomGroup(false);
 		//reset temp and vol
 		tempSliderComponent.value = StaticVariables.tempRangeHigh - StaticVariables.tempDefault;
@@ -545,8 +505,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	
 	
 	public void resetCamera(){
-		Camera.main.transform.position = new Vector3(27.0f, 0.0f, -34.0f);
-		Camera.main.transform.rotation = Quaternion.Euler(0.0f, 320.0f, 0.0f);
+		Camera.main.transform.position = new Vector3(0.0f, 0.0f, -40.0f);
+		Camera.main.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 	}
 
 	public void ToggleSelectAll() {
@@ -681,9 +641,9 @@ public class AtomTouchGUI : MonoBehaviour {
 
 		//0.003, 0.03 at 300k
 		//0.01, 0.05 at 5000k
-		float timestepRatio = (0.01f-0.003f)/(5000.0f-300.0f);
+		//float timestepRatio = (0.01f-0.003f)/(5000.0f-300.0f);
 		//Time.fixedDeltaTime = 0.003f + timestepRatio * tempChange;
-		float maxTimeRatio = (0.05f-0.03f)/(5000.0f-300.0f);
+		//float maxTimeRatio = (0.05f-0.03f)/(5000.0f-300.0f);
 		//Time.maximumDeltaTime = 0.03f + maxTimeRatio*tempChange;
 		
 	}

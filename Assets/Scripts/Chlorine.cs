@@ -16,10 +16,11 @@ using System;
 
 public class Chlorine : Atom
 {
+	/*
 	public Material chlorineMaterial;
 	public Material selectedMaterial;
 	public Material transparentMaterial;
-	
+	*/
 	public static int count = 0;
 	
 	public override String atomName { 
@@ -63,7 +64,7 @@ public class Chlorine : Atom
 	public override float Q_eff {
 		get { return -0.7f*1.6f*Mathf.Pow(10,-19); } //units of Coulomb
 	}
-	
+	/*
 	public override void SetSelected (bool selected){
 		if (selected) {
 			gameObject.GetComponent<Renderer>().material = selectedMaterial;
@@ -83,7 +84,7 @@ public class Chlorine : Atom
 			gameObject.GetComponent<Renderer>().material = chlorineMaterial;
 		}
 	}
-	
+	*/
 	void Start ()
 	{
 		//make the atom its original color to start

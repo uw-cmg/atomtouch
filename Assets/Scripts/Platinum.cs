@@ -15,11 +15,11 @@ using System.Collections;
 using System;
 
 public class Platinum : Atom {
-	
+	/*
 	public Material platinumMaterial;
 	public Material selectedMaterial;
 	public Material transparentMaterial;
-	
+	*/
 	public static int count = 0;
 	
 	public override String atomName { 
@@ -62,7 +62,7 @@ public class Platinum : Atom {
 	public override float Q_eff {
 		get { return 0.0f; } //units of Coulomb
 	}
-	
+	/*
 	public override void SetSelected (bool selected){
 		if (selected) {
 			gameObject.GetComponent<Renderer>().material = selectedMaterial;
@@ -82,7 +82,7 @@ public class Platinum : Atom {
 			gameObject.GetComponent<Renderer>().material = platinumMaterial;
 		}
 	}
-	
+	*/
 	
 	void Start () {
 		//make the atom its original color to start

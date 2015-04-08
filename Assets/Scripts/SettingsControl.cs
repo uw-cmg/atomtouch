@@ -19,6 +19,10 @@ public class SettingsControl : MonoBehaviour {
 	public GameObject sliderPanel;
 	public GameObject graphOn;
 	public GameObject graphPanel;
+
+	public GameObject preferences;
+	public GameObject credits;
+	public GameObject sceneLoader;
 	//waiting for Brenner to be done
 	public GameObject brennerOn;
 	public AtomTouchGUI atomTouchGUI;
@@ -32,10 +36,10 @@ public class SettingsControl : MonoBehaviour {
 	private static bool gamePaused;
 	private Toggle nmToggle;
 	private Toggle atomRendererToggle;
-
+	public Toggle texturedToggle;
+	public static bool textureOn = true;
 	[HideInInspector]public Toggle trailsToggle;
 
-	private bool doResume = false;
     public static bool GamePaused{
     	get { return gamePaused; }
        	//set { this._Name = value; }  
@@ -67,6 +71,7 @@ public class SettingsControl : MonoBehaviour {
 		//if sim type is changed, reset
 		if(simTypeChanged){
 			CreateEnvironment.myEnvironment.preCompute();
+			//CreateEnvironment.myEnvironment.InitAtoms();
 			atomTouchGUI.ResetAll();
 			simTypeChanged = false;
 		}
@@ -86,9 +91,45 @@ public class SettingsControl : MonoBehaviour {
 
 	public void OnClick_SettingsButton(){
 		PauseGame();
+		sceneLoader.SetActive(false);
+		credits.SetActive(true);
+		preferences.SetActive(true);
 	}
-
-	
+	//scene selector callback
+	public void OnLoad_PresetAtoms(string filename){
+		CreateEnvironment env = CreateEnvironment.myEnvironment;
+		env.LoadPresetAtoms(filename);
+	}
+	public void OnToggle_textured(){
+		MeshRenderer mr;
+		if(texturedToggle.isOn){
+			textureOn = true;
+			for(int i=0; i < Atom.AllAtoms.Count; i++){
+				Atom atom = Atom.AllAtoms[i];
+				mr = atom.gameObject.GetComponent<MeshRenderer>();
+				if(atom.selected){
+					mr.material = atom.selectedMaterial;
+				}else if(atom.isTransparent){
+					mr.material = atom.transparentMaterial;
+				}else{
+					mr.material = atom.defaultMaterial;
+				}
+			}
+		}else{
+			textureOn = false;
+			for(int i=0; i < Atom.AllAtoms.Count; i++){
+				Atom atom = Atom.AllAtoms[i];
+				mr = atom.gameObject.GetComponent<MeshRenderer>();
+				if(atom.selected){
+					mr.material = atom.untexturedSelectedMaterial;
+				}else if(atom.isTransparent){
+					mr.material = atom.untexturedTransparentMaterial;
+				}else{
+					mr.material = atom.untexturedDefaultMaterial;
+				}
+			}
+		}
+	}
 
 	public void OnToggle_Bondline(){
 		StaticVariables.drawBondLines = bondLineOn.GetComponent<Toggle>().isOn;
@@ -136,7 +177,6 @@ public class SettingsControl : MonoBehaviour {
 	public void CheckExitSettings(){
 		
 		Vector3 mp = Input.mousePosition;
-
 		RectTransform rt = settingsPanel.GetComponent<RectTransform>();
 		if(mp.x > rt.anchorMin.x * Screen.width //lower left
 			&& mp.x < rt.anchorMax.x * Screen.width //upper right
@@ -167,5 +207,18 @@ public class SettingsControl : MonoBehaviour {
 			currentPotentialType = Potential.potentialType.Buckingham;
 		}
 		atomTouchGUI.SetAtomBtnsVisibility();
+	}
+	/*
+	public void OpenScreenLoader(){
+		PauseGame();
+	}
+	*/
+	public void OnClick_SceneLoader(){
+		PauseGame();
+		sceneLoader.SetActive(true);
+		credits.SetActive(false);
+		preferences.SetActive(false);
+		//pause
+		
 	}
 }
