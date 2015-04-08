@@ -16,11 +16,12 @@ public class GameControl : MonoBehaviour{
 	public static int gameState;
 	Ray ray;
 	private GameObject atomToBeAdded;
-	private float forcePersistantTime = 0.01f;
+	private float forcePersistantTime = 0.5f;
 	private float forceRemainingTime;
 	public GameObject AtomToBeAdded{
 		get{return atomToBeAdded;}
 	}
+	public GameObject targetAtom;
 
 	void Awake(){
 		self = this;
@@ -44,8 +45,15 @@ public class GameControl : MonoBehaviour{
 			gameState = (int)GameState.Lose;
 			return;
 		}
+		/*
+		if(gameState == (int)GameState.Win){
+			Time.timeScale = 0;
+			Debug.Log("State: Win");
+		}
+		*/
 		UpdateTimer();
 		if(gameState == (int)GameState.Running){
+			/*
 			if(atomToBeAdded != null){
 				if(forceRemainingTime >= 0 ){
 					Vector3 mouseposWithDistance 
@@ -59,9 +67,10 @@ public class GameControl : MonoBehaviour{
 					atomToBeAdded = null;
 				}
 			}
+			*/
 			
 		}else if(gameState == (int)GameState.AddingAtom){
-			
+			/*
 			if(Input.GetMouseButtonDown(0)){
 				
 				//mouseposWithDistance.z = 10f ;
@@ -70,14 +79,14 @@ public class GameControl : MonoBehaviour{
 				Vector3 forceDir = Camera.main.ScreenToWorldPoint(mouseposWithDistance)-atomOrigin;
 				forceDir.Normalize();
 				
-				atomToBeAdded.GetComponent<Rigidbody>().AddForce(forceDir * 5f);
-				atomToBeAdded.GetComponent<Rigidbody>().velocity = forceDir * 3f;
+				atomToBeAdded.GetComponent<Rigidbody>().AddForce(forceDir * 10f);
+				atomToBeAdded.GetComponent<Rigidbody>().velocity = forceDir * 10f;
 				atomToBeAdded.GetComponent<MeshRenderer>().enabled = true;
 				
 				gameState = (int)GameState.Running;
 			}
+			*/
 			
-			/*
 			Vector3 mouseposWithDistance 
 				= new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0.1f);
 			//mouseposWithDistance.z = 10f ;
@@ -95,7 +104,7 @@ public class GameControl : MonoBehaviour{
 				= Physics.SphereCastAll(atomPos, r, sphereCastDir, sphereCastDir.magnitude);
 			bool hitsBox = false;
 			foreach(RaycastHit hit in hits){
-				if(hit.collider.gameObject.name == "Cube"){
+				if(hit.collider.gameObject.tag == "RigidThings"){
 					hitsBox = true;
 					break;
 				}
@@ -106,11 +115,13 @@ public class GameControl : MonoBehaviour{
 			}
 			
 			atomToBeAdded.GetComponent<Rigidbody>().velocity = Vector3.zero;
+			/*
 			Color solidColor = 
 				atomToBeAdded.GetComponent<MeshRenderer>().material.color;
 			atomToBeAdded.GetComponent<MeshRenderer>().material.color
 				= new Color(solidColor.r, solidColor.g, solidColor.b, 60/255);
 			Debug.Log(atomToBeAdded.GetComponent<MeshRenderer>().material.color);
+			*/
 			//if on non mobile: mouse left click
 			if(Input.GetMouseButtonDown(0)){
 				FinishAddingAtom();
@@ -119,7 +130,7 @@ public class GameControl : MonoBehaviour{
 				SetGameStateRunning();
 			}
 			//if on mobile: mouse up
-			*/
+			
 		}
 		
 		
@@ -158,7 +169,7 @@ public class GameControl : MonoBehaviour{
 		atomOrigin = spawnPos;
 		Debug.Log("spawning atom at: " + spawnPos);
 		GameObject atom = Instantiate(prefab, spawnPos, curRotation) as GameObject;
-		atom.GetComponent<MeshRenderer>().enabled = false;
+		//atom.GetComponent<MeshRenderer>().enabled = false;
 		atom.GetComponent<Rigidbody>().velocity = Vector3.zero;
 		atom.GetComponent<Rigidbody>().isKinematic = false;
 		SetGameStateAddingAtom(atom);

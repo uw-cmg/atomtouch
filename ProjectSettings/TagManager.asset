@@ -14,6 +14,7 @@ TagManager:
   - Na
   - Cu
   - Cl
+  - RigidThings
   layers:
   - Default
   - TransparentFX
