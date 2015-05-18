@@ -30,7 +30,7 @@ public class SettingsControl : MonoBehaviour {
 	public static bool renderAtoms = true;
 	public static bool mouseExitsSettingsPanel; //aka, pause the game
 
-	private static Potential.potentialType currentPotentialType;
+	public static Potential.potentialType currentPotentialType;
 	private static bool simTypeChanged;
 	
 	private static bool gamePaused;
@@ -199,12 +199,14 @@ public class SettingsControl : MonoBehaviour {
 				simTypeChanged = true;
 			}
 			currentPotentialType = Potential.potentialType.LennardJones;
+			Debug.Log("changeing to LennardJones");
 		}else if(buckinghamOn.GetComponent<Toggle>().isOn){
 			Potential.currentPotential = Potential.potentialType.Buckingham;
 			if(currentPotentialType != Potential.potentialType.Buckingham){
 				simTypeChanged = true;
 			}
 			currentPotentialType = Potential.potentialType.Buckingham;
+			Debug.Log("changeing to buckingham");
 		}
 		atomTouchGUI.SetAtomBtnsVisibility();
 	}

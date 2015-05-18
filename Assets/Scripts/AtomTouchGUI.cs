@@ -101,8 +101,8 @@ public class AtomTouchGUI : MonoBehaviour {
 	
 	public static StaticVariables.TimeSpeed currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
 	
-	private Slider tempSliderComponent;
-	private Slider volSliderComponent;
+	[HideInInspector]public Slider tempSliderComponent;
+	[HideInInspector]public Slider volSliderComponent;
 
 	[HideInInspector]public static AtomTouchGUI myAtomTouchGUI; 
 	void Awake(){

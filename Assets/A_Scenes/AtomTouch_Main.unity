@@ -950,6 +950,14 @@ Prefab:
       propertyPath: m_IsOn
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11468348, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: box
+      objectReference: {fileID: 0}
+    - target: {fileID: 11433210, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: sceneloadtest0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 700aba05dcc0a8e4ab49235de7297ca7, type: 2}
   m_IsPrefabParent: 0
@@ -1347,6 +1355,8 @@ MonoBehaviour:
   changingTemp: 0
   changingVol: 0
   eventSystem: {fileID: 0}
+  tempSliderComponent: {fileID: 0}
+  volSliderComponent: {fileID: 0}
 --- !u!114 &1960553281
 MonoBehaviour:
   m_ObjectHideFlags: 0
