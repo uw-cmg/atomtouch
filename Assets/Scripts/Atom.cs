@@ -202,7 +202,7 @@ public abstract class Atom : MonoBehaviour
 					//this is for one atom
 					Vector2 touchOnePrevPos = touch2.position - touch2.deltaPosition;
 					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
-					deltaTouch2 = deltaMagnitudeDiff / 10.0f;
+					deltaTouch2 = deltaMagnitudeDiff / 4.0f;
 					Quaternion cameraRotation = Camera.main.transform.rotation;
 					Vector3 projectPosition = transform.position;
 					projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
@@ -214,7 +214,7 @@ public abstract class Atom : MonoBehaviour
 					//this is for a group of atoms
 					Vector2 touchOnePrevPos = touch2.position - touch2.deltaPosition;
 					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
-					deltaTouch2 = deltaMagnitudeDiff / 10.0f;
+					deltaTouch2 = deltaMagnitudeDiff / 4.0f;
 					Dictionary<String, Vector3> newAtomPositions = new Dictionary<String, Vector3>();
 					bool moveAtoms = true;
 					for(int i = 0; i < AllAtoms.Count; i++){

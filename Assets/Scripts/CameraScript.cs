@@ -20,7 +20,7 @@ using System;
 public class CameraScript : MonoBehaviour {
 
 	public float moveSpeed = 0.25f;
-	public float turnSpeed = .5f;
+	public float turnSpeed = 0.5f;
 	public float rotateSensitivityLeftRight = 6.0f;
 	public float rotateSensitivityUpDown = 10.0f;
 	public GameObject gameControl;
