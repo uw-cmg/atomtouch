@@ -380,17 +380,20 @@ public class CreateEnvironment : MonoBehaviour {
 				atomTouchGUI.volSliderComponent.value = sliderVal;
 				atomTouchGUI.SnapVolumeToInterval(0.5f);
 			}
+			/*
 			else if (attr.Equals("timespeed"))
 			{
 				string val = textArray2[1].Trim().ToLower();
-				if (val.Equals("stopped"))
+				if (val.Equals("stopped")){
 					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
-					//change texture
-				if (val.Equals("slowmotion"))
+				}else if (val.Equals("slowmotion")){
 					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
-				if (val.Equals("normal"))
+				}else{
 					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
+				}
+				atomTouchGUI.changeTimer();
 			}
+			*/
 
 		}
 		

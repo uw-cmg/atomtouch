@@ -1,5 +1,5 @@
 8
-dimer molecule,potential=lennardjones,temperature=400,volume=1000,timespeed=normal
+dimer molecule,potential=lennardjones,temperature=400,volume=1000,timespeed=slowmotion
 Na	-2	-2	-2	0	0	0
 Cl	+2	-2	-2	0	0	0
 Na	+2	+2	-2	0	0	0

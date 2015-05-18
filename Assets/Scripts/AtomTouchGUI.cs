@@ -467,7 +467,19 @@ public class AtomTouchGUI : MonoBehaviour {
 			volSliderComponent.value = floor * stepSize + stepSize;
 
 	}
+	/*
+	public void ChangeTimerIcon(){
+		RawImage ri = timer.GetComponent<RawImage>();
+		if(currentTimeSpeed == StaticVariables.TimeSpeed.Normal){
 
+		}else if(currentTimeSpeed == StaticVariables.TimeSpeed.Stopped){
+
+		}else if(currentTimeSpeed == StaticVariables.TimeSpeed.SlowMotion){
+
+		}
+	}
+	*/
+	//when clicking on timer
 	public void changeTimer(){
 		RawImage ri = timer.GetComponent<RawImage>();
 		if(currentTimeSpeed == StaticVariables.TimeSpeed.Normal){
