@@ -73,6 +73,8 @@ public class CreateEnvironment : MonoBehaviour {
 	void Awake(){
 		CreateEnvironment.myEnvironment = this;
 		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
+		atomTouchGUI.changingTemp = false;
+		atomTouchGUI.changingVol = false;
 		//when first started, pause timer
 		StaticVariables.pauseTime = true;
 
@@ -365,7 +367,7 @@ public class CreateEnvironment : MonoBehaviour {
 				
 
 				atomTouchGUI.SnapTempToInterval(10.0f);
-
+				atomTouchGUI.changingTemp = false;
 				
 			}
 			else if (attr.Equals("volume"))
@@ -379,6 +381,7 @@ public class CreateEnvironment : MonoBehaviour {
 				//change vol slider value
 				atomTouchGUI.volSliderComponent.value = sliderVal;
 				atomTouchGUI.SnapVolumeToInterval(0.5f);
+				atomTouchGUI.changingVol = false;
 			}
 			/*
 			else if (attr.Equals("timespeed"))

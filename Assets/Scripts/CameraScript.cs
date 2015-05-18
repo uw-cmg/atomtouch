@@ -48,10 +48,12 @@ public class CameraScript : MonoBehaviour {
 	}
 	public void UpdateCamera(){
 		bool holdingAtom = HasAtomHeld();
+		Debug.Log("changing temp: " + atomTouchGUI.changingTemp);
 		if(!holdingAtom
 			&& !atomTouchGUI.changingTemp && !atomTouchGUI.changingVol){
 			
 			Vector3 center = createEnvironment.centerPos;
+
 			RotateCam(ref center);
 			
 		}
@@ -59,7 +61,6 @@ public class CameraScript : MonoBehaviour {
 	//this function handles the rotation of the camera
 	void Update () {
 		if(SettingsControl.GamePaused){
-		//	Debug.Log("gamepaused");
 			return;
 		}
 		//Debug.Log("resumed");
@@ -86,8 +87,11 @@ public class CameraScript : MonoBehaviour {
 			}
 		}
 		else{
-			if(Input.GetMouseButton(0))
+			if(Input.GetMouseButton(0)){
+				//Debug.Log("updating cam");
 				UpdateCamera();
+			}
+				
 		}
 
 	}
