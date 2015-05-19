@@ -1,5 +1,5 @@
 8
-dimer molecule, potential=buckingham, temperature=400, volume=1000, timespeed=normal
+dimer molecule, potential=buckingham, temperature=400, volume=8000, timespeed=slowmotion
 Na	-1	-1	-1	0	0	0
 Cl	+1	-1	-1	0	0	0
 Na	+1	+1	-1	0	0	0

@@ -73,8 +73,28 @@ public class CreateEnvironment : MonoBehaviour {
 	void Awake(){
 		CreateEnvironment.myEnvironment = this;
 		atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI> ();
+		atomTouchGUI.changingTemp = false;
+		atomTouchGUI.changingVol = false;
 		//when first started, pause timer
 		StaticVariables.pauseTime = true;
+
+		centerPos = Vector3.zero;
+		initialCenterPos = centerPos;
+		
+		//figure out the dimensions of the box based on the volume
+		width = Mathf.Pow (volume, (1.0f / 3.0f));
+		height = Mathf.Pow (volume, (1.0f / 3.0f));
+		depth = Mathf.Pow (volume, (1.0f / 3.0f));
+		
+		vx  = new Vector3(width,0.0f,0.0f);
+		vy = new Vector3(0.0f,height, 0.0f);
+		vz = new Vector3(0.0f,0.0f, depth);
+
+		CreatePlanes();
+		
+
+
+		CreateAllLines();
 	}
 	void CreatePlanes(){
 		//create the bottom plane
@@ -205,23 +225,7 @@ public class CreateEnvironment : MonoBehaviour {
 		//create the atoms
 		InitAtoms ();
 		
-		centerPos = Vector3.zero;
-		initialCenterPos = centerPos;
 		
-		//figure out the dimensions of the box based on the volume
-		width = Mathf.Pow (volume, (1.0f / 3.0f));
-		height = Mathf.Pow (volume, (1.0f / 3.0f));
-		depth = Mathf.Pow (volume, (1.0f / 3.0f));
-		
-		vx  = new Vector3(width,0.0f,0.0f);
-		vy = new Vector3(0.0f,height, 0.0f);
-		vz = new Vector3(0.0f,0.0f, depth);
-
-		CreatePlanes();
-		
-
-
-		CreateAllLines();
 		//give all of the atoms a random velocity on startup
 		atomTouchGUI.AllAtomsKick ();
 	}
@@ -310,12 +314,14 @@ public class CreateEnvironment : MonoBehaviour {
 	// Create atoms by reading the information from an text input file in Resources folder. The file format is XYZ.
 	public void CreatePresetConfiguration(string filename)
 	{
-		Debug.Log ("Uploading text file!");
+		//Debug.Log ("Uploading text file!");
 		TextAsset textFile = Resources.Load (filename) as TextAsset;
-		Debug.Log("text file uploaded!");
+		//Debug.Log("text file uploaded!");
+		Debug.Log("loading " + filename);
 		string allLines = textFile.text;
 		allLines = allLines.ToLower ();
-		string[] lineArray = allLines.Split ("\r\n".ToCharArray (), StringSplitOptions.RemoveEmptyEntries);
+		string[] lineArray = allLines.Split ("\r\n".ToCharArray (), 
+			StringSplitOptions.RemoveEmptyEntries);
 
 		string[] textArray1;
 		string[] textArray2;
@@ -326,31 +332,71 @@ public class CreateEnvironment : MonoBehaviour {
 
 		for (int i=0; i<textArray1.Length; i++)
 		{
+
 			textArray2 = textArray1[i].Split('=');
-			if (textArray2 [0].Equals("potential"))
+			string attr = textArray2[0].Trim().ToLower();
+			
+			if (attr.Equals("potential"))
 			{
-				if (textArray2 [1].Equals("buckingham"))
+				string val = textArray2[1].Trim().ToLower();
+				if (val.Equals("buckingham")){
 					Potential.currentPotential = Potential.potentialType.Buckingham;
-				if (textArray2 [1].Equals("lennardjones"))
+					SettingsControl.currentPotentialType 
+						= Potential.potentialType.Buckingham;
+
+					SettingsControl.mySettings.buckinghamOn.GetComponent<Toggle>().isOn = true;
+					SettingsControl.mySettings.lenJonesOn.GetComponent<Toggle>().isOn = false;
+				}else if (val.Equals("lennardjones")){
 					Potential.currentPotential = Potential.potentialType.LennardJones;
+					SettingsControl.currentPotentialType 
+						= Potential.potentialType.LennardJones;
+
+					SettingsControl.mySettings.buckinghamOn.GetComponent<Toggle>().isOn = false;
+					SettingsControl.mySettings.lenJonesOn.GetComponent<Toggle>().isOn = true;
+				}
+				SettingsControl.mySettings.OnChange_SimType();
+
 			}
-			else if (textArray2 [0].Equals("temperature"))
+			else if (attr.Equals("temperature"))
 			{
+				string val = textArray2[1].Trim().ToLower();
 				StaticVariables.desiredTemperature = float.Parse(textArray2[1]);
+				//change temp slider value
+				atomTouchGUI.tempSliderComponent.value 
+					= StaticVariables.tempRangeHigh - StaticVariables.desiredTemperature;
+				
+
+				atomTouchGUI.SnapTempToInterval(10.0f);
+				atomTouchGUI.changingTemp = false;
+				
 			}
-			else if (textArray2 [0].Equals("volume"))
+			else if (attr.Equals("volume"))
 			{
+				string val = textArray2[1].Trim().ToLower();
 				myEnvironment.volume = float.Parse(textArray2[1]);
+				float depth = Mathf.Pow(myEnvironment.volume, 1f/3f);
+				float sliderVal = 
+					(StaticVariables.maxVol + StaticVariables.minVol-depth)/10.0f;
+
+				//change vol slider value
+				atomTouchGUI.volSliderComponent.value = sliderVal;
+				atomTouchGUI.SnapVolumeToInterval(0.5f);
+				atomTouchGUI.changingVol = false;
 			}
-			else if (textArray2 [0].Equals("timespeed"))
+			/*
+			else if (attr.Equals("timespeed"))
 			{
-				if (textArray2 [1].Equals("stopped"))
+				string val = textArray2[1].Trim().ToLower();
+				if (val.Equals("stopped")){
 					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Stopped;
-				if (textArray2 [1].Equals("slowmotion"))
+				}else if (val.Equals("slowmotion")){
 					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.SlowMotion;
-				if (textArray2 [1].Equals("normal"))
+				}else{
 					AtomTouchGUI.currentTimeSpeed = StaticVariables.TimeSpeed.Normal;
+				}
+				atomTouchGUI.changeTimer();
 			}
+			*/
 
 		}
 		
