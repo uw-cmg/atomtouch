@@ -45,8 +45,8 @@ public abstract class Atom : MonoBehaviour
 	[HideInInspector]public bool selected = false;
 	[HideInInspector]public bool doubleTapped = false;
 	//these dictionaries are used when moving groups of atoms. The key is the atom's name: (i.e "0" or "1")
-	public static Dictionary<String, Vector3> gameObjectOffsets;
-	public static Dictionary<String, Vector3> gameObjectScreenPoints;
+	public static Dictionary<string, Vector3> gameObjectOffsets;
+	public static Dictionary<string, Vector3> gameObjectScreenPoints;
 	private float dragStartTime;
 	private bool dragCalled;
 	
@@ -156,31 +156,40 @@ public abstract class Atom : MonoBehaviour
 	void Update(){	
 		if(SettingsControl.GamePaused)return;
 		if(StaticVariables.mouseClickProcessed)return;
-
+		if(!Application.isMobilePlatform)return;
+		//StaticVariables.draggingAtoms = true;
 		if(Input.touchCount > 0){
-			//OnTouch();
+			
 			Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
 			RaycastHit hitInfo;
 
-			if(held && Physics.Raycast(ray, out hitInfo) 
+			if(Physics.Raycast(ray, out hitInfo) 
 				&& hitInfo.transform.gameObject.tag == "Molecule" 
 				&& hitInfo.transform.gameObject == gameObject){
-
+				//held = true;
+				Debug.Log("raycast hit atom!");
 				if(Input.GetTouch(0).phase == TouchPhase.Moved && Input.touchCount == 1){
 					//user is now dragging an atom
+					Debug.Log("dragging");
 					OnMouseDragIOS();
+				}else if(Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began){
+					//held = true;
+					OnTouch();
 				}
 				else if(Input.touchCount == 2){
 					//handle z axis movement
 					HandleZAxisTouch();
 				}
-				else if(Input.GetTouch(0).phase == TouchPhase.Canceled || Input.GetTouch(0).phase == TouchPhase.Ended){
+				else if(Input.GetTouch(0).phase == TouchPhase.Canceled 
+					|| Input.GetTouch(0).phase == TouchPhase.Ended){
 					//user let go of the atom
 					OnMouseUpIOS();
 				}
 				lastTouchPosition = Input.GetTouch(0).position;
 			}
-			}
+		}else if(Input.touchCount == 0){
+			held = false;
+		}
 	}
 	public static void EnableSelectAtomGroup(bool enable){
 		AtomTouchGUI atomTouchGUI = Camera.main.GetComponent<AtomTouchGUI>();
@@ -215,7 +224,7 @@ public abstract class Atom : MonoBehaviour
 					Vector2 touchOnePrevPos = touch2.position - touch2.deltaPosition;
 					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
 					deltaTouch2 = deltaMagnitudeDiff / 4.0f;
-					Dictionary<String, Vector3> newAtomPositions = new Dictionary<String, Vector3>();
+					Dictionary<string, Vector3> newAtomPositions = new Dictionary<string, Vector3>();
 					bool moveAtoms = true;
 					for(int i = 0; i < AllAtoms.Count; i++){
 						Atom currAtom = AllAtoms[i];
@@ -270,6 +279,7 @@ public abstract class Atom : MonoBehaviour
 	void OnTouch(){
 		if (!Application.isMobilePlatform)return;
 		if(SettingsControl.GamePaused)return;
+		//Debug.Log("touch");
 		/*
 		RectTransform rt = AtomTouchGUI.myAtomTouchGUI.buttonPanel.GetComponent<RectTransform>();
 
@@ -292,8 +302,8 @@ public abstract class Atom : MonoBehaviour
 		}
 		else{
 			//this is for a group of atoms
-			gameObjectOffsets = new Dictionary<String, Vector3>();
-			gameObjectScreenPoints = new Dictionary<String, Vector3>();
+			gameObjectOffsets = new Dictionary<string, Vector3>();
+			gameObjectScreenPoints = new Dictionary<string, Vector3>();
 			for(int i = 0; i < AllAtoms.Count; i++){
 				Atom currAtom = AllAtoms[i];
 				if(currAtom.selected){
@@ -305,9 +315,9 @@ public abstract class Atom : MonoBehaviour
 					currAtom.held = true;
 					gameObjectOffsets.Add(currAtom.name, atomOffset);
 
-					Debug.Log("added atom offset: " + currAtom.name + ", " + atomOffset);
+					//Debug.Log("added atom offset: " + currAtom.name + ", " + atomOffset);
 					gameObjectScreenPoints.Add(currAtom.name, pointOnScreen);
-					Debug.Log("added point on screen: " + currAtom.name + ", " + pointOnScreen);
+					//Debug.Log("added point on screen: " + currAtom.name + ", " + pointOnScreen);
 				}
 			}
 		}
@@ -342,8 +352,8 @@ public abstract class Atom : MonoBehaviour
 			//Debug.Log("mouse down, atom not selected");
 		}else{
 			//this is for a group of atoms
-			gameObjectOffsets = new Dictionary<String, Vector3>();
-			gameObjectScreenPoints = new Dictionary<String, Vector3>();
+			gameObjectOffsets = new Dictionary<string, Vector3>();
+			gameObjectScreenPoints = new Dictionary<string, Vector3>();
 			for(int i = 0; i < AllAtoms.Count; i++){
 				Atom currAtom = AllAtoms[i];
 				if(currAtom.selected){
@@ -365,7 +375,10 @@ public abstract class Atom : MonoBehaviour
 	//this is the equivalent of OnMouseDrag for iOS
 	void OnMouseDragIOS(){
 		if(SettingsControl.GamePaused)return;
-		if(atomTouchGUI.changingTemp || atomTouchGUI.changingVol)return;
+		if(atomTouchGUI.changingTemp || atomTouchGUI.changingVol){
+			return;
+		}
+		StaticVariables.draggingAtoms = true;
 		/*
 		RectTransform rt = AtomTouchGUI.myAtomTouchGUI.buttonPanel.GetComponent<RectTransform>();
 
@@ -376,8 +389,12 @@ public abstract class Atom : MonoBehaviour
 		}
 		*/
 		if (Time.realtimeSinceStartup - dragStartTime > 0.1f) {
+			Debug.Log("time diff passed");
 			dragCalled = true;
-			ShowHelpTip("Tap another finger to move atoms back and forward");
+			if(!Tooltip.fadePlayed){
+				ShowHelpTip("Tap another finger to move atoms back and forward");
+			}
+			
 			ApplyTransparency();
 			GetComponent<Rigidbody>().isKinematic = true;
 			if(!selected){
@@ -386,6 +403,7 @@ public abstract class Atom : MonoBehaviour
 					= new Vector3(lastTouchPosition.x, lastTouchPosition.y) 
 					- new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y);
 				if(diffVector.magnitude > 0 && !doubleTapped && Input.touchCount == 1){
+					Debug.Log("dragging");
 					Vector3 curScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, screenPoint.z);
 					Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
 					curPosition = CheckPosition(curPosition);
@@ -561,6 +579,7 @@ public abstract class Atom : MonoBehaviour
 	
 	//this function is the equivalent of OnMouseUp for iOS
 	void OnMouseUpIOS(){
+		StaticVariables.draggingAtoms = false;
 		if (!dragCalled) {
 			//if the user only tapped the atom, this is executed
 			selected = !selected;

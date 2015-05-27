@@ -48,7 +48,6 @@ public class CameraScript : MonoBehaviour {
 	}
 	public void UpdateCamera(){
 		bool holdingAtom = HasAtomHeld();
-		Debug.Log("changing temp: " + atomTouchGUI.changingTemp);
 		if(!holdingAtom
 			&& !atomTouchGUI.changingTemp && !atomTouchGUI.changingVol){
 			
@@ -56,6 +55,11 @@ public class CameraScript : MonoBehaviour {
 
 			RotateCam(ref center);
 			
+		}else{
+			Debug.Log("holding atom: " + holdingAtom);
+			Debug.Log("changing temp: " + atomTouchGUI.changingTemp);
+			Debug.Log("changing vol: " + atomTouchGUI.changingVol);
+			Debug.Log("holding atom or changing temp or vol");
 		}
 	}
 	//this function handles the rotation of the camera
