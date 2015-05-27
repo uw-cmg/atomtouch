@@ -1345,8 +1345,8 @@ MonoBehaviour:
   plane: {fileID: 100000, guid: a1841c570b7dc4d6496674b44e1e4f94, type: 2}
   centerPos: {x: 0, y: 0, z: 0}
   errorBuffer: .5
-  lineMat: {fileID: 10754, guid: 0000000000000000e000000000000000, type: 0}
-  lineColor: {r: 1, g: .678431392, b: .337254912, a: .611764729}
+  lineMat: {fileID: 2100000, guid: 9647efc6732774f7191fa2cc8259d8f1, type: 2}
+  lineColor: {r: .80392158, g: .372549027, b: .184313729, a: .611764729}
   lineWidth: .100000001
   width: 20
   height: 20
@@ -1367,7 +1367,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   yMaxText: {fileID: 1777502625}
-  mat: {fileID: 10754, guid: 0000000000000000e000000000000000, type: 0}
+  mat: {fileID: 10754, guid: 0000000000000000e000000000000000, type: 3}
 --- !u!1 &2047387421
 GameObject:
   m_PrefabParentObject: {fileID: 185500, guid: a68afe71e8aaa3d46a11bef9e639ca71, type: 2}

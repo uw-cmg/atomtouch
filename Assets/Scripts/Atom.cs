@@ -163,7 +163,7 @@ public abstract class Atom : MonoBehaviour
 			Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
 			RaycastHit hitInfo;
 
-			if(Physics.Raycast(ray, out hitInfo) 
+			if(Physics.Raycast(ray, out hitInfo)
 				&& hitInfo.transform.gameObject.tag == "Molecule" 
 				&& hitInfo.transform.gameObject == gameObject){
 				//held = true;
@@ -172,23 +172,33 @@ public abstract class Atom : MonoBehaviour
 					//user is now dragging an atom
 					Debug.Log("dragging");
 					OnMouseDragIOS();
-				}else if(Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began){
+					lastTouchPosition = Input.GetTouch(0).position;
+				}
+				else if(Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began){
 					//held = true;
 					OnTouch();
+					lastTouchPosition = Input.GetTouch(0).position;
 				}
 				else if(Input.touchCount == 2){
 					//handle z axis movement
 					HandleZAxisTouch();
+					lastTouchPosition = Input.GetTouch(0).position;
 				}
 				else if(Input.GetTouch(0).phase == TouchPhase.Canceled 
 					|| Input.GetTouch(0).phase == TouchPhase.Ended){
 					//user let go of the atom
 					OnMouseUpIOS();
 				}
-				lastTouchPosition = Input.GetTouch(0).position;
+				
 			}
-		}else if(Input.touchCount == 0){
+			else if(Input.GetTouch(0).phase == TouchPhase.Canceled 
+				|| Input.GetTouch(0).phase == TouchPhase.Ended){
+				ResetTransparency();
+			}
+		}
+		else if(Input.touchCount == 0){
 			held = false;
+
 		}
 	}
 	public static void EnableSelectAtomGroup(bool enable){
@@ -402,7 +412,7 @@ public abstract class Atom : MonoBehaviour
 				Vector3 diffVector 
 					= new Vector3(lastTouchPosition.x, lastTouchPosition.y) 
 					- new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y);
-				if(diffVector.magnitude > 0 && !doubleTapped && Input.touchCount == 1){
+				if(diffVector.magnitude > 0 && Input.touchCount == 1){
 					Debug.Log("dragging");
 					Vector3 curScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, screenPoint.z);
 					Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
@@ -412,55 +422,48 @@ public abstract class Atom : MonoBehaviour
 				}
 			}
 			else{
-				//this is for a group of atoms
-				bool noneDoubleTapped = true;
+				//only move the atoms if none of them have been double tapped
+				
+				List<Vector3> atomPositions = new List<Vector3>();
+				bool moveAtoms = true;
 				for(int i = 0; i < AllAtoms.Count; i++){
 					Atom currAtom = AllAtoms[i];
-					if(currAtom.doubleTapped && currAtom.selected) noneDoubleTapped = false;
-				}
-				
-				//only move the atoms if none of them have been double tapped
-				if(noneDoubleTapped){
-					List<Vector3> atomPositions = new List<Vector3>();
-					bool moveAtoms = true;
-					for(int i = 0; i < AllAtoms.Count; i++){
-						Atom currAtom = AllAtoms[i];
-						Vector3 newAtomPosition = currAtom.transform.position;
-						Vector3 diffVector = new Vector3(lastTouchPosition.x, lastTouchPosition.y) - new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y);
-						if(diffVector.magnitude > 0 && !doubleTapped && currAtom.selected && Input.touchCount == 1){
-							if(gameObjectOffsets != null && gameObjectScreenPoints != null){
-								if(!gameObjectScreenPoints.ContainsKey(currAtom.name)){
-									Debug.Log("screen points key not found: " + currAtom.name);
-									return;
-								}
-								if(!gameObjectOffsets.ContainsKey(currAtom.name)){
-									Debug.Log("offsets key not found: " + currAtom.name);
-									return;
-								}
-								Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
-								Vector3 currOffset = gameObjectOffsets[currAtom.name];
-								
-								Vector3 objScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, currScreenPoint.z);
-								Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
-								newAtomPosition = CheckPosition(curPosition);
-								if(newAtomPosition != curPosition){
-									moveAtoms = false;
-								}
+					Vector3 newAtomPosition = currAtom.transform.position;
+					Vector3 diffVector = new Vector3(lastTouchPosition.x, lastTouchPosition.y) - new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y);
+					if(diffVector.magnitude > 0 && currAtom.selected && Input.touchCount == 1){
+						if(gameObjectOffsets != null && gameObjectScreenPoints != null){
+							if(!gameObjectScreenPoints.ContainsKey(currAtom.name)){
+								Debug.Log("screen points key not found: " + currAtom.name);
+								return;
+							}
+							if(!gameObjectOffsets.ContainsKey(currAtom.name)){
+								Debug.Log("offsets key not found: " + currAtom.name);
+								return;
+							}
+							Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
+							Vector3 currOffset = gameObjectOffsets[currAtom.name];
+							
+							Vector3 objScreenPoint = new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, currScreenPoint.z);
+							Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
+							newAtomPosition = CheckPosition(curPosition);
+							if(newAtomPosition != curPosition){
+								moveAtoms = false;
 							}
 						}
-						Vector3 finalPosition = newAtomPosition;
-						atomPositions.Add(finalPosition);
 					}
-					//only move the atoms if none of them have hit the wall of the box
-					if(atomPositions.Count > 0 && moveAtoms){
-						for(int i = 0; i < AllAtoms.Count; i++){
-							Vector3 newAtomPosition = atomPositions[i];
-							Atom currAtom = AllAtoms[i];
-							currAtom.transform.position = newAtomPosition;
-							currAtom.position = newAtomPosition;
-						}
+					Vector3 finalPosition = newAtomPosition;
+					atomPositions.Add(finalPosition);
+				}
+				//only move the atoms if none of them have hit the wall of the box
+				if(atomPositions.Count > 0 && moveAtoms){
+					for(int i = 0; i < AllAtoms.Count; i++){
+						Vector3 newAtomPosition = atomPositions[i];
+						Atom currAtom = AllAtoms[i];
+						currAtom.transform.position = newAtomPosition;
+						currAtom.position = newAtomPosition;
 					}
 				}
+				
 			}
 		}
 	}
@@ -481,99 +484,94 @@ public abstract class Atom : MonoBehaviour
 		}
 		*/
 		StaticVariables.draggingAtoms = true;
-		if (!Application.isMobilePlatform) {
+		if (Application.isMobilePlatform)return;
+		
+		if(Time.realtimeSinceStartup - dragStartTime > 0.1f){
+			dragCalled = true;
+			Quaternion cameraRotation = Camera.main.transform.rotation;
+			ApplyTransparency();
+			GetComponent<Rigidbody>().isKinematic = true;
 			
-			if(Time.realtimeSinceStartup - dragStartTime > 0.1f){
-				dragCalled = true;
-				Quaternion cameraRotation = Camera.main.transform.rotation;
-				ApplyTransparency();
-				GetComponent<Rigidbody>().isKinematic = true;
-				
-				if(!selected){
-					//this is for one atom
-					if((lastMousePosition - Input.mousePosition).magnitude > 0 && !doubleTapped){
-						Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
-						Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-						curPosition = CheckPosition(curPosition);
-						transform.position = curPosition;
-						this.position = curPosition;
-					}
-					//this is the implementation of moving the atom in the z-direction
-					float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
-					Vector3 projectPosition = transform.position;
-					projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
-					transform.position = CheckPosition(projectPosition);
-					this.position = CheckPosition(projectPosition);
-					screenPoint += new Vector3(0.0f, 0.0f, deltaZ);
+			if(!selected){
+				//this is for one atom
+				if((lastMousePosition - Input.mousePosition).magnitude > 0 ){
+					Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
+					Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
+					curPosition = CheckPosition(curPosition);
+					transform.position = curPosition;
+					this.position = curPosition;
 				}
-				else{
-					//this is for a group of atoms
-					bool noneDoubleTapped = true;
-					for(int i = 0; i < AllAtoms.Count; i++){
-						Atom currAtom = AllAtoms[i];
-						if(currAtom.doubleTapped && currAtom.selected) noneDoubleTapped = false;
+				//this is the implementation of moving the atom in the z-direction
+				float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
+				Vector3 projectPosition = transform.position;
+				projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
+				transform.position = CheckPosition(projectPosition);
+				this.position = CheckPosition(projectPosition);
+				screenPoint += new Vector3(0.0f, 0.0f, deltaZ);
+			}
+			else{
+				//this is for a group of atoms
+				
+				//only move the atoms if none of them have been double tapped
+				
+				List<Vector3> atomPositions = new List<Vector3>();
+				bool moveAtoms = true;
+				for(int i = 0; i < AllAtoms.Count; i++){
+					Atom currAtom = AllAtoms[i];
+					Vector3 newAtomPosition = currAtom.transform.position;
+					if((lastMousePosition - Input.mousePosition).magnitude > 0 && currAtom.selected){
+						if(!gameObjectScreenPoints.ContainsKey(currAtom.name)){
+							Debug.Log("screen points key not found");
+							return;
+						}
+						if(!gameObjectOffsets.ContainsKey(currAtom.name)){
+							Debug.Log("offsets key not found");
+							return;
+						}
+						Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
+						Vector3 currOffset = gameObjectOffsets[currAtom.name];
+
+						Vector3 objScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, currScreenPoint.z);
+						Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
+						newAtomPosition = CheckPosition(curPosition);
+						if(newAtomPosition != curPosition){
+							moveAtoms = false;
+						}
+						//currAtom.transform.position = newAtomPosition;
+						//currAtom.position = newAtomPosition;
 					}
 					
-					//only move the atoms if none of them have been double tapped
-					if(noneDoubleTapped){
-						List<Vector3> atomPositions = new List<Vector3>();
-						bool moveAtoms = true;
-						for(int i = 0; i < AllAtoms.Count; i++){
-							Atom currAtom = AllAtoms[i];
-							Vector3 newAtomPosition = currAtom.transform.position;
-							if((lastMousePosition - Input.mousePosition).magnitude > 0 && currAtom.selected){
-								if(!gameObjectScreenPoints.ContainsKey(currAtom.name)){
-									Debug.Log("screen points key not found");
-									return;
-								}
-								if(!gameObjectOffsets.ContainsKey(currAtom.name)){
-									Debug.Log("offsets key not found");
-									return;
-								}
-								Vector3 currScreenPoint = gameObjectScreenPoints[currAtom.name];
-								Vector3 currOffset = gameObjectOffsets[currAtom.name];
-
-								Vector3 objScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, currScreenPoint.z);
-								Vector3 curPosition = Camera.main.ScreenToWorldPoint(objScreenPoint) + currOffset;
-								newAtomPosition = CheckPosition(curPosition);
-								if(newAtomPosition != curPosition){
-									moveAtoms = false;
-								}
-								//currAtom.transform.position = newAtomPosition;
-								//currAtom.position = newAtomPosition;
-							}
-							
-							Vector3 finalPosition = newAtomPosition;
-							
-							if(currAtom.selected){
-								float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
-								Vector3 projectPosition = newAtomPosition;
-								projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
-								finalPosition = CheckPosition(projectPosition);
-								gameObjectScreenPoints[currAtom.name] += new Vector3(0.0f, 0.0f, deltaZ);
-								if(finalPosition != projectPosition){
-									moveAtoms = false;
-								}
-							}
-							atomPositions.Add(finalPosition);
-						}
-						
-						//only move the atoms if none of them have hit the walls of the box
-						if(atomPositions.Count > 0 && moveAtoms){
-							for(int i = 0; i < AllAtoms.Count; i++){
-								Vector3 newAtomPosition = atomPositions[i];
-								Atom currAtom = AllAtoms[i];
-								currAtom.transform.position = newAtomPosition;
-								currAtom.position = newAtomPosition;
-							}
+					Vector3 finalPosition = newAtomPosition;
+					
+					if(currAtom.selected){
+						float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
+						Vector3 projectPosition = newAtomPosition;
+						projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
+						finalPosition = CheckPosition(projectPosition);
+						gameObjectScreenPoints[currAtom.name] += new Vector3(0.0f, 0.0f, deltaZ);
+						if(finalPosition != projectPosition){
+							moveAtoms = false;
 						}
 					}
+					atomPositions.Add(finalPosition);
 				}
+				
+				//only move the atoms if none of them have hit the walls of the box
+				if(atomPositions.Count > 0 && moveAtoms){
+					for(int i = 0; i < AllAtoms.Count; i++){
+						Vector3 newAtomPosition = atomPositions[i];
+						Atom currAtom = AllAtoms[i];
+						currAtom.transform.position = newAtomPosition;
+						currAtom.position = newAtomPosition;
+					}
+				}
+				
 			}
-			
-			//always keep track of the last mouse position for the next frame for flinging atoms
-			lastMousePosition = Input.mousePosition;
 		}
+		
+		//always keep track of the last mouse position for the next frame for flinging atoms
+		lastMousePosition = Input.mousePosition;
+		
 		
 	}
 	
@@ -631,51 +629,51 @@ public abstract class Atom : MonoBehaviour
 	void OnMouseUp (){
 		if(SettingsControl.GamePaused)return;
 		StaticVariables.draggingAtoms = false;
-		if (!Application.isMobilePlatform) {
-			if(!dragCalled){
-				//this is executed if an atom is only tapped
-				selected = !selected;
-				SetSelected(selected);
+		if (Application.isMobilePlatform)return;
+		if(!dragCalled){
+			//this is executed if an atom is only tapped
+			selected = !selected;
+			SetSelected(selected);
 
+			GetComponent<Rigidbody>().isKinematic = false;
+		}
+		else{
+			if(!selected){
+				//this is for one atom
 				GetComponent<Rigidbody>().isKinematic = false;
-			}
-			else{
-				if(!selected){
-					//this is for one atom
-					GetComponent<Rigidbody>().isKinematic = false;
-					
-					Quaternion cameraRotation = Camera.main.transform.rotation;
-					Vector2 direction = cameraRotation * (Input.mousePosition - lastMousePosition);
-					direction.Normalize();
-					float magnitude = 10.0f;
-					Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
-					this.velocity = flingVector;
-				}else{
-					//this is for a group of atoms
-					for(int i = 0; i < AllAtoms.Count; i++){
-						Atom currAtom = AllAtoms[i];
-						if(currAtom.selected){
-							currAtom.GetComponent<Rigidbody>().isKinematic = false;
-							currAtom.held = false;
-							
-							Quaternion cameraRotation = Camera.main.transform.rotation;
-							Vector3 direction = cameraRotation * (Input.mousePosition - lastMousePosition);
-							direction.Normalize();
-							float magnitude = 10.0f;
-							Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
-							this.velocity = flingVector;
-						}
-					}
-				}
 				
-				//reset the selection status of all of the atoms
+				Quaternion cameraRotation = Camera.main.transform.rotation;
+				Vector2 direction = cameraRotation * (Input.mousePosition - lastMousePosition);
+				direction.Normalize();
+				float magnitude = 10.0f;
+				Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
+				this.velocity = flingVector;
+			}else{
+				//this is for a group of atoms
 				for(int i = 0; i < AllAtoms.Count; i++){
 					Atom currAtom = AllAtoms[i];
-					currAtom.SetSelected(currAtom.selected);
+					if(currAtom.selected){
+						currAtom.GetComponent<Rigidbody>().isKinematic = false;
+						currAtom.held = false;
+						
+						Quaternion cameraRotation = Camera.main.transform.rotation;
+						Vector3 direction = cameraRotation * (Input.mousePosition - lastMousePosition);
+						direction.Normalize();
+						float magnitude = 10.0f;
+						Vector3 flingVector = magnitude * new Vector3(direction.x, direction.y, 0.0f);
+						this.velocity = flingVector;
+					}
 				}
 			}
-			held = false;
+			
+			//reset the selection status of all of the atoms
+			for(int i = 0; i < AllAtoms.Count; i++){
+				Atom currAtom = AllAtoms[i];
+				currAtom.SetSelected(currAtom.selected);
+			}
 		}
+		held = false;
+		
 	}
 	
 	//this functions returns the appropriate bond distance, given two atoms
