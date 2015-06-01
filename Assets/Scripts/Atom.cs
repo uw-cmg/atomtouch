@@ -35,6 +35,7 @@ using System;
 public abstract class Atom : MonoBehaviour
 {
 	[HideInInspector]public AtomTouchGUI atomTouchGUI;
+
 	private Vector3 offset;
 	private Vector3 screenPoint;
 	private Vector3 lastMousePosition;
@@ -63,7 +64,13 @@ public abstract class Atom : MonoBehaviour
 	public Material transparentMaterial;
 	//public Material 
 	public bool held { get; set; }
-	
+	public int state;
+	public enum State{
+		BeingDragged,
+		Held,
+		Default,
+		Selected
+	};
 	//variables that must be implemented because they are declared as abstract in the base class
 	public abstract float epsilon{ get; } // J
 	public abstract float sigma { get; }
@@ -125,6 +132,7 @@ public abstract class Atom : MonoBehaviour
 	void Awake(){
 		RegisterAtom (this);
 		atomTouchGUI = Camera.main.gameObject.GetComponent<AtomTouchGUI>();
+		state = (int)State.Default;
 	}
 	void Start(){
 	}
@@ -162,43 +170,58 @@ public abstract class Atom : MonoBehaviour
 			
 			Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
 			RaycastHit hitInfo;
-
-			if(Physics.Raycast(ray, out hitInfo)
-				&& hitInfo.transform.gameObject.tag == "Molecule" 
-				&& hitInfo.transform.gameObject == gameObject){
-				//held = true;
-				Debug.Log("raycast hit atom!");
-				if(Input.GetTouch(0).phase == TouchPhase.Moved && Input.touchCount == 1){
-					//user is now dragging an atom
-					Debug.Log("dragging");
+			if(state == (int)State.Held){
+				if(Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Moved){
+					state = (int)State.BeingDragged;
+					//update position
 					OnMouseDragIOS();
-					lastTouchPosition = Input.GetTouch(0).position;
-				}
-				else if(Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began){
-					//held = true;
-					OnTouch();
-					lastTouchPosition = Input.GetTouch(0).position;
-				}
-				else if(Input.touchCount == 2){
-					//handle z axis movement
-					HandleZAxisTouch();
 					lastTouchPosition = Input.GetTouch(0).position;
 				}
 				else if(Input.GetTouch(0).phase == TouchPhase.Canceled 
 					|| Input.GetTouch(0).phase == TouchPhase.Ended){
 					//user let go of the atom
+					state = (int)State.Default;
 					OnMouseUpIOS();
 				}
-				
 			}
-			else if(Input.GetTouch(0).phase == TouchPhase.Canceled 
-				|| Input.GetTouch(0).phase == TouchPhase.Ended){
-				ResetTransparency();
+			else if(state == (int)State.BeingDragged){
+				OnMouseDragIOS();
+				lastTouchPosition = Input.GetTouch(0).position;
+				if(Input.GetTouch(0).phase == TouchPhase.Canceled 
+					|| Input.GetTouch(0).phase == TouchPhase.Ended){
+					//user let go of the atom
+					state = (int)State.Default;
+					OnMouseUpIOS();
+				}
+			}
+			else if(state == (int)State.Default){
+				//held = true;
+				//Debug.Log("raycast hit atom!");
+				if(Physics.Raycast(ray, out hitInfo)
+					&& hitInfo.transform.gameObject.tag == "Molecule" 
+					&& hitInfo.transform.gameObject == gameObject){
+				
+					if(Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began){
+						state = (int)State.Held;
+						OnTouch();
+						lastTouchPosition = Input.GetTouch(0).position;
+					}
+					else if(Input.touchCount == 2){
+						//handle z axis movement
+						HandleZAxisTouch();
+						lastTouchPosition = Input.GetTouch(0).position;
+					}
+					else if(Input.GetTouch(0).phase == TouchPhase.Canceled 
+						|| Input.GetTouch(0).phase == TouchPhase.Ended){
+						ResetTransparency();
+					}
+				}
+				
+				
 			}
 		}
 		else if(Input.touchCount == 0){
 			held = false;
-
 		}
 	}
 	public static void EnableSelectAtomGroup(bool enable){
