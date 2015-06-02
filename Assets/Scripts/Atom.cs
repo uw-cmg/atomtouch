@@ -183,6 +183,17 @@ public abstract class Atom : MonoBehaviour
 					state = (int)State.Default;
 					OnMouseUpIOS();
 				}
+				else if(Input.touchCount == 2){
+						//handle z axis movement
+						state = (int)State.BeingDragged;
+						HandleZAxisTouch();
+						lastTouchPosition = Input.GetTouch(0).position;
+				}
+				else if(Input.GetTouch(0).phase == TouchPhase.Canceled 
+					|| Input.GetTouch(0).phase == TouchPhase.Ended){
+					state = (int)State.Default;
+					ResetTransparency();
+				}
 			}
 			else if(state == (int)State.BeingDragged){
 				OnMouseDragIOS();
@@ -192,6 +203,11 @@ public abstract class Atom : MonoBehaviour
 					//user let go of the atom
 					state = (int)State.Default;
 					OnMouseUpIOS();
+				}
+				else if(Input.touchCount == 2){
+					//handle z axis movement
+					HandleZAxisTouch();
+					lastTouchPosition = Input.GetTouch(0).position;
 				}
 			}
 			else if(state == (int)State.Default){
@@ -208,6 +224,7 @@ public abstract class Atom : MonoBehaviour
 					}
 					else if(Input.touchCount == 2){
 						//handle z axis movement
+						state = (int)State.BeingDragged;
 						HandleZAxisTouch();
 						lastTouchPosition = Input.GetTouch(0).position;
 					}
@@ -229,8 +246,8 @@ public abstract class Atom : MonoBehaviour
 		atomTouchGUI.selectAtomPanel.SetActive(enable);
 	}
 
-	public void ShowHelpTip(string msg){
-		StartCoroutine(Tooltip.self.Fade(msg));
+	public void ShowHelpTip(){
+		StartCoroutine(Tooltip.self.Fade());
 	}
 	//this function gives the user the ability to control the z-axis of the atom on iOS
 	void HandleZAxisTouch(){
@@ -245,9 +262,11 @@ public abstract class Atom : MonoBehaviour
 					Vector2 touchOnePrevPos = touch2.position - touch2.deltaPosition;
 					float deltaMagnitudeDiff = touch2.position.y - touchOnePrevPos.y;
 					deltaTouch2 = deltaMagnitudeDiff / 4.0f;
+
 					Quaternion cameraRotation = Camera.main.transform.rotation;
 					Vector3 projectPosition = transform.position;
 					projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
+					
 					transform.position = CheckPosition(projectPosition);
 					this.position = CheckPosition(projectPosition);
 					screenPoint += new Vector3(0.0f, 0.0f, deltaTouch2);
@@ -421,11 +440,12 @@ public abstract class Atom : MonoBehaviour
 			return;
 		}
 		*/
+		Debug.Log("calling mobile drag");
 		if (Time.realtimeSinceStartup - dragStartTime > 0.1f) {
 			Debug.Log("time diff passed");
 			dragCalled = true;
 			if(!Tooltip.fadePlayed){
-				ShowHelpTip("Tap another finger to move atoms back and forward");
+				ShowHelpTip();
 			}
 			
 			ApplyTransparency();
@@ -494,8 +514,9 @@ public abstract class Atom : MonoBehaviour
 	void OnMouseDrag(){
 		if(SettingsControl.GamePaused)return;
 		if(atomTouchGUI.changingTemp || atomTouchGUI.changingVol)return;
+		Debug.Log("calling pc drag");
 		if(!Tooltip.fadePlayed)
-			ShowHelpTip("Scroll mouse wheel to move atoms back and forward");
+			ShowHelpTip();
 		/*
 		RectTransform rt = AtomTouchGUI.myAtomTouchGUI.buttonPanel.GetComponent<RectTransform>();
 

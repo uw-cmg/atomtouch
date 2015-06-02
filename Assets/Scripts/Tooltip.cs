@@ -21,6 +21,7 @@ public class Tooltip : MonoBehaviour {
 	private Image image;
 	public Text text;
 	public static bool fadePlayed = false;
+	public string msg;
 	//set in inspector
 	//panel
 	public Color hiddenColor;
@@ -37,17 +38,22 @@ public class Tooltip : MonoBehaviour {
 		textFadeOutStepColor = new Color(0,0,0, (textShownColor.a-textHiddenColor.a)/fadeOutLength);
 
 		image = GetComponent<Image>();
-
+		if(Application.isMobilePlatform){
+			msg = "Tap another finger to move atoms back and forward";
+		}
+		else{
+			msg = "Scroll mouse wheel to move atoms back and forward";
+		}
+		text.text = msg;
 	}
 	// Use this for initialization
 	void Start () {
 		image.color = hiddenColor;
 		text.color = textHiddenColor;
 	}
-	public IEnumerator Fade(string tipText){
+	public IEnumerator Fade(){
 		fadePlayed = true;
 		fading = true;
-		text.text = tipText;
 		while(fading){
 			yield return new WaitForSeconds(fadeStepTime);
 			//Debug.Log(playedTime);
