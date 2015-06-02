@@ -266,10 +266,15 @@ public abstract class Atom : MonoBehaviour
 					Quaternion cameraRotation = Camera.main.transform.rotation;
 					Vector3 projectPosition = transform.position;
 					projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaTouch2));
+					Vector3 newPosition = CheckPosition(projectPosition);
+					if(newPosition == projectPosition){
+						transform.position = CheckPosition(projectPosition);
+						this.position = CheckPosition(projectPosition);
+						screenPoint += new Vector3(0.0f, 0.0f, deltaTouch2);
+					}
 					
-					transform.position = CheckPosition(projectPosition);
-					this.position = CheckPosition(projectPosition);
-					screenPoint += new Vector3(0.0f, 0.0f, deltaTouch2);
+
+					
 				}
 				else{
 					//this is for a group of atoms
@@ -278,7 +283,7 @@ public abstract class Atom : MonoBehaviour
 					deltaTouch2 = deltaMagnitudeDiff / 4.0f;
 					Dictionary<string, Vector3> newAtomPositions = new Dictionary<string, Vector3>();
 					bool moveAtoms = true;
-					for(int i = 0; i < AllAtoms.Count; i++){
+					for(int i = 0; i < AllAtoms.Count && moveAtoms; i++){
 						Atom currAtom = AllAtoms[i];
 						if(!currAtom.selected) continue;
 						Quaternion cameraRotation = Camera.main.transform.rotation;
@@ -287,11 +292,15 @@ public abstract class Atom : MonoBehaviour
 						Vector3 newAtomPosition = CheckPosition(projectPosition);
 						if(newAtomPosition != projectPosition){
 							moveAtoms = false;
+							if(gameObjectScreenPoints != null){
+								gameObjectScreenPoints[currAtom.name] 
+									+= new Vector3(0.0f, 0.0f, deltaTouch2);
+							}
+						}else{
+							newAtomPositions.Add(currAtom.name, newAtomPosition);
 						}
-						if(gameObjectScreenPoints != null){
-							gameObjectScreenPoints[currAtom.name] += new Vector3(0.0f, 0.0f, deltaTouch2);
-						}
-						newAtomPositions.Add(currAtom.name, newAtomPosition);
+						
+						
 					}
 					
 					if(newAtomPositions.Count > 0 && moveAtoms){
@@ -417,7 +426,7 @@ public abstract class Atom : MonoBehaviour
 					currAtom.held = true;
 					gameObjectOffsets.Add(currAtom.name, atomOffset);
 					gameObjectScreenPoints.Add(currAtom.name, pointOnScreen);
-					Debug.Log("miomiomio");
+					
 				}
 			}
 		}
@@ -549,9 +558,14 @@ public abstract class Atom : MonoBehaviour
 				float deltaZ = -Input.GetAxis("Mouse ScrollWheel");
 				Vector3 projectPosition = transform.position;
 				projectPosition += (cameraRotation * new Vector3(0.0f, 0.0f, deltaZ));
-				transform.position = CheckPosition(projectPosition);
-				this.position = CheckPosition(projectPosition);
-				screenPoint += new Vector3(0.0f, 0.0f, deltaZ);
+				Vector3 newPosition = CheckPosition(projectPosition);
+				if(newPosition == projectPosition){
+					transform.position = CheckPosition(projectPosition);
+					this.position = CheckPosition(projectPosition);
+					screenPoint += new Vector3(0.0f, 0.0f, deltaZ);
+				}
+				
+				
 			}
 			else{
 				//this is for a group of atoms
@@ -560,7 +574,7 @@ public abstract class Atom : MonoBehaviour
 				
 				List<Vector3> atomPositions = new List<Vector3>();
 				bool moveAtoms = true;
-				for(int i = 0; i < AllAtoms.Count; i++){
+				for(int i = 0; i < AllAtoms.Count && moveAtoms; i++){
 					Atom currAtom = AllAtoms[i];
 					Vector3 newAtomPosition = currAtom.transform.position;
 					if((lastMousePosition - Input.mousePosition).magnitude > 0 && currAtom.selected){
@@ -585,6 +599,7 @@ public abstract class Atom : MonoBehaviour
 						//currAtom.position = newAtomPosition;
 					}
 					
+					//handle z scroll
 					Vector3 finalPosition = newAtomPosition;
 					
 					if(currAtom.selected){

@@ -95,7 +95,7 @@ PlayerSettings:
   preloadShaders: 1
   StripUnusedMeshComponents: 1
   iPhoneSdkVersion: 988
-  iPhoneTargetOSVersion: 22
+  iPhoneTargetOSVersion: 28
   uIPrerenderedIcon: 0
   uIRequiresPersistentWiFi: 0
   uIStatusBarHidden: 1
@@ -154,19 +154,19 @@ PlayerSettings:
     m_Icons:
     - m_Icon: {fileID: 2800000, guid: 6baa4daa5074b884caa4a0f493622083, type: 3}
       m_Size: 180
-    - m_Icon: {fileID: 0}
+    - m_Icon: {fileID: 2800000, guid: 6baa4daa5074b884caa4a0f493622083, type: 3}
       m_Size: 152
-    - m_Icon: {fileID: 0}
+    - m_Icon: {fileID: 2800000, guid: 6baa4daa5074b884caa4a0f493622083, type: 3}
       m_Size: 144
-    - m_Icon: {fileID: 0}
+    - m_Icon: {fileID: 2800000, guid: 6baa4daa5074b884caa4a0f493622083, type: 3}
       m_Size: 120
-    - m_Icon: {fileID: 0}
+    - m_Icon: {fileID: 2800000, guid: 6baa4daa5074b884caa4a0f493622083, type: 3}
       m_Size: 114
-    - m_Icon: {fileID: 0}
+    - m_Icon: {fileID: 2800000, guid: 6baa4daa5074b884caa4a0f493622083, type: 3}
       m_Size: 76
-    - m_Icon: {fileID: 0}
+    - m_Icon: {fileID: 2800000, guid: 6baa4daa5074b884caa4a0f493622083, type: 3}
       m_Size: 72
-    - m_Icon: {fileID: 0}
+    - m_Icon: {fileID: 2800000, guid: 6baa4daa5074b884caa4a0f493622083, type: 3}
       m_Size: 57
   m_BuildTargetBatching:
   - m_BuildTarget: Standalone
