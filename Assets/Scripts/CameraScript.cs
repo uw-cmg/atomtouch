@@ -26,7 +26,8 @@ public class CameraScript : MonoBehaviour {
 	public GameObject gameControl;
 	public GameObject sliderPanel;
 	public GameObject hudCanvas;
-	
+	public Transform lightsTransform;
+
 	private AtomTouchGUI atomTouchGUI;
 	private bool twoFingerRotating = false;
 	private CreateEnvironment createEnvironment;
@@ -36,7 +37,9 @@ public class CameraScript : MonoBehaviour {
 	}
 	void Start(){
 	}
-
+	void OnPreRender(){
+		RenderSettings.fog = false;
+	}
 	public bool HasAtomHeld(){
 		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
 			Atom currAtom = Atom.AllAtoms[i];
@@ -199,7 +202,10 @@ public class CameraScript : MonoBehaviour {
 
 		Camera.main.transform.RotateAround(Vector3.zero, Camera.main.transform.rotation * Vector3.up, rotateSensitivityUpDown *x);
 		Camera.main.transform.RotateAround(Vector3.zero, Camera.main.transform.rotation * Vector3.left, rotateSensitivityLeftRight *y);
-	
+		if(lightsTransform != null){
+			lightsTransform.RotateAround(Vector3.zero, lightsTransform.rotation * Vector3.up, rotateSensitivityUpDown *x);
+			lightsTransform.RotateAround(Vector3.zero, lightsTransform.rotation * Vector3.left, rotateSensitivityLeftRight *y);
+		}
 	}
 
 	
