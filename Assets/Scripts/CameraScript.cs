@@ -36,7 +36,10 @@ public class CameraScript : MonoBehaviour {
 	}
 	void Start(){
 	}
-
+	void OnPreRender(){
+		if(RenderSettings.fog)Debug.Log("fog enabled");
+		RenderSettings.fog = false;
+	}
 	public bool HasAtomHeld(){
 		for (int i = 0; i < Atom.AllAtoms.Count; i++) {
 			Atom currAtom = Atom.AllAtoms[i];

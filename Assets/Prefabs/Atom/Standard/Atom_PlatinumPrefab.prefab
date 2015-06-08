@@ -149,6 +149,7 @@ MonoBehaviour:
   defaultMaterial: {fileID: 2100000, guid: 0eee049f4b067458087302a0269d4e62, type: 2}
   selectedMaterial: {fileID: 2100000, guid: 1d05205eba9f64c6d8e10398dce56bab, type: 2}
   transparentMaterial: {fileID: 2100000, guid: ce31e46a4627345bfbb945794f8bb927, type: 2}
+  state: 0
   verletRadius: 0
   neighborList: []
   velocity: {x: 0, y: 0, z: 0}
